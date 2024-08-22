@@ -1016,8 +1016,8 @@ namespace ExcelScore.Forms
                 }
             }
 
-
-            foreach (int group in groupParameter.EachGroupCount.Keys)
+            var sortedKeys = groupParameter.EachGroupCount.Keys.OrderBy(key => key).ToList();
+            foreach (int group in sortedKeys)
             {
                 EachGroupCount.Add(groupParameter.EachGroupCount[group]);
                 //MessageBox.Show(groupParameter.EachGroupCount[group].ToString());
@@ -1051,11 +1051,11 @@ namespace ExcelScore.Forms
             }
 
             int groupctr = 0;
-
+            
 
             foreach (var label in Groupparameter.DIC_LablesIfNomainal.Values)
             {
-
+                //MessageBox.Show(label);
                 wordObj.AddPara_Center(table, 0, column, label + "\n(n = " + EachGroupCount[groupctr] + ")");
 
                 column = column + 2;
@@ -2435,7 +2435,7 @@ namespace ExcelScore.Forms
                         foreach (var groupValue in sortedKeys)
                         {
                             //double groupValue = kvp.Key;
-                            
+                           // MessageBox.Show(groupValue.ToString());
                             Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
                             //MessageBox.Show(groupValue.ToString());
                             // Insert frequencies for the current group
@@ -2445,7 +2445,7 @@ namespace ExcelScore.Forms
                                 string frequency = formattedValues.ContainsKey($"Frequency_{distinctValue}") ? formattedValues[$"Frequency_{distinctValue}"] : "0";
                                 wordObj.Addpara_CenterNoBOLD(table, startingRow, column, frequency);
                                 //startingRow++; // Move to the next row
-
+                                //MessageBox.Show(frequency.ToString());
                                 column++;
 
                                 string percentage = formattedValues.ContainsKey($"Percentage_{distinctValue}") ? formattedValues[$"Percentage_{distinctValue}"] : "0.0";
