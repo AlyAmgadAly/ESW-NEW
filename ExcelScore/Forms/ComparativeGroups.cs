@@ -3,6 +3,7 @@ using Aspose.Cells.Charts;
 using ExcelScore.Classes;
 using Humanizer;
 using MathNet.Numerics.Statistics;
+using Microsoft.SolverFoundation.Services;
 using Python.Runtime;
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
@@ -24,6 +25,7 @@ using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskBand;
 using Application = System.Windows.Forms.Application;
+using Parameter = ExcelScore.Classes.Parameter;
 
 namespace ExcelScore.Forms
 {
@@ -323,6 +325,7 @@ namespace ExcelScore.Forms
         }
         private void pic_addTable_Click(object sender, EventArgs e)
         {
+            
             string TableName = AddTableUI();
             check_TotalColumn.Checked = false;
             ComparativeBasic(TableName);
@@ -332,6 +335,7 @@ namespace ExcelScore.Forms
 
         public void GetDataValues(string TableName)
         {
+            //MessageBox.Show(SelectParameterColIndex.ToString());
             // Iterate over each table
             foreach (var table in ComparativeTables)
             {
@@ -364,12 +368,44 @@ namespace ExcelScore.Forms
                                         continue;
                                     }
                                     // Parse the cell data as double
-                                    if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))
+                                    object SelectData = worksheet.Cells[row, SelectParameterColIndex].Value;
+                                    //MessageBox.Show(SelectParameterColIndex.ToString());
+                                    
+                                    double SelectDataDouble;
+
+                                    
+                                    if (list_Select.Items.Count == 0)
                                     {
-                                        // Add the cell value to the parameter's values list
-                                        parameter.ParameterValues.Add(cellValueDouble);
-                                        //MessageBox.Show(cellValueDouble.ToString());
+                                        if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))
+                                        {
+                                            //MessageBox.Show(cellValueDouble.ToString());
+                                            // Add the cell value to the parameter's values list
+                                            parameter.ParameterValues.Add(cellValueDouble);
+                                            //MessageBox.Show(cellValueDouble.ToString());
+                                        }
                                     }
+                                    else
+                                    {
+                                        if (SelectData != null && double.TryParse(SelectData.ToString(), out SelectDataDouble))
+                                        {
+                                            if (SelectedParameterValues_CompaFrm.Contains(SelectDataDouble))
+                                            {
+                                                if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))
+                                                {
+                                                    //MessageBox.Show(cellValueDouble.ToString());
+                                                    // Add the cell value to the parameter's values list
+                                                    //MessageBox.Show("Select value " +SelectData.ToString());
+                                                    //MessageBox.Show("Cell value "+cellValueDouble.ToString());
+                                                    
+                                                    parameter.ParameterValues.Add(cellValueDouble);
+                                                    //MessageBox.Show(cellValueDouble.ToString());
+                                                }
+                                            }
+                                        }
+                                    }
+
+
+
                                 }
                             }
                         }
@@ -1303,18 +1339,49 @@ namespace ExcelScore.Forms
                                         parameter.hasLowerN = true;
                                         continue;
                                     }
-                                    if (parameterCellValue != null && double.TryParse(parameterCellValue.ToString(), out parameterValue))
+
+                                    if (list_Select.Items.Count == 0)
                                     {
-                                        // Add the parameter value to the corresponding group
-                                        if (!parameter.GroupedParameterValues.ContainsKey(groupValue))
+                                        if (parameterCellValue != null && double.TryParse(parameterCellValue.ToString(), out parameterValue))
                                         {
-                                            parameter.GroupedParameterValues[groupValue] = new List<double>();
+                                            // Add the parameter value to the corresponding group
+                                            if (!parameter.GroupedParameterValues.ContainsKey(groupValue))
+                                            {
+                                                parameter.GroupedParameterValues[groupValue] = new List<double>();
+                                            }
+
+                                            parameter.GroupedParameterValues[groupValue].Add(parameterValue);
+                                            //MessageBox.Show(groupValue.ToString());
+                                            //MessageBox.Show(parameterValue.ToString());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        object SelectData = worksheet.Cells[row, SelectParameterColIndex].Value;
+                                        //MessageBox.Show(SelectParameterColIndex.ToString());
+
+                                        double SelectDataDouble;
+                                        if (SelectData != null && double.TryParse(SelectData.ToString(), out SelectDataDouble))
+                                        {
+                                            if (SelectedParameterValues_CompaFrm.Contains(SelectDataDouble))
+                                            {
+                                                if (parameterCellValue != null && double.TryParse(parameterCellValue.ToString(), out parameterValue))
+                                                {
+                                                    // Add the parameter value to the corresponding group
+                                                    if (!parameter.GroupedParameterValues.ContainsKey(groupValue))
+                                                    {
+                                                        parameter.GroupedParameterValues[groupValue] = new List<double>();
+                                                    }
+
+                                                    parameter.GroupedParameterValues[groupValue].Add(parameterValue);
+                                                    //MessageBox.Show(groupValue.ToString());
+                                                    //MessageBox.Show(parameterValue.ToString());
+                                                }
+                                            }
                                         }
 
-                                        parameter.GroupedParameterValues[groupValue].Add(parameterValue);
-                                        //MessageBox.Show(groupValue.ToString());
-                                        //MessageBox.Show(parameterValue.ToString());
                                     }
+                                        
                                 }
                             }
 
@@ -2385,8 +2452,6 @@ namespace ExcelScore.Forms
                                 percentage = percentage.Replace("%", "");
 
 
-                                //MessageBox.Show(frequency);
-                                //MessageBox.Show(percentage);
                                 if (percentage.EndsWith("0"))
                                 {
                                     //percentage = percentage.Substring(0, percentage.Length - 1);
@@ -2907,23 +2972,127 @@ namespace ExcelScore.Forms
             
         }
         public static ComparativeTable DoneSelectionComparaTable { get; set; }
+
+        public Parameter ParameterSelectName_Compara { get; set; }
+
+        public List<double> SelectedParameterValues_CompaFrm { get; set; } = new List<double>();
         private void pic_groups_select_Click(object sender, EventArgs e)
         {
-            if (cmb_TableNames.SelectedIndex != -1)
+            if (list_Select.Items.Count == 1)
             {
-                string selectedTableName = cmb_TableNames.SelectedItem.ToString();
-                var selectedTable = ComparativeTables.FirstOrDefault(table => table.TableName == selectedTableName);
+                
+                
 
-                Select_Groups select_Groupsobj = new Select_Groups();
-                select_Groupsobj.SelectGroupcomparativeTable = selectedTable;
-                select_Groupsobj.Show();
+                Select_Groups select_Groupsobj = new Select_Groups(this);
+                select_Groupsobj.SelectParaName_SelectGrFrm = list_Select.Items[0].ToString();
+                select_Groupsobj.SelectParaValues_SelectGrFrm = AllParameter_Select_Values;
+
+
+                select_Groupsobj.ShowDialog();
             }
+
+
+
 
 
         }
 
         private void check_TotalColumn_CheckedChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void check_Maha_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+        private void pic_RemoveSelectPara_Click(object sender, EventArgs e)
+        {
+            if (list_Select.SelectedIndex != -1)
+            {
+
+                var selectedItems = new List<object>();
+                foreach (var selectedItem in list_Select.SelectedItems)
+                {
+                    selectedItems.Add(selectedItem);
+                }
+
+
+                foreach (var selectedItem in selectedItems)
+                {
+                    list_Select.Items.Remove(selectedItem);
+                }
+
+            }
+            else
+                MessageBox.Show("Please Select Item!");
+        }
+        public List<double> AllParameter_Select_Values { get; set; } = new List<double>();
+
+        public int GetSelectParameterCol()
+        {
+            string SelectParamter = list_Select.Items[0].ToString();
+            for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
+            {
+                int columnindex = -1;
+                // Get the name of the parameter from the header row
+                object cellValue = worksheet.Cells[0, col].Value;
+                string parameterName = cellValue?.ToString();
+
+                if (!string.IsNullOrEmpty(parameterName) && SelectParamter == parameterName)
+                {
+                    
+                    //MessageBox.Show("Parameter " + parameterName);
+                    columnindex = col;
+                    // Iterate over each row in the column
+                    for (int row = 1; row <= worksheet.Cells.MaxDataRow; row++)
+                    {
+                        // Get the cell data
+                        object cellData = worksheet.Cells[row, col].Value;
+                        double cellValueDouble;
+
+                        if (cellData.ToString() == ".")
+                        {
+                            continue;
+                        }
+                        // Parse the cell data as double
+                        if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))
+                        {
+                            // Add the cell value to the parameter's values list
+                            AllParameter_Select_Values.Add(cellValueDouble);
+                            //MessageBox.Show(cellValueDouble.ToString());
+                        }
+                    }
+                    //MessageBox.Show(columnindex.ToString());
+                    return columnindex;
+
+                }
+
+            }
+            return -1;
+
+            
+        }
+
+        public int SelectParameterColIndex { get;set; } = new int();    
+        private void pic_AllParaToSelect_Click(object sender, EventArgs e)
+        {
+            foreach (object selectedItem in list_AllParameters.SelectedItems)
+            {
+                list_Select.Items.Add(selectedItem.ToString());
+
+            }
+
+
+            SelectParameterColIndex = GetSelectParameterCol();
+
+            //MessageBox.Show(SelectParameterColIndex.ToString());
+            
+
+
 
         }
     }

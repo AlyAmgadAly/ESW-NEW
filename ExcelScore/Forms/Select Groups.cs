@@ -1,4 +1,6 @@
-﻿using ExcelScore.Classes;
+﻿using Accord.Math;
+using ExcelScore.Classes;
+using Microsoft.SolverFoundation.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,25 +15,22 @@ namespace ExcelScore.Forms
 {
     public partial class Select_Groups : Form
     {
-        public Select_Groups()
+        private ComparativeGroups _comparativeGroups;
+        public Select_Groups(ComparativeGroups comparativeGroups)
         {
             InitializeComponent();
+            _comparativeGroups = comparativeGroups;
         }
 
+        public string SelectParaName_SelectGrFrm { get; set; }
 
-        public ComparativeTable SelectGroupcomparativeTable {  get; set; } 
+        public List<double> SelectParaValues_SelectGrFrm { get; set; }
         private void Select_Groups_Load(object sender, EventArgs e)
         {
-            foreach (var parameter in SelectGroupcomparativeTable.Parameters)
+            lbl_parameterName.Text = SelectParaName_SelectGrFrm;
+            foreach (double item in SelectParaValues_SelectGrFrm.Distinct())
             {
-                if(parameter.IsGroup)
-                {
-                    lbl_parameterName.Text = parameter.Name;    
-                    foreach (var value in parameter.ParameterValues.Distinct())
-                    {
-                        list_AllValues.Items.Add(value);
-                    }
-                }
+                list_AllValues.Items.Add(item); 
             }
         }
 
@@ -67,20 +66,17 @@ namespace ExcelScore.Forms
 
         private void btn_DoneSelection_Click(object sender, EventArgs e)
         {
-            SelectGroupcomparativeTable.HasSelect = true;
-            List<int> selectedValues = new List<int>();
+            
+            List<double> selectedValues = new List<double>();
             foreach (var item in list_SelectedValues.Items)
             {
-                if (int.TryParse(item.ToString(), out int intValue))
+                if (double.TryParse(item.ToString(), out double doublevalue))
                 {
-                    selectedValues.Add(intValue);
+                    selectedValues.Add(doublevalue);
                 }
-                   
-                
                 
             }
-            SelectGroupcomparativeTable.SelectedValues = selectedValues;
-            ComparativeGroups.DoneSelectionComparaTable = SelectGroupcomparativeTable;
+            _comparativeGroups.SelectedParameterValues_CompaFrm = selectedValues;
             this.Close();
 
 
