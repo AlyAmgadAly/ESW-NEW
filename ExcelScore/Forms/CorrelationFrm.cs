@@ -61,6 +61,7 @@ namespace ExcelScore.Forms
         private void Correlation_Load(object sender, EventArgs e)
         {
             AddHeadersToParameter();
+            lbl_CurrentCorr.Text = "Correlation : Matrix";
         }
         public void AddTableClass(string tableName)
         {
@@ -86,7 +87,7 @@ namespace ExcelScore.Forms
                 {
                     Name = item.ToString(),
                     NominalOrScale = "Scale",
-                    NormalOrAbnormal = "Normal",
+                    
                     GroupedParameterValues = new Dictionary<double, List<double>>(),
                     FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
                 };
@@ -97,12 +98,12 @@ namespace ExcelScore.Forms
 
 
         }
-
-        public void AddTableUI()
+        public string AddTableUI()
         {
+            string TableName = null;
             if (!string.IsNullOrWhiteSpace(txt_TableName.Text) &&
-                
-                list_selectedParameters.Items.Count > 0 && cmb_CorreType.SelectedIndex != -1)
+
+                 list_selectedParameters.Items.Count > 0 && cmb_CorreType.SelectedIndex != -1)
             {
                 // Check if the table name already exists
                 bool tableExists = false;
@@ -120,6 +121,7 @@ namespace ExcelScore.Forms
                     cmb_TableNames.Items.Add(txt_TableName.Text);
                     AddTableClass(txt_TableName.Text);
                     MessageBox.Show("Added Table " + txt_TableName.Text);
+                    TableName = txt_TableName.Text;
                 }
                 else
                 {
@@ -130,7 +132,10 @@ namespace ExcelScore.Forms
             {
                 MessageBox.Show("Please fill in table name and add items to lists!");
             }
+
+            return TableName;
         }
+        
 
         private void pic_back_Click(object sender, EventArgs e)
         {
@@ -172,11 +177,79 @@ namespace ExcelScore.Forms
                 MessageBox.Show("Please Select Item!");
         }
 
-        
+        public void GetDataValues(string TableName)
+        {
+            //MessageBox.Show(SelectParameterColIndex.ToString());
+            // Iterate over each table
+            foreach (var table in ComparativeTables)
+            {
+
+                // MessageBox.Show("Table " + table.TableName);
+                if (TableName == table.TableName)
+                {
+                    foreach (var parameter in table.Parameters)
+                    {
+                        // Iterate over each column
+                        for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
+                        {
+                            // Get the name of the parameter from the header row
+                            object cellValue = worksheet.Cells[0, col].Value;
+                            string parameterName = cellValue?.ToString();
+
+                            if (!string.IsNullOrEmpty(parameterName) && parameter.Name == parameterName)
+                            {
+                                //MessageBox.Show("Parameter " + parameterName);
+
+                                // Iterate over each row in the column
+                                for (int row = 1; row <= worksheet.Cells.MaxDataRow; row++)
+                                {
+                                    // Get the cell data
+                                    object cellData = worksheet.Cells[row, col].Value;
+                                    double cellValueDouble;
+
+
+
+                                    if (cellData == null)
+                                    {
+                                        MessageBox.Show("Data is empty at Parameter : " + parameter.Name);
+                                        break;
+                                    }
+                                    else if (cellData.ToString() == ".")
+                                    {
+                                        continue;
+                                    }
+
+                                    if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))
+                                    {
+                                        //MessageBox.Show(cellValueDouble.ToString());
+                                        // Add the cell value to the parameter's values list
+                                        parameter.ParameterValues.Add(cellValueDouble);
+                                        //MessageBox.Show(cellValueDouble.ToString());
+                                    }
+
+
+
+
+
+
+
+
+
+
+                                }
+                            }
+                        }
+                    }
+                }
+                // Iterate over each parameter in the table
+
+            }
+        }
 
         private void pic_addTable_Click(object sender, EventArgs e)
         {
-            AddTableUI();
+            string TableName = AddTableUI();
+            GetDataValues(TableName);
         }
 
         private void cmb_TableNames_SelectedIndexChanged(object sender, EventArgs e)
@@ -428,7 +501,7 @@ namespace ExcelScore.Forms
         }
         private void btn_Done_Click(object sender, EventArgs e)
         {
-            GetDataValues();
+            //GetDataValues();
             //pythonStat.InitPython();
 
             wordObj.InitWord();
@@ -436,6 +509,45 @@ namespace ExcelScore.Forms
             DrawMatrixCorr();
 
             wordObj.SaveWord();
+        }
+        public bool ISMatrixCorr = true;
+        private void btn_Swap_Click(object sender, EventArgs e)
+        {
+            if(ISMatrixCorr)
+            {
+                lbl_CurrentCorr.Text = "Correlation : Normal";
+                ISMatrixCorr = false;
+            }
+            else if (!ISMatrixCorr)
+            {
+                lbl_CurrentCorr.Text = "Correlation : Matrix";
+                ISMatrixCorr = true;
+            }
+
+
+            
+        }
+
+        private void pic_RemoveDependentAbnormal_Click(object sender, EventArgs e)
+        {
+            if (list_selectedDepenAbnormal.SelectedIndex != -1)
+            {
+
+                var selectedItems = new List<object>();
+                foreach (var selectedItem in list_selectedDepenAbnormal.SelectedItems)
+                {
+                    selectedItems.Add(selectedItem);
+                }
+
+
+                foreach (var selectedItem in selectedItems)
+                {
+                    list_selectedDepenAbnormal.Items.Remove(selectedItem);
+                }
+
+            }
+            else
+                MessageBox.Show("Please Select Item!");
         }
     }
 }

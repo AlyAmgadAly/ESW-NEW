@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Python.Runtime;
 using CenterSpace.NMath.Core;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Accord.Statistics.Analysis;
 
 namespace ExcelScore.Classes
 {
@@ -87,7 +88,7 @@ namespace ExcelScore.Classes
                 d = contingencyTable[1][1];
             }
             catch(Exception)
-            { d = 0; }  
+            { d = 0; }
 
 
             //MessageBox.Show(a.ToString());
@@ -98,18 +99,43 @@ namespace ExcelScore.Classes
             // MessageBox.Show(c.ToString());
             // MessageBox.Show(d.ToString());
 
-            double chiSquareStatistic = CalculateChiSquare(a, b, c, d);
-            double pValue;
+            var matrix = new ConfusionMatrix(new int[,]
+            {
 
-            if (ShouldUseFisher(a, b, c, d))
+                {   a,       b   },
+                {  c,       d    },
+            });
+
+            double chiSquareStatistic = CalculateChiSquare(a, b, c, d);
+            double pValue=0;
+            try
             {
-                pValue = FisherExactTest(a, b, c, d);
-                parameter.Isfisher = true;
+                if (ShouldUseFisher(a, b, c, d))
+                {
+                    pValue = FisherExactTest(a, b, c, d);
+                    parameter.Isfisher = true;
+                }
+                else
+                {
+                    pValue = ChiSquarePValue(chiSquareStatistic, 1); // df = 1 for a 2x2 table
+                }
             }
-            else
+            catch(Exception)
             {
-                pValue = ChiSquarePValue(chiSquareStatistic, 1); // df = 1 for a 2x2 table
+                if (ShouldUseFisher(a, b, c, d))
+                {
+                    var fet = new FisherExactTest(matrix, alternate: OneSampleHypothesis.ValueIsDifferentFromHypothesis);
+                    pValue = fet.PValue;
+                    parameter.Isfisher = true;
+                }
+                else
+                {
+                    pValue = ChiSquarePValue(chiSquareStatistic, 1); // df = 1 for a 2x2 table
+                }
+                
             }
+            
+            
 
 
             chiSquareStatistic = Math.Round(chiSquareStatistic, 3);

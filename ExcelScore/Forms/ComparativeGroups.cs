@@ -363,10 +363,20 @@ namespace ExcelScore.Forms
                                     object cellData = worksheet.Cells[row, col].Value;
                                     double cellValueDouble;
 
-                                    if (cellData.ToString() == ".")
+
+
+                                    if(cellData == null)
+                                    {
+                                        MessageBox.Show("Data is empty at Parameter : " + parameter.Name);
+                                        break;
+                                    }
+                                    else if (cellData.ToString() == ".")
                                     {
                                         continue;
                                     }
+
+
+
                                     // Parse the cell data as double
                                     object SelectData = worksheet.Cells[row, SelectParameterColIndex].Value;
                                     //MessageBox.Show(SelectParameterColIndex.ToString());
@@ -1334,6 +1344,12 @@ namespace ExcelScore.Forms
                                     object parameterCellValue = worksheet.Cells[row, parameterColumnIndex].Value;
                                     double parameterValue;
 
+
+                                    if (parameterCellValue == null)
+                                    {
+                                        
+                                        break;
+                                    }
                                     if (parameterCellValue.ToString() == ".")
                                     {
                                         parameter.hasLowerN = true;
@@ -3094,6 +3110,28 @@ namespace ExcelScore.Forms
 
 
 
+        }
+
+        
+
+        private void button1_Click_2(object sender, EventArgs e)
+        {
+            string filepath = ExcelFunctions.filepath;
+            Workbook workbook = new Aspose.Cells.Workbook(filepath);
+
+            // Accessing the first worksheet in the Excel file
+            worksheet = workbook.Worksheets[0];
+        }
+
+        private void btn_Update_Click(object sender, EventArgs e)
+        {
+            string filepath = ExcelFunctions.filepath;
+            Workbook workbook = new Aspose.Cells.Workbook(filepath);
+
+            // Accessing the first worksheet in the Excel file
+            worksheet = workbook.Worksheets[0];
+
+            MessageBox.Show("File Updated");
         }
     }
 }

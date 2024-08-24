@@ -363,7 +363,7 @@ namespace ExcelScore.Forms
 
         private void Word_Load(object sender, EventArgs e)
         {
-            pyobj.InitPython();
+            //pyobj.InitPython();
             for(int i = 0; i< AllDomainsWord.Count;i++)
             {
                 AllDomainsWord[i].LikertScore = "";

@@ -99,10 +99,7 @@ namespace ExcelScore
                     
                     if (parameter.Name == Sheet2.Cells[0 , column].Value.ToString() && (parameter.NominalOrScale == "Nominal" || parameter.IsGroup))
                     {
-                        //MessageBox.Show(parameter.Name);
-                        //MessageBox.Show(Sheet2.Cells[0, column].Value.ToString());
-                        //MessageBox.Show(parameter.NominalOrScale);
-                        // MessageBox.Show(Sheet2.Cells[1, column].Value.ToString());
+
                         if (Sheet2.Cells[1, column].Value.ToString() == "Nominal")
                         {
                             for (int row = 2; row <= worksheet.Cells.MaxDataRow; row++)
@@ -111,16 +108,35 @@ namespace ExcelScore
                                 {
                                     Cell cell = Sheet2.Cells[row, column];
                                     string cellstring = cell.Value.ToString();
-                                    string[] data = cellstring.Split(' ');
+                                    //string[] data = cellstring.Split(' ');
 
 
-                                    
-                                    
-                                    parameter.DIC_LablesIfNomainal[int.Parse(data[0])] = data[2];
-                                    parameter.LablesIfNomainal.Add(cellstring);
 
-                                    
-                                    //MessageBox.Show(data[2]);
+
+                                    //parameter.DIC_LablesIfNomainal[int.Parse(data[0])] = data[2];
+                                    //parameter.LablesIfNomainal.Add(cellstring);
+
+
+
+                                    var parts = cellstring.Split('|');
+                                    if (parts.Length >= 2)
+                                    {
+                                        var keyPart = parts[0].Trim();
+                                        var valuePart = parts[1].Trim();
+
+                                        // Parse the key (assuming it's always an integer at the start of the keyPart)
+                                        if (int.TryParse(keyPart, out int key))
+                                        {
+                                            // Assign to the dictionary
+                                            parameter.DIC_LablesIfNomainal[key] = valuePart;
+                                            parameter.LablesIfNomainal.Add(cellstring);
+                                        }
+                                        else
+                                        {
+                                            // Handle parsing error - invalid key
+                                            continue;
+                                        }
+                                    }
 
 
 

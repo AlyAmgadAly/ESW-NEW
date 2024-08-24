@@ -64,6 +64,7 @@
             this.list_Select = new System.Windows.Forms.ListBox();
             this.pic_AllParaToSelect = new System.Windows.Forms.PictureBox();
             this.pic_RemoveSelectPara = new System.Windows.Forms.PictureBox();
+            this.btn_Update = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pic_groups_select)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ifyes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeTableSelected)).BeginInit();
@@ -234,7 +235,7 @@
             // 
             this.check_TotalColumn.AutoSize = true;
             this.check_TotalColumn.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_TotalColumn.Location = new System.Drawing.Point(762, 519);
+            this.check_TotalColumn.Location = new System.Drawing.Point(762, 451);
             this.check_TotalColumn.Name = "check_TotalColumn";
             this.check_TotalColumn.Size = new System.Drawing.Size(89, 36);
             this.check_TotalColumn.TabIndex = 52;
@@ -423,7 +424,7 @@
             // 
             this.check_Maha.AutoSize = true;
             this.check_Maha.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Maha.Location = new System.Drawing.Point(884, 519);
+            this.check_Maha.Location = new System.Drawing.Point(884, 451);
             this.check_Maha.Name = "check_Maha";
             this.check_Maha.Size = new System.Drawing.Size(96, 36);
             this.check_Maha.TabIndex = 54;
@@ -489,12 +490,30 @@
             this.pic_RemoveSelectPara.TabStop = false;
             this.pic_RemoveSelectPara.Click += new System.EventHandler(this.pic_RemoveSelectPara_Click);
             // 
+            // btn_Update
+            // 
+            this.btn_Update.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.btn_Update.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Update.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Update.ForeColor = System.Drawing.Color.Black;
+            this.btn_Update.Image = ((System.Drawing.Image)(resources.GetObject("btn_Update.Image")));
+            this.btn_Update.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_Update.Location = new System.Drawing.Point(884, 507);
+            this.btn_Update.Name = "btn_Update";
+            this.btn_Update.Size = new System.Drawing.Size(122, 73);
+            this.btn_Update.TabIndex = 60;
+            this.btn_Update.Text = "Update";
+            this.btn_Update.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_Update.UseVisualStyleBackColor = false;
+            this.btn_Update.Click += new System.EventHandler(this.btn_Update_Click);
+            // 
             // ComparativeGroups
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.btn_Update);
             this.Controls.Add(this.pic_RemoveSelectPara);
             this.Controls.Add(this.pic_AllParaToSelect);
             this.Controls.Add(this.list_Select);
@@ -592,5 +611,6 @@
         private System.Windows.Forms.ListBox list_Select;
         private System.Windows.Forms.PictureBox pic_AllParaToSelect;
         private System.Windows.Forms.PictureBox pic_RemoveSelectPara;
+        private System.Windows.Forms.Button btn_Update;
     }
 }
