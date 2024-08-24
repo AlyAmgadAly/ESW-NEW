@@ -23,7 +23,7 @@ namespace ExcelScore.Classes
         public List<string> FPairwise { get; set; } = new List<string>();
         public bool ISFAnovaSig { get; set; }
 
-        
+        public bool IsIndependentCorr { get; set; }
         public Dictionary<int , string> DIC_LablesIfNomainal { get; set; } = new Dictionary<int, string>();
         public List<string> LablesIfNomainal { get; set; } = new List<string>();
         public bool NominalIsYes { get; set; }

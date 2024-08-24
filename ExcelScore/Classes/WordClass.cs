@@ -328,6 +328,33 @@ namespace ExcelScore.Classes
 
 
         }
+        public void ApplyGeneralNormalCorrBorders(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            for (int j = 0; j < WordTableRows; j++)
+            {
+                table.Rows[j].Cells[0].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[j].Cells[0].CellFormat.Borders.Right.LineWidth = 1.5f;
+            }
+
+            for (int j = 0; j < WordTableColumns; j++)
+            {
+                table.Rows[1].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[1].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            }
+
+            
+
+        }
+
+        public void ApplyGeneralNormalCorrMerges(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            table.ApplyVerticalMerge(0, 0, 1);
+            for(int i = 1; i < WordTableColumns; i=i+2)
+            {
+                table.ApplyHorizontalMerge(0, i, i + 1);
+            }
+
+        }
         public void ApplyGeneralComparativeBorders(IWTable table,  int WordTableRows, int WordTableColumns, int numberofgroups )
         {
             for (int j = 0; j < WordTableColumns; j++)
@@ -739,7 +766,7 @@ namespace ExcelScore.Classes
 
 
         }
-        public void SetCorrWidths(IWTable table, int WordTableRows, int WordTableColumns)
+        public void SetMatrixCorrWidths(IWTable table, int WordTableRows, int WordTableColumns)
         {
 
             for (int i = 0; i < WordTableRows; i++)
@@ -750,6 +777,22 @@ namespace ExcelScore.Classes
                 for (int j = 2; j < WordTableColumns; j++)
                 {
                     table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(1.65f);
+                }
+            }
+
+
+        }
+        public void SetNormalCorrWidths(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+
+            for (int i = 0; i < WordTableRows; i++)
+            {
+                table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(4.85f);
+                
+
+                for (int j = 1; j < WordTableColumns; j++)
+                {
+                    table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(1.75f);
                 }
             }
 
@@ -1260,8 +1303,7 @@ namespace ExcelScore.Classes
                 }
             }
         }
-
-        public void CorrCustom(IWTable table , int WordTableRows , int WordTableColumns , ComparativeTable comparativeTable)
+        public void CorrMatrixCustom(IWTable table, int WordTableRows, int WordTableColumns, ComparativeTable comparativeTable)
         {
             int parametercount = comparativeTable.Parameters.Count;
             int ParameterNameRows = 1;
@@ -1280,17 +1322,67 @@ namespace ExcelScore.Classes
 
                 AddPara_Center(table, ParameterNameRows, 1, "r");
 
-                
-                if(comparativeTable.CorreType == "Spearman")
+
+                if (comparativeTable.CorreType == "Spearman")
                 {
                     SubSuperScriptText(table, ParameterNameRows, 1, Color.Empty, "s", "Sub");
                 }
-                AddPara_Center(table, ParameterNameRows+1, 1, "p");
+                AddPara_Center(table, ParameterNameRows + 1, 1, "p");
 
-                AddPara_Center(table, 0 , ParameterNameColumns, parameter.Name);
+                AddPara_Center(table, 0, ParameterNameColumns, parameter.Name);
 
                 ParameterNameRows += 2;
                 ParameterNameColumns++;
+            }
+
+        }
+        public void CorrNormalCustom(IWTable table , int WordTableRows , int WordTableColumns , ComparativeTable comparativeTable)
+        {
+            int DependentParameters = 0;
+            int IndependParameters = 0;
+
+            foreach (Parameter parameter in comparativeTable.Parameters)
+            {
+                if(parameter.IsIndependentCorr)
+                {
+                    IndependParameters++;
+                }
+                else if(parameter.NormalOrAbnormal == "Normal" || parameter.NormalOrAbnormal == "Abnormal")
+                {
+                    DependentParameters++;
+                }
+            }
+
+            int InsertColumn = 1;
+            foreach (Parameter parameter in comparativeTable.Parameters)
+            {
+                //adding parameter name on left side (column)
+
+                if (parameter.NormalOrAbnormal == "Normal" || parameter.NormalOrAbnormal == "Abnormal")
+                {
+                    AddPara_NoCenter(table, 0, InsertColumn, parameter.Name);
+                    InsertColumn = InsertColumn + 2;
+                }
+                
+
+               
+
+                //merging cells
+                //table.ApplyVerticalMerge(0, ParameterNameRows, ParameterNameRows + 1);
+
+                //AddPara_Center(table, ParameterNameRows, 1, "r");
+
+                
+                //if(comparativeTable.CorreType == "Spearman")
+                //{
+                //    SubSuperScriptText(table, ParameterNameRows, 1, Color.Empty, "s", "Sub");
+                //}
+                //AddPara_Center(table, ParameterNameRows+1, 1, "p");
+
+                //AddPara_Center(table, 0 , ParameterNameColumns, parameter.Name);
+
+                //ParameterNameRows += 2;
+                //ParameterNameColumns++;
             }
 
         }

@@ -288,6 +288,7 @@
             this.pic_RemoveDependentNormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pic_RemoveDependentNormal.TabIndex = 94;
             this.pic_RemoveDependentNormal.TabStop = false;
+            this.pic_RemoveDependentNormal.Click += new System.EventHandler(this.pic_RemoveDependentNormal_Click);
             // 
             // lbl_DepNormal
             // 
@@ -310,6 +311,7 @@
             this.pic_AllParaToDependNormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pic_AllParaToDependNormal.TabIndex = 92;
             this.pic_AllParaToDependNormal.TabStop = false;
+            this.pic_AllParaToDependNormal.Click += new System.EventHandler(this.pic_AllParaToDependNormal_Click);
             // 
             // list_selectedDepenNormal
             // 
@@ -355,6 +357,7 @@
             this.pic_AllParaToDependAbnormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pic_AllParaToDependAbnormal.TabIndex = 96;
             this.pic_AllParaToDependAbnormal.TabStop = false;
+            this.pic_AllParaToDependAbnormal.Click += new System.EventHandler(this.pic_AllParaToDependAbnormal_Click);
             // 
             // list_selectedDepenAbnormal
             // 

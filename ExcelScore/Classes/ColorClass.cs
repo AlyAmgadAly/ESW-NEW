@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Syncfusion.Drawing;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using Color = System.Drawing.Color;
 
 namespace ExcelScore.Classes
 {
@@ -43,6 +45,25 @@ namespace ExcelScore.Classes
             lastColor = nextColor;
 
             return nextColor;
+        }
+
+        public Syncfusion.Drawing.Color LightOrange()
+        {
+            int lightenPercentage = 70;
+
+            int baseRed = 226;
+            int baseGreen = 107;
+            int baseBlue = 10;
+
+            int red = baseRed + (255 - baseRed) * lightenPercentage / 100;
+            int green = baseGreen + (255 - baseGreen) * lightenPercentage / 100;
+            int blue = baseBlue + (255 - baseBlue) * lightenPercentage / 100;
+
+            int argbLighter = (255 << 24) | (red << 16) | (green << 8) | blue;
+
+            Syncfusion.Drawing.Color lighterOrange = Syncfusion.Drawing.Color.FromArgb(argbLighter);
+
+            return lighterOrange;
         }
 
     }

@@ -61,7 +61,16 @@ namespace ExcelScore.Forms
         private void Correlation_Load(object sender, EventArgs e)
         {
             AddHeadersToParameter();
+
+            pic_AllParaToDependNormal.Enabled = false;
+            pic_AllParaToDependAbnormal.Enabled = false;
+
             lbl_CurrentCorr.Text = "Correlation : Matrix";
+
+            lbl_DepNormal.ForeColor = Color.Red;
+            label1.ForeColor = Color.Red; 
+
+
         }
         public void AddTableClass(string tableName)
         {
@@ -87,7 +96,32 @@ namespace ExcelScore.Forms
                 {
                     Name = item.ToString(),
                     NominalOrScale = "Scale",
-                    
+                    IsIndependentCorr = true , 
+                    GroupedParameterValues = new Dictionary<double, List<double>>(),
+                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
+                };
+                comparativeTable.Parameters.Add(parameter);
+            }
+
+            foreach (var item in list_selectedDepenNormal.Items)
+            {
+                var parameter = new Parameter
+                {
+                    Name = item.ToString(),
+                    NominalOrScale = "Scale",
+                    NormalOrAbnormal = "Normal",
+                    GroupedParameterValues = new Dictionary<double, List<double>>(),
+                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
+                };
+                comparativeTable.Parameters.Add(parameter);
+            }
+            foreach (var item in list_selectedDepenAbnormal.Items)
+            {
+                var parameter = new Parameter
+                {
+                    Name = item.ToString(),
+                    NominalOrScale = "Scale",
+                    NormalOrAbnormal = "Abnormal",
                     GroupedParameterValues = new Dictionary<double, List<double>>(),
                     FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
                 };
@@ -354,22 +388,67 @@ namespace ExcelScore.Forms
             // Iterate over each pair of parameters
             
         }
+        
+        public int CountNormalCorrRows(ComparativeTable comparativeTable)
+        {
+            int rowCtr = 0;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(parameter.IsIndependentCorr)
+                {
+                    rowCtr++;
+                }
+            }
+            return rowCtr;
+        }
+
+        public int CountNormalCorrCols(ComparativeTable comparativeTable)
+        {
+            int ColCtr = 0;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.NormalOrAbnormal == "Normal" || parameter.NormalOrAbnormal == "Abnormal")
+                {
+                    ColCtr++;
+                }
+            }
+            return ColCtr;
+        }
+        public void DrawNormalCorr()
+        {
+            Syncfusion.Drawing.Color lighterOrange = colorClass.LightOrange();
+            Sheet2 = workbook.Worksheets[1];
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                IWSection section = wordObj.CreatePortraitSection();
+                wordObj.AddCorrTitle(section, ComparativeTables[tableindex].TableName, 1);
+
+                int Variablerows = CountNormalCorrRows(ComparativeTables[tableindex]);
+                int WordTableRows = 2 + Variablerows;
+
+                int VariableCols = CountNormalCorrCols(ComparativeTables[tableindex]);
+                int WordTableColumns = 1 + (VariableCols*2);
+
+                IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+                wordObj.GeneralLetterTableFormat(table);
+
+                wordObj.ApplyGeneralNormalCorrBorders(table, WordTableRows, WordTableColumns);
+
+
+                wordObj.SetNormalCorrWidths(table, WordTableRows, WordTableColumns);
+
+                wordObj.ApplyGeneralNormalCorrMerges(table, WordTableRows, WordTableColumns);
+
+
+
+            }
+        }
+        ColorClass colorClass = new ColorClass();   
         public void DrawMatrixCorr()
         {
-            int lightenPercentage = 70;
-
-            int baseRed = 226;
-            int baseGreen = 107;
-            int baseBlue = 10;
-
-            int red = baseRed + (255 - baseRed) * lightenPercentage / 100;
-            int green = baseGreen + (255 - baseGreen) * lightenPercentage / 100;
-            int blue = baseBlue + (255 - baseBlue) * lightenPercentage / 100;
-
-            int argbLighter = (255 << 24) | (red << 16) | (green << 8) | blue;
-
-            Syncfusion.Drawing.Color lighterOrange = Syncfusion.Drawing.Color.FromArgb(argbLighter);
-            Sheet2 = workbook.Worksheets[1];
+           Syncfusion.Drawing.Color lighterOrange = colorClass.LightOrange();
+           Sheet2 = workbook.Worksheets[1];
 
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
             {
@@ -388,10 +467,10 @@ namespace ExcelScore.Forms
 
                 wordObj.ApplyGeneralMatrixCorrBorders(table, WordTableRows, WordTableColumns);
 
-                wordObj.SetCorrWidths(table, WordTableRows, WordTableColumns);
+                wordObj.SetMatrixCorrWidths(table, WordTableRows, WordTableColumns);
 
 
-                wordObj.CorrCustom(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex]);
+                wordObj.CorrMatrixCustom(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex]);
 
 
                 int row = 1;
@@ -505,8 +584,15 @@ namespace ExcelScore.Forms
             //pythonStat.InitPython();
 
             wordObj.InitWord();
-
-            DrawMatrixCorr();
+            if(ISMatrixCorr)
+            {
+                DrawMatrixCorr();
+            }
+            else if(!ISMatrixCorr)
+            {
+                DrawNormalCorr();   
+            }
+            
 
             wordObj.SaveWord();
         }
@@ -517,11 +603,26 @@ namespace ExcelScore.Forms
             {
                 lbl_CurrentCorr.Text = "Correlation : Normal";
                 ISMatrixCorr = false;
+
+                pic_AllParaToDependNormal.Enabled = true;
+                pic_AllParaToDependAbnormal.Enabled = true;
+
+                lbl_DepNormal.ForeColor = Color.FromArgb(205, 137, 36);
+                label1.ForeColor = Color.FromArgb(205, 137, 36);
             }
             else if (!ISMatrixCorr)
             {
                 lbl_CurrentCorr.Text = "Correlation : Matrix";
                 ISMatrixCorr = true;
+
+                pic_AllParaToDependNormal.Enabled = false;
+                pic_AllParaToDependAbnormal.Enabled = false;
+
+                lbl_DepNormal.ForeColor = Color.Red;
+                label1.ForeColor = Color.Red;
+
+                list_selectedDepenNormal.Items.Clear(); 
+                list_selectedDepenAbnormal.Items.Clear();   
             }
 
 
@@ -548,6 +649,44 @@ namespace ExcelScore.Forms
             }
             else
                 MessageBox.Show("Please Select Item!");
+        }
+
+        private void pic_AllParaToDependNormal_Click(object sender, EventArgs e)
+        {
+            foreach (object selectedItem in list_AllParameters.SelectedItems)
+            {
+                list_selectedDepenNormal.Items.Add(selectedItem.ToString());
+            }
+        }
+
+        private void pic_RemoveDependentNormal_Click(object sender, EventArgs e)
+        {
+            if (list_selectedDepenNormal.SelectedIndex != -1)
+            {
+
+                var selectedItems = new List<object>();
+                foreach (var selectedItem in list_selectedDepenNormal.SelectedItems)
+                {
+                    selectedItems.Add(selectedItem);
+                }
+
+
+                foreach (var selectedItem in selectedItems)
+                {
+                    list_selectedDepenNormal.Items.Remove(selectedItem);
+                }
+
+            }
+            else
+                MessageBox.Show("Please Select Item!");
+        }
+
+        private void pic_AllParaToDependAbnormal_Click(object sender, EventArgs e)
+        {
+            foreach (object selectedItem in list_AllParameters.SelectedItems)
+            {
+                list_selectedDepenAbnormal.Items.Add(selectedItem.ToString());
+            }
         }
     }
 }
