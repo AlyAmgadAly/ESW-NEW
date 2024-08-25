@@ -33,7 +33,7 @@
             this.panelmove = new System.Windows.Forms.Panel();
             this.pic_back = new System.Windows.Forms.PictureBox();
             this.cmb_CorreType = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lbl_corrType = new System.Windows.Forms.Label();
             this.pic_RemoveSelectedPara = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.pic_AllParaToSelected = new System.Windows.Forms.PictureBox();
@@ -109,18 +109,19 @@
             this.cmb_CorreType.Name = "cmb_CorreType";
             this.cmb_CorreType.Size = new System.Drawing.Size(183, 30);
             this.cmb_CorreType.TabIndex = 81;
+            this.cmb_CorreType.SelectedIndexChanged += new System.EventHandler(this.cmb_CorreType_SelectedIndexChanged);
             // 
-            // label2
+            // lbl_corrType
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label2.Location = new System.Drawing.Point(405, 37);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 30);
-            this.label2.TabIndex = 80;
-            this.label2.Text = "Type :";
+            this.lbl_corrType.AutoSize = true;
+            this.lbl_corrType.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_corrType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.lbl_corrType.Location = new System.Drawing.Point(405, 37);
+            this.lbl_corrType.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_corrType.Name = "lbl_corrType";
+            this.lbl_corrType.Size = new System.Drawing.Size(75, 30);
+            this.lbl_corrType.TabIndex = 80;
+            this.lbl_corrType.Text = "Type :";
             // 
             // pic_RemoveSelectedPara
             // 
@@ -395,7 +396,7 @@
             this.Controls.Add(this.cmb_TableNames);
             this.Controls.Add(this.list_ViewTableParameters);
             this.Controls.Add(this.cmb_CorreType);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lbl_corrType);
             this.Controls.Add(this.pic_RemoveSelectedPara);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.pic_AllParaToSelected);
@@ -427,7 +428,7 @@
         private System.Windows.Forms.Panel panelmove;
         private System.Windows.Forms.PictureBox pic_back;
         private System.Windows.Forms.ComboBox cmb_CorreType;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lbl_corrType;
         private System.Windows.Forms.PictureBox pic_RemoveSelectedPara;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.PictureBox pic_AllParaToSelected;

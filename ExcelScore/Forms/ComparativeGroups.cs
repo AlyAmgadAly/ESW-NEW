@@ -1654,6 +1654,8 @@ namespace ExcelScore.Forms
 
             ClearPara();
 
+            
+
         }
         WordClass wordObj = new WordClass();
         
@@ -2497,17 +2499,20 @@ namespace ExcelScore.Forms
 
 
                     }
+                    
                     else if (parameter.NominalOrScale == "Scale")
                     {
+                        var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
                         count = 4; // Count for scale parameters
                         
                         // Insert scale statistics for scale parameters
-                        foreach (var kvp in parameter.FormattedValues)
+                        foreach (var groupValue in sortedKeys)
                         {
-                            double groupValue = kvp.Key;
-                            Dictionary<string, string> scaleStats = kvp.Value;
+                            //double groupValue = kvp.Key;
+                            Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
+                            //Dictionary<string, string> scaleStats = kvp.Value;
 
-                            foreach (var stat in scaleStats)
+                            foreach (var stat in formattedValues)
                             {
                                 wordObj.Addpara_CenterNoBOLD(table, startingRow, column, stat.Value);
                                 startingRow++; // Move to the next row

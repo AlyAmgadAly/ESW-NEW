@@ -1303,6 +1303,55 @@ namespace ExcelScore.Classes
                 }
             }
         }
+
+
+        public void FormatTableCustom(IWTable table, float fontSize , int beforeSpacing , int AfterSpacing)
+        {
+            foreach (WTableRow row in table.Rows)
+            {
+                foreach (WTableCell cell in row.Cells)
+                {
+                    // Check if the cell has any content
+                    if (cell.Paragraphs.Count == 0)
+                    {
+                        // If the cell is empty, create a new paragraph and text range
+                        WParagraph paragraph = (WParagraph)cell.AddParagraph();
+                        paragraph.ParagraphFormat.BeforeSpacing = beforeSpacing;
+                        paragraph.ParagraphFormat.AfterSpacing = AfterSpacing;
+
+                        // Create a new text range in the paragraph
+                        WTextRange textRange = (WTextRange)paragraph.AppendText("");
+                        paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                        cell.CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+
+                        // Set the font properties for the text range
+                        textRange.CharacterFormat.FontName = "Times New Roman";
+                        textRange.CharacterFormat.FontSize = fontSize;
+                    }
+                    else
+                    {
+                        // Iterate items in cell and set horizontal alignment
+                        foreach (WParagraph paragraph in cell.Paragraphs)
+                        {
+                            paragraph.ParagraphFormat.BeforeSpacing = beforeSpacing;
+                            paragraph.ParagraphFormat.AfterSpacing = AfterSpacing;
+
+                            foreach (ParagraphItem item in paragraph.ChildEntities)
+                            {
+                                if (item is WTextRange)
+                                {
+                                    WTextRange text = item as WTextRange;
+                                    text.CharacterFormat.FontName = "Times New Roman";
+                                    text.CharacterFormat.FontSize = fontSize;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
         public void CorrMatrixCustom(IWTable table, int WordTableRows, int WordTableColumns, ComparativeTable comparativeTable)
         {
             int parametercount = comparativeTable.Parameters.Count;
@@ -1354,35 +1403,38 @@ namespace ExcelScore.Classes
             }
 
             int InsertColumn = 1;
+            int InsertRow = 2;  
             foreach (Parameter parameter in comparativeTable.Parameters)
             {
                 //adding parameter name on left side (column)
 
                 if (parameter.NormalOrAbnormal == "Normal" || parameter.NormalOrAbnormal == "Abnormal")
                 {
-                    AddPara_NoCenter(table, 0, InsertColumn, parameter.Name);
+                    AddPara_Center(table, 0, InsertColumn, parameter.Name);
+
+                    if(parameter.NormalOrAbnormal == "Normal")
+                    {
+                        AddPara_Center(table, 1, InsertColumn, "r");
+                        AddPara_Center(table, 1, InsertColumn+1, "p");
+                    }
+                    else if(parameter.NormalOrAbnormal == "Abnormal")
+                    {
+                        AddPara_Center(table, 1, InsertColumn, "r");
+                        SubSuperScriptText(table, 1, InsertColumn, Color.Empty, "s", "Sub");
+
+                        AddPara_Center(table, 1, InsertColumn + 1, "p");
+                    }
+
                     InsertColumn = InsertColumn + 2;
                 }
                 
-
+                if(parameter.IsIndependentCorr)
+                {
+                    AddPara_NoCenter(table, InsertRow, 0, parameter.Name);
+                    InsertRow++;
+                }
                
 
-                //merging cells
-                //table.ApplyVerticalMerge(0, ParameterNameRows, ParameterNameRows + 1);
-
-                //AddPara_Center(table, ParameterNameRows, 1, "r");
-
-                
-                //if(comparativeTable.CorreType == "Spearman")
-                //{
-                //    SubSuperScriptText(table, ParameterNameRows, 1, Color.Empty, "s", "Sub");
-                //}
-                //AddPara_Center(table, ParameterNameRows+1, 1, "p");
-
-                //AddPara_Center(table, 0 , ParameterNameColumns, parameter.Name);
-
-                //ParameterNameRows += 2;
-                //ParameterNameColumns++;
             }
 
         }

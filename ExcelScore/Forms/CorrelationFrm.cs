@@ -14,6 +14,8 @@ using System.Windows.Forms;
 using MathNet.Numerics.Statistics;
 using Accord.Statistics.Distributions.Univariate;
 using Syncfusion.DocIO.DLS;
+using Accord.Statistics.Kernels;
+using System.Reflection;
 
 namespace ExcelScore.Forms
 {
@@ -82,8 +84,11 @@ namespace ExcelScore.Forms
 
             // Add parameters from list_Groups
             
-
-            comparativeTable.CorreType = cmb_CorreType.SelectedItem.ToString();
+            if(cmb_CorreType.Enabled)
+            {
+                comparativeTable.CorreType = cmb_CorreType.SelectedItem.ToString();
+            }
+           
 
 
 
@@ -137,7 +142,7 @@ namespace ExcelScore.Forms
             string TableName = null;
             if (!string.IsNullOrWhiteSpace(txt_TableName.Text) &&
 
-                 list_selectedParameters.Items.Count > 0 && cmb_CorreType.SelectedIndex != -1)
+                 list_selectedParameters.Items.Count > 0 && ((cmb_CorreType.SelectedIndex != -1 && cmb_CorreType.Enabled) || (!cmb_CorreType.Enabled))  )
             {
                 // Check if the table name already exists
                 bool tableExists = false;
@@ -440,8 +445,89 @@ namespace ExcelScore.Forms
 
                 wordObj.ApplyGeneralNormalCorrMerges(table, WordTableRows, WordTableColumns);
 
+                wordObj.CorrNormalCustom(table, WordTableRows, WordTableColumns , ComparativeTables[tableindex]);
+
+                //Split Depend And Indep
+                List<Parameter> Dependparameters = new List<Parameter>();
+                List<Parameter> Independparameters = new List<Parameter>();
+                foreach (Parameter parameter in ComparativeTables[tableindex].Parameters)
+                {
+                    if (parameter.IsIndependentCorr)
+                    {
+                        Independparameters.Add(parameter);
+                    }
+                    else if (parameter.NormalOrAbnormal == "Normal" || parameter.NormalOrAbnormal == "Abnormal")
+                    {
+                        Dependparameters.Add(parameter);
+                    }
+                }
 
 
+                
+                int col = 1;
+                foreach (Parameter DependentPara in Dependparameters)
+                {
+                    int row = 2;
+                    string CorrType = "";
+                    if(DependentPara.NormalOrAbnormal == "Normal")
+                    {
+                        CorrType = "Pearson";
+                    }
+                    else if (DependentPara.NormalOrAbnormal == "Abnormal")
+                    {
+                        CorrType = "Spearman";
+                    }
+                    string[] CorrOutput = new string[2];
+                    foreach (Parameter IndependentPara in Independparameters)
+                    {
+                        bool issig = false;
+                        double[] x = DependentPara.ParameterValues.ToArray();
+                        double[] y = IndependentPara.ParameterValues.ToArray();
+
+                        CorrOutput = manualTests.CalculateCorrelation(x, y, CorrType);
+
+
+                        if (CorrOutput[1] == "<0.001")
+                        {
+                            issig = true;
+                        }
+                        else
+                        {
+                            if (double.Parse(CorrOutput[1]) < 0.05)
+                            {
+                                issig = true;
+                            }
+                            else if (double.Parse(CorrOutput[1]) >= 0.05)
+                            {
+                                issig = false;
+                            }
+
+                        }
+
+
+                        wordObj.Addpara_CenterNoBOLD(table, row, col, CorrOutput[0]);
+
+                        wordObj.Addpara_CenterNoBOLD(table, row, col+1, CorrOutput[1]);
+
+
+                        if (issig)
+                        {
+                            wordObj.SubSuperScriptText(table, row, col, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                            wordObj.SubSuperScriptText(table, row , col+1, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                            table.Rows[row].Cells[col].CellFormat.BackColor = lighterOrange;
+                            table.Rows[row].Cells[col+1].CellFormat.BackColor = lighterOrange;
+                        }
+
+                        row++;
+
+                    }
+
+                    col = col + 2;
+
+
+                }
+
+                wordObj.FormatTableCustom(table , 12 , 0 , 0);
             }
         }
         ColorClass colorClass = new ColorClass();   
@@ -607,6 +693,11 @@ namespace ExcelScore.Forms
                 pic_AllParaToDependNormal.Enabled = true;
                 pic_AllParaToDependAbnormal.Enabled = true;
 
+
+                lbl_corrType.ForeColor = Color.Red;
+
+                cmb_CorreType.Enabled = false;
+
                 lbl_DepNormal.ForeColor = Color.FromArgb(205, 137, 36);
                 label1.ForeColor = Color.FromArgb(205, 137, 36);
             }
@@ -620,6 +711,10 @@ namespace ExcelScore.Forms
 
                 lbl_DepNormal.ForeColor = Color.Red;
                 label1.ForeColor = Color.Red;
+
+                cmb_CorreType.Enabled = true;
+
+                lbl_corrType.ForeColor = Color.FromArgb(205, 137, 36);
 
                 list_selectedDepenNormal.Items.Clear(); 
                 list_selectedDepenAbnormal.Items.Clear();   
@@ -687,6 +782,11 @@ namespace ExcelScore.Forms
             {
                 list_selectedDepenAbnormal.Items.Add(selectedItem.ToString());
             }
+        }
+
+        private void cmb_CorreType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
