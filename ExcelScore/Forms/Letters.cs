@@ -1148,11 +1148,17 @@ namespace ExcelScore.Forms
                         startRow++;
                     }
 
-                    AnovaTestResult anovaTestResult = new AnovaTestResult();
-                    anovaTestResult = pythonStat.ANOVAWithTukeyHSDNewDynamic(parameter);
+                    AnovaTestResult LetteranovaTestResult = new AnovaTestResult();
+                    LetteranovaTestResult = pythonStat.ANOVAWithTukeyHSDNewDynamic(parameter);
                     //anovaTestResult = pythonStat.ANOVAWithMultipleComparisons(parameter);
-                    
-                    string[] values = { anovaTestResult.TestValue, anovaTestResult.PValue };
+
+
+
+                    AnovaTestResult StatTestResult = new AnovaTestResult();
+                    StatTestResult = manualTests.Fanova(parameter);
+
+
+                    string[] values = { StatTestResult.TestValue, StatTestResult.PValue };
 
                     if (comparativeTable.LetterType == "Easy")
                     {
@@ -1173,6 +1179,9 @@ namespace ExcelScore.Forms
             }
             
         }
+
+
+        ManualTests manualTests = new ManualTests();
         public void DrawLettersTable()
         {
 

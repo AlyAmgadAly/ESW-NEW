@@ -65,6 +65,7 @@
             this.pic_AllParaToSelect = new System.Windows.Forms.PictureBox();
             this.pic_RemoveSelectPara = new System.Windows.Forms.PictureBox();
             this.btn_Update = new System.Windows.Forms.Button();
+            this.check_Row = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pic_groups_select)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ifyes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeTableSelected)).BeginInit();
@@ -148,7 +149,7 @@
             this.list_ViewTableParameters.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_ViewTableParameters.FormattingEnabled = true;
             this.list_ViewTableParameters.ItemHeight = 17;
-            this.list_ViewTableParameters.Location = new System.Drawing.Point(762, 166);
+            this.list_ViewTableParameters.Location = new System.Drawing.Point(775, 168);
             this.list_ViewTableParameters.Name = "list_ViewTableParameters";
             this.list_ViewTableParameters.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_ViewTableParameters.Size = new System.Drawing.Size(183, 208);
@@ -158,7 +159,7 @@
             // 
             this.cmb_TableNames.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F);
             this.cmb_TableNames.FormattingEnabled = true;
-            this.cmb_TableNames.Location = new System.Drawing.Point(762, 397);
+            this.cmb_TableNames.Location = new System.Drawing.Point(775, 399);
             this.cmb_TableNames.Name = "cmb_TableNames";
             this.cmb_TableNames.Size = new System.Drawing.Size(183, 30);
             this.cmb_TableNames.TabIndex = 13;
@@ -204,7 +205,7 @@
             // txt_TableName
             // 
             this.txt_TableName.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_TableName.Location = new System.Drawing.Point(762, 100);
+            this.txt_TableName.Location = new System.Drawing.Point(775, 102);
             this.txt_TableName.Margin = new System.Windows.Forms.Padding(2);
             this.txt_TableName.Name = "txt_TableName";
             this.txt_TableName.Size = new System.Drawing.Size(183, 28);
@@ -215,7 +216,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label5.Location = new System.Drawing.Point(757, 68);
+            this.label5.Location = new System.Drawing.Point(770, 70);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(147, 30);
@@ -235,7 +236,7 @@
             // 
             this.check_TotalColumn.AutoSize = true;
             this.check_TotalColumn.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_TotalColumn.Location = new System.Drawing.Point(762, 451);
+            this.check_TotalColumn.Location = new System.Drawing.Point(775, 546);
             this.check_TotalColumn.Name = "check_TotalColumn";
             this.check_TotalColumn.Size = new System.Drawing.Size(89, 36);
             this.check_TotalColumn.TabIndex = 52;
@@ -262,7 +263,7 @@
             this.btn_SortTable.ForeColor = System.Drawing.Color.Black;
             this.btn_SortTable.Image = ((System.Drawing.Image)(resources.GetObject("btn_SortTable.Image")));
             this.btn_SortTable.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_SortTable.Location = new System.Drawing.Point(748, 596);
+            this.btn_SortTable.Location = new System.Drawing.Point(761, 598);
             this.btn_SortTable.Name = "btn_SortTable";
             this.btn_SortTable.Size = new System.Drawing.Size(117, 73);
             this.btn_SortTable.TabIndex = 51;
@@ -290,7 +291,7 @@
             this.btn_Done.ForeColor = System.Drawing.Color.Black;
             this.btn_Done.Image = ((System.Drawing.Image)(resources.GetObject("btn_Done.Image")));
             this.btn_Done.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_Done.Location = new System.Drawing.Point(884, 596);
+            this.btn_Done.Location = new System.Drawing.Point(897, 598);
             this.btn_Done.Name = "btn_Done";
             this.btn_Done.Size = new System.Drawing.Size(122, 73);
             this.btn_Done.TabIndex = 48;
@@ -302,7 +303,7 @@
             // pic_removeTableSelected
             // 
             this.pic_removeTableSelected.Image = ((System.Drawing.Image)(resources.GetObject("pic_removeTableSelected.Image")));
-            this.pic_removeTableSelected.Location = new System.Drawing.Point(961, 397);
+            this.pic_removeTableSelected.Location = new System.Drawing.Point(974, 399);
             this.pic_removeTableSelected.Name = "pic_removeTableSelected";
             this.pic_removeTableSelected.Size = new System.Drawing.Size(37, 30);
             this.pic_removeTableSelected.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -401,7 +402,7 @@
             // pic_addTable
             // 
             this.pic_addTable.Image = ((System.Drawing.Image)(resources.GetObject("pic_addTable.Image")));
-            this.pic_addTable.Location = new System.Drawing.Point(961, 100);
+            this.pic_addTable.Location = new System.Drawing.Point(974, 102);
             this.pic_addTable.Name = "pic_addTable";
             this.pic_addTable.Size = new System.Drawing.Size(37, 28);
             this.pic_addTable.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -424,7 +425,7 @@
             // 
             this.check_Maha.AutoSize = true;
             this.check_Maha.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Maha.Location = new System.Drawing.Point(884, 451);
+            this.check_Maha.Location = new System.Drawing.Point(897, 454);
             this.check_Maha.Name = "check_Maha";
             this.check_Maha.Size = new System.Drawing.Size(96, 36);
             this.check_Maha.TabIndex = 54;
@@ -498,7 +499,7 @@
             this.btn_Update.ForeColor = System.Drawing.Color.Black;
             this.btn_Update.Image = ((System.Drawing.Image)(resources.GetObject("btn_Update.Image")));
             this.btn_Update.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_Update.Location = new System.Drawing.Point(884, 507);
+            this.btn_Update.Location = new System.Drawing.Point(897, 509);
             this.btn_Update.Name = "btn_Update";
             this.btn_Update.Size = new System.Drawing.Size(122, 73);
             this.btn_Update.TabIndex = 60;
@@ -507,12 +508,24 @@
             this.btn_Update.UseVisualStyleBackColor = false;
             this.btn_Update.Click += new System.EventHandler(this.btn_Update_Click);
             // 
+            // check_Row
+            // 
+            this.check_Row.AutoSize = true;
+            this.check_Row.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.check_Row.Location = new System.Drawing.Point(775, 504);
+            this.check_Row.Name = "check_Row";
+            this.check_Row.Size = new System.Drawing.Size(82, 36);
+            this.check_Row.TabIndex = 61;
+            this.check_Row.Text = "Row";
+            this.check_Row.UseVisualStyleBackColor = true;
+            // 
             // ComparativeGroups
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.check_Row);
             this.Controls.Add(this.btn_Update);
             this.Controls.Add(this.pic_RemoveSelectPara);
             this.Controls.Add(this.pic_AllParaToSelect);
@@ -612,5 +625,6 @@
         private System.Windows.Forms.PictureBox pic_AllParaToSelect;
         private System.Windows.Forms.PictureBox pic_RemoveSelectPara;
         private System.Windows.Forms.Button btn_Update;
+        private System.Windows.Forms.CheckBox check_Row;
     }
 }

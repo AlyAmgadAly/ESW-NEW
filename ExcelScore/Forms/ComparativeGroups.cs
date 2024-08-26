@@ -64,6 +64,16 @@ namespace ExcelScore.Forms
         private void ComparativeGroups_Load(object sender, EventArgs e)
         {
             //pythonStat.InitPython();
+
+            //Margins
+            //Top 3.5
+            //Bottom 3
+            //Left 3.25
+            //Right 2.75
+
+            //Layout
+            //header 2
+            //footer 2
             AddHeadersToParameter();
         }
 
@@ -584,14 +594,36 @@ namespace ExcelScore.Forms
                                 // Calculate frequency and percentage for each distinct value in the group
                                 foreach (var distinctValue in values.Distinct())
                                 {
-                                    int frequency = values.Count(v => v == distinctValue);
-                                    double percentage = (frequency / (double)totalCount) * 100;
 
+
+                                    int Totalrowfreq = 0;
+                                    foreach (var kvp2 in parameter.GroupedParameterValues)
+                                    {
+                                        double groupValue2 = kvp2.Key;
+                                        List<double> values2 = kvp2.Value;
+                                        int frequency2 = values2.Count(v => v == distinctValue);
+                                        Totalrowfreq += frequency2;
+                                    }
+                                    //MessageBox.Show(frequency2.ToString());
+
+                                    if(check_Row.Checked)
+                                    {
+                                        int frequency = values.Count(v => v == distinctValue);
+                                        double percentage = (frequency / (double)Totalrowfreq) * 100;
+                                        parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
+                                        parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F1}%";
+                                    }
+                                    else if(!check_Row.Checked)
+                                    {
+                                        int frequency = values.Count(v => v == distinctValue);
+                                        double percentage = (frequency / (double)totalCount) * 100;
+                                        parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
+                                        parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F1}%";
+                                    }
 
                                     //MessageBox.Show(frequency.ToString());
                                     // Store frequency and percentage in the FormattedValues dictionary
-                                    parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
-                                    parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F1}%";
+                                    
 
 
                                 }
