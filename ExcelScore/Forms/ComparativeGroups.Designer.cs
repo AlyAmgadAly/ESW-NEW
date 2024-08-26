@@ -66,6 +66,9 @@
             this.pic_RemoveSelectPara = new System.Windows.Forms.PictureBox();
             this.btn_Update = new System.Windows.Forms.Button();
             this.check_Row = new System.Windows.Forms.CheckBox();
+            this.data_allPara = new System.Windows.Forms.DataGridView();
+            this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
             ((System.ComponentModel.ISupportInitialize)(this.pic_groups_select)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ifyes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeTableSelected)).BeginInit();
@@ -81,6 +84,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             this.SuspendLayout();
             // 
             // list_AllParameters
@@ -512,12 +516,33 @@
             // 
             this.check_Row.AutoSize = true;
             this.check_Row.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Row.Location = new System.Drawing.Point(775, 504);
+            this.check_Row.Location = new System.Drawing.Point(775, 501);
             this.check_Row.Name = "check_Row";
             this.check_Row.Size = new System.Drawing.Size(82, 36);
             this.check_Row.TabIndex = 61;
             this.check_Row.Text = "Row";
             this.check_Row.UseVisualStyleBackColor = true;
+            // 
+            // data_allPara
+            // 
+            this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Col_Name,
+            this.ColMeasure});
+            this.data_allPara.Location = new System.Drawing.Point(22, 36);
+            this.data_allPara.Name = "data_allPara";
+            this.data_allPara.Size = new System.Drawing.Size(263, 635);
+            this.data_allPara.TabIndex = 62;
+            // 
+            // Col_Name
+            // 
+            this.Col_Name.HeaderText = "Name";
+            this.Col_Name.Name = "Col_Name";
+            // 
+            // ColMeasure
+            // 
+            this.ColMeasure.HeaderText = "Measure";
+            this.ColMeasure.Name = "ColMeasure";
             // 
             // ComparativeGroups
             // 
@@ -525,6 +550,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.data_allPara);
             this.Controls.Add(this.check_Row);
             this.Controls.Add(this.btn_Update);
             this.Controls.Add(this.pic_RemoveSelectPara);
@@ -582,6 +608,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -626,5 +653,8 @@
         private System.Windows.Forms.PictureBox pic_RemoveSelectPara;
         private System.Windows.Forms.Button btn_Update;
         private System.Windows.Forms.CheckBox check_Row;
+        private System.Windows.Forms.DataGridView data_allPara;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Col_Name;
+        private System.Windows.Forms.DataGridViewImageColumn ColMeasure;
     }
 }

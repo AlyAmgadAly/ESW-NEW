@@ -30,6 +30,8 @@ namespace ExcelScore.Classes
         {
             document = new WordDocument();
 
+            
+
             return document;
         }
 
@@ -45,6 +47,9 @@ namespace ExcelScore.Classes
         {
             IWSection Portrait = document.AddSection();
             Portrait.PageSetup.Orientation = PageOrientation.Portrait;
+            //Portrait.PageSetup.Margins.Top = 
+
+
 
             return Portrait;
         }

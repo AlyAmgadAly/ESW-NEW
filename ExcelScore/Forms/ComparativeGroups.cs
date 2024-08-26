@@ -59,6 +59,7 @@ namespace ExcelScore.Forms
                 comparativeClass.ParameterName = columnName;
                 ComparativeClassesList.Add(comparativeClass);
                 list_AllParameters.Items.Add(comparativeClass.ParameterName);
+                data_allPara.Rows.Add(comparativeClass.ParameterName);
             }
         }
         private void ComparativeGroups_Load(object sender, EventArgs e)
@@ -87,10 +88,20 @@ namespace ExcelScore.Forms
 
         private void pic_AllParaToNominal_Click(object sender, EventArgs e)
         {
-            foreach (object selectedItem in list_AllParameters.SelectedItems)
+            int selectedRowCount = data_allPara.Rows.GetRowCount(DataGridViewElementStates.Selected);
+            foreach (DataGridViewRow selectedItem in data_allPara.SelectedRows)
             {
-                list_Nominal.Items.Add(selectedItem.ToString());
+                
+
+                string data = (string)data_allPara[0, selectedItem.Index].Value;
+                MessageBox.Show(selectedItem.ToString());
+                list_Nominal.Items.Add(data);
             }
+
+            //foreach (object selectedItem in list_AllParameters.SelectedItems)
+            //{
+            //    list_Nominal.Items.Add(selectedItem.ToString());
+            //}
         }
 
         private void pic_RemoveNominalList_Click(object sender, EventArgs e)
@@ -3151,14 +3162,7 @@ namespace ExcelScore.Forms
 
         
 
-        private void button1_Click_2(object sender, EventArgs e)
-        {
-            string filepath = ExcelFunctions.filepath;
-            Workbook workbook = new Aspose.Cells.Workbook(filepath);
-
-            // Accessing the first worksheet in the Excel file
-            worksheet = workbook.Worksheets[0];
-        }
+        
 
         private void btn_Update_Click(object sender, EventArgs e)
         {
