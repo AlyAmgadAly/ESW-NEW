@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComparativeGroups));
             this.list_AllParameters = new System.Windows.Forms.ListBox();
             this.list_Nominal = new System.Windows.Forms.ListBox();
@@ -43,6 +45,15 @@
             this.label5 = new System.Windows.Forms.Label();
             this.panelmove = new System.Windows.Forms.Panel();
             this.check_TotalColumn = new System.Windows.Forms.CheckBox();
+            this.check_Maha = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lbl_Select = new System.Windows.Forms.Label();
+            this.list_Select = new System.Windows.Forms.ListBox();
+            this.check_Row = new System.Windows.Forms.CheckBox();
+            this.data_allPara = new System.Windows.Forms.DataGridView();
+            this.btn_Update = new System.Windows.Forms.Button();
+            this.pic_RemoveSelectPara = new System.Windows.Forms.PictureBox();
+            this.pic_AllParaToSelect = new System.Windows.Forms.PictureBox();
             this.pic_groups_select = new System.Windows.Forms.PictureBox();
             this.btn_SortTable = new System.Windows.Forms.Button();
             this.pic_ifyes = new System.Windows.Forms.PictureBox();
@@ -58,17 +69,11 @@
             this.pic_back = new System.Windows.Forms.PictureBox();
             this.pic_addTable = new System.Windows.Forms.PictureBox();
             this.pic_AllParaToNominal = new System.Windows.Forms.PictureBox();
-            this.check_Maha = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.lbl_Select = new System.Windows.Forms.Label();
-            this.list_Select = new System.Windows.Forms.ListBox();
-            this.pic_AllParaToSelect = new System.Windows.Forms.PictureBox();
-            this.pic_RemoveSelectPara = new System.Windows.Forms.PictureBox();
-            this.btn_Update = new System.Windows.Forms.Button();
-            this.check_Row = new System.Windows.Forms.CheckBox();
-            this.data_allPara = new System.Windows.Forms.DataGridView();
             this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_groups_select)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ifyes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeTableSelected)).BeginInit();
@@ -82,9 +87,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             this.SuspendLayout();
             // 
             // list_AllParameters
@@ -247,6 +249,145 @@
             this.check_TotalColumn.Text = "Total";
             this.check_TotalColumn.UseVisualStyleBackColor = true;
             this.check_TotalColumn.CheckedChanged += new System.EventHandler(this.check_TotalColumn_CheckedChanged);
+            // 
+            // check_Maha
+            // 
+            this.check_Maha.AutoSize = true;
+            this.check_Maha.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.check_Maha.Location = new System.Drawing.Point(897, 454);
+            this.check_Maha.Name = "check_Maha";
+            this.check_Maha.Size = new System.Drawing.Size(96, 36);
+            this.check_Maha.TabIndex = 54;
+            this.check_Maha.Text = "Maha";
+            this.check_Maha.UseVisualStyleBackColor = true;
+            this.check_Maha.CheckedChanged += new System.EventHandler(this.check_Maha_CheckedChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.label3.Location = new System.Drawing.Point(403, 484);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(100, 30);
+            this.label3.TabIndex = 21;
+            this.label3.Text = "Groups :";
+            // 
+            // lbl_Select
+            // 
+            this.lbl_Select.AutoSize = true;
+            this.lbl_Select.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Select.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.lbl_Select.Location = new System.Drawing.Point(403, 582);
+            this.lbl_Select.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_Select.Name = "lbl_Select";
+            this.lbl_Select.Size = new System.Drawing.Size(87, 30);
+            this.lbl_Select.TabIndex = 55;
+            this.lbl_Select.Text = "Select :";
+            // 
+            // list_Select
+            // 
+            this.list_Select.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.list_Select.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.list_Select.FormattingEnabled = true;
+            this.list_Select.ItemHeight = 17;
+            this.list_Select.Location = new System.Drawing.Point(408, 615);
+            this.list_Select.Name = "list_Select";
+            this.list_Select.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.list_Select.Size = new System.Drawing.Size(263, 38);
+            this.list_Select.TabIndex = 56;
+            // 
+            // check_Row
+            // 
+            this.check_Row.AutoSize = true;
+            this.check_Row.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.check_Row.Location = new System.Drawing.Point(775, 501);
+            this.check_Row.Name = "check_Row";
+            this.check_Row.Size = new System.Drawing.Size(82, 36);
+            this.check_Row.TabIndex = 61;
+            this.check_Row.Text = "Row";
+            this.check_Row.UseVisualStyleBackColor = true;
+            // 
+            // data_allPara
+            // 
+            this.data_allPara.AllowUserToAddRows = false;
+            this.data_allPara.AllowUserToDeleteRows = false;
+            this.data_allPara.AllowUserToResizeColumns = false;
+            this.data_allPara.AllowUserToResizeRows = false;
+            this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.data_allPara.ColumnHeadersHeight = 54;
+            this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Col_Name,
+            this.ColMeasure});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
+            this.data_allPara.EnableHeadersVisualStyles = false;
+            this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.data_allPara.Location = new System.Drawing.Point(22, 36);
+            this.data_allPara.Name = "data_allPara";
+            this.data_allPara.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.data_allPara.RowHeadersVisible = false;
+            this.data_allPara.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.data_allPara.Size = new System.Drawing.Size(289, 635);
+            this.data_allPara.TabIndex = 62;
+            // 
+            // btn_Update
+            // 
+            this.btn_Update.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.btn_Update.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Update.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Update.ForeColor = System.Drawing.Color.Black;
+            this.btn_Update.Image = ((System.Drawing.Image)(resources.GetObject("btn_Update.Image")));
+            this.btn_Update.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_Update.Location = new System.Drawing.Point(897, 509);
+            this.btn_Update.Name = "btn_Update";
+            this.btn_Update.Size = new System.Drawing.Size(122, 73);
+            this.btn_Update.TabIndex = 60;
+            this.btn_Update.Text = "Update";
+            this.btn_Update.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_Update.UseVisualStyleBackColor = false;
+            this.btn_Update.Click += new System.EventHandler(this.btn_Update_Click);
+            // 
+            // pic_RemoveSelectPara
+            // 
+            this.pic_RemoveSelectPara.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveSelectPara.Image")));
+            this.pic_RemoveSelectPara.Location = new System.Drawing.Point(552, 582);
+            this.pic_RemoveSelectPara.Name = "pic_RemoveSelectPara";
+            this.pic_RemoveSelectPara.Size = new System.Drawing.Size(37, 30);
+            this.pic_RemoveSelectPara.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_RemoveSelectPara.TabIndex = 58;
+            this.pic_RemoveSelectPara.TabStop = false;
+            this.pic_RemoveSelectPara.Click += new System.EventHandler(this.pic_RemoveSelectPara_Click);
+            // 
+            // pic_AllParaToSelect
+            // 
+            this.pic_AllParaToSelect.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToSelect.Image")));
+            this.pic_AllParaToSelect.Location = new System.Drawing.Point(317, 615);
+            this.pic_AllParaToSelect.Name = "pic_AllParaToSelect";
+            this.pic_AllParaToSelect.Size = new System.Drawing.Size(59, 38);
+            this.pic_AllParaToSelect.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_AllParaToSelect.TabIndex = 57;
+            this.pic_AllParaToSelect.TabStop = false;
+            this.pic_AllParaToSelect.Click += new System.EventHandler(this.pic_AllParaToSelect_Click);
             // 
             // pic_groups_select
             // 
@@ -425,123 +566,16 @@
             this.pic_AllParaToNominal.TabStop = false;
             this.pic_AllParaToNominal.Click += new System.EventHandler(this.pic_AllParaToNominal_Click);
             // 
-            // check_Maha
-            // 
-            this.check_Maha.AutoSize = true;
-            this.check_Maha.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Maha.Location = new System.Drawing.Point(897, 454);
-            this.check_Maha.Name = "check_Maha";
-            this.check_Maha.Size = new System.Drawing.Size(96, 36);
-            this.check_Maha.TabIndex = 54;
-            this.check_Maha.Text = "Maha";
-            this.check_Maha.UseVisualStyleBackColor = true;
-            this.check_Maha.CheckedChanged += new System.EventHandler(this.check_Maha_CheckedChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label3.Location = new System.Drawing.Point(403, 484);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 30);
-            this.label3.TabIndex = 21;
-            this.label3.Text = "Groups :";
-            // 
-            // lbl_Select
-            // 
-            this.lbl_Select.AutoSize = true;
-            this.lbl_Select.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Select.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.lbl_Select.Location = new System.Drawing.Point(403, 582);
-            this.lbl_Select.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lbl_Select.Name = "lbl_Select";
-            this.lbl_Select.Size = new System.Drawing.Size(87, 30);
-            this.lbl_Select.TabIndex = 55;
-            this.lbl_Select.Text = "Select :";
-            // 
-            // list_Select
-            // 
-            this.list_Select.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            this.list_Select.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.list_Select.FormattingEnabled = true;
-            this.list_Select.ItemHeight = 17;
-            this.list_Select.Location = new System.Drawing.Point(408, 615);
-            this.list_Select.Name = "list_Select";
-            this.list_Select.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.list_Select.Size = new System.Drawing.Size(263, 38);
-            this.list_Select.TabIndex = 56;
-            // 
-            // pic_AllParaToSelect
-            // 
-            this.pic_AllParaToSelect.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToSelect.Image")));
-            this.pic_AllParaToSelect.Location = new System.Drawing.Point(317, 615);
-            this.pic_AllParaToSelect.Name = "pic_AllParaToSelect";
-            this.pic_AllParaToSelect.Size = new System.Drawing.Size(59, 38);
-            this.pic_AllParaToSelect.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_AllParaToSelect.TabIndex = 57;
-            this.pic_AllParaToSelect.TabStop = false;
-            this.pic_AllParaToSelect.Click += new System.EventHandler(this.pic_AllParaToSelect_Click);
-            // 
-            // pic_RemoveSelectPara
-            // 
-            this.pic_RemoveSelectPara.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveSelectPara.Image")));
-            this.pic_RemoveSelectPara.Location = new System.Drawing.Point(552, 582);
-            this.pic_RemoveSelectPara.Name = "pic_RemoveSelectPara";
-            this.pic_RemoveSelectPara.Size = new System.Drawing.Size(37, 30);
-            this.pic_RemoveSelectPara.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_RemoveSelectPara.TabIndex = 58;
-            this.pic_RemoveSelectPara.TabStop = false;
-            this.pic_RemoveSelectPara.Click += new System.EventHandler(this.pic_RemoveSelectPara_Click);
-            // 
-            // btn_Update
-            // 
-            this.btn_Update.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.btn_Update.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Update.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Update.ForeColor = System.Drawing.Color.Black;
-            this.btn_Update.Image = ((System.Drawing.Image)(resources.GetObject("btn_Update.Image")));
-            this.btn_Update.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_Update.Location = new System.Drawing.Point(897, 509);
-            this.btn_Update.Name = "btn_Update";
-            this.btn_Update.Size = new System.Drawing.Size(122, 73);
-            this.btn_Update.TabIndex = 60;
-            this.btn_Update.Text = "Update";
-            this.btn_Update.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.btn_Update.UseVisualStyleBackColor = false;
-            this.btn_Update.Click += new System.EventHandler(this.btn_Update_Click);
-            // 
-            // check_Row
-            // 
-            this.check_Row.AutoSize = true;
-            this.check_Row.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Row.Location = new System.Drawing.Point(775, 501);
-            this.check_Row.Name = "check_Row";
-            this.check_Row.Size = new System.Drawing.Size(82, 36);
-            this.check_Row.TabIndex = 61;
-            this.check_Row.Text = "Row";
-            this.check_Row.UseVisualStyleBackColor = true;
-            // 
-            // data_allPara
-            // 
-            this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Col_Name,
-            this.ColMeasure});
-            this.data_allPara.Location = new System.Drawing.Point(22, 36);
-            this.data_allPara.Name = "data_allPara";
-            this.data_allPara.Size = new System.Drawing.Size(263, 635);
-            this.data_allPara.TabIndex = 62;
-            // 
             // Col_Name
             // 
             this.Col_Name.HeaderText = "Name";
             this.Col_Name.Name = "Col_Name";
+            this.Col_Name.Width = 175;
             // 
             // ColMeasure
             // 
             this.ColMeasure.HeaderText = "Measure";
+            this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
             this.ColMeasure.Name = "ColMeasure";
             // 
             // ComparativeGroups
@@ -593,6 +627,9 @@
             this.Name = "ComparativeGroups";
             this.Text = "ComparativeGroups";
             this.Load += new System.EventHandler(this.ComparativeGroups_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_groups_select)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ifyes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeTableSelected)).EndInit();
@@ -606,9 +643,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

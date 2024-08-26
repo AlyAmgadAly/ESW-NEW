@@ -299,6 +299,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <EmbeddedResource Include="Forms\ChooseFrm.resx">
       <DependentUpon>ChooseFrm.cs</DependentUpon>
     </EmbeddedResource>
@@ -363,6 +369,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Include="bop\bop_parameters.proto" />
     <None Include="constraint_solver\assignment.proto" />
     <None Include="constraint_solver\demon_profiler.proto" />
@@ -419,6 +430,13 @@
   <ItemGroup>
     <Content Include="OIG1.d80sRz0T2c.ico" />
     <Content Include="orLogo.png" />
+    <None Include="Resources\FinalScale Color.jpg" />
+    <None Include="Resources\Final Nominal Color.jpg" />
+    <None Include="Resources\Final Nominal.png" />
+    <None Include="Resources\FinalScale.png" />
+    <None Include="Resources\Nominal.png" />
+    <None Include="Resources\Screenshot 2024-08-26 222131.png" />
+    <None Include="Resources\Scale.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />

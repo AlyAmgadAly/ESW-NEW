@@ -1,5 +1,6 @@
 ﻿using Aspose.Cells;
 using Aspose.Cells.Charts;
+using Aspose.Cells.Drawing;
 using ExcelScore.Classes;
 using Humanizer;
 using MathNet.Numerics.Statistics;
@@ -47,6 +48,8 @@ namespace ExcelScore.Forms
         List<string> ColumnExcelheaders = excelFunctionsobj.ReadHeaderColumnsExcel();
 
         Worksheet worksheet = excelFunctionsobj.GetWorksheet();
+
+        Worksheet Sheet2 = excelFunctionsobj.GetSheet2();
         public ComparativeGroups()
         {
             InitializeComponent();
@@ -61,6 +64,63 @@ namespace ExcelScore.Forms
                 list_AllParameters.Items.Add(comparativeClass.ParameterName);
                 data_allPara.Rows.Add(comparativeClass.ParameterName);
             }
+
+            InsertPicture_Type();
+            foreach (DataGridViewColumn column in data_allPara.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+        }
+
+        public void InsertPicture_Type()
+        {
+            
+            for (int column = 0; column <= Sheet2.Cells.MaxDataColumn; column++)
+            {
+                string Type = "";
+                string ParaName = "";
+                foreach (string columnName in ColumnExcelheaders)
+                {
+                    
+                    ParaName = columnName;
+                    if (columnName == Sheet2.Cells[0, column].Value.ToString())
+                    {
+                        
+                        if (Sheet2.Cells[1, column].Value != null)
+                        {
+                            
+                            Type = Sheet2.Cells[1, column].Value.ToString();
+                            
+                        }
+                    }
+
+                    foreach (DataGridViewRow row in data_allPara.Rows)
+                    {
+                        if (row.Cells[0].Value != null && row.Cells[0].Value.ToString() == ParaName)
+                        {
+                            // Insert the image based on the type
+                            if (Type == "Nominal")
+                            {
+                                row.Cells["ColMeasure"].Value = Resource.Final_Nominal_Color; // Replace NominalImage with your actual resource name
+                            }
+                            else if (Type == "Scale")
+                            {
+                                row.Cells["ColMeasure"].Value = Resource.FinalScale_Color; // Replace ScaleImage with your actual resource name
+                            }
+                            break;
+                        }
+                    }
+
+
+
+                }
+
+                
+
+
+
+            }
+
         }
         private void ComparativeGroups_Load(object sender, EventArgs e)
         {
@@ -76,6 +136,8 @@ namespace ExcelScore.Forms
             //header 2
             //footer 2
             AddHeadersToParameter();
+
+
         }
 
         private void pic_back_Click(object sender, EventArgs e)
@@ -88,14 +150,17 @@ namespace ExcelScore.Forms
 
         private void pic_AllParaToNominal_Click(object sender, EventArgs e)
         {
-            int selectedRowCount = data_allPara.Rows.GetRowCount(DataGridViewElementStates.Selected);
-            foreach (DataGridViewRow selectedItem in data_allPara.SelectedRows)
+            
+            for (int i = data_allPara.SelectedRows.Count - 1; i >= 0; i--)
             {
-                
+                DataGridViewRow row = data_allPara.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    list_Nominal.Items.Add(item);
+                }
 
-                string data = (string)data_allPara[0, selectedItem.Index].Value;
-                MessageBox.Show(selectedItem.ToString());
-                list_Nominal.Items.Add(data);
             }
 
             //foreach (object selectedItem in list_AllParameters.SelectedItems)
@@ -128,10 +193,22 @@ namespace ExcelScore.Forms
 
         private void pic_AllParaToScale_Click(object sender, EventArgs e)
         {
-            foreach (object selectedItem in list_AllParameters.SelectedItems)
+
+            for (int i = data_allPara.SelectedRows.Count - 1; i >= 0; i--)
             {
-                list_NormalScale.Items.Add(selectedItem.ToString());
+                DataGridViewRow row = data_allPara.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    list_NormalScale.Items.Add(item);
+                }
+
             }
+            //foreach (object selectedItem in list_AllParameters.SelectedItems)
+            //{
+            //    list_NormalScale.Items.Add(selectedItem.ToString());
+            //}
         }
 
         private void pic_RemoveNormalList_Click(object sender, EventArgs e)
@@ -158,10 +235,21 @@ namespace ExcelScore.Forms
 
         private void pic_AllParaToAbnormal_Click(object sender, EventArgs e)
         {
-            foreach (object selectedItem in list_AllParameters.SelectedItems)
+            for (int i = data_allPara.SelectedRows.Count - 1; i >= 0; i--)
             {
-                list_AbnormalScale.Items.Add(selectedItem.ToString());
+                DataGridViewRow row = data_allPara.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    list_AbnormalScale.Items.Add(item);
+                }
+
             }
+            //foreach (object selectedItem in list_AllParameters.SelectedItems)
+            //{
+            //    list_AbnormalScale.Items.Add(selectedItem.ToString());
+            //}
         }
 
         private void pic_RemoveAbNormalList_Click(object sender, EventArgs e)
@@ -188,10 +276,21 @@ namespace ExcelScore.Forms
 
         private void pic_AllParaToGroups_Click(object sender, EventArgs e)
         {
-            foreach (object selectedItem in list_AllParameters.SelectedItems)
+            for (int i = data_allPara.SelectedRows.Count - 1; i >= 0; i--)
             {
-                list_Groups.Items.Add(selectedItem.ToString());
+                DataGridViewRow row = data_allPara.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    list_Groups.Items.Add(item);
+                }
+
             }
+            //foreach (object selectedItem in list_AllParameters.SelectedItems)
+            //{
+            //    list_Groups.Items.Add(selectedItem.ToString());
+            //}
         }
 
         private void pic_RemoveGroupsList_Click(object sender, EventArgs e)
@@ -3144,11 +3243,23 @@ namespace ExcelScore.Forms
         public int SelectParameterColIndex { get;set; } = new int();    
         private void pic_AllParaToSelect_Click(object sender, EventArgs e)
         {
-            foreach (object selectedItem in list_AllParameters.SelectedItems)
+
+            for (int i = data_allPara.SelectedRows.Count - 1; i >= 0; i--)
             {
-                list_Select.Items.Add(selectedItem.ToString());
+                DataGridViewRow row = data_allPara.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    list_Select.Items.Add(item);
+                }
 
             }
+            //foreach (object selectedItem in list_AllParameters.SelectedItems)
+            //{
+            //    list_Select.Items.Add(selectedItem.ToString());
+
+            //}
 
 
             SelectParameterColIndex = GetSelectParameterCol();

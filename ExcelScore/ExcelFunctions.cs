@@ -21,6 +21,7 @@ namespace ExcelScore
 
         public static Aspose.Cells.Workbook workbook;
         public static Aspose.Cells.Worksheet worksheet;
+        public static Aspose.Cells.Worksheet Sheet2;
         public static string filepath { get; set; }
 
 
@@ -30,6 +31,11 @@ namespace ExcelScore
         public Worksheet GetWorksheet()
         {
             return worksheet;
+        }
+
+        public Worksheet GetSheet2()
+        {
+            return Sheet2;
         }
 
         public Workbook GetWorkbook() 
@@ -48,6 +54,7 @@ namespace ExcelScore
 
                 // Accessing the first worksheet in the Excel file
                 worksheet = workbook.Worksheets[0];
+                Sheet2 = workbook.Worksheets[1];
                 System.Data.DataTable dataTable = new System.Data.DataTable();
                 for (int col = 0; col < worksheet.Cells.MaxDataColumn + 1; col++)
                 {
@@ -88,11 +95,12 @@ namespace ExcelScore
             return columns;
         }
 
+        
         public void ReadLablesIfNominal(ComparativeTable comparativeTable)
         {
             Worksheet Sheet2 = workbook.Worksheets[1];
 
-            for(int column = 0; column <= worksheet.Cells.MaxDataColumn;column++)
+            for(int column = 0; column <= Sheet2.Cells.MaxDataColumn;column++)
             {
                 foreach (var parameter in comparativeTable.Parameters)
                 {
