@@ -100,7 +100,7 @@ namespace ExcelScore.Forms
 
         private void pic_back_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Hide();
             ChooseFrm chooseFrm = new ChooseFrm();
             chooseFrm.Dgv = Dgv;
             chooseFrm.Show();

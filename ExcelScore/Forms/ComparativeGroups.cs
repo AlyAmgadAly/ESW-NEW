@@ -54,6 +54,14 @@ namespace ExcelScore.Forms
         {
             InitializeComponent();
         }
+
+        private ChooseFrm chooseFrmInstance;
+
+        public ComparativeGroups(ChooseFrm chooseFrm)
+        {
+            InitializeComponent();
+            chooseFrmInstance = chooseFrm;
+        }
         public void AddHeadersToParameter()
         {
             foreach (string columnName in ColumnExcelheaders)
@@ -69,6 +77,26 @@ namespace ExcelScore.Forms
             foreach (DataGridViewColumn column in data_allPara.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+
+
+            if(NormalityParaNameList_ComparaGroups != null)
+            {
+                foreach (var kvp in NormalityParaNameList_ComparaGroups)
+                {
+                    string Name = kvp.Key;
+                    string Normality = kvp.Value;
+
+
+                    foreach (DataGridViewRow row in data_allPara.Rows)
+                    {
+                        if (row.Cells[0].Value != null && row.Cells[0].Value.ToString() == Name)
+                        {
+                            row.Cells["ColNormality"].Value = Normality;
+                        }
+                    }
+
+                }
             }
         }
 
@@ -122,6 +150,8 @@ namespace ExcelScore.Forms
             }
 
         }
+
+        public Dictionary<string, string> NormalityParaNameList_ComparaGroups = new Dictionary<string, string>();
         private void ComparativeGroups_Load(object sender, EventArgs e)
         {
             //pythonStat.InitPython();
@@ -142,10 +172,15 @@ namespace ExcelScore.Forms
 
         private void pic_back_Click(object sender, EventArgs e)
         {
-            this.Close();
-            ComparativeFrm comparativeFrm = new ComparativeFrm();
-            comparativeFrm.Dgv = Dgv;
-            comparativeFrm.Show();
+            this.Hide();
+            chooseFrmInstance.Dgv = Dgv;
+            chooseFrmInstance.ReturnToChooseFrm();
+            
+
+            //this.Close();
+            //ChooseFrm chooseFrm = new ChooseFrm();
+            //chooseFrm.Dgv = Dgv;
+            //chooseFrm.Show();
         }
 
         private void pic_AllParaToNominal_Click(object sender, EventArgs e)

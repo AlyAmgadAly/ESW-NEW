@@ -38,6 +38,7 @@
             this.btn_Correlation = new System.Windows.Forms.Button();
             this.btn_Regression = new System.Windows.Forms.Button();
             this.btn_Relations = new System.Windows.Forms.Button();
+            this.btn_GetNormality = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Pic_back)).BeginInit();
             this.SuspendLayout();
             // 
@@ -180,12 +181,30 @@
             this.btn_Relations.UseVisualStyleBackColor = false;
             this.btn_Relations.Click += new System.EventHandler(this.btn_Relations_Click);
             // 
+            // btn_GetNormality
+            // 
+            this.btn_GetNormality.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.btn_GetNormality.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_GetNormality.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_GetNormality.ForeColor = System.Drawing.Color.Black;
+            this.btn_GetNormality.Image = ((System.Drawing.Image)(resources.GetObject("btn_GetNormality.Image")));
+            this.btn_GetNormality.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_GetNormality.Location = new System.Drawing.Point(623, 380);
+            this.btn_GetNormality.Name = "btn_GetNormality";
+            this.btn_GetNormality.Size = new System.Drawing.Size(155, 75);
+            this.btn_GetNormality.TabIndex = 33;
+            this.btn_GetNormality.Text = "Normality";
+            this.btn_GetNormality.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_GetNormality.UseVisualStyleBackColor = false;
+            this.btn_GetNormality.Click += new System.EventHandler(this.btn_GetNormality_Click);
+            // 
             // ChooseFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(800, 467);
+            this.Controls.Add(this.btn_GetNormality);
             this.Controls.Add(this.btn_Relations);
             this.Controls.Add(this.btn_Regression);
             this.Controls.Add(this.btn_Correlation);
@@ -217,5 +236,6 @@
         private System.Windows.Forms.Button btn_Correlation;
         private System.Windows.Forms.Button btn_Regression;
         private System.Windows.Forms.Button btn_Relations;
+        private System.Windows.Forms.Button btn_GetNormality;
     }
 }

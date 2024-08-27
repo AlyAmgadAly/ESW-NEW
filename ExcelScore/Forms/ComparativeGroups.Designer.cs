@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComparativeGroups));
             this.list_AllParameters = new System.Windows.Forms.ListBox();
             this.list_Nominal = new System.Windows.Forms.ListBox();
@@ -51,8 +51,6 @@
             this.list_Select = new System.Windows.Forms.ListBox();
             this.check_Perc_Row = new System.Windows.Forms.CheckBox();
             this.data_allPara = new System.Windows.Forms.DataGridView();
-            this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
             this.btn_Update = new System.Windows.Forms.Button();
             this.pic_RemoveSelectPara = new System.Windows.Forms.PictureBox();
             this.pic_AllParaToSelect = new System.Windows.Forms.PictureBox();
@@ -71,6 +69,9 @@
             this.pic_back = new System.Windows.Forms.PictureBox();
             this.pic_addTable = new System.Windows.Forms.PictureBox();
             this.pic_AllParaToNominal = new System.Windows.Forms.PictureBox();
+            this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
+            this.ColNormality = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).BeginInit();
@@ -107,7 +108,7 @@
             this.list_Nominal.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_Nominal.FormattingEnabled = true;
             this.list_Nominal.ItemHeight = 17;
-            this.list_Nominal.Location = new System.Drawing.Point(408, 59);
+            this.list_Nominal.Location = new System.Drawing.Point(453, 59);
             this.list_Nominal.Name = "list_Nominal";
             this.list_Nominal.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_Nominal.Size = new System.Drawing.Size(263, 106);
@@ -119,7 +120,7 @@
             this.list_NormalScale.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_NormalScale.FormattingEnabled = true;
             this.list_NormalScale.ItemHeight = 17;
-            this.list_NormalScale.Location = new System.Drawing.Point(408, 210);
+            this.list_NormalScale.Location = new System.Drawing.Point(453, 210);
             this.list_NormalScale.Name = "list_NormalScale";
             this.list_NormalScale.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_NormalScale.Size = new System.Drawing.Size(263, 106);
@@ -131,7 +132,7 @@
             this.list_AbnormalScale.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_AbnormalScale.FormattingEnabled = true;
             this.list_AbnormalScale.ItemHeight = 17;
-            this.list_AbnormalScale.Location = new System.Drawing.Point(408, 361);
+            this.list_AbnormalScale.Location = new System.Drawing.Point(453, 361);
             this.list_AbnormalScale.Name = "list_AbnormalScale";
             this.list_AbnormalScale.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_AbnormalScale.Size = new System.Drawing.Size(263, 106);
@@ -143,7 +144,7 @@
             this.list_Groups.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_Groups.FormattingEnabled = true;
             this.list_Groups.ItemHeight = 17;
-            this.list_Groups.Location = new System.Drawing.Point(408, 517);
+            this.list_Groups.Location = new System.Drawing.Point(453, 517);
             this.list_Groups.Name = "list_Groups";
             this.list_Groups.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_Groups.Size = new System.Drawing.Size(263, 38);
@@ -176,7 +177,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label4.Location = new System.Drawing.Point(403, 26);
+            this.label4.Location = new System.Drawing.Point(448, 26);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(112, 30);
@@ -189,7 +190,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label1.Location = new System.Drawing.Point(403, 177);
+            this.label1.Location = new System.Drawing.Point(448, 177);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(161, 30);
@@ -201,7 +202,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label2.Location = new System.Drawing.Point(403, 328);
+            this.label2.Location = new System.Drawing.Point(448, 328);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(186, 30);
@@ -241,10 +242,10 @@
             // check_TotalColumn
             // 
             this.check_TotalColumn.AutoSize = true;
-            this.check_TotalColumn.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_TotalColumn.Location = new System.Drawing.Point(695, 555);
+            this.check_TotalColumn.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.check_TotalColumn.Location = new System.Drawing.Point(760, 502);
             this.check_TotalColumn.Name = "check_TotalColumn";
-            this.check_TotalColumn.Size = new System.Drawing.Size(185, 36);
+            this.check_TotalColumn.Size = new System.Drawing.Size(149, 29);
             this.check_TotalColumn.TabIndex = 52;
             this.check_TotalColumn.Text = "Total Column";
             this.check_TotalColumn.UseVisualStyleBackColor = true;
@@ -253,10 +254,10 @@
             // check_Maha
             // 
             this.check_Maha.AutoSize = true;
-            this.check_Maha.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Maha.Location = new System.Drawing.Point(912, 555);
+            this.check_Maha.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.check_Maha.Location = new System.Drawing.Point(923, 458);
             this.check_Maha.Name = "check_Maha";
-            this.check_Maha.Size = new System.Drawing.Size(96, 36);
+            this.check_Maha.Size = new System.Drawing.Size(80, 29);
             this.check_Maha.TabIndex = 54;
             this.check_Maha.Text = "Maha";
             this.check_Maha.UseVisualStyleBackColor = true;
@@ -267,7 +268,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label3.Location = new System.Drawing.Point(403, 484);
+            this.label3.Location = new System.Drawing.Point(448, 484);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(100, 30);
@@ -279,7 +280,7 @@
             this.lbl_Select.AutoSize = true;
             this.lbl_Select.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Select.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.lbl_Select.Location = new System.Drawing.Point(403, 582);
+            this.lbl_Select.Location = new System.Drawing.Point(448, 582);
             this.lbl_Select.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_Select.Name = "lbl_Select";
             this.lbl_Select.Size = new System.Drawing.Size(87, 30);
@@ -292,7 +293,7 @@
             this.list_Select.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_Select.FormattingEnabled = true;
             this.list_Select.ItemHeight = 17;
-            this.list_Select.Location = new System.Drawing.Point(408, 615);
+            this.list_Select.Location = new System.Drawing.Point(453, 615);
             this.list_Select.Name = "list_Select";
             this.list_Select.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.list_Select.Size = new System.Drawing.Size(263, 38);
@@ -301,10 +302,10 @@
             // check_Perc_Row
             // 
             this.check_Perc_Row.AutoSize = true;
-            this.check_Perc_Row.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Perc_Row.Location = new System.Drawing.Point(695, 466);
+            this.check_Perc_Row.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.check_Perc_Row.Location = new System.Drawing.Point(760, 458);
             this.check_Perc_Row.Name = "check_Perc_Row";
-            this.check_Perc_Row.Size = new System.Drawing.Size(110, 36);
+            this.check_Perc_Row.Size = new System.Drawing.Size(91, 29);
             this.check_Perc_Row.TabIndex = 61;
             this.check_Perc_Row.Text = "% Row";
             this.check_Perc_Row.UseVisualStyleBackColor = true;
@@ -318,27 +319,28 @@
             this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.data_allPara.ColumnHeadersHeight = 54;
             this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Col_Name,
-            this.ColMeasure});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle4;
+            this.ColMeasure,
+            this.ColNormality});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.Location = new System.Drawing.Point(22, 36);
@@ -347,20 +349,8 @@
             this.data_allPara.RowHeadersVisible = false;
             this.data_allPara.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.data_allPara.Size = new System.Drawing.Size(289, 635);
+            this.data_allPara.Size = new System.Drawing.Size(334, 635);
             this.data_allPara.TabIndex = 62;
-            // 
-            // Col_Name
-            // 
-            this.Col_Name.HeaderText = "Name";
-            this.Col_Name.Name = "Col_Name";
-            this.Col_Name.Width = 175;
-            // 
-            // ColMeasure
-            // 
-            this.ColMeasure.HeaderText = "Measure";
-            this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.ColMeasure.Name = "ColMeasure";
             // 
             // btn_Update
             // 
@@ -370,7 +360,7 @@
             this.btn_Update.ForeColor = System.Drawing.Color.Black;
             this.btn_Update.Image = ((System.Drawing.Image)(resources.GetObject("btn_Update.Image")));
             this.btn_Update.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_Update.Location = new System.Drawing.Point(798, 617);
+            this.btn_Update.Location = new System.Drawing.Point(798, 618);
             this.btn_Update.Name = "btn_Update";
             this.btn_Update.Size = new System.Drawing.Size(108, 54);
             this.btn_Update.TabIndex = 60;
@@ -382,7 +372,7 @@
             // pic_RemoveSelectPara
             // 
             this.pic_RemoveSelectPara.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveSelectPara.Image")));
-            this.pic_RemoveSelectPara.Location = new System.Drawing.Point(552, 582);
+            this.pic_RemoveSelectPara.Location = new System.Drawing.Point(597, 582);
             this.pic_RemoveSelectPara.Name = "pic_RemoveSelectPara";
             this.pic_RemoveSelectPara.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveSelectPara.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -393,7 +383,7 @@
             // pic_AllParaToSelect
             // 
             this.pic_AllParaToSelect.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToSelect.Image")));
-            this.pic_AllParaToSelect.Location = new System.Drawing.Point(317, 615);
+            this.pic_AllParaToSelect.Location = new System.Drawing.Point(362, 615);
             this.pic_AllParaToSelect.Name = "pic_AllParaToSelect";
             this.pic_AllParaToSelect.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToSelect.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -404,7 +394,7 @@
             // pic_groups_select
             // 
             this.pic_groups_select.Image = ((System.Drawing.Image)(resources.GetObject("pic_groups_select.Image")));
-            this.pic_groups_select.Location = new System.Drawing.Point(508, 582);
+            this.pic_groups_select.Location = new System.Drawing.Point(553, 582);
             this.pic_groups_select.Name = "pic_groups_select";
             this.pic_groups_select.Size = new System.Drawing.Size(37, 30);
             this.pic_groups_select.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -420,7 +410,7 @@
             this.btn_SortTable.ForeColor = System.Drawing.Color.Black;
             this.btn_SortTable.Image = ((System.Drawing.Image)(resources.GetObject("btn_SortTable.Image")));
             this.btn_SortTable.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_SortTable.Location = new System.Drawing.Point(684, 617);
+            this.btn_SortTable.Location = new System.Drawing.Point(798, 558);
             this.btn_SortTable.Name = "btn_SortTable";
             this.btn_SortTable.Size = new System.Drawing.Size(108, 54);
             this.btn_SortTable.TabIndex = 51;
@@ -432,7 +422,7 @@
             // pic_ifyes
             // 
             this.pic_ifyes.Image = ((System.Drawing.Image)(resources.GetObject("pic_ifyes.Image")));
-            this.pic_ifyes.Location = new System.Drawing.Point(677, 59);
+            this.pic_ifyes.Location = new System.Drawing.Point(722, 59);
             this.pic_ifyes.Name = "pic_ifyes";
             this.pic_ifyes.Size = new System.Drawing.Size(37, 30);
             this.pic_ifyes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -448,7 +438,7 @@
             this.btn_Done.ForeColor = System.Drawing.Color.Black;
             this.btn_Done.Image = ((System.Drawing.Image)(resources.GetObject("btn_Done.Image")));
             this.btn_Done.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_Done.Location = new System.Drawing.Point(912, 617);
+            this.btn_Done.Location = new System.Drawing.Point(912, 618);
             this.btn_Done.Name = "btn_Done";
             this.btn_Done.Size = new System.Drawing.Size(108, 54);
             this.btn_Done.TabIndex = 48;
@@ -471,7 +461,7 @@
             // pic_RemoveGroupsList
             // 
             this.pic_RemoveGroupsList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveGroupsList.Image")));
-            this.pic_RemoveGroupsList.Location = new System.Drawing.Point(508, 484);
+            this.pic_RemoveGroupsList.Location = new System.Drawing.Point(553, 484);
             this.pic_RemoveGroupsList.Name = "pic_RemoveGroupsList";
             this.pic_RemoveGroupsList.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveGroupsList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -482,7 +472,7 @@
             // pic_RemoveAbNormalList
             // 
             this.pic_RemoveAbNormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveAbNormalList.Image")));
-            this.pic_RemoveAbNormalList.Location = new System.Drawing.Point(585, 328);
+            this.pic_RemoveAbNormalList.Location = new System.Drawing.Point(630, 328);
             this.pic_RemoveAbNormalList.Name = "pic_RemoveAbNormalList";
             this.pic_RemoveAbNormalList.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveAbNormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -493,7 +483,7 @@
             // pic_RemoveNormalList
             // 
             this.pic_RemoveNormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveNormalList.Image")));
-            this.pic_RemoveNormalList.Location = new System.Drawing.Point(569, 177);
+            this.pic_RemoveNormalList.Location = new System.Drawing.Point(614, 177);
             this.pic_RemoveNormalList.Name = "pic_RemoveNormalList";
             this.pic_RemoveNormalList.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveNormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -504,7 +494,7 @@
             // pic_RemoveNominalList
             // 
             this.pic_RemoveNominalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveNominalList.Image")));
-            this.pic_RemoveNominalList.Location = new System.Drawing.Point(520, 26);
+            this.pic_RemoveNominalList.Location = new System.Drawing.Point(565, 26);
             this.pic_RemoveNominalList.Name = "pic_RemoveNominalList";
             this.pic_RemoveNominalList.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveNominalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -515,7 +505,7 @@
             // pic_AllParaToGroups
             // 
             this.pic_AllParaToGroups.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToGroups.Image")));
-            this.pic_AllParaToGroups.Location = new System.Drawing.Point(317, 517);
+            this.pic_AllParaToGroups.Location = new System.Drawing.Point(362, 517);
             this.pic_AllParaToGroups.Name = "pic_AllParaToGroups";
             this.pic_AllParaToGroups.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToGroups.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -526,7 +516,7 @@
             // pic_AllParaToAbnormal
             // 
             this.pic_AllParaToAbnormal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToAbnormal.Image")));
-            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(317, 389);
+            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(362, 389);
             this.pic_AllParaToAbnormal.Name = "pic_AllParaToAbnormal";
             this.pic_AllParaToAbnormal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToAbnormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -537,7 +527,7 @@
             // pic_AllParaToNormal
             // 
             this.pic_AllParaToNormal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToNormal.Image")));
-            this.pic_AllParaToNormal.Location = new System.Drawing.Point(317, 242);
+            this.pic_AllParaToNormal.Location = new System.Drawing.Point(362, 242);
             this.pic_AllParaToNormal.Name = "pic_AllParaToNormal";
             this.pic_AllParaToNormal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToNormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -570,13 +560,32 @@
             // pic_AllParaToNominal
             // 
             this.pic_AllParaToNominal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToNominal.Image")));
-            this.pic_AllParaToNominal.Location = new System.Drawing.Point(317, 90);
+            this.pic_AllParaToNominal.Location = new System.Drawing.Point(362, 90);
             this.pic_AllParaToNominal.Name = "pic_AllParaToNominal";
             this.pic_AllParaToNominal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToNominal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pic_AllParaToNominal.TabIndex = 14;
             this.pic_AllParaToNominal.TabStop = false;
             this.pic_AllParaToNominal.Click += new System.EventHandler(this.pic_AllParaToNominal_Click);
+            // 
+            // Col_Name
+            // 
+            this.Col_Name.HeaderText = "Name";
+            this.Col_Name.Name = "Col_Name";
+            this.Col_Name.Width = 150;
+            // 
+            // ColMeasure
+            // 
+            this.ColMeasure.HeaderText = "Measure";
+            this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.ColMeasure.Name = "ColMeasure";
+            this.ColMeasure.Width = 75;
+            // 
+            // ColNormality
+            // 
+            this.ColNormality.HeaderText = "Normality";
+            this.ColNormality.Name = "ColNormality";
+            this.ColNormality.Width = 75;
             // 
             // ComparativeGroups
             // 
@@ -690,5 +699,6 @@
         private System.Windows.Forms.DataGridView data_allPara;
         private System.Windows.Forms.DataGridViewTextBoxColumn Col_Name;
         private System.Windows.Forms.DataGridViewImageColumn ColMeasure;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColNormality;
     }
 }

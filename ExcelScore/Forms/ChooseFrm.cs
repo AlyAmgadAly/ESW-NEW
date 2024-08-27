@@ -24,10 +24,21 @@ namespace ExcelScore.Forms
             InitializeComponent();
         }
 
+        public void ReturnToChooseFrm()
+        {
+            this.Show();
+        }
+
+        
         private void ChooseFrm_Load(object sender, EventArgs e)
         {
-            //workbook = ExcelFunctionsobj.getWorkbook();
+            
+
         }
+
+
+        //instance for compform
+        private ComparativeGroups comparativeGroupsInstance;
 
         private void btn_Questionnare_Click(object sender, EventArgs e)
         {
@@ -37,14 +48,34 @@ namespace ExcelScore.Forms
             this.Hide();
         }
 
-        
+
+
+
+
 
         private void btn_Comparative_Click_1(object sender, EventArgs e)
         {
-            ComparativeFrm comparativeFrm = new ComparativeFrm();
-            comparativeFrm.Dgv = Dgv;
-            comparativeFrm.Show();
+
+            //transferring to compform
+            if (comparativeGroupsInstance == null || comparativeGroupsInstance.IsDisposed)
+            {
+                // Create a new instance of ComparativeGroups if it doesn't exist or was closed
+                comparativeGroupsInstance = new ComparativeGroups(this);
+            }
+
+            // Hide ChooseFrm and show ComparativeGroups
             this.Hide();
+            comparativeGroupsInstance.Dgv = Dgv;
+            if(NormalityParaNameList_ChooseFrm != null)
+            {
+                comparativeGroupsInstance.NormalityParaNameList_ComparaGroups = NormalityParaNameList_ChooseFrm;
+            }
+            comparativeGroupsInstance.Show();
+
+            //ComparativeGroups comparativeGroups = new ComparativeGroups();
+            //comparativeGroups.Dgv = Dgv;
+            //comparativeGroups.Show();
+            //this.Hide();
 
         }
 
@@ -58,7 +89,7 @@ namespace ExcelScore.Forms
         {
             LoadExcel loadExcel = new LoadExcel();
             loadExcel.Show();
-            this.Hide();    
+            this.Hide();
         }
 
         private void btn_Descriptive_Click(object sender, EventArgs e)
@@ -97,5 +128,41 @@ namespace ExcelScore.Forms
             relationsFrm.Show();
             this.Hide();
         }
+        Workbook NormalityWorkbook;
+        Worksheet NormalityWorkSheet;
+
+        public Dictionary<string, string> NormalityParaNameList_ChooseFrm = new Dictionary<string, string>(); 
+        public void GetNormality()
+        {
+            NormalityParaNameList_ChooseFrm.Clear();
+            OpenFileDialog op = new OpenFileDialog();
+            op.Filter = "Excel Sheet(*.xlsx)|*.xlsx|All Files(*.*)|*.*";
+            if (op.ShowDialog() == DialogResult.OK)
+            {
+                string filepath  = op.FileName;
+                NormalityWorkbook = new Aspose.Cells.Workbook(filepath);
+
+                // Accessing the first worksheet in the Excel file
+                NormalityWorkSheet = NormalityWorkbook.Worksheets[0];
+            }
+
+            for (int row = 3; row < NormalityWorkSheet.Cells.MaxDataRow + 1; row++)
+            {
+                if (NormalityWorkSheet.Cells[row, 0].Value != null && NormalityWorkSheet.Cells[row, 1].Value != null)
+                {
+                    NormalityParaNameList_ChooseFrm.Add(NormalityWorkSheet.Cells[row, 1].Value.ToString(), NormalityWorkSheet.Cells[row, 0].Value.ToString());
+                    
+                }
+
+            }
+        }
+        private void btn_GetNormality_Click(object sender, EventArgs e)
+        {
+            GetNormality();
+
+
+        }
+
+        
     }
 }
