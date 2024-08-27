@@ -376,12 +376,15 @@ namespace ExcelScore.Forms
             {
                 var parameter = new Parameter
                 {
+                    
                     Name = item.ToString(),
                     NominalOrScale = "Scale",
                     NormalOrAbnormal = "Normal",
                     GroupedParameterValues = new Dictionary<double, List<double>>(),
                     FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
                 };
+
+                
                 comparativeTable.Parameters.Add(parameter);
             }
 
@@ -716,14 +719,14 @@ namespace ExcelScore.Forms
                                     }
                                     //MessageBox.Show(frequency2.ToString());
 
-                                    if(check_Row.Checked)
+                                    if(check_Perc_Row.Checked)
                                     {
                                         int frequency = values.Count(v => v == distinctValue);
                                         double percentage = (frequency / (double)Totalrowfreq) * 100;
                                         parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
                                         parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F1}%";
                                     }
-                                    else if(!check_Row.Checked)
+                                    else if(!check_Perc_Row.Checked)
                                     {
                                         int frequency = values.Count(v => v == distinctValue);
                                         double percentage = (frequency / (double)totalCount) * 100;
@@ -1130,6 +1133,7 @@ namespace ExcelScore.Forms
                 }
                 else if (parameter.NominalOrScale == "Scale")
                 {
+                   
                     // For scale parameters, add 4 (assuming you want to count 4 rows per parameter)
                     rowCount += 4;
                 }
@@ -1195,6 +1199,7 @@ namespace ExcelScore.Forms
             Parameter Groupparameter = null;
             foreach (var parameter in comparativeTable.Parameters)
             {
+                
                 if(parameter.IsGroup)
                 {
                     Groupparameter = parameter;
@@ -1232,6 +1237,7 @@ namespace ExcelScore.Forms
             Parameter lastParameter = null;
             foreach (var parameter in comparativeTable.Parameters)
             {
+               // MessageBox.Show(parameter.Name);
                 lastParameter = parameter;
             }
 
@@ -2483,7 +2489,7 @@ namespace ExcelScore.Forms
                 //MessageBox.Show(ComparativeTables[tableindex].TableName);
                 IWSection section = wordObj.CreatePortraitSection();
 
-               
+
                 
 
                 int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
@@ -2510,11 +2516,11 @@ namespace ExcelScore.Forms
                 wordObj.ApplyGeneralComparativeBorders(table , WordTableRows,WordTableColumns , numberofgroups);
 
 
-                
 
+                
                 wordObj.SetComparativeWidths(table , WordTableRows ,WordTableColumns , numberofgroups , ComparativeTables[tableindex]);
 
-
+                
                 wordObj.Add_GeneralHeaders_Comparative_Center(table, WordTableRows , WordTableColumns , numberofgroups);
 
                 ComparativeParamaeterBorders(table, WordTableRows, WordTableColumns, tableindex, numberofgroups);
@@ -2644,6 +2650,7 @@ namespace ExcelScore.Forms
                     
                     else if (parameter.NominalOrScale == "Scale")
                     {
+                        
                         var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
                         count = 4; // Count for scale parameters
                         
@@ -2743,7 +2750,7 @@ namespace ExcelScore.Forms
         {
             if (numberofgroups == 2)
             {
-                wordObj.LeftAndRightCellMarginCustom(table, wordObj.SetColumnWidthInCentimeters(0.19f), wordObj.SetColumnWidthInCentimeters(0.19f));
+                wordObj.LeftAndRightCellMarginCustom(table, wordObj.SetColumnWidthInCentimeters(0.09f), wordObj.SetColumnWidthInCentimeters(0.09f));
             }
             else if(numberofgroups > 2)
             {

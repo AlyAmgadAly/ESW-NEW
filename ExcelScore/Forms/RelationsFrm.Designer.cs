@@ -29,12 +29,11 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RelationsFrm));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelmove = new System.Windows.Forms.Panel();
             this.list_AllParameters = new System.Windows.Forms.ListBox();
             this.pic_back = new System.Windows.Forms.PictureBox();
-            this.lbl_Dependent = new System.Windows.Forms.Label();
-            this.pic_AllParaToDependent = new System.Windows.Forms.PictureBox();
-            this.list_Dependent = new System.Windows.Forms.ListBox();
             this.lbl_DependentType = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.txt_TableName = new System.Windows.Forms.TextBox();
@@ -57,8 +56,11 @@
             this.list_NormalScale = new System.Windows.Forms.ListBox();
             this.list_Nominal = new System.Windows.Forms.ListBox();
             this.pic_ifyes = new System.Windows.Forms.PictureBox();
+            this.lbl_DependentT = new System.Windows.Forms.Label();
+            this.data_allPara = new System.Windows.Forms.DataGridView();
+            this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToDependent)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeTableSelected)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveAbNormalList)).BeginInit();
@@ -68,6 +70,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNormal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ifyes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             this.SuspendLayout();
             // 
             // panelmove
@@ -85,10 +88,10 @@
             this.list_AllParameters.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_AllParameters.FormattingEnabled = true;
             this.list_AllParameters.ItemHeight = 17;
-            this.list_AllParameters.Location = new System.Drawing.Point(9, 43);
+            this.list_AllParameters.Location = new System.Drawing.Point(9, 77);
             this.list_AllParameters.Name = "list_AllParameters";
             this.list_AllParameters.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_AllParameters.Size = new System.Drawing.Size(263, 599);
+            this.list_AllParameters.Size = new System.Drawing.Size(263, 565);
             this.list_AllParameters.TabIndex = 55;
             // 
             // pic_back
@@ -102,48 +105,12 @@
             this.pic_back.TabStop = false;
             this.pic_back.Click += new System.EventHandler(this.pic_back_Click);
             // 
-            // lbl_Dependent
-            // 
-            this.lbl_Dependent.AutoSize = true;
-            this.lbl_Dependent.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Dependent.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.lbl_Dependent.Location = new System.Drawing.Point(396, 548);
-            this.lbl_Dependent.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lbl_Dependent.Name = "lbl_Dependent";
-            this.lbl_Dependent.Size = new System.Drawing.Size(140, 30);
-            this.lbl_Dependent.TabIndex = 60;
-            this.lbl_Dependent.Text = "Dependent :";
-            // 
-            // pic_AllParaToDependent
-            // 
-            this.pic_AllParaToDependent.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToDependent.Image")));
-            this.pic_AllParaToDependent.Location = new System.Drawing.Point(306, 577);
-            this.pic_AllParaToDependent.Name = "pic_AllParaToDependent";
-            this.pic_AllParaToDependent.Size = new System.Drawing.Size(59, 38);
-            this.pic_AllParaToDependent.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_AllParaToDependent.TabIndex = 59;
-            this.pic_AllParaToDependent.TabStop = false;
-            this.pic_AllParaToDependent.Click += new System.EventHandler(this.pic_AllParaToDependent_Click);
-            // 
-            // list_Dependent
-            // 
-            this.list_Dependent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            this.list_Dependent.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.list_Dependent.FormattingEnabled = true;
-            this.list_Dependent.ItemHeight = 30;
-            this.list_Dependent.Location = new System.Drawing.Point(401, 581);
-            this.list_Dependent.Name = "list_Dependent";
-            this.list_Dependent.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_Dependent.Size = new System.Drawing.Size(263, 34);
-            this.list_Dependent.TabIndex = 58;
-            this.list_Dependent.SelectedIndexChanged += new System.EventHandler(this.list_Dependent_SelectedIndexChanged);
-            // 
             // lbl_DependentType
             // 
             this.lbl_DependentType.AutoSize = true;
             this.lbl_DependentType.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_DependentType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.lbl_DependentType.Location = new System.Drawing.Point(531, 548);
+            this.lbl_DependentType.Location = new System.Drawing.Point(146, 46);
             this.lbl_DependentType.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_DependentType.Name = "lbl_DependentType";
             this.lbl_DependentType.Size = new System.Drawing.Size(45, 30);
@@ -284,7 +251,7 @@
             // pic_AllParaToAbnormal
             // 
             this.pic_AllParaToAbnormal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToAbnormal.Image")));
-            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(306, 456);
+            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(306, 457);
             this.pic_AllParaToAbnormal.Name = "pic_AllParaToAbnormal";
             this.pic_AllParaToAbnormal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToAbnormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -397,12 +364,79 @@
             this.pic_ifyes.TabStop = false;
             this.pic_ifyes.Click += new System.EventHandler(this.pic_ifyes_Click_1);
             // 
+            // lbl_DependentT
+            // 
+            this.lbl_DependentT.AutoSize = true;
+            this.lbl_DependentT.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_DependentT.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.lbl_DependentT.Location = new System.Drawing.Point(11, 44);
+            this.lbl_DependentT.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_DependentT.Name = "lbl_DependentT";
+            this.lbl_DependentT.Size = new System.Drawing.Size(140, 30);
+            this.lbl_DependentT.TabIndex = 87;
+            this.lbl_DependentT.Text = "Dependent :";
+            // 
+            // data_allPara
+            // 
+            this.data_allPara.AllowUserToAddRows = false;
+            this.data_allPara.AllowUserToDeleteRows = false;
+            this.data_allPara.AllowUserToResizeColumns = false;
+            this.data_allPara.AllowUserToResizeRows = false;
+            this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.data_allPara.ColumnHeadersHeight = 54;
+            this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Col_Name,
+            this.ColMeasure});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
+            this.data_allPara.EnableHeadersVisualStyles = false;
+            this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.data_allPara.Location = new System.Drawing.Point(9, 77);
+            this.data_allPara.Name = "data_allPara";
+            this.data_allPara.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.data_allPara.RowHeadersVisible = false;
+            this.data_allPara.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.data_allPara.Size = new System.Drawing.Size(289, 565);
+            this.data_allPara.TabIndex = 88;
+            // 
+            // Col_Name
+            // 
+            this.Col_Name.HeaderText = "Name";
+            this.Col_Name.Name = "Col_Name";
+            this.Col_Name.Width = 175;
+            // 
+            // ColMeasure
+            // 
+            this.ColMeasure.HeaderText = "Measure";
+            this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.ColMeasure.Name = "ColMeasure";
+            // 
             // RelationsFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 648);
+            this.Controls.Add(this.data_allPara);
+            this.Controls.Add(this.lbl_DependentT);
             this.Controls.Add(this.pic_ifyes);
             this.Controls.Add(this.pic_RemoveAbNormalList);
             this.Controls.Add(this.pic_RemoveNormalList);
@@ -425,9 +459,6 @@
             this.Controls.Add(this.cmb_TableNames);
             this.Controls.Add(this.list_ViewTableParameters);
             this.Controls.Add(this.lbl_DependentType);
-            this.Controls.Add(this.lbl_Dependent);
-            this.Controls.Add(this.pic_AllParaToDependent);
-            this.Controls.Add(this.list_Dependent);
             this.Controls.Add(this.pic_back);
             this.Controls.Add(this.list_AllParameters);
             this.Controls.Add(this.panelmove);
@@ -436,7 +467,6 @@
             this.Text = "RelationsFrm";
             this.Load += new System.EventHandler(this.RelationsFrm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToDependent)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeTableSelected)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveAbNormalList)).EndInit();
@@ -446,6 +476,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNormal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ifyes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -456,9 +487,6 @@
         private System.Windows.Forms.Panel panelmove;
         private System.Windows.Forms.ListBox list_AllParameters;
         private System.Windows.Forms.PictureBox pic_back;
-        private System.Windows.Forms.Label lbl_Dependent;
-        private System.Windows.Forms.PictureBox pic_AllParaToDependent;
-        private System.Windows.Forms.ListBox list_Dependent;
         private System.Windows.Forms.Label lbl_DependentType;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txt_TableName;
@@ -481,5 +509,9 @@
         private System.Windows.Forms.ListBox list_NormalScale;
         private System.Windows.Forms.ListBox list_Nominal;
         private System.Windows.Forms.PictureBox pic_ifyes;
+        private System.Windows.Forms.Label lbl_DependentT;
+        private System.Windows.Forms.DataGridView data_allPara;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Col_Name;
+        private System.Windows.Forms.DataGridViewImageColumn ColMeasure;
     }
 }
