@@ -62,6 +62,12 @@ namespace ExcelScore.Forms
             InitializeComponent();
             chooseFrmInstance = chooseFrm;
         }
+
+        public void UpdateData(Dictionary<string, string> newData)
+        {
+            NormalityParaNameList_ComparaGroups = newData;
+            InsertNormality();
+        }
         public void AddHeadersToParameter()
         {
             foreach (string columnName in ColumnExcelheaders)
@@ -78,9 +84,15 @@ namespace ExcelScore.Forms
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+            InsertNormality();
 
 
-            if(NormalityParaNameList_ComparaGroups != null)
+
+        }
+
+        public void InsertNormality()
+        {
+            if (NormalityParaNameList_ComparaGroups != null)
             {
                 foreach (var kvp in NormalityParaNameList_ComparaGroups)
                 {
@@ -151,7 +163,7 @@ namespace ExcelScore.Forms
 
         }
 
-        public Dictionary<string, string> NormalityParaNameList_ComparaGroups = new Dictionary<string, string>();
+        public Dictionary<string, string> NormalityParaNameList_ComparaGroups { get; set; } = new Dictionary<string, string>();
         private void ComparativeGroups_Load(object sender, EventArgs e)
         {
             //pythonStat.InitPython();
@@ -174,6 +186,7 @@ namespace ExcelScore.Forms
         {
             this.Hide();
             chooseFrmInstance.Dgv = Dgv;
+            chooseFrmInstance.NormalityParaNameList_ChooseFrm = NormalityParaNameList_ComparaGroups;
             chooseFrmInstance.ReturnToChooseFrm();
             
 

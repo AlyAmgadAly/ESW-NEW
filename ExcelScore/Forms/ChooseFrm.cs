@@ -64,12 +64,10 @@ namespace ExcelScore.Forms
             }
 
             // Hide ChooseFrm and show ComparativeGroups
-            this.Hide();
             comparativeGroupsInstance.Dgv = Dgv;
-            if(NormalityParaNameList_ChooseFrm != null)
-            {
-                comparativeGroupsInstance.NormalityParaNameList_ComparaGroups = NormalityParaNameList_ChooseFrm;
-            }
+            comparativeGroupsInstance.NormalityParaNameList_ComparaGroups = NormalityParaNameList_ChooseFrm;
+            this.Hide();
+            
             comparativeGroupsInstance.Show();
 
             //ComparativeGroups comparativeGroups = new ComparativeGroups();
@@ -131,10 +129,14 @@ namespace ExcelScore.Forms
         Workbook NormalityWorkbook;
         Worksheet NormalityWorkSheet;
 
-        public Dictionary<string, string> NormalityParaNameList_ChooseFrm = new Dictionary<string, string>(); 
+        public Dictionary<string, string> NormalityParaNameList_ChooseFrm {get;set;} = new Dictionary<string, string>();
         public void GetNormality()
         {
-            NormalityParaNameList_ChooseFrm.Clear();
+            if(NormalityParaNameList_ChooseFrm != null)
+            {
+                NormalityParaNameList_ChooseFrm.Clear();
+            }
+            
             OpenFileDialog op = new OpenFileDialog();
             op.Filter = "Excel Sheet(*.xlsx)|*.xlsx|All Files(*.*)|*.*";
             if (op.ShowDialog() == DialogResult.OK)
@@ -146,15 +148,26 @@ namespace ExcelScore.Forms
                 NormalityWorkSheet = NormalityWorkbook.Worksheets[0];
             }
 
-            for (int row = 3; row < NormalityWorkSheet.Cells.MaxDataRow + 1; row++)
+            if(NormalityWorkbook != null)
             {
-                if (NormalityWorkSheet.Cells[row, 0].Value != null && NormalityWorkSheet.Cells[row, 1].Value != null)
+                for (int row = 3; row < NormalityWorkSheet.Cells.MaxDataRow + 1; row++)
                 {
-                    NormalityParaNameList_ChooseFrm.Add(NormalityWorkSheet.Cells[row, 1].Value.ToString(), NormalityWorkSheet.Cells[row, 0].Value.ToString());
-                    
-                }
+                    if (NormalityWorkSheet.Cells[row, 0].Value != null && NormalityWorkSheet.Cells[row, 1].Value != null)
+                    {
+                        NormalityParaNameList_ChooseFrm.Add(NormalityWorkSheet.Cells[row, 1].Value.ToString(), NormalityWorkSheet.Cells[row, 0].Value.ToString());
 
+                    }
+
+                }
             }
+
+
+            if (comparativeGroupsInstance != null && !comparativeGroupsInstance.IsDisposed)
+            {
+                comparativeGroupsInstance.UpdateData(NormalityParaNameList_ChooseFrm);
+            }
+
+
         }
         private void btn_GetNormality_Click(object sender, EventArgs e)
         {
