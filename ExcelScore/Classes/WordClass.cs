@@ -402,8 +402,32 @@ namespace ExcelScore.Classes
             table.ApplyVerticalMerge(WordTableColumns-1 , 0, 1);
             table.ApplyVerticalMerge(WordTableColumns - 2, 0, 1);
         }
+        public void ApplyGeneralPeriodsUp_Groups_ComparativeMerges(IWTable table, int WordTableColumns , int WordTableRows, int numberofgroups , ComparativeTable comparativeTable)
+        {
+            table.ApplyHorizontalMerge(0, 1, comparativeTable.Parameters.Count-1);
 
-        
+            for (int i = 3; i < (numberofgroups*5)+3; i = i+5)
+            {
+                table.ApplyVerticalMerge(WordTableColumns - 1, i, i+2);
+                table.ApplyVerticalMerge(WordTableColumns - 2, i, i + 2);
+
+
+                table.ApplyHorizontalMerge(i + 3, 1, comparativeTable.Parameters.Count - 1);
+
+                table.ApplyHorizontalMerge(i + 3, WordTableColumns - 2, WordTableColumns - 1);
+
+            }
+
+            table.ApplyVerticalMerge(WordTableColumns - 1, 0, 1);
+            table.ApplyVerticalMerge(WordTableColumns - 2, 0, 1);
+
+
+            table.ApplyHorizontalMerge(WordTableRows-1, WordTableColumns - 2, WordTableColumns - 1);
+
+
+
+        }
+
 
         public void ApplyMergesTotalScoreNoPer(IWTable table)
         {

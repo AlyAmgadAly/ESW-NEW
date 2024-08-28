@@ -168,6 +168,7 @@ namespace ExcelScore.Forms
         public Dictionary<string, string> NormalityParaNameList_ComparaGroups { get; set; } = new Dictionary<string, string>();
         private void ComparativeGroups_Load(object sender, EventArgs e)
         {
+
             //pythonStat.InitPython();
 
             //Margins
@@ -1845,8 +1846,58 @@ namespace ExcelScore.Forms
             MessageBox.Show(message.ToString());
         }
 
+        public int CountPeriodsUp_Groups_Columns(ComparativeTable comparativeTable)
+        {
+            int ColumnCtr = 0;
+
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(parameter.NominalOrScale == "Scale")
+                {
+                    ColumnCtr++;
+                }
+
+            }
+
+            return ColumnCtr;
+        }
+        public void ComparativeTablePeriodsUp_Groups_Layout()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Periods Groups")
+                {
+                    bool TableHasSigI = false;
+
+                    IWSection section = wordObj.CreatePortraitSection();
 
 
+
+
+                    int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
+
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
+
+                    int Variablerows = (5 * numberofgroups) +3;
+
+                    //log(Variablerows);
+
+
+                    int WordTableColumns = 3 + CountPeriodsUp_Groups_Columns(ComparativeTables[tableindex]);
+
+                    int WordTableRows = Variablerows;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+                    wordObj.GeneralTableFormat(table);
+
+                    wordObj.ApplyGeneralPeriodsUp_Groups_ComparativeMerges(table, WordTableColumns , WordTableRows, numberofgroups, ComparativeTables[tableindex]);
+
+
+
+                }
+            }
+        }
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -1856,8 +1907,9 @@ namespace ExcelScore.Forms
             
                 
             ComparativeTableGroups_Layout();
-            
-            
+            ComparativeTablePeriodsUp_Groups_Layout();
+
+
 
             wordObj.SaveWord();
 
@@ -2550,8 +2602,6 @@ namespace ExcelScore.Forms
                 {
                     bool TableHasSigI = false;
 
-                    //List<string> TestsDone = new List<string>();
-                    //MessageBox.Show(ComparativeTables[tableindex].TableName);
                     IWSection section = wordObj.CreatePortraitSection();
 
 
@@ -2578,6 +2628,7 @@ namespace ExcelScore.Forms
                     wordObj.GeneralTableFormat(table);
 
                     wordObj.ApplyGeneralComparativeMerges(table, WordTableColumns, numberofgroups);
+
                     wordObj.ApplyGeneralComparativeBorders(table, WordTableRows, WordTableColumns, numberofgroups);
 
 
@@ -3363,7 +3414,28 @@ namespace ExcelScore.Forms
 
         private void cmb_ChooseTableFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
+            if(cmb_ChooseTableFormat.Text == "Default")
+            {
+                
+
+                list_Nominal.Visible = true;
+                pic_RemoveNominalList.Visible = true;
+                pic_AllParaToNominal.Visible = true;
+                pic_ifyes.Visible = true;
+            }
+            else if(cmb_ChooseTableFormat.Text == "Periods Groups")
+            {
+                
+
+                list_Nominal.Visible = false;
+                pic_RemoveNominalList.Visible = false;
+                pic_AllParaToNominal.Visible=false;
+                pic_ifyes.Visible=false;
+                lbl_Nominal.Visible = false;
+
+
+
+            }
         }
 
         private void pic_TableFormat_Click(object sender, EventArgs e)
@@ -3382,12 +3454,28 @@ namespace ExcelScore.Forms
         private void txt_ParaName_TextChanged(object sender, EventArgs e)
         {
 
-            BindingSource bs = new BindingSource();
-            bs.DataSource = data_allPara.DataSource;
-            bs.Filter = "ColName like '%" + txt_ParaName.Text + "%'";
-            MessageBox.Show(bs.Filter);
-            
-            data_allPara.DataSource = bs.DataSource;
+            string filterText = txt_ParaName.Text.ToLower(); // Convert to lowercase for case-insensitive comparison
+
+            // Iterate through all rows in the DataGridView
+            foreach (DataGridViewRow row in data_allPara.Rows)
+            {
+                // Skip the new row placeholder if it's visible
+                if (row.IsNewRow) continue;
+
+                // Get the value of the cell in the first column
+                string cellValue = row.Cells[0].Value.ToString().ToLower(); // Convert to lowercase for case-insensitive comparison
+
+                // Check if the cell value contains the filter text
+                bool shouldShow = cellValue.Contains(filterText);
+
+                // Set the row's visibility
+                row.Visible = shouldShow;
+            }
+        }
+
+        private void data_allPara_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

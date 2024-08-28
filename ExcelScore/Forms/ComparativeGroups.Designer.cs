@@ -37,7 +37,7 @@
             this.list_Groups = new System.Windows.Forms.ListBox();
             this.list_ViewTableParameters = new System.Windows.Forms.ListBox();
             this.cmb_TableNames = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lbl_Nominal = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txt_TableName = new System.Windows.Forms.TextBox();
@@ -50,6 +50,9 @@
             this.list_Select = new System.Windows.Forms.ListBox();
             this.check_Perc_Row = new System.Windows.Forms.CheckBox();
             this.data_allPara = new System.Windows.Forms.DataGridView();
+            this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
+            this.ColNormality = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btn_Update = new System.Windows.Forms.Button();
             this.pic_RemoveSelectPara = new System.Windows.Forms.PictureBox();
             this.pic_AllParaToSelect = new System.Windows.Forms.PictureBox();
@@ -72,9 +75,7 @@
             this.pic_TableFormat = new System.Windows.Forms.PictureBox();
             this.cmb_ChooseTableFormat = new System.Windows.Forms.ComboBox();
             this.txt_ParaName = new System.Windows.Forms.TextBox();
-            this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
-            this.ColNormality = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lbl_Periods = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).BeginInit();
@@ -164,18 +165,18 @@
             this.cmb_TableNames.TabIndex = 13;
             this.cmb_TableNames.SelectedIndexChanged += new System.EventHandler(this.cmb_TableNames_SelectedIndexChanged);
             // 
-            // label4
+            // lbl_Nominal
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label4.Location = new System.Drawing.Point(448, 26);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(112, 30);
-            this.label4.TabIndex = 18;
-            this.label4.Text = "Nominal :";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
+            this.lbl_Nominal.AutoSize = true;
+            this.lbl_Nominal.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Nominal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.lbl_Nominal.Location = new System.Drawing.Point(448, 26);
+            this.lbl_Nominal.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_Nominal.Name = "lbl_Nominal";
+            this.lbl_Nominal.Size = new System.Drawing.Size(112, 30);
+            this.lbl_Nominal.TabIndex = 18;
+            this.lbl_Nominal.Text = "Nominal :";
+            this.lbl_Nominal.Click += new System.EventHandler(this.label4_Click);
             // 
             // label1
             // 
@@ -344,6 +345,30 @@
             this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.data_allPara.Size = new System.Drawing.Size(334, 604);
             this.data_allPara.TabIndex = 62;
+            this.data_allPara.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.data_allPara_CellContentClick);
+            // 
+            // Col_Name
+            // 
+            this.Col_Name.DataPropertyName = "ColName";
+            this.Col_Name.HeaderText = "Name";
+            this.Col_Name.Name = "Col_Name";
+            this.Col_Name.ReadOnly = true;
+            this.Col_Name.Width = 150;
+            // 
+            // ColMeasure
+            // 
+            this.ColMeasure.HeaderText = "Measure";
+            this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.ColMeasure.Name = "ColMeasure";
+            this.ColMeasure.ReadOnly = true;
+            this.ColMeasure.Width = 75;
+            // 
+            // ColNormality
+            // 
+            this.ColNormality.HeaderText = "Normality";
+            this.ColNormality.Name = "ColNormality";
+            this.ColNormality.ReadOnly = true;
+            this.ColNormality.Width = 75;
             // 
             // btn_Update
             // 
@@ -589,7 +614,8 @@
             this.cmb_ChooseTableFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F);
             this.cmb_ChooseTableFormat.FormattingEnabled = true;
             this.cmb_ChooseTableFormat.Items.AddRange(new object[] {
-            "Default"});
+            "Default",
+            "Periods Groups"});
             this.cmb_ChooseTableFormat.Location = new System.Drawing.Point(111, 31);
             this.cmb_ChooseTableFormat.Name = "cmb_ChooseTableFormat";
             this.cmb_ChooseTableFormat.Size = new System.Drawing.Size(202, 30);
@@ -606,28 +632,16 @@
             this.txt_ParaName.TabIndex = 67;
             this.txt_ParaName.TextChanged += new System.EventHandler(this.txt_ParaName_TextChanged);
             // 
-            // Col_Name
+            // lbl_Periods
             // 
-            this.Col_Name.DataPropertyName = "ColName";
-            this.Col_Name.HeaderText = "Name";
-            this.Col_Name.Name = "Col_Name";
-            this.Col_Name.ReadOnly = true;
-            this.Col_Name.Width = 150;
-            // 
-            // ColMeasure
-            // 
-            this.ColMeasure.HeaderText = "Measure";
-            this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.ColMeasure.Name = "ColMeasure";
-            this.ColMeasure.ReadOnly = true;
-            this.ColMeasure.Width = 75;
-            // 
-            // ColNormality
-            // 
-            this.ColNormality.HeaderText = "Normality";
-            this.ColNormality.Name = "ColNormality";
-            this.ColNormality.ReadOnly = true;
-            this.ColNormality.Width = 75;
+            this.lbl_Periods.AutoSize = true;
+            this.lbl_Periods.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Periods.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.lbl_Periods.Location = new System.Drawing.Point(433, 147);
+            this.lbl_Periods.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_Periods.Name = "lbl_Periods";
+            this.lbl_Periods.Size = new System.Drawing.Size(0, 30);
+            this.lbl_Periods.TabIndex = 68;
             // 
             // ComparativeGroups
             // 
@@ -635,6 +649,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.lbl_Periods);
             this.Controls.Add(this.txt_ParaName);
             this.Controls.Add(this.cmb_ChooseTableFormat);
             this.Controls.Add(this.pic_TableFormat);
@@ -667,7 +682,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.lbl_Nominal);
             this.Controls.Add(this.pic_AllParaToNominal);
             this.Controls.Add(this.cmb_TableNames);
             this.Controls.Add(this.list_ViewTableParameters);
@@ -711,7 +726,7 @@
         private System.Windows.Forms.ListBox list_ViewTableParameters;
         private System.Windows.Forms.ComboBox cmb_TableNames;
         private System.Windows.Forms.PictureBox pic_AllParaToNominal;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lbl_Nominal;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pic_addTable;
@@ -748,5 +763,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Col_Name;
         private System.Windows.Forms.DataGridViewImageColumn ColMeasure;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColNormality;
+        private System.Windows.Forms.Label lbl_Periods;
     }
 }
