@@ -91,6 +91,9 @@
     <Reference Include="Accord.Statistics, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
       <HintPath>..\packages\Accord.Statistics.3.8.0\lib\net462\Accord.Statistics.dll</HintPath>
     </Reference>
+    <Reference Include="alglib.net, Version=3.19.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\alglib.net.3.19.0\lib\net47\alglib.net.dll</HintPath>
+    </Reference>
     <Reference Include="Aspose.Cells, Version=23.12.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
       <HintPath>..\packages\Aspose.Cells.23.12.0\lib\net40\Aspose.Cells.dll</HintPath>
     </Reference>
@@ -430,6 +433,7 @@
   <ItemGroup>
     <Content Include="OIG1.d80sRz0T2c.ico" />
     <Content Include="orLogo.png" />
+    <None Include="Resources\Default_Comparative.png" />
     <None Include="Resources\FinalScale Color.jpg" />
     <None Include="Resources\Final Nominal Color.jpg" />
     <None Include="Resources\Final Nominal.png" />

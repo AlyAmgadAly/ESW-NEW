@@ -71,24 +71,27 @@ namespace ExcelScore.Forms
                     if (parameter.NominalOrScale == "Nominal")
                     {
                         int distinctValuesCount = parameter.DIC_LablesIfNomainal.Keys.Count;
+                        //MessageBox.Show(distinctValuesCount.ToString());
                         rowCount += distinctValuesCount + 1;
-
+                        
                     }
                     else if (parameter.NominalOrScale == "Scale")
                     {
                         // For scale parameters, add 4 (assuming you want to count 4 rows per parameter)
                         rowCount += 4;
+                        
                     }
                 }
                 else if (!HasNominal)
                 {
                     rowCount++;
+                    
                 }
                 
             }
 
 
-
+            //MessageBox.Show(rowCount.ToString());
             return rowCount;
         }
 
@@ -690,7 +693,7 @@ namespace ExcelScore.Forms
 
                 int WordTableRows = 1 + Variablerows;
 
-
+                
 
                 IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
 
@@ -731,7 +734,7 @@ namespace ExcelScore.Forms
 
                 if (parameter.NominalOrScale == "Nominal")
                 {
-                    count = parameter.ParameterValues.Distinct().Count() + 1;
+                    count = parameter.DIC_LablesIfNomainal.Keys.Count + 1;
                    
                 }
                 else if (parameter.NominalOrScale == "Scale")
@@ -899,7 +902,7 @@ namespace ExcelScore.Forms
 
                                 string frequency = formattedValues.ContainsKey($"Frequency_{distinctValue}") ? formattedValues[$"Frequency_{distinctValue}"] : "0";
                                 wordObj.Addpara_CenterNoBOLD(table, startingRow, column, frequency);
-                                MessageBox.Show(frequency);
+                                //MessageBox.Show(frequency);
                                 column++;
 
                                 string percentage = formattedValues.ContainsKey($"Percentage_{distinctValue}") ? formattedValues[$"Percentage_{distinctValue}"] : "0.0";
@@ -914,7 +917,7 @@ namespace ExcelScore.Forms
                                 }
                                 else
                                 {
-                                    MessageBox.Show(percentage);
+                                    //MessageBox.Show(percentage);
                                     //double percentageDouble = Math.Round(double.Parse(percentage), 1);
                                     wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage.ToString());
                                 }

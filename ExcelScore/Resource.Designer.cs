@@ -63,6 +63,16 @@ namespace ExcelScore {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Default_Comparative {
+            get {
+                object obj = ResourceManager.GetObject("Default_Comparative", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Final_Nominal {
             get {
                 object obj = ResourceManager.GetObject("Final_Nominal", resourceCulture);

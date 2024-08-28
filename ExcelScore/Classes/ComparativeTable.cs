@@ -52,6 +52,8 @@ namespace ExcelScore.Classes
         public string LetterType { get; set; }
         public List<int> SelectedValues { get; set; }
         public List<string> TestsDone { get; set; }
+
+        public string FormatType { get; set; }
         public ComparativeTable()
         {
             TestsDone = new List<string>(); 

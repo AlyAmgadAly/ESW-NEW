@@ -31,7 +31,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComparativeGroups));
-            this.list_AllParameters = new System.Windows.Forms.ListBox();
             this.list_Nominal = new System.Windows.Forms.ListBox();
             this.list_NormalScale = new System.Windows.Forms.ListBox();
             this.list_AbnormalScale = new System.Windows.Forms.ListBox();
@@ -69,6 +68,10 @@
             this.pic_back = new System.Windows.Forms.PictureBox();
             this.pic_addTable = new System.Windows.Forms.PictureBox();
             this.pic_AllParaToNominal = new System.Windows.Forms.PictureBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.pic_TableFormat = new System.Windows.Forms.PictureBox();
+            this.cmb_ChooseTableFormat = new System.Windows.Forms.ComboBox();
+            this.txt_ParaName = new System.Windows.Forms.TextBox();
             this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
             this.ColNormality = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -88,19 +91,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_TableFormat)).BeginInit();
             this.SuspendLayout();
-            // 
-            // list_AllParameters
-            // 
-            this.list_AllParameters.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            this.list_AllParameters.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.list_AllParameters.FormattingEnabled = true;
-            this.list_AllParameters.ItemHeight = 17;
-            this.list_AllParameters.Location = new System.Drawing.Point(22, 36);
-            this.list_AllParameters.Name = "list_AllParameters";
-            this.list_AllParameters.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_AllParameters.Size = new System.Drawing.Size(263, 633);
-            this.list_AllParameters.TabIndex = 7;
             // 
             // list_Nominal
             // 
@@ -343,13 +335,14 @@
             this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            this.data_allPara.Location = new System.Drawing.Point(22, 36);
+            this.data_allPara.Location = new System.Drawing.Point(22, 67);
             this.data_allPara.Name = "data_allPara";
+            this.data_allPara.ReadOnly = true;
             this.data_allPara.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.data_allPara.RowHeadersVisible = false;
             this.data_allPara.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.data_allPara.Size = new System.Drawing.Size(334, 635);
+            this.data_allPara.Size = new System.Drawing.Size(334, 604);
             this.data_allPara.TabIndex = 62;
             // 
             // btn_Update
@@ -568,10 +561,57 @@
             this.pic_AllParaToNominal.TabStop = false;
             this.pic_AllParaToNominal.Click += new System.EventHandler(this.pic_AllParaToNominal_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.label6.Location = new System.Drawing.Point(17, 28);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(99, 30);
+            this.label6.TabIndex = 63;
+            this.label6.Text = "Format :";
+            // 
+            // pic_TableFormat
+            // 
+            this.pic_TableFormat.Image = ((System.Drawing.Image)(resources.GetObject("pic_TableFormat.Image")));
+            this.pic_TableFormat.Location = new System.Drawing.Point(319, 31);
+            this.pic_TableFormat.Name = "pic_TableFormat";
+            this.pic_TableFormat.Size = new System.Drawing.Size(37, 30);
+            this.pic_TableFormat.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_TableFormat.TabIndex = 65;
+            this.pic_TableFormat.TabStop = false;
+            this.pic_TableFormat.Click += new System.EventHandler(this.pic_TableFormat_Click);
+            // 
+            // cmb_ChooseTableFormat
+            // 
+            this.cmb_ChooseTableFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F);
+            this.cmb_ChooseTableFormat.FormattingEnabled = true;
+            this.cmb_ChooseTableFormat.Items.AddRange(new object[] {
+            "Default"});
+            this.cmb_ChooseTableFormat.Location = new System.Drawing.Point(111, 31);
+            this.cmb_ChooseTableFormat.Name = "cmb_ChooseTableFormat";
+            this.cmb_ChooseTableFormat.Size = new System.Drawing.Size(202, 30);
+            this.cmb_ChooseTableFormat.TabIndex = 66;
+            this.cmb_ChooseTableFormat.SelectedIndexChanged += new System.EventHandler(this.cmb_ChooseTableFormat_SelectedIndexChanged);
+            // 
+            // txt_ParaName
+            // 
+            this.txt_ParaName.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_ParaName.Location = new System.Drawing.Point(66, 80);
+            this.txt_ParaName.Margin = new System.Windows.Forms.Padding(2);
+            this.txt_ParaName.Name = "txt_ParaName";
+            this.txt_ParaName.Size = new System.Drawing.Size(96, 28);
+            this.txt_ParaName.TabIndex = 67;
+            this.txt_ParaName.TextChanged += new System.EventHandler(this.txt_ParaName_TextChanged);
+            // 
             // Col_Name
             // 
+            this.Col_Name.DataPropertyName = "ColName";
             this.Col_Name.HeaderText = "Name";
             this.Col_Name.Name = "Col_Name";
+            this.Col_Name.ReadOnly = true;
             this.Col_Name.Width = 150;
             // 
             // ColMeasure
@@ -579,12 +619,14 @@
             this.ColMeasure.HeaderText = "Measure";
             this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
             this.ColMeasure.Name = "ColMeasure";
+            this.ColMeasure.ReadOnly = true;
             this.ColMeasure.Width = 75;
             // 
             // ColNormality
             // 
             this.ColNormality.HeaderText = "Normality";
             this.ColNormality.Name = "ColNormality";
+            this.ColNormality.ReadOnly = true;
             this.ColNormality.Width = 75;
             // 
             // ComparativeGroups
@@ -593,6 +635,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.txt_ParaName);
+            this.Controls.Add(this.cmb_ChooseTableFormat);
+            this.Controls.Add(this.pic_TableFormat);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.data_allPara);
             this.Controls.Add(this.check_Perc_Row);
             this.Controls.Add(this.btn_Update);
@@ -629,7 +675,6 @@
             this.Controls.Add(this.list_AbnormalScale);
             this.Controls.Add(this.list_NormalScale);
             this.Controls.Add(this.list_Nominal);
-            this.Controls.Add(this.list_AllParameters);
             this.Controls.Add(this.panelmove);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -652,14 +697,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_TableFormat)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox list_AllParameters;
         private System.Windows.Forms.ListBox list_Nominal;
         private System.Windows.Forms.ListBox list_NormalScale;
         private System.Windows.Forms.ListBox list_AbnormalScale;
@@ -697,6 +741,10 @@
         private System.Windows.Forms.Button btn_Update;
         private System.Windows.Forms.CheckBox check_Perc_Row;
         private System.Windows.Forms.DataGridView data_allPara;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.PictureBox pic_TableFormat;
+        private System.Windows.Forms.ComboBox cmb_ChooseTableFormat;
+        private System.Windows.Forms.TextBox txt_ParaName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Col_Name;
         private System.Windows.Forms.DataGridViewImageColumn ColMeasure;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColNormality;

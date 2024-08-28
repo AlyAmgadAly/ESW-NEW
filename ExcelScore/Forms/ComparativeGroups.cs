@@ -1,4 +1,5 @@
-﻿using Aspose.Cells;
+﻿using Accord.Statistics.Kernels;
+using Aspose.Cells;
 using Aspose.Cells.Charts;
 using Aspose.Cells.Drawing;
 using ExcelScore.Classes;
@@ -24,6 +25,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskBand;
 using Application = System.Windows.Forms.Application;
 using Parameter = ExcelScore.Classes.Parameter;
@@ -75,7 +77,7 @@ namespace ExcelScore.Forms
                 ComparativeClass comparativeClass = new ComparativeClass();
                 comparativeClass.ParameterName = columnName;
                 ComparativeClassesList.Add(comparativeClass);
-                list_AllParameters.Items.Add(comparativeClass.ParameterName);
+                //list_AllParameters.Items.Add(comparativeClass.ParameterName);
                 data_allPara.Rows.Add(comparativeClass.ParameterName);
             }
 
@@ -178,6 +180,8 @@ namespace ExcelScore.Forms
             //header 2
             //footer 2
             AddHeadersToParameter();
+
+            
 
 
         }
@@ -450,6 +454,8 @@ namespace ExcelScore.Forms
                 comparativeTable.Parameters.Add(parameter);
             }
 
+            comparativeTable.FormatType = cmb_ChooseTableFormat.Text;
+
             ComparativeTables.Add(comparativeTable);
 
 
@@ -461,7 +467,7 @@ namespace ExcelScore.Forms
         {
             string TableName = null;
             if (!string.IsNullOrWhiteSpace(txt_TableName.Text) &&
-                list_Groups.Items.Count > 0 &&
+                list_Groups.Items.Count > 0 && !string.IsNullOrWhiteSpace(cmb_ChooseTableFormat.Text) &&
                 (list_Nominal.Items.Count > 0 || list_NormalScale.Items.Count > 0 || list_AbnormalScale.Items.Count > 0))
             {
                 // Check if the table name already exists
@@ -1834,6 +1840,12 @@ namespace ExcelScore.Forms
 
 
         }
+        public void log(object message)
+        {
+            MessageBox.Show(message.ToString());
+        }
+
+
 
         private void btn_Done_Click(object sender, EventArgs e)
         {
@@ -1841,8 +1853,11 @@ namespace ExcelScore.Forms
 
             document = wordObj.InitWord();
 
-
+            
+                
             ComparativeTableGroups_Layout();
+            
+            
 
             wordObj.SaveWord();
 
@@ -2531,253 +2546,258 @@ namespace ExcelScore.Forms
         {
             for(int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
             {
-                bool TableHasSigI = false;
-
-                //List<string> TestsDone = new List<string>();
-                //MessageBox.Show(ComparativeTables[tableindex].TableName);
-                IWSection section = wordObj.CreatePortraitSection();
-
-
-                
-
-                int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
-
-                wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName , numberofgroups);
-
-                int Variablerows = CountRows(ComparativeTables[tableindex]);
-
-
-                //MessageBox.Show(Variablerows.ToString());
-
-                //MessageBox.Show(Variablerows.ToString());
-
-                int WordTableColumns = 3 + (numberofgroups * 2);
-
-                int WordTableRows = 2 + Variablerows;
-
-                IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
-
-                
-                wordObj.GeneralTableFormat(table);
-
-                wordObj.ApplyGeneralComparativeMerges(table , WordTableColumns , numberofgroups);
-                wordObj.ApplyGeneralComparativeBorders(table , WordTableRows,WordTableColumns , numberofgroups);
-
-
-
-                
-                wordObj.SetComparativeWidths(table , WordTableRows ,WordTableColumns , numberofgroups , ComparativeTables[tableindex]);
-
-                
-                wordObj.Add_GeneralHeaders_Comparative_Center(table, WordTableRows , WordTableColumns , numberofgroups);
-
-                ComparativeParamaeterBorders(table, WordTableRows, WordTableColumns, tableindex, numberofgroups);
-
-                int startingRow;
-                int newRowCount = 3;
-
-                (string testtype,string NominalOrScale , bool issame) = InsertSeperateTest_TestOfSig(ComparativeTables[tableindex] , numberofgroups);
-
-                wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, testtype);
-
-                
-                
-                foreach (Parameter parameter in ComparativeTables[tableindex].Parameters)
+                if (ComparativeTables[tableindex].FormatType == "Default")
                 {
-                    startingRow = newRowCount;
-                    int column = 1;
-                    int count = 0;
+                    bool TableHasSigI = false;
 
-                    // Skip if the parameter is a group or not nominal
-                    if (parameter.IsGroup || parameter.FormattedValues.Count == 0)
+                    //List<string> TestsDone = new List<string>();
+                    //MessageBox.Show(ComparativeTables[tableindex].TableName);
+                    IWSection section = wordObj.CreatePortraitSection();
+
+
+
+
+                    int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
+
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
+
+                    int Variablerows = CountRows(ComparativeTables[tableindex]);
+
+
+                    //MessageBox.Show(Variablerows.ToString());
+
+                    //MessageBox.Show(Variablerows.ToString());
+
+                    int WordTableColumns = 3 + (numberofgroups * 2);
+
+                    int WordTableRows = 2 + Variablerows;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+
+                    wordObj.GeneralTableFormat(table);
+
+                    wordObj.ApplyGeneralComparativeMerges(table, WordTableColumns, numberofgroups);
+                    wordObj.ApplyGeneralComparativeBorders(table, WordTableRows, WordTableColumns, numberofgroups);
+
+
+
+
+                    wordObj.SetComparativeWidths(table, WordTableRows, WordTableColumns, numberofgroups, ComparativeTables[tableindex]);
+
+
+                    wordObj.Add_GeneralHeaders_Comparative_Center(table, WordTableRows, WordTableColumns, numberofgroups);
+
+                    ComparativeParamaeterBorders(table, WordTableRows, WordTableColumns, tableindex, numberofgroups);
+
+                    int startingRow;
+                    int newRowCount = 3;
+
+                    (string testtype, string NominalOrScale, bool issame) = InsertSeperateTest_TestOfSig(ComparativeTables[tableindex], numberofgroups);
+
+                    wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, testtype);
+
+
+
+                    foreach (Parameter parameter in ComparativeTables[tableindex].Parameters)
                     {
-                        continue;
-                    }
+                        startingRow = newRowCount;
+                        int column = 1;
+                        int count = 0;
 
-                    // Determine the count based on parameter type
-                    if (parameter.NominalOrScale == "Nominal")
-                    {
-                        // count = parameter.ParameterValues.Distinct().Count() + 1;
-                        count = parameter.DIC_LablesIfNomainal.Keys.Count() + 1;
-                        ComparativeTables[tableindex].TestsDone.Add("Chi");
-
-                        //string[] values = pythonStat.PerformChiSquareTest(parameter);
-                        string[] values = manual.getchi(parameter);
-
-                        TableHasSigI = TableHasSig(values);
-
-                        if(TableHasSigI)
+                        // Skip if the parameter is a group or not nominal
+                        if (parameter.IsGroup || parameter.FormattedValues.Count == 0)
                         {
-                            ComparativeTables[tableindex].hasSig = true;   
+                            continue;
                         }
 
-                        if (issame)
+                        // Determine the count based on parameter type
+                        if (parameter.NominalOrScale == "Nominal")
                         {
-                            wordObj.InsertTest_P(table, startingRow, WordTableColumns - 2, values);
-                        }
-                        else if (!issame)
-                        {
-                            values[0] = "χ²=\n" + values[0];
-                            wordObj.InsertTest_P(table, startingRow, WordTableColumns-2, values);
-                        }
+                            // count = parameter.ParameterValues.Distinct().Count() + 1;
+                            count = parameter.DIC_LablesIfNomainal.Keys.Count() + 1;
+                            ComparativeTables[tableindex].TestsDone.Add("Chi");
 
-                        //MessageBox.Show(parameter.Isfisher.ToString());
-                        if(parameter.Isfisher)
-                        {
-                            WParagraph testparaHighlight = (WParagraph)table[startingRow, WordTableColumns - 1].Paragraphs[0];
-                            WTextRange FEtext = new WTextRange(testparaHighlight.Document);
-                            FEtext.Text = "FE";
-                            FEtext.CharacterFormat.SubSuperScript = SubSuperScript.SuperScript;
+                            //string[] values = pythonStat.PerformChiSquareTest(parameter);
+                            string[] values = manual.getchi(parameter);
 
-                            WTextRange PText = new WTextRange(testparaHighlight.Document);
-                            PText.Text = "p=";
+                            TableHasSigI = TableHasSig(values);
 
-                            testparaHighlight.ChildEntities.Insert(0, PText);
-                            testparaHighlight.ChildEntities.Insert(0, FEtext);
-                            
-                        }
-
-
-
-                        //wordObj.Addpara_CenterNoBOLD(table, startingRow, WordTableColumns - 1, values[1]);
-
-                        // Insert frequency and percentage for nominal parameters
-
-                        var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
-
-                        //foreach (var kvp in parameter.FormattedValues)
-                        foreach (var groupValue in sortedKeys)
-                        {
-                            //double groupValue = kvp.Key;
-                           // MessageBox.Show(groupValue.ToString());
-                            Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
-                            //MessageBox.Show(groupValue.ToString());
-                            // Insert frequencies for the current group
-                            foreach (var distinctValue in parameter.DIC_LablesIfNomainal.Keys)
+                            if (TableHasSigI)
                             {
+                                ComparativeTables[tableindex].hasSig = true;
+                            }
 
-                                string frequency = formattedValues.ContainsKey($"Frequency_{distinctValue}") ? formattedValues[$"Frequency_{distinctValue}"] : "0";
-                                wordObj.Addpara_CenterNoBOLD(table, startingRow, column, frequency);
-                                //startingRow++; // Move to the next row
-                                //MessageBox.Show(frequency.ToString());
-                                column++;
+                            if (issame)
+                            {
+                                wordObj.InsertTest_P(table, startingRow, WordTableColumns - 2, values);
+                            }
+                            else if (!issame)
+                            {
+                                values[0] = "χ²=\n" + values[0];
+                                wordObj.InsertTest_P(table, startingRow, WordTableColumns - 2, values);
+                            }
 
-                                string percentage = formattedValues.ContainsKey($"Percentage_{distinctValue}") ? formattedValues[$"Percentage_{distinctValue}"] : "0.0";
-                                percentage = percentage.Replace("%", "");
+                            //MessageBox.Show(parameter.Isfisher.ToString());
+                            if (parameter.Isfisher)
+                            {
+                                WParagraph testparaHighlight = (WParagraph)table[startingRow, WordTableColumns - 1].Paragraphs[0];
+                                WTextRange FEtext = new WTextRange(testparaHighlight.Document);
+                                FEtext.Text = "FE";
+                                FEtext.CharacterFormat.SubSuperScript = SubSuperScript.SuperScript;
 
+                                WTextRange PText = new WTextRange(testparaHighlight.Document);
+                                PText.Text = "p=";
 
-                                if (percentage.EndsWith("0"))
-                                {
-                                    //percentage = percentage.Substring(0, percentage.Length - 1);
-                                    //MessageBox.Show(percentage);
-                                    wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage);
-                                }
-                                
-                                else
-                                {
+                                testparaHighlight.ChildEntities.Insert(0, PText);
+                                testparaHighlight.ChildEntities.Insert(0, FEtext);
 
-                                    //double percentageDouble = Math.Round(double.Parse(percentage), 1);
-                                    //MessageBox.Show(percentageDouble.ToString());
-                                    wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage.ToString());
-                                }
-                                //wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage);
-                                startingRow++; // Move to the next row
-                                column--;
                             }
 
 
-                            // Reset startingRow and increment column for the next group
-                            startingRow = newRowCount;
-                            column = column+2;
-                        }
 
-                       
+                            //wordObj.Addpara_CenterNoBOLD(table, startingRow, WordTableColumns - 1, values[1]);
 
+                            // Insert frequency and percentage for nominal parameters
 
-                    }
-                    
-                    else if (parameter.NominalOrScale == "Scale")
-                    {
-                        
-                        var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
-                        count = 4; // Count for scale parameters
-                        
-                        // Insert scale statistics for scale parameters
-                        foreach (var groupValue in sortedKeys)
-                        {
-                            //double groupValue = kvp.Key;
-                            Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
-                            //Dictionary<string, string> scaleStats = kvp.Value;
+                            var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
 
-                            foreach (var stat in formattedValues)
+                            //foreach (var kvp in parameter.FormattedValues)
+                            foreach (var groupValue in sortedKeys)
                             {
-                                wordObj.Addpara_CenterNoBOLD(table, startingRow, column, stat.Value);
-                                startingRow++; // Move to the next row
+                                //double groupValue = kvp.Key;
+                                // MessageBox.Show(groupValue.ToString());
+                                Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
+                                //MessageBox.Show(groupValue.ToString());
+                                // Insert frequencies for the current group
+                                foreach (var distinctValue in parameter.DIC_LablesIfNomainal.Keys)
+                                {
+
+                                    string frequency = formattedValues.ContainsKey($"Frequency_{distinctValue}") ? formattedValues[$"Frequency_{distinctValue}"] : "0";
+                                    wordObj.Addpara_CenterNoBOLD(table, startingRow, column, frequency);
+                                    //startingRow++; // Move to the next row
+                                    //MessageBox.Show(frequency.ToString());
+                                    column++;
+
+                                    string percentage = formattedValues.ContainsKey($"Percentage_{distinctValue}") ? formattedValues[$"Percentage_{distinctValue}"] : "0.0";
+                                    percentage = percentage.Replace("%", "");
+
+
+                                    if (percentage.EndsWith("0"))
+                                    {
+                                        //percentage = percentage.Substring(0, percentage.Length - 1);
+                                        //MessageBox.Show(percentage);
+                                        wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage);
+                                    }
+
+                                    else
+                                    {
+
+                                        //double percentageDouble = Math.Round(double.Parse(percentage), 1);
+                                        //MessageBox.Show(percentageDouble.ToString());
+                                        wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage.ToString());
+                                    }
+                                    //wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage);
+                                    startingRow++; // Move to the next row
+                                    column--;
+                                }
+
+
+                                // Reset startingRow and increment column for the next group
+                                startingRow = newRowCount;
+                                column = column + 2;
                             }
 
-                            // Reset startingRow and increment column for the next group
-                            startingRow = newRowCount;
-                            
-                            column = column + 2;
+
+
+
                         }
-                        PerformTest(table, numberofgroups, parameter, startingRow, WordTableColumns - 2, WordTableColumns ,issame , ComparativeTables[tableindex]);
+
+                        else if (parameter.NominalOrScale == "Scale")
+                        {
+
+                            var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
+                            count = 4; // Count for scale parameters
+
+                            // Insert scale statistics for scale parameters
+                            foreach (var groupValue in sortedKeys)
+                            {
+                                //double groupValue = kvp.Key;
+                                Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
+                                //Dictionary<string, string> scaleStats = kvp.Value;
+
+                                foreach (var stat in formattedValues)
+                                {
+                                    wordObj.Addpara_CenterNoBOLD(table, startingRow, column, stat.Value);
+                                    startingRow++; // Move to the next row
+                                }
+
+                                // Reset startingRow and increment column for the next group
+                                startingRow = newRowCount;
+
+                                column = column + 2;
+                            }
+                            PerformTest(table, numberofgroups, parameter, startingRow, WordTableColumns - 2, WordTableColumns, issame, ComparativeTables[tableindex]);
+                        }
+
+                        // Increment newRowCount for the next parameter
+                        newRowCount += count;
                     }
 
-                    // Increment newRowCount for the next parameter
-                    newRowCount += count;
-                }
-
-                if (!(NominalOrScale == "Nominal"))
-                {
-                    table.Rows.RemoveAt(1);
-                    for (int j = 0; j < WordTableColumns; j++)
+                    if (!(NominalOrScale == "Nominal"))
                     {
-                        table.Rows[0].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-                        table.Rows[0].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+                        table.Rows.RemoveAt(1);
+                        for (int j = 0; j < WordTableColumns; j++)
+                        {
+                            table.Rows[0].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                            table.Rows[0].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+                        }
                     }
+
+
+
+                    List<double> eachgroupcount = GetEachGroupCOUNT(ComparativeTables[tableindex]);
+
+                    //InsertNeachGroup(table, eachgroupcount);
+                    InsertNeachGroup(table, eachgroupcount, ComparativeTables[tableindex]);
+
+                    InsertPairwiseF(table, ComparativeTables[tableindex], WordTableColumns);
+
+
+
+
+                    SetMarginBasedOngroups(table, numberofgroups);
+
+
+                    string groupText = numberofgroups.ToWords();
+
+                    InsertYesonly(table, ComparativeTables[tableindex], WordTableColumns);
+
+
+                    if (ComparativeTables[tableindex].HasTotalColumn)
+                    {
+                        AddTotalColumn(table, ComparativeTables[tableindex]);
+                    }
+
+                    wordObj.FormatTable(table, 12);
+
+                    ModifyGroupSpaces(table, ComparativeTables[tableindex], numberofgroups);
+
+                    //MessageBox.Show(issame.ToString());
+                    if (!issame)
+                    {
+                        ModifyTestSpaces(table, ComparativeTables[tableindex], WordTableColumns);
+                    }
+
+
+                    InsertDefUnderTableNew(table, section, ComparativeTables[tableindex], groupText);
+
+
+                    //Designed for maha till now
+                    CustomMarginFormat(table);
                 }
 
-
-
-                List<double> eachgroupcount =  GetEachGroupCOUNT(ComparativeTables[tableindex]);
-
-                //InsertNeachGroup(table, eachgroupcount);
-                InsertNeachGroup(table, eachgroupcount , ComparativeTables[tableindex]);
-
-                InsertPairwiseF(table, ComparativeTables[tableindex] , WordTableColumns);
-
-
-
-
-                SetMarginBasedOngroups(table, numberofgroups);
-
-
-                string groupText = numberofgroups.ToWords();
-
-                InsertYesonly(table, ComparativeTables[tableindex], WordTableColumns);
-
-
-                if(ComparativeTables[tableindex].HasTotalColumn)
-                {
-                    AddTotalColumn(table, ComparativeTables[tableindex]);
-                }
-
-                wordObj.FormatTable(table, 12);
-
-                ModifyGroupSpaces(table, ComparativeTables[tableindex], numberofgroups);
-
-                //MessageBox.Show(issame.ToString());
-                if (!issame)
-                {
-                    ModifyTestSpaces(table, ComparativeTables[tableindex], WordTableColumns);
-                }
-
-
-                InsertDefUnderTableNew(table, section, ComparativeTables[tableindex] , groupText);
-
-
-                //Designed for maha till now
-                CustomMarginFormat(table);
+               
 
 
 
@@ -3339,6 +3359,35 @@ namespace ExcelScore.Forms
             worksheet = workbook.Worksheets[0];
 
             MessageBox.Show("File Updated");
+        }
+
+        private void cmb_ChooseTableFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void pic_TableFormat_Click(object sender, EventArgs e)
+        {
+            if(cmb_ChooseTableFormat.SelectedIndex != -1) 
+            {
+                if(cmb_ChooseTableFormat.Text == "Default")
+                {
+                    ChooseTable chooseTable = new ChooseTable();
+                    chooseTable.Table_ChooseTable = Resource.Default_Comparative;
+                    chooseTable.ShowDialog();
+                }
+            }
+        }
+            
+        private void txt_ParaName_TextChanged(object sender, EventArgs e)
+        {
+
+            BindingSource bs = new BindingSource();
+            bs.DataSource = data_allPara.DataSource;
+            bs.Filter = "ColName like '%" + txt_ParaName.Text + "%'";
+            MessageBox.Show(bs.Filter);
+            
+            data_allPara.DataSource = bs.DataSource;
         }
     }
 }

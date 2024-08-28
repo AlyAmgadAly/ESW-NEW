@@ -276,10 +276,13 @@ namespace ExcelScore.Classes
 
             int totalcount = group1.Length + group2.Length;
 
+            //MessageBox.Show(totalcount.ToString());
+
             bool CountBool = false;
 
             if(totalcount > 40)
             {
+                
                 CountBool = false;
             }
             else if(totalcount <= 40)
@@ -289,11 +292,14 @@ namespace ExcelScore.Classes
             
             
             var UTest = new Accord.Statistics.Testing.MannWhitneyWilcoxonTest(group1, group2, exact: CountBool);
-
+            
 
             double UStat = CalculateUStatistic(group1, group2);
             //double UStat = UTest.Statistic;
             double Upvalue = UTest.PValue;
+            //double UTEST = UTest.Statistic;
+
+            //MessageBox.Show(UTEST.ToString());
 
 
             UStat = Math.Round(UStat, 3);
