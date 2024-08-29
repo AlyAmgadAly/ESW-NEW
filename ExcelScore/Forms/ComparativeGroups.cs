@@ -168,7 +168,7 @@ namespace ExcelScore.Forms
         public Dictionary<string, string> NormalityParaNameList_ComparaGroups { get; set; } = new Dictionary<string, string>();
         private void ComparativeGroups_Load(object sender, EventArgs e)
         {
-
+            check_Maha.Visible = false;
             //pythonStat.InitPython();
 
             //Margins
@@ -853,11 +853,13 @@ namespace ExcelScore.Forms
 
             if (n % 2 == 0)
             {
+                
                 // Even number of elements, average the middle two
                 return (values[middle - 1] + values[middle]) / 2.0;
             }
             else
             {
+                
                 // Odd number of elements, return the middle one
                 return values[middle];
             }
@@ -868,9 +870,23 @@ namespace ExcelScore.Forms
             values.Sort();
 
             int n = values.Count;
-            int middle = n / 2;
+            
 
-            return CalculateMedian(values.GetRange(0, middle));
+            if (n % 2 == 0)
+            {
+                int middle = n / 2;
+                // Even number of elements, calculate median of upper half excluding the median
+                return CalculateMedian(values.GetRange(0, middle));
+            }
+            else
+            {
+                //The fix was here we get same range from zero to middle but middle index is different
+
+                int middle = (n + 1) / 2;
+                
+                return CalculateMedian(values.GetRange(0 ,  middle));
+            }
+            
         }
 
         public double CalculateUpperMedian(List<double> values)
@@ -1894,7 +1910,7 @@ namespace ExcelScore.Forms
                     wordObj.ApplyGeneralPeriodsUp_Groups_ComparativeMerges(table, WordTableColumns , WordTableRows, numberofgroups, ComparativeTables[tableindex]);
 
 
-
+                    wordObj.ApplyGeneral_PeriodsUp_Groups_ComparativeBorders(table, WordTableRows, WordTableColumns, numberofgroups, ComparativeTables[tableindex]);
                 }
             }
         }
@@ -2384,8 +2400,11 @@ namespace ExcelScore.Forms
                         List<double> group2Values = new List<double>();
 
                         SplitGroupedParameterValues(parameter, out group1Values, out group2Values);
+                        //pythonStat.InitPython();
                         //string[] values = pythonStat.MannWhitneyUTest(group1Values, group2Values);
                         string[] values = manual.UTest(group1Values, group2Values);
+
+                        MessageBox.Show(values[1]);
 
                         TableHasSigI = TableHasSig(values);
 
@@ -3416,8 +3435,8 @@ namespace ExcelScore.Forms
         {
             if(cmb_ChooseTableFormat.Text == "Default")
             {
-                
 
+                lbl_Nominal.Visible = true;
                 list_Nominal.Visible = true;
                 pic_RemoveNominalList.Visible = true;
                 pic_AllParaToNominal.Visible = true;

@@ -11,6 +11,7 @@ using Python.Runtime;
 using CenterSpace.NMath.Core;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Accord.Statistics.Analysis;
+using Accord.Math;
 
 namespace ExcelScore.Classes
 {
@@ -400,14 +401,46 @@ namespace ExcelScore.Classes
             if (correlationType == "Pearson")
             {
                 // Calculate Pearson's correlation coefficient
-                tempResult[0] = PearsonCorrelation(x, y);
-                tempResult[1] = PearsonPValue(tempResult[0], Math.Min(x.Length, y.Length));
+
+
+                tempResult = PearsonCorrelation(x, y);
+                
             }
             else if (correlationType == "Spearman")
             {
                 // Calculate Spearman's correlation coefficient
-                tempResult[0] = SpearmanRankCorrelation(x, y);
-                tempResult[1] = SpearmanPValue(tempResult[0], Math.Min(x.Length, y.Length));
+
+                //MessageBox.Show(x.Length.ToString());
+                //x = x.Except(new double[] { -1 }).ToArray();
+                //y = y.Except(new double[] { -1 }).ToArray();
+
+                List<double> newx = new List<double>();
+                List<double> newy = new List<double>();
+                for (int i = 0; i < x.Length;i++)
+                {
+                    if (x[i] == -1)
+                    {
+                        continue;
+                    }
+                    else if (y[i] == -1)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        newx.Add(x[i]);
+                        newy.Add(y[i]);
+                    }
+                }
+
+                double[] Finalx = newx.ToArray();
+                double[] Finaly = newy.ToArray();
+
+                //MessageBox.Show(Finalx.Length.ToString());
+                //MessageBox.Show(Finaly.Length.ToString());
+
+                tempResult[0] = SpearmanRankCorrelation(Finalx, Finaly);
+                tempResult[1] = SpearmanPValue(tempResult[0], Math.Min(Finalx.Length, Finaly.Length));
             }
 
             //MessageBox.Show(tempResult[0].ToString());
@@ -425,10 +458,28 @@ namespace ExcelScore.Classes
             return result;
         }
 
-        static double PearsonCorrelation(double[] x, double[] y)
+        static double[] PearsonCorrelation(double[] x, double[] y)
         {
-            // Determine the length of the shorter array
             int length = Math.Min(x.Length, y.Length);
+            int negctr = 0;
+            for (int i = 0;i < length; i++)
+            {
+                if (x[i] == -1)
+                {
+                    negctr++;
+                }
+                else if (y[i] == -1)
+                {
+                    negctr++;
+                }
+
+            }
+
+            int finallength = length - negctr;
+
+            //MessageBox.Show(negctr.ToString());
+            // Determine the length of the shorter array
+
 
             if (length == 0)
             {
@@ -439,22 +490,32 @@ namespace ExcelScore.Classes
 
             for (int i = 0; i < length; i++)
             {
-                sumX += x[i];
-                sumY += y[i];
-                sumX2 += x[i] * x[i];
-                sumY2 += y[i] * y[i];
-                sumXY += x[i] * y[i];
+                
+                if ((x[i] == -1) || (y[i] == -1))
+                {
+                    continue;
+                }
+                else
+                {
+                    
+                    sumX += x[i];
+                    sumY += y[i];
+                    sumX2 += x[i] * x[i];
+                    sumY2 += y[i] * y[i];
+                    sumXY += x[i] * y[i];
+                }
+                
+                
             }
 
-            double numerator = (length * sumXY) - (sumX * sumY);
-            double denominator = Math.Sqrt((length * sumX2 - sumX * sumX) * (length * sumY2 - sumY * sumY));
+            double numerator = (finallength * sumXY) - (sumX * sumY);
+            double denominator = Math.Sqrt((finallength * sumX2 - sumX * sumX) * (finallength * sumY2 - sumY * sumY));
 
-            if (denominator == 0)
-            {
-                return 0; // Avoid division by zero
-            }
-
-            return numerator / denominator;
+            double[] result = new double[2];
+            result[0] = numerator / denominator;
+            result[1] = PearsonPValue(result[0], finallength);
+            //MessageBox.Show(length.ToString());
+            return result;
         }
         static double PearsonPValue(double r, int n)
         {
@@ -480,6 +541,7 @@ namespace ExcelScore.Classes
         {
             int length = Math.Min(x.Length, y.Length);
 
+            //MessageBox.Show(length.ToString());
             if (length <= 1)
             {
                 throw new ArgumentException("Both arrays must have at least two elements.");

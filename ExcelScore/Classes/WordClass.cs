@@ -389,6 +389,40 @@ namespace ExcelScore.Classes
             }
 
         }
+
+        public void ApplyGeneral_PeriodsUp_Groups_ComparativeBorders(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups , ComparativeTable comparativeTable)
+        {
+            for(int row = 0; row < WordTableRows;row++)
+            {
+                table.Rows[row].Cells[0].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[row].Cells[0].CellFormat.Borders.Right.LineWidth = 1.5f;
+
+
+                table.Rows[row].Cells[WordTableColumns-2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[row].Cells[WordTableColumns-2].CellFormat.Borders.Left.LineWidth = 1.5f;
+
+            }
+
+
+            for(int column = 0;  column < WordTableColumns;column++)
+            {
+                table.Rows[1].Cells[column].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[1].Cells[column].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+
+                if(column < WordTableColumns-2)
+                {
+                    table.Rows[WordTableRows - 1].Cells[column].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[WordTableRows - 1].Cells[column].CellFormat.Borders.Top.LineWidth = 0.5f;
+                }
+                
+
+
+            }
+
+
+
+        }
+
         public void ApplyGeneralComparativeMerges(IWTable table ,int WordTableColumns , int numberofgroups)
         {
             table.ApplyVerticalMerge(0, 0, 1);

@@ -255,7 +255,7 @@ namespace ExcelScore.Forms
                                     }
                                     else if (cellData.ToString() == ".")
                                     {
-                                        continue;
+                                        parameter.ParameterValues.Add(-1);
                                     }
 
                                     if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))

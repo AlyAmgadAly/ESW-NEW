@@ -948,7 +948,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 if (combinedSize > 40)
                 {
                     // Use the asymptotic method
-                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, alternative: "two-sided");
+                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, method : "asymptotic", alternative: "two-sided");
                 }
                 else
                 {
@@ -962,7 +962,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
                 // Format the p-value
                 string UtestString = uStatistic.ToString("0.000");
-                string pValueString = pValue <= 0.001 ? "<0.001" : pValue.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
                 string[] TestValue = new string[] { UtestString, pValueString };
 
