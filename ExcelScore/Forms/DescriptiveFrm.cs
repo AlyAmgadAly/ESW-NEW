@@ -468,9 +468,23 @@ namespace ExcelScore.Forms
             values.Sort();
 
             int n = values.Count;
-            int middle = n / 2;
 
-            return CalculateMedian(values.GetRange(0, middle));
+
+            if (n % 2 == 0)
+            {
+                int middle = n / 2;
+                // Even number of elements, calculate median of upper half excluding the median
+                return CalculateMedian(values.GetRange(0, middle));
+            }
+            else
+            {
+                //The fix was here we get same range from zero to middle but middle index is different
+
+                int middle = (n + 1) / 2;
+
+                return CalculateMedian(values.GetRange(0, middle));
+            }
+
         }
 
         public double CalculateUpperMedian(List<double> values)

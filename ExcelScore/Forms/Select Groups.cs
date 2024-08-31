@@ -16,10 +16,17 @@ namespace ExcelScore.Forms
     public partial class Select_Groups : Form
     {
         private ComparativeGroups _comparativeGroups;
+        private Letters _letters;
         public Select_Groups(ComparativeGroups comparativeGroups)
         {
             InitializeComponent();
             _comparativeGroups = comparativeGroups;
+        }
+
+        public Select_Groups(Letters letters)
+        {
+            InitializeComponent();
+            _letters = letters;
         }
 
         public string SelectParaName_SelectGrFrm { get; set; }
@@ -76,7 +83,14 @@ namespace ExcelScore.Forms
                 }
                 
             }
-            _comparativeGroups.SelectedParameterValues_CompaFrm = selectedValues;
+            if(_comparativeGroups != null)
+            {
+                _comparativeGroups.SelectedParameterValues_CompaFrm = selectedValues;
+            }
+            if(_letters != null)
+            {
+                _letters.SelectedParameterValues_LetterFrm = selectedValues;
+            }
             this.Close();
 
 

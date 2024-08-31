@@ -145,8 +145,9 @@ namespace ExcelScore.Forms
 
 
         }
-        public void AddTableUI()
+        public string AddTableUI()
         {
+            string TableName = null;
             if (!string.IsNullOrWhiteSpace(txt_TableName.Text) &&
                 list_Groups.Items.Count > 0 &&
                 list_selectedParameters.Items.Count > 0 && cmb_letterType.SelectedIndex != -1)
@@ -167,6 +168,7 @@ namespace ExcelScore.Forms
                     cmb_TableNames.Items.Add(txt_TableName.Text);
                     AddTableClass(txt_TableName.Text);
                     MessageBox.Show("Added Table " + txt_TableName.Text);
+                    TableName = txt_TableName.Text;
                 }
                 else
                 {
@@ -177,10 +179,13 @@ namespace ExcelScore.Forms
             {
                 MessageBox.Show("Please fill in table name and add items to lists!");
             }
+
+            return TableName;
         }
         private void pic_addTable_Click(object sender, EventArgs e)
         {
-            AddTableUI();
+            string TableName = AddTableUI();
+            ComparativeBasic(TableName);
         }
 
         private void pic_removeGroup_Click(object sender, EventArgs e)
@@ -240,49 +245,85 @@ namespace ExcelScore.Forms
                 }
             }
         }
-        public void GetDataValues()
+        public void GetDataValues(string TableName)
         {
             // Iterate over each table
             foreach (var table in ComparativeTables)
             {
                 // MessageBox.Show("Table " + table.TableName);
-
-                // Iterate over each parameter in the table
-                foreach (var parameter in table.Parameters)
+                if (TableName == table.TableName)
                 {
-                    // Iterate over each column
-                    for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
+                    foreach (var parameter in table.Parameters)
                     {
-                        // Get the name of the parameter from the header row
-                        object cellValue = worksheet.Cells[0, col].Value;
-                        string parameterName = cellValue?.ToString();
-
-                        if (!string.IsNullOrEmpty(parameterName) && parameter.Name == parameterName)
+                        // Iterate over each column
+                        for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
                         {
-                            //MessageBox.Show("Parameter " + parameterName);
+                            // Get the name of the parameter from the header row
+                            object cellValue = worksheet.Cells[0, col].Value;
+                            string parameterName = cellValue?.ToString();
 
-                            // Iterate over each row in the column
-                            for (int row = 1; row <= worksheet.Cells.MaxDataRow; row++)
+                            if (!string.IsNullOrEmpty(parameterName) && parameter.Name == parameterName)
                             {
-                                // Get the cell data
-                                object cellData = worksheet.Cells[row, col].Value;
-                                double cellValueDouble;
+                                //MessageBox.Show("Parameter " + parameterName);
 
-                                if (cellData.ToString() == ".")
+                                // Iterate over each row in the column
+                                for (int row = 1; row <= worksheet.Cells.MaxDataRow; row++)
                                 {
-                                    continue;
-                                }
-                                // Parse the cell data as double
-                                if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))
-                                {
-                                    // Add the cell value to the parameter's values list
-                                    parameter.ParameterValues.Add(cellValueDouble);
-                                    //MessageBox.Show(cellValueDouble.ToString());
+                                    // Get the cell data
+                                    object cellData = worksheet.Cells[row, col].Value;
+                                    double cellValueDouble;
+
+                                    if (cellData == null)
+                                    {
+                                        MessageBox.Show("Data is empty at Parameter : " + parameter.Name);
+                                        break;
+                                    }
+                                    else if (cellData.ToString() == ".")
+                                    {
+                                        continue;
+                                    }
+                                    object SelectData = worksheet.Cells[row, SelectParameterColIndex].Value;
+                                    //MessageBox.Show(SelectParameterColIndex.ToString());
+
+                                    double SelectDataDouble;
+
+
+                                    if (list_Select.Items.Count == 0)
+                                    {
+                                        if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))
+                                        {
+                                            //MessageBox.Show(cellValueDouble.ToString());
+                                            // Add the cell value to the parameter's values list
+                                            parameter.ParameterValues.Add(cellValueDouble);
+                                            //MessageBox.Show(cellValueDouble.ToString());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (SelectData != null && double.TryParse(SelectData.ToString(), out SelectDataDouble))
+                                        {
+                                            if (SelectedParameterValues_LetterFrm.Contains(SelectDataDouble))
+                                            {
+                                                if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))
+                                                {
+                                                    //MessageBox.Show(cellValueDouble.ToString());
+                                                    // Add the cell value to the parameter's values list
+                                                    //MessageBox.Show("Select value " +SelectData.ToString());
+                                                    //MessageBox.Show("Cell value "+cellValueDouble.ToString());
+
+                                                    parameter.ParameterValues.Add(cellValueDouble);
+                                                    //MessageBox.Show(cellValueDouble.ToString());
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                // Iterate over each parameter in the table
+                
             }
         }
 
@@ -314,79 +355,121 @@ namespace ExcelScore.Forms
             return -1;
 
         }
-        public void ComparativeBasic()
+        public void ComparativeBasic(string TableName)
         {
-            GetDataValues();
-            pythonStat.InitPython();
+            GetDataValues(TableName);
+            
             foreach (ComparativeTable table in ComparativeTables)
             {
-                int groupColumnIndex = newFindGroupColumnIndex(table);
-                //MessageBox.Show(groupColumnIndex.ToString());
-                if (groupColumnIndex == -1)
+                if(TableName == table.TableName)
                 {
-                    continue;
-                }
-                // Iterate through each parameter of the table
-                foreach (Parameter parameter in table.Parameters)
-                {
-                    if (parameter.IsGroup)
+                    int groupColumnIndex = newFindGroupColumnIndex(table);
+                    //MessageBox.Show(groupColumnIndex.ToString());
+                    if (groupColumnIndex == -1)
                     {
-                        // Skip group parameters
                         continue;
                     }
-
-                    // Get the column index of the parameter
-                    int parameterColumnIndex = -1;
-
-                    for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
+                    // Iterate through each parameter of the table
+                    foreach (Parameter parameter in table.Parameters)
                     {
-                        object cellValue = worksheet.Cells[0, col].Value;
-                        string parameterName = cellValue?.ToString();
-
-                        if (!string.IsNullOrEmpty(parameterName) && parameterName == parameter.Name)
+                        if (parameter.IsGroup)
                         {
-                            parameterColumnIndex = col;
-                            break;
+                            // Skip group parameters
+                            continue;
                         }
-                    }
 
-                    if (parameterColumnIndex != -1)
-                    {
-                        // Iterate through each row to group the data
-                        for (int row = 1; row <= worksheet.Cells.MaxDataRow; row++)
+                        // Get the column index of the parameter
+                        int parameterColumnIndex = -1;
+
+                        for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
                         {
-                            // Get the group value for the current row
-                            object groupCellValue = worksheet.Cells[row, groupColumnIndex].Value;
-                            double groupValue;
+                            object cellValue = worksheet.Cells[0, col].Value;
+                            string parameterName = cellValue?.ToString();
 
-                            if (groupCellValue != null && double.TryParse(groupCellValue.ToString(), out groupValue))
+                            if (!string.IsNullOrEmpty(parameterName) && parameterName == parameter.Name)
                             {
-                                // Get the parameter value for the current row
-                                object parameterCellValue = worksheet.Cells[row, parameterColumnIndex].Value;
-                                double parameterValue;
-
-                                if (parameterCellValue.ToString() == ".")
-                                {
-                                    parameter.hasLowerN = true;
-                                    continue;
-                                }
-                                if (parameterCellValue != null && double.TryParse(parameterCellValue.ToString(), out parameterValue))
-                                {
-                                    // Add the parameter value to the corresponding group
-                                    if (!parameter.GroupedParameterValues.ContainsKey(groupValue))
-                                    {
-                                        parameter.GroupedParameterValues[groupValue] = new List<double>();
-                                    }
-
-                                    parameter.GroupedParameterValues[groupValue].Add(parameterValue);
-                                }
+                                parameterColumnIndex = col;
+                                break;
                             }
                         }
 
+                        if (parameterColumnIndex != -1)
+                        {
+                            // Iterate through each row to group the data
+                            for (int row = 1; row <= worksheet.Cells.MaxDataRow; row++)
+                            {
+                                // Get the group value for the current row
+                                object groupCellValue = worksheet.Cells[row, groupColumnIndex].Value;
+                                double groupValue;
+
+                                if (groupCellValue != null && double.TryParse(groupCellValue.ToString(), out groupValue))
+                                {
+                                    // Get the parameter value for the current row
+                                    object parameterCellValue = worksheet.Cells[row, parameterColumnIndex].Value;
+                                    double parameterValue;
+
+
+                                    if (parameterCellValue == null)
+                                    {
+
+                                        break;
+                                    }
+                                    if (parameterCellValue.ToString() == ".")
+                                    {
+                                        parameter.hasLowerN = true;
+                                        continue;
+                                    }
+
+                                    if (list_Select.Items.Count == 0)
+                                    {
+                                        if (parameterCellValue != null && double.TryParse(parameterCellValue.ToString(), out parameterValue))
+                                        {
+                                            // Add the parameter value to the corresponding group
+                                            if (!parameter.GroupedParameterValues.ContainsKey(groupValue))
+                                            {
+                                                parameter.GroupedParameterValues[groupValue] = new List<double>();
+                                            }
+
+                                            parameter.GroupedParameterValues[groupValue].Add(parameterValue);
+                                            //MessageBox.Show(groupValue.ToString());
+                                            //MessageBox.Show(parameterValue.ToString());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        object SelectData = worksheet.Cells[row, SelectParameterColIndex].Value;
+                                        //MessageBox.Show(SelectParameterColIndex.ToString());
+
+                                        double SelectDataDouble;
+                                        if (SelectData != null && double.TryParse(SelectData.ToString(), out SelectDataDouble))
+                                        {
+                                            if (SelectedParameterValues_LetterFrm.Contains(SelectDataDouble))
+                                            {
+                                                if (parameterCellValue != null && double.TryParse(parameterCellValue.ToString(), out parameterValue))
+                                                {
+                                                    // Add the parameter value to the corresponding group
+                                                    if (!parameter.GroupedParameterValues.ContainsKey(groupValue))
+                                                    {
+                                                        parameter.GroupedParameterValues[groupValue] = new List<double>();
+                                                    }
+
+                                                    parameter.GroupedParameterValues[groupValue].Add(parameterValue);
+                                                    //MessageBox.Show(groupValue.ToString());
+                                                    //MessageBox.Show(parameterValue.ToString());
+                                                }
+                                            }
+                                        }
+
+                                    }
+
+                                }
+                            }
+
+                        }
                     }
                 }
             }
-            FormatParameters();
+            FormatParameters(TableName);
         }
         private void pic_removeTableSelected_Click(object sender, EventArgs e)
         {
@@ -408,88 +491,92 @@ namespace ExcelScore.Forms
             cmb_TableNames.Text = "";
             list_ViewTableParameters.Items.Clear();
         }
-        public void FormatParameters()
+        public void FormatParameters(string TableName)
         {
             foreach (ComparativeTable table in ComparativeTables)
             {
-                //MessageBox.Show(table.TableName);
-                foreach (Parameter parameter in table.Parameters)
+                if(TableName == table.TableName)
                 {
-                    MessageBox.Show(parameter.Name);
-                    if (parameter.IsGroup || parameter.GroupedParameterValues.Count == 0)
+                    foreach (Parameter parameter in table.Parameters)
                     {
-                        continue;
-                    }
-
-                    foreach (var kvp in parameter.GroupedParameterValues)
-                    {
-                        double groupValue = kvp.Key;
-                        List<double> values = kvp.Value;
-                        int totalCount = values.Count;
-
-                        // Initialize the formatted values dictionary for the current group value
-                        if (!parameter.FormattedValues.ContainsKey(groupValue))
+                        //MessageBox.Show(parameter.Name);
+                        if (parameter.IsGroup || parameter.GroupedParameterValues.Count == 0)
                         {
-                            parameter.FormattedValues[groupValue] = new Dictionary<string, string>();
+                            continue;
                         }
 
-                        // Check if the parameter is nominal
-                        if (parameter.NominalOrScale == "Nominal")
+                        foreach (var kvp in parameter.GroupedParameterValues)
                         {
-                            // Calculate frequency and percentage for each distinct value in the group
-                            foreach (var distinctValue in values.Distinct())
+                            double groupValue = kvp.Key;
+                            List<double> values = kvp.Value;
+                            int totalCount = values.Count;
+
+                            // Initialize the formatted values dictionary for the current group value
+                            if (!parameter.FormattedValues.ContainsKey(groupValue))
                             {
-                                int frequency = values.Count(v => v == distinctValue);
-                                double percentage = (frequency / (double)totalCount) * 100;
-
-
-                                //MessageBox.Show(frequency.ToString());
-                                // Store frequency and percentage in the FormattedValues dictionary
-                                parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
-                                parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F2}%";
+                                parameter.FormattedValues[groupValue] = new Dictionary<string, string>();
                             }
-                        }
-                        else if (parameter.NominalOrScale == "Scale")
-                        {
-                            // Calculate scale statistics
-                            double minValue = values.Min();
-                            double maxValue = values.Max();
-                            double meanValue = values.Average();
-                            double stdDevValue = Math.Sqrt(values.Select(x => Math.Pow(x - meanValue, 2)).Sum() / (values.Count - 1));
-                            double medianValue;
-                            int middleIndex = values.Count / 2;
-                            if (values.Count % 2 == 0)
+
+                            // Check if the parameter is nominal
+                            if (parameter.NominalOrScale == "Nominal")
                             {
-                                // For even count of elements, take the average of the two middle values
-                                double middleValue1 = values.OrderBy(x => x).ElementAt(middleIndex - 1);
-                                double middleValue2 = values.OrderBy(x => x).ElementAt(middleIndex);
-                                medianValue = (middleValue1 + middleValue2) / 2.0;
+                                // Calculate frequency and percentage for each distinct value in the group
+                                foreach (var distinctValue in values.Distinct())
+                                {
+                                    int frequency = values.Count(v => v == distinctValue);
+                                    double percentage = (frequency / (double)totalCount) * 100;
+
+
+                                    //MessageBox.Show(frequency.ToString());
+                                    // Store frequency and percentage in the FormattedValues dictionary
+                                    parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
+                                    parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F2}%";
+                                }
                             }
-                            else
+                            else if (parameter.NominalOrScale == "Scale")
                             {
-                                // For odd count of elements, directly take the middle value
-                                medianValue = values.OrderBy(x => x).ElementAt(middleIndex);
+                                // Calculate scale statistics
+                                double minValue = values.Min();
+                                double maxValue = values.Max();
+                                double meanValue = values.Average();
+                                double stdDevValue = Math.Sqrt(values.Select(x => Math.Pow(x - meanValue, 2)).Sum() / (values.Count - 1));
+                                double medianValue;
+                                int middleIndex = values.Count / 2;
+                                if (values.Count % 2 == 0)
+                                {
+                                    // For even count of elements, take the average of the two middle values
+                                    double middleValue1 = values.OrderBy(x => x).ElementAt(middleIndex - 1);
+                                    double middleValue2 = values.OrderBy(x => x).ElementAt(middleIndex);
+                                    medianValue = (middleValue1 + middleValue2) / 2.0;
+                                }
+                                else
+                                {
+                                    // For odd count of elements, directly take the middle value
+                                    medianValue = values.OrderBy(x => x).ElementAt(middleIndex);
+                                }
+                                double perc25th = CalculateLowerMedian(values);
+                                double perc75th = CalculateUpperMedian(values);
+
+                                // Format scale parameter values
+                                string formattedMinMax = FormatMinMaxValue(minValue, maxValue);
+                                string formattedMeanStd = FormatMeanStdValue(meanValue, stdDevValue);
+                                string formattedMedian = FormatSingleValue(medianValue);
+                                string formattedIQR = FormatMinMaxValue(perc25th, perc75th);
+
+                                //MessageBox.Show(formattedMinMax);
+                                //MessageBox.Show(formattedMinMax);
+
+                                // Store scale statistics in the FormattedValues dictionary
+                                parameter.FormattedValues[groupValue]["Min-Max"] = formattedMinMax;
+                                parameter.FormattedValues[groupValue]["Mean ± StdDev"] = formattedMeanStd;
+                                parameter.FormattedValues[groupValue]["Median"] = formattedMedian + " (" + formattedIQR + ")";
+                                //parameter.FormattedValues[groupValue]["IQR"] = formattedIQR;
                             }
-                            double perc25th = CalculateLowerMedian(values);
-                            double perc75th = CalculateUpperMedian(values);
-
-                            // Format scale parameter values
-                            string formattedMinMax = FormatMinMaxValue(minValue, maxValue);
-                            string formattedMeanStd = FormatMeanStdValue(meanValue, stdDevValue);
-                            string formattedMedian = FormatSingleValue(medianValue);
-                            string formattedIQR = FormatMinMaxValue(perc25th, perc75th);
-
-                            //MessageBox.Show(formattedMinMax);
-                            //MessageBox.Show(formattedMinMax);
-
-                            // Store scale statistics in the FormattedValues dictionary
-                            parameter.FormattedValues[groupValue]["Min-Max"] = formattedMinMax;
-                            parameter.FormattedValues[groupValue]["Mean ± StdDev"] = formattedMeanStd;
-                            parameter.FormattedValues[groupValue]["Median"] = formattedMedian + " (" + formattedIQR + ")";
-                            //parameter.FormattedValues[groupValue]["IQR"] = formattedIQR;
                         }
                     }
                 }
+                //MessageBox.Show(table.TableName);
+                
             }
         }
         public double CalculateMedian(List<double> values)
@@ -1239,9 +1326,9 @@ namespace ExcelScore.Forms
             {
                 foreach (var parameter in item.Parameters)
                 {
-                    parameter.ParameterValues.Clear();
-                    parameter.FormattedValues.Clear();
-                    parameter.GroupedParameterValues.Clear();
+                    //parameter.ParameterValues.Clear();
+                    //parameter.FormattedValues.Clear();
+                    //parameter.GroupedParameterValues.Clear();
                     parameter.EachGroupCount.Clear();
                     parameter.FPairwise.Clear();
                     parameter.LabelPairwise.Clear();
@@ -1251,8 +1338,8 @@ namespace ExcelScore.Forms
         }
         private void btn_Done_Click(object sender, EventArgs e)
         {
+            pythonStat.InitPython();
 
-            ComparativeBasic();
 
             wordObj.InitWord();
 
@@ -1267,6 +1354,104 @@ namespace ExcelScore.Forms
         private void btn_ChooseTable_Click(object sender, EventArgs e)
         {
 
+        }
+        public int GetSelectParameterCol()
+        {
+            string SelectParamter = list_Select.Items[0].ToString();
+            for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
+            {
+                int columnindex = -1;
+                // Get the name of the parameter from the header row
+                object cellValue = worksheet.Cells[0, col].Value;
+                string parameterName = cellValue?.ToString();
+
+                if (!string.IsNullOrEmpty(parameterName) && SelectParamter == parameterName)
+                {
+
+                    //MessageBox.Show("Parameter " + parameterName);
+                    columnindex = col;
+                    // Iterate over each row in the column
+                    for (int row = 1; row <= worksheet.Cells.MaxDataRow; row++)
+                    {
+                        // Get the cell data
+                        object cellData = worksheet.Cells[row, col].Value;
+                        double cellValueDouble;
+
+                        if (cellData.ToString() == ".")
+                        {
+                            continue;
+                        }
+                        // Parse the cell data as double
+                        if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))
+                        {
+                            // Add the cell value to the parameter's values list
+                            AllParameter_Select_Values.Add(cellValueDouble);
+                            //MessageBox.Show(cellValueDouble.ToString());
+                        }
+                    }
+                    //MessageBox.Show(columnindex.ToString());
+                    return columnindex;
+
+                }
+
+            }
+            return -1;
+
+
+        }
+
+        public int SelectParameterColIndex { get; set; } = new int();
+
+        public List<double> AllParameter_Select_Values { get; set; } = new List<double>();
+        private void pic_AllParaToSelect_Click(object sender, EventArgs e)
+        {
+            
+            foreach (object selectedItem in list_AllParameters.SelectedItems)
+            {
+                list_Select.Items.Add(selectedItem.ToString());
+
+            }
+
+
+            SelectParameterColIndex = GetSelectParameterCol();
+        }
+        public List<double> SelectedParameterValues_LetterFrm { get; set; } = new List<double>();
+        private void pic_groups_select_Click(object sender, EventArgs e)
+        {
+            if (list_Select.Items.Count == 1)
+            {
+
+
+
+                Select_Groups select_Groupsobj = new Select_Groups(this);
+                select_Groupsobj.SelectParaName_SelectGrFrm = list_Select.Items[0].ToString();
+                select_Groupsobj.SelectParaValues_SelectGrFrm = AllParameter_Select_Values;
+
+
+                select_Groupsobj.ShowDialog();
+            }
+        }
+
+        private void pic_RemoveSelectPara_Click(object sender, EventArgs e)
+        {
+            if (list_Select.SelectedIndex != -1)
+            {
+
+                var selectedItems = new List<object>();
+                foreach (var selectedItem in list_Select.SelectedItems)
+                {
+                    selectedItems.Add(selectedItem);
+                }
+
+
+                foreach (var selectedItem in selectedItems)
+                {
+                    list_Select.Items.Remove(selectedItem);
+                }
+
+            }
+            else
+                MessageBox.Show("Please Select Item!");
         }
     }
 }

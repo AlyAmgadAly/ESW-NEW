@@ -16,6 +16,7 @@ using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Security.Cryptography.X509Certificates;
 using System.Runtime.CompilerServices;
+using CenterSpace.NMath.Core;
 
 namespace ExcelScore.Classes
 {
@@ -409,13 +410,34 @@ namespace ExcelScore.Classes
                 table.Rows[1].Cells[column].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                 table.Rows[1].Cells[column].CellFormat.Borders.Bottom.LineWidth = 1.5f;
 
-                if(column < WordTableColumns-2)
+                if(column >0)
+                {
+                    table.Rows[1].Cells[column].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[1].Cells[column].CellFormat.Borders.Top.LineWidth = 0.5f;
+                }
+                
+
+                if (column < WordTableColumns-2)
                 {
                     table.Rows[WordTableRows - 1].Cells[column].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                     table.Rows[WordTableRows - 1].Cells[column].CellFormat.Borders.Top.LineWidth = 0.5f;
                 }
                 
 
+
+            }
+
+            for (int i = 3; i < (numberofgroups * 5) + 3; i = i + 5)
+            {
+                for (int column = 0; column < WordTableColumns; column++)
+                {
+                    table.Rows[i + 3].Cells[column].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[i + 3].Cells[column].CellFormat.Borders.Top.LineWidth = 0.5f;
+
+                    table.Rows[i + 3].Cells[column].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[i + 3].Cells[column].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                }
+                    
 
             }
 
@@ -448,7 +470,7 @@ namespace ExcelScore.Classes
 
                 table.ApplyHorizontalMerge(i + 3, 1, comparativeTable.Parameters.Count - 1);
 
-                table.ApplyHorizontalMerge(i + 3, WordTableColumns - 2, WordTableColumns - 1);
+                //table.ApplyHorizontalMerge(i + 3, WordTableColumns - 2, WordTableColumns - 1);
 
             }
 
@@ -456,7 +478,7 @@ namespace ExcelScore.Classes
             table.ApplyVerticalMerge(WordTableColumns - 2, 0, 1);
 
 
-            table.ApplyHorizontalMerge(WordTableRows-1, WordTableColumns - 2, WordTableColumns - 1);
+            //table.ApplyHorizontalMerge(WordTableRows-1, WordTableColumns - 2, WordTableColumns - 1);
 
 
 
@@ -859,6 +881,29 @@ namespace ExcelScore.Classes
                 }
             }
 
+
+        }
+
+        public void SetComparative_PeriodsUp_GroupsWidths(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups, ComparativeTable comparativeTable)
+        {
+            for (int i = 0; i < WordTableRows; i++)
+            {
+                table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(4f);
+            }
+
+            for(int col = 1;col <= comparativeTable.Parameters.Count-1;col++)
+            {
+                for (int i = 0; i < WordTableRows; i++)
+                {
+                    table.Rows[i].Cells[col].Width = SetColumnWidthInCentimeters(3.3f);
+                }
+            }
+
+            for (int i = 0; i < WordTableRows; i++)
+            {
+                table.Rows[i].Cells[WordTableColumns-2].Width = SetColumnWidthInCentimeters(1.7f);
+                table.Rows[i].Cells[WordTableColumns -1].Width = SetColumnWidthInCentimeters(1.7f);
+            }
 
         }
 
