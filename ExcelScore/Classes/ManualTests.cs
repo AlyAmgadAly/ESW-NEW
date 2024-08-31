@@ -436,9 +436,12 @@ namespace ExcelScore.Classes
                 double[] Finalx = newx.ToArray();
                 double[] Finaly = newy.ToArray();
 
+
+
+
                 //MessageBox.Show(Finalx.Length.ToString());
                 //MessageBox.Show(Finaly.Length.ToString());
-
+                //tempResult[0] = ComputeRankCorrelation(Finalx, Finaly);
                 tempResult[0] = SpearmanRankCorrelation(Finalx, Finaly);
                 tempResult[1] = SpearmanPValue(tempResult[0], Math.Min(Finalx.Length, Finaly.Length));
             }
@@ -447,8 +450,8 @@ namespace ExcelScore.Classes
             //MessageBox.Show(tempResult[1].ToString());
 
 
-            tempResult[0] = Math.Round(tempResult[0] , 3);
-            tempResult[1] = Math.Round(tempResult[1], 3);
+            tempResult[0] = Math.Round(tempResult[0] , 4);
+            tempResult[1] = Math.Round(tempResult[1], 4);
 
             
 
@@ -541,7 +544,6 @@ namespace ExcelScore.Classes
         {
             int length = Math.Min(x.Length, y.Length);
 
-            //MessageBox.Show(length.ToString());
             if (length <= 1)
             {
                 throw new ArgumentException("Both arrays must have at least two elements.");
@@ -559,7 +561,7 @@ namespace ExcelScore.Classes
                 sumD2 += d * d;
             }
 
-            double spearmanRho = 1 - (6 * sumD2) / (length * (length * length - 1));
+            double spearmanRho = 1 - (6.0 * sumD2) / (length * (length * length - 1.0));
             return spearmanRho;
         }
 
@@ -603,6 +605,7 @@ namespace ExcelScore.Classes
 
             return ranks;
         }
+
         static double SpearmanPValue(double rho, int n)
         {
             if (n <= 2)
@@ -691,6 +694,9 @@ namespace ExcelScore.Classes
 
 
         }
+
+
+        
 
 
     }
