@@ -1911,6 +1911,16 @@ namespace ExcelScore.Forms
 
 
                     wordObj.ApplyGeneral_PeriodsUp_Groups_ComparativeBorders(table, WordTableRows, WordTableColumns, numberofgroups, ComparativeTables[tableindex]);
+
+                    wordObj.SetComparative_PeriodsUp_GroupsWidths(table, WordTableRows, WordTableColumns, numberofgroups, ComparativeTables[tableindex]);
+
+
+
+
+
+
+                    wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+                    wordObj.FormatTable(table, 12);
                 }
             }
         }

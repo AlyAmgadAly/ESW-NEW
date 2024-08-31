@@ -891,8 +891,20 @@ namespace ExcelScore.Classes
                 table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(4f);
             }
 
-            
-                
+            for(int col = 1;col <= comparativeTable.Parameters.Count-1;col++)
+            {
+                for (int i = 0; i < WordTableRows; i++)
+                {
+                    table.Rows[i].Cells[col].Width = SetColumnWidthInCentimeters(3.3f);
+                }
+            }
+
+            for (int i = 0; i < WordTableRows; i++)
+            {
+                table.Rows[i].Cells[WordTableColumns-2].Width = SetColumnWidthInCentimeters(1.7f);
+                table.Rows[i].Cells[WordTableColumns -1].Width = SetColumnWidthInCentimeters(1.7f);
+            }
+
         }
 
         public void SetComparativeWidths(IWTable table, int WordTableRows, int WordTableColumns , int numberofgroups , ComparativeTable comparativeTable)
