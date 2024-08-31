@@ -1918,6 +1918,8 @@ namespace ExcelScore.Forms
         {
             //ComparativeBasic();
 
+            pythonStat.InitPython();
+
             document = wordObj.InitWord();
 
             
