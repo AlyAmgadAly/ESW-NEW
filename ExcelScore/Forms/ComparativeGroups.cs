@@ -1957,16 +1957,16 @@ namespace ExcelScore.Forms
                 {
                     var key = kvp.Key;
                     var values = kvp.Value;
-                    count = values.Count;
-
+                    count = values.Count + tempctr;
                     
-                    for (int i = 0; i < count; i++)
+                    
+                    for (int i = tempctr; i < count; i++)
                     {
                         firstParameterValues.Add(scaleParameters[0].ParameterValues[i]);
                         secondParameterValues.Add(scaleParameters[1].ParameterValues[i]);
 
-
                     }
+                    tempctr = count;
 
                     var firstParameterArray = firstParameterValues.ToArray();
                     var secondParameterArray = secondParameterValues.ToArray();
