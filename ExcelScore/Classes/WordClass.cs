@@ -30,7 +30,7 @@ namespace ExcelScore.Classes
         public WordDocument InitWord()
         {
             document = new WordDocument();
-
+            
             
 
             return document;
@@ -883,7 +883,62 @@ namespace ExcelScore.Classes
 
 
         }
+        public void SetComparative_PeriodsUp_Groups_Headers(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups, ComparativeTable comparativeTable)
+        {
+            if(comparativeTable.Parameters.Count-1 >= 3)
+            {
+                AddPara_Center(table, 0, WordTableColumns - 2, "F");
+            }
+            else if(comparativeTable.Parameters.Count-1 < 3)
+            {
+                AddPara_Center(table, 0, WordTableColumns - 2, "t");
+            }
 
+            AddPara_Center(table, 0, WordTableColumns - 1, "p");
+
+            int col = 1;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(!parameter.IsGroup)
+                {
+                    AddPara_Center(table, 1, col, parameter.Name);
+                    col++;
+                }
+            }
+
+
+            int row = 2;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup)
+                {
+                    var sortedKeys = parameter.DIC_LablesIfNomainal.Keys.OrderBy(key => key).ToList();
+                    foreach (var key in sortedKeys)
+                    {
+                        int count = parameter.ParameterValues.Count(x => x == key);
+                        AddPara_NoCenter(table , row , 0 , parameter.DIC_LablesIfNomainal[key] + " (n = "+count+")");
+
+                        
+                        Addpara_NoCenterNoBOLD(table, row+1, 0, "Min. – Max.");
+                        LeftIntendBeforeText(table, row + 1, 0, 14.17f);
+
+                        Addpara_NoCenterNoBOLD(table, row+2, 0, "Mean ± SD.");
+                        LeftIntendBeforeText(table, row + 2, 0, 14.17f);
+
+                        Addpara_NoCenterNoBOLD(table, row+3, 0, "Median (IQR)");
+                        LeftIntendBeforeText(table, row + 3, 0, 14.17f);
+
+                        AddPara_Center(table, row+4, 0, "Sig. bet. periods.");
+
+                        row = row + 5;
+                    }
+                }
+            }
+
+            AddPara_Center(table, WordTableRows-1, 0, "t (p0)");
+
+
+        }
         public void SetComparative_PeriodsUp_GroupsWidths(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups, ComparativeTable comparativeTable)
         {
             for (int i = 0; i < WordTableRows; i++)

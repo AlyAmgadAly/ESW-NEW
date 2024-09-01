@@ -695,7 +695,30 @@ namespace ExcelScore.Classes
 
         }
 
-        
+        public string[] Tpaired(double[] Para1 , double[] Para2)
+        {
+
+            var Tpaired = new Accord.Statistics.Testing.PairedTTest(Para1, Para2);
+
+
+            double Ttestt = Tpaired.Statistic;
+            double pvalueT = Tpaired.PValue;
+
+
+            Ttestt = Math.Round(Ttestt, 3);
+            pvalueT = Math.Round(pvalueT, 3);
+
+            string TtestString = Ttestt.ToString("0.000");
+            TtestString = TtestString.Replace("-", "");
+
+            // MessageBox.Show(EqualVariance.ToString());
+            //MessageBox.Show("T test p " + pvalueT.ToString());
+
+            // Format the p-value
+            string pValueString = pvalueT < 0.001 ? "<0.001" : pvalueT.ToString("0.000");
+
+            return new string[] { TtestString, pValueString };
+        }
 
 
         

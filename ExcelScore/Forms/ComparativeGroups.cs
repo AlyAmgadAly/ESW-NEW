@@ -1,7 +1,9 @@
-﻿using Accord.Statistics.Kernels;
+﻿using Accord.Math;
+using Accord.Statistics.Kernels;
 using Aspose.Cells;
 using Aspose.Cells.Charts;
 using Aspose.Cells.Drawing;
+using CenterSpace.NMath.Core;
 using ExcelScore.Classes;
 using Humanizer;
 using MathNet.Numerics.Statistics;
@@ -1585,6 +1587,8 @@ namespace ExcelScore.Forms
                                                 parameter.GroupedParameterValues[groupValue] = new List<double>();
                                             }
 
+                                            //log(groupValue);
+                                            //log(parameterValue);
                                             parameter.GroupedParameterValues[groupValue].Add(parameterValue);
                                             //MessageBox.Show(groupValue.ToString());
                                             //MessageBox.Show(parameterValue.ToString());
@@ -1915,8 +1919,15 @@ namespace ExcelScore.Forms
                     wordObj.SetComparative_PeriodsUp_GroupsWidths(table, WordTableRows, WordTableColumns, numberofgroups, ComparativeTables[tableindex]);
 
 
+                    wordObj.SetComparative_PeriodsUp_Groups_Headers(table, WordTableRows, WordTableColumns, numberofgroups, ComparativeTables[tableindex]);
 
 
+                    InsertData_scale_PeriodsUp_Groups(table, ComparativeTables[tableindex]);
+
+                    GetGroupsTest_PeriodsUp_groups(table , ComparativeTables[tableindex] , WordTableRows);
+
+
+                    GetPeriodsTest_PeriodsUp_groups(table, ComparativeTables[tableindex] , WordTableColumns);
 
 
                     wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
@@ -1924,9 +1935,161 @@ namespace ExcelScore.Forms
                 }
             }
         }
+        public void GetPeriodsTest_PeriodsUp_groups(IWTable table, ComparativeTable comparativeTable, int WordTableColumns)
+        {
+            var scaleParameters = comparativeTable.Parameters
+                                                  .Where(p => p.NominalOrScale == "Scale")
+                                                  .ToList();
+
+            if (scaleParameters.Count == 2)
+            {
+
+               
+
+
+                int row = 3;
+                var firstParameterValues = new List<double>();
+                var secondParameterValues = new List<double>();
+
+                int count = 0;
+                int tempctr = 0;
+                foreach (var kvp in scaleParameters[0].GroupedParameterValues)
+                {
+                    var key = kvp.Key;
+                    var values = kvp.Value;
+                    count = values.Count;
+
+                    
+                    for (int i = 0; i < count; i++)
+                    {
+                        firstParameterValues.Add(scaleParameters[0].ParameterValues[i]);
+                        secondParameterValues.Add(scaleParameters[1].ParameterValues[i]);
+
+
+                    }
+
+                    var firstParameterArray = firstParameterValues.ToArray();
+                    var secondParameterArray = secondParameterValues.ToArray();
+
+                    string[] result = manual.Tpaired(firstParameterArray, secondParameterArray);
+                    wordObj.InsertTest_P(table, row, WordTableColumns - 2, result);
+                    row += 5;
+
+
+                    firstParameterValues.Clear();
+                    secondParameterValues.Clear();
+                    firstParameterArray.Clear();
+                    secondParameterArray.Clear();
+
+
+
+                }
+
+
+
+
+            }
+        }
+
+        public void GetGroupsTest_PeriodsUp_groups(IWTable table ,ComparativeTable comparativeTable , int WordTableRows)
+        {
+
+            int col = 1;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(parameter.IsGroup)
+                {
+                    continue;
+                }
+
+                if(parameter.NominalOrScale == "Scale")
+                {
+
+                    
+                    if(parameter.NormalOrAbnormal == "Normal")
+                    {
+                        List<double> group1Values = new List<double>();
+                        List<double> group2Values = new List<double>();
+
+                        SplitGroupedParameterValues(parameter, out group1Values, out group2Values);
+
+                        string[] values = manual.StudentT_Unpaired(group1Values, group2Values);
+
+
+
+                        wordObj.AddParaCombined(table, WordTableRows-1, col, values[0], false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+
+
+                        WParagraph testparaHighlight = (WParagraph)table[WordTableRows-1, col].Paragraphs[0];
+                        
+
+                        WTextRange PText = new WTextRange(testparaHighlight.Document);
+                        PText.Text = " (" + values[1] + ")";
+
+                        testparaHighlight.ChildEntities.Insert(1, PText);
+                        
+                        
+
+
+                        col++;
+                    }
+
+
+
+
+
+
+
+                }
+            }
+            
+        }
+
+        public void InsertData_scale_PeriodsUp_Groups(IWTable table , ComparativeTable comparativeTable)
+        {
+            int col = 1;
+            int row = 3;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup)
+                {
+                    continue;
+                }
+                if (parameter.NominalOrScale == "Scale")
+                {
+
+                    var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
+
+
+
+                    foreach (var groupValue in sortedKeys)
+                    {
+
+                        Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
+
+
+                        foreach (var stat in formattedValues)
+                        {
+                            wordObj.Addpara_CenterNoBOLD(table, row, col, stat.Value);
+                            row++;
+
+                        }
+                        row = row + 2;
+
+
+
+                    }
+
+                }
+
+                col++;
+                row = 3;
+            }
+        }
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
+            
 
             pythonStat.InitPython();
 
