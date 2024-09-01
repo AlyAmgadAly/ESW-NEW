@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -1944,8 +1945,6 @@ namespace ExcelScore.Forms
             if (scaleParameters.Count == 2)
             {
 
-               
-
 
                 int row = 3;
                 var firstParameterValues = new List<double>();
@@ -1984,9 +1983,6 @@ namespace ExcelScore.Forms
 
 
                 }
-
-
-
 
             }
         }
@@ -2029,6 +2025,33 @@ namespace ExcelScore.Forms
                         testparaHighlight.ChildEntities.Insert(1, PText);
                         
                         
+
+
+                        col++;
+                    }
+
+
+                    else if(parameter.NormalOrAbnormal == "Abnormal")
+                    {
+                        List<double> group1Values = new List<double>();
+                        List<double> group2Values = new List<double>();
+
+                        SplitGroupedParameterValues(parameter, out group1Values, out group2Values);
+
+                        string[] values = manual.UTest(group1Values, group2Values);
+
+                        wordObj.AddParaCombined(table, WordTableRows - 1, col, values[0], false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+
+
+                        WParagraph testparaHighlight = (WParagraph)table[WordTableRows - 1, col].Paragraphs[0];
+
+
+                        WTextRange PText = new WTextRange(testparaHighlight.Document);
+                        PText.Text = " (" + values[1] + ")";
+
+                        testparaHighlight.ChildEntities.Insert(1, PText);
+
+
 
 
                         col++;
@@ -2091,7 +2114,7 @@ namespace ExcelScore.Forms
             //ComparativeBasic();
             
 
-            pythonStat.InitPython();
+            //pythonStat.InitPython();
 
             document = wordObj.InitWord();
 

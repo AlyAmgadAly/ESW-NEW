@@ -429,7 +429,8 @@ namespace ExcelScore.Forms
                                             {
                                                 parameter.GroupedParameterValues[groupValue] = new List<double>();
                                             }
-
+                                            //MessageBox.Show(groupValue.ToString());
+                                            //MessageBox.Show(parameterValue.ToString());
                                             parameter.GroupedParameterValues[groupValue].Add(parameterValue);
                                             //MessageBox.Show(groupValue.ToString());
                                             //MessageBox.Show(parameterValue.ToString());
@@ -733,7 +734,9 @@ namespace ExcelScore.Forms
             }
 
             // Count the distinct group values
+            
             groupCount = groupParameter.ParameterValues.Distinct().Count();
+            //MessageBox.Show(groupCount.ToString());
 
             return groupCount;
         }
@@ -902,6 +905,7 @@ namespace ExcelScore.Forms
 
             int Groupctr = 1;
             int GroupTotalCount = parameter.GroupedParameterValues.Keys.Distinct().Count();
+            //MessageBox.Show(GroupTotalCount.ToString());
             for (int i = 0; i < parameter.LabelPairwise.Count; i++)
             {
                 int Group = SortedGroups[Groupctr];
@@ -1089,6 +1093,7 @@ namespace ExcelScore.Forms
         public List<string> EasyLetters(IWTable table ,Parameter parameter , int InsertColumn)
         {
             int numberofgroups = parameter.GroupedParameterValues.Keys.Distinct().Count();
+            //MessageBox.Show(numberofgroups.ToString());
             List<string> letters = new List<string>();  
             char letter = 'a';
             bool issig = false;
@@ -1284,6 +1289,8 @@ namespace ExcelScore.Forms
 
                 int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
 
+                //MessageBox.Show(numberofgroups.ToString());
+
                 wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
 
                 int Variablerows = numberofgroups;
@@ -1329,7 +1336,7 @@ namespace ExcelScore.Forms
                     //parameter.ParameterValues.Clear();
                     //parameter.FormattedValues.Clear();
                     //parameter.GroupedParameterValues.Clear();
-                    parameter.EachGroupCount.Clear();
+                    //parameter.EachGroupCount.Clear();
                     parameter.FPairwise.Clear();
                     parameter.LabelPairwise.Clear();
                 }
