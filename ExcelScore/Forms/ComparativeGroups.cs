@@ -1,4 +1,5 @@
 ﻿using Accord.Math;
+using Accord.Statistics.Distributions.Univariate;
 using Accord.Statistics.Kernels;
 using Aspose.Cells;
 using Aspose.Cells.Charts;
@@ -171,7 +172,7 @@ namespace ExcelScore.Forms
         public Dictionary<string, string> NormalityParaNameList_ComparaGroups { get; set; } = new Dictionary<string, string>();
         private void ComparativeGroups_Load(object sender, EventArgs e)
         {
-            check_Maha.Visible = false;
+            
             //pythonStat.InitPython();
 
             //Margins
@@ -457,6 +458,8 @@ namespace ExcelScore.Forms
                 };
                 comparativeTable.Parameters.Add(parameter);
             }
+
+
 
             comparativeTable.FormatType = cmb_ChooseTableFormat.Text;
 
@@ -2109,6 +2112,8 @@ namespace ExcelScore.Forms
                 row = 3;
             }
         }
+        
+
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -2118,9 +2123,11 @@ namespace ExcelScore.Forms
 
             document = wordObj.InitWord();
 
-            
-                
+
+            ComparativeTableGroups_2_periods();
+
             ComparativeTableGroups_Layout();
+
             ComparativeTablePeriodsUp_Groups_Layout();
 
 
@@ -2602,7 +2609,7 @@ namespace ExcelScore.Forms
                         //string[] values = pythonStat.MannWhitneyUTest(group1Values, group2Values);
                         string[] values = manual.UTest(group1Values, group2Values);
 
-                        MessageBox.Show(values[1]);
+                        //MessageBox.Show(values[1]);
 
                         TableHasSigI = TableHasSig(values);
 
@@ -2810,7 +2817,58 @@ namespace ExcelScore.Forms
             return Significant;
         }
 
+        public int Count_Groups_2_Periods_rows(ComparativeTable comparativeTable)
+        {
+            int variablerows = 0;
+            int parametercount = 0;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(parameter.IsGroup)
+                {
+                    continue;
+                }
+                if(parameter.NormalOrAbnormal == "Normal")
+                {
+                    parametercount++;
+                }
+            }
+            int periodTestrows = parametercount / 2;
+            variablerows = 1 + (parametercount * 4) + periodTestrows;
 
+
+            return variablerows;
+        }
+        public void ComparativeTableGroups_2_periods()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Groups 2 periods")
+                {
+                    IWSection section = wordObj.CreatePortraitSection();
+                    int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
+
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
+
+                    int WordTableRows = Count_Groups_2_Periods_rows(ComparativeTables[tableindex]);
+
+                    int WordTableColumns = 4 + (numberofgroups);
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+                    wordObj.GeneralTableFormat(table);
+
+                    wordObj.ApplyGeneral_Groups_2Periods_Merges(table, ComparativeTables[tableindex] , WordTableColumns , WordTableRows);
+                    wordObj.ApplyGeneral_Groups_2Periods_Borders(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex]);
+
+                    wordObj.SetComparative_GroupsUp_2Periods_Widths(table  , WordTableRows , WordTableColumns , numberofgroups);
+
+
+
+
+                    wordObj.FormatTable(table, 11);
+                }
+            }
+        }
         public void ComparativeTableGroups_Layout()
         {
             for(int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
@@ -3653,6 +3711,14 @@ namespace ExcelScore.Forms
 
 
             }
+            else if(cmb_ChooseTableFormat.Text == "Groups 2 periods")
+            {
+                list_Nominal.Visible = false;
+                pic_RemoveNominalList.Visible = false;
+                pic_AllParaToNominal.Visible = false;
+                pic_ifyes.Visible = false;
+                lbl_Nominal.Visible = false;
+            }
         }
 
         private void pic_TableFormat_Click(object sender, EventArgs e)
@@ -3665,7 +3731,23 @@ namespace ExcelScore.Forms
                     chooseTable.Table_ChooseTable = Resource.Default_Comparative;
                     chooseTable.ShowDialog();
                 }
+                else if (cmb_ChooseTableFormat.Text == "Periods Groups")
+                {
+                    ChooseTable chooseTable = new ChooseTable();
+                    chooseTable.Table_ChooseTable = Resource.Comparative_PeriodsUp_Groups;
+                    chooseTable.ShowDialog();
+
+                }
+                else if (cmb_ChooseTableFormat.Text == "Groups 2 periods")
+                {
+                    ChooseTable chooseTable = new ChooseTable();
+                    chooseTable.Table_ChooseTable = Resource.Groups_2Periods;
+                    chooseTable.ShowDialog();
+
+                }
+
             }
+            
         }
             
         private void txt_ParaName_TextChanged(object sender, EventArgs e)

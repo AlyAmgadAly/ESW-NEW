@@ -17,6 +17,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Security.Cryptography.X509Certificates;
 using System.Runtime.CompilerServices;
 using CenterSpace.NMath.Core;
+using System.Collections.ObjectModel;
 
 namespace ExcelScore.Classes
 {
@@ -361,6 +362,67 @@ namespace ExcelScore.Classes
             }
 
         }
+
+        public void ApplyGeneral_Groups_2Periods_Borders(IWTable table, int WordTableRows, int WordTableColumns , ComparativeTable comparativeTable)
+        {
+            for(int col = 0;col< WordTableColumns;col++)
+            {
+                table.Rows[0].Cells[col].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[0].Cells[col].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            }
+
+            for(int row = 0;row< WordTableRows;row++)
+            {
+                table.Rows[row].Cells[0].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[row].Cells[0].CellFormat.Borders.Right.LineWidth = 1.5f;
+
+                table.Rows[row].Cells[WordTableColumns-2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[row].Cells[WordTableColumns-2].CellFormat.Borders.Left.LineWidth = 1.5f;
+
+            }
+
+
+
+            int numberofparameters = comparativeTable.Parameters.Count - 1;
+
+            int testrows = numberofparameters / 2;
+
+            int rowctr = 1;
+
+            for (int testrowctr = 1; testrowctr <= testrows; testrowctr++)
+            {
+                for (int col = 1; col < WordTableColumns; col++)
+                {
+                    table.Rows[rowctr + 8].Cells[col].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[rowctr + 8].Cells[col].CellFormat.Borders.Top.LineWidth = 0.5f;
+
+
+                    
+                }
+
+
+                
+                rowctr = rowctr + 9;
+
+                for (int col = 0; col < WordTableColumns; col++)
+                {
+                    if (rowctr -1 < WordTableRows - 1)
+                    {
+                        table.Rows[rowctr -1].Cells[col].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[rowctr -1].Cells[col].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                    }
+                }
+                    
+            }
+
+
+
+                
+
+            
+
+
+        }
         public void ApplyGeneralComparativeBorders(IWTable table,  int WordTableRows, int WordTableColumns, int numberofgroups )
         {
             for (int j = 0; j < WordTableColumns; j++)
@@ -444,12 +506,63 @@ namespace ExcelScore.Classes
 
 
         }
+        public void ApplyGeneral_Groups_2Periods_Merges(IWTable table, ComparativeTable comparativeTable, int WordTableColumns, int WordTableRows)
+        {
+            int row = 1;
+            int parametercount = comparativeTable.Parameters.Count-1;
 
+            int testrows = parametercount / 2;
+
+            for(int testrow = 1;testrow <= testrows; testrow++)
+            {
+                table.ApplyVerticalMerge(0, row, row + 8);
+                
+
+                row = row + 9;
+            }
+
+
+            
+            int flag = 0;
+            int rowctr = 1;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(parameter.IsGroup)
+                {
+                    continue;
+                }
+                table.ApplyVerticalMerge(WordTableColumns - 2, rowctr + 1, rowctr + 3);
+                table.ApplyVerticalMerge(WordTableColumns - 1, rowctr + 1, rowctr + 3);
+
+                if (rowctr != 1)
+                {
+                    for (int col = 1; col < WordTableColumns; col++)
+                    {
+                        table.Rows[rowctr].Cells[col].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[rowctr].Cells[col].CellFormat.Borders.Top.LineWidth = 0.5f;
+                    }
+                }
+
+                if (flag == 0)
+                {
+                    rowctr = rowctr + 4;
+                    flag = 1;
+                }
+                else if (flag == 1)
+                {
+                    rowctr = rowctr + 5;
+                    flag = 0;
+                }
+
+                
+                
+                
+            }
+
+        }
         public void ApplyGeneralComparativeMerges(IWTable table ,int WordTableColumns , int numberofgroups)
         {
             table.ApplyVerticalMerge(0, 0, 1);
-            //table.ApplyHorizontalMerge(0, 1, 2);
-            //table.ApplyHorizontalMerge(0, 3, 4);
             for(int i = 1; i<= numberofgroups*2 ;i=i+2) 
             {
                 table.ApplyHorizontalMerge(0, i, i+1);
@@ -938,6 +1051,43 @@ namespace ExcelScore.Classes
             AddPara_Center(table, WordTableRows-1, 0, "t (p0)");
 
 
+        }
+        public void SetComparative_GroupsUp_2Periods_Widths(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups)
+        {
+            for (int i = 0; i < WordTableRows; i++)
+            {
+                table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(1f);
+                table.Rows[i].Cells[1].Width = SetColumnWidthInCentimeters(3.75f);
+
+                table.Rows[i].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.55f);
+                table.Rows[i].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.55f);
+            }
+
+
+
+            for(int col = 2;col <= numberofgroups+1; col++)
+            {
+                for (int i = 0; i < WordTableRows; i++)
+                {
+                    table.Rows[i].Cells[col].Width = SetColumnWidthInCentimeters(3.5f);
+                }
+            }
+
+
+        }
+
+        public void AddHeaderComparative_GroupsUp_2Periods(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups , ComparativeTable comparativeTable)
+        {
+            AddPara_Center(table, 0, WordTableColumns - 2, "Test of Sig.");
+            AddPara_Center(table, 0, WordTableColumns - 1, "p");
+
+            foreach (var paramter in comparativeTable.Parameters)
+            {
+                if(paramter.IsGroup)
+                {
+                    
+                }
+            }
         }
         public void SetComparative_PeriodsUp_GroupsWidths(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups, ComparativeTable comparativeTable)
         {

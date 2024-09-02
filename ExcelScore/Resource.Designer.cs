@@ -63,6 +63,16 @@ namespace ExcelScore {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Comparative_PeriodsUp_Groups {
+            get {
+                object obj = ResourceManager.GetObject("Comparative_PeriodsUp_Groups", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Default_Comparative {
             get {
                 object obj = ResourceManager.GetObject("Default_Comparative", resourceCulture);
@@ -106,6 +116,16 @@ namespace ExcelScore {
         internal static System.Drawing.Bitmap FinalScale_Color {
             get {
                 object obj = ResourceManager.GetObject("FinalScale_Color", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Groups_2Periods {
+            get {
+                object obj = ResourceManager.GetObject("Groups_2Periods", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
