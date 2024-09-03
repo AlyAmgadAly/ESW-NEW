@@ -363,7 +363,7 @@ namespace ExcelScore.Forms
 
         private void Word_Load(object sender, EventArgs e)
         {
-            //pyobj.InitPython();
+            
             for(int i = 0; i< AllDomainsWord.Count;i++)
             {
                 AllDomainsWord[i].LikertScore = "";
@@ -961,7 +961,7 @@ namespace ExcelScore.Forms
 
 
 
-                
+                pyobj.InitPython();
                 string[] TestValueFrm = new string[] { };
                 int TestInsertRow = LevelValues.Count + 3;
                 TestValueFrm = pyobj.TpairedTest(TpairedLists[0].ToList(), TpairedLists[1].ToList());
@@ -1315,7 +1315,7 @@ namespace ExcelScore.Forms
                 string[] TestValueFrm = new string[] { };
 
                 int TestInsertRow = 2 + (index * 6);
-
+                pyobj.InitPython();
                 TestValueFrm = pyobj.TpairedTest(TpairedLists[0].ToList(), TpairedLists[1].ToList());
 
                 wordObj.InsertTest_P(table, TestInsertRow, 3, TestValueFrm);

@@ -1662,7 +1662,7 @@ namespace ExcelScore.Forms
             //Merge Total
 
             table.ApplyHorizontalMerge(0, 1, 2);
-            table.ApplyHorizontalMerge(1, 1, 2);
+            //table.ApplyHorizontalMerge(1, 1, 2);
 
             //table.ApplyVerticalMerge(1, 0, 1);
 
@@ -1671,7 +1671,19 @@ namespace ExcelScore.Forms
             //boders
 
             table.Rows[0].Cells[1].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-            table.Rows[0].Cells[1].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            table.Rows[0].Cells[1].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+            table.Rows[0].Cells[0].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+            table.Rows[0].Cells[0].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+
+            table.Rows[1].Cells[1].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+            table.Rows[1].Cells[1].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+
+            table.Rows[1].Cells[2].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+            table.Rows[1].Cells[2].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+
+
             int TotalN = 0;
             foreach (var parameter in comparativeTable.Parameters)
             {
@@ -1683,7 +1695,7 @@ namespace ExcelScore.Forms
             }
 
             wordObj.AddPara_Center(table, 0, 1 , "Total\n(n = "+ TotalN + ")");
-
+            
 
             int startrow = 2;
 
@@ -1734,6 +1746,7 @@ namespace ExcelScore.Forms
                 if (parameter.NominalOrScale == "Nominal")
                 {
                     // Calculate frequency and percentage for each distinct value in the group
+                    int incrow = 1;
                     foreach (var distinctValue in parameter.ParameterValues.Distinct())
                     {
                         int frequency = parameter.ParameterValues.Count(v => v == distinctValue);
@@ -1743,14 +1756,18 @@ namespace ExcelScore.Forms
                         {
                             if (startrow != 2)
                             {
-                                wordObj.Addpara_CenterNoBOLD(table, startrow + (int)distinctValue , 1, frequency.ToString());
-                                wordObj.Addpara_CenterNoBOLD(table, startrow + (int)distinctValue , 2, percentage.ToString("0.0"));
+                                wordObj.Addpara_CenterNoBOLD(table, startrow + incrow, 1, frequency.ToString());
+                                wordObj.Addpara_CenterNoBOLD(table, startrow + incrow, 2, percentage.ToString("0.0"));
+                                incrow++;
                             }
                             else if (startrow == 2)
                             {
-                                wordObj.Addpara_CenterNoBOLD(table, startrow + (int)distinctValue+1, 1, frequency.ToString());
-                                wordObj.Addpara_CenterNoBOLD(table, startrow + (int)distinctValue+1, 2, percentage.ToString("0.0"));
+                                wordObj.Addpara_CenterNoBOLD(table, startrow + incrow, 1, frequency.ToString());
+                                wordObj.Addpara_CenterNoBOLD(table, startrow + incrow, 2, percentage.ToString("0.0"));
+                                incrow++;
                             }
+
+
 
 
                         }
@@ -1804,6 +1821,13 @@ namespace ExcelScore.Forms
                     {
                         table.Rows[1].Cells[1].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                         table.Rows[1].Cells[1].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+
+                        table.Rows[1].Cells[2].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[1].Cells[2].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+
+
+                        
+
                         table.ApplyVerticalMerge(1, 0, 1);
                         table.ApplyHorizontalMerge(startrow , 1, 2);
                         table.ApplyHorizontalMerge(startrow + 1, 1, 2);
@@ -1830,6 +1854,8 @@ namespace ExcelScore.Forms
                     }
                     else if(!tableHasNominal)
                     {
+                        table.ApplyHorizontalMerge(1, 1, 2);
+
                         table.ApplyHorizontalMerge(startrow, 1, 2);
                         table.ApplyHorizontalMerge(startrow + 1, 1, 2);
                         table.ApplyHorizontalMerge(startrow + 2, 1, 2);
@@ -1856,12 +1882,18 @@ namespace ExcelScore.Forms
 
 
             }
-
-
-
-
+            if(tableHasNominal)
+            {
+                wordObj.AddPara_Center(table, 1, 1, "No.");
+                wordObj.AddPara_Center(table, 1, 2, "%");
+            }
             
-            
+
+
+
+
+
+
 
 
         }
@@ -2681,8 +2713,11 @@ namespace ExcelScore.Forms
                         //H kriskual
                         //
                         comparativeTable.TestsDone.Add("H");
+
+                        pythonStat.InitPython();
+
                         AnovaTestResult anovaTestResult = new AnovaTestResult();
-                        //anovaTestResult = pythonStat.KruskalWallisNoDunnDynamic(parameter);
+                        anovaTestResult = pythonStat.KruskalWallisWithDunnDynamic(parameter);
 
                         anovaTestResult = manual.Kruskal_H(parameter);
                         string[] values = { anovaTestResult.TestValue, anovaTestResult.PValue };

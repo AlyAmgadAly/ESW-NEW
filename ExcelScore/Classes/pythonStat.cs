@@ -11,6 +11,7 @@ using Python.Runtime;
 using MathNet.Numerics.Statistics;
 using Accord.Statistics.Distributions.Univariate;
 using MathNet.Numerics.Distributions;
+using CenterSpace.NMath.Core;
 
 namespace ExcelScore.Classes
 {
@@ -36,13 +37,13 @@ namespace ExcelScore.Classes
 
             if (username != "khaled")
             {
-                pythonDll = $@"C:\Users\{username}\AppData\Local\Programs\Python\Python37-32\python37.dll";
+                pythonDll = $@"C:\Users\{username}\AppData\Local\Programs\Python\Python312\python312.dll";
                 Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll);
                 PythonEngine.Initialize();
             }
             else if(username == "khaled")
             {
-                pythonDll = @"C:\Users\Khale\AppData\Local\Programs\Python\Python37-32\python37.dll";
+                pythonDll = @"C:\Users\Khale\AppData\Local\Programs\Python\Python312\python312.dll";
                 Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll);
                 PythonEngine.Initialize();
             }
@@ -414,10 +415,11 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col=""Value"" , group_col=""
                         string labelB = uniqueGroupLabels[j].ToString();
 
                         // Find the corresponding p-value in the correct order
-                        double pAdjValue = pValuesDunn[k].As<double>();
+                        var pAdjValue = pValuesDunn[k].As<DataFrame>();
 
                         // Handle rounding only if the value is not zero
-                        string pAdjString = pAdjValue != 0.0 ? Math.Round(pAdjValue, 3).ToString("0.000") : "0.000";
+                        
+                        string pAdjString = pAdjValue[0] != 0.0 ? Math.Round(pAdjValue[0], 3).ToString("0.000") : "0.000";
 
                         // Display or use the p-value as needed
                         MessageBox.Show(pAdjString);

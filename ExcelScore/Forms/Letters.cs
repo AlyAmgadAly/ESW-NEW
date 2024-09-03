@@ -555,14 +555,14 @@ namespace ExcelScore.Forms
                                     // For odd count of elements, directly take the middle value
                                     medianValue = values.OrderBy(x => x).ElementAt(middleIndex);
                                 }
-                                double perc25th = CalculateLowerMedian(values);
-                                double perc75th = CalculateUpperMedian(values);
+                                //double perc25th = CalculateLowerMedian(values);
+                                //double perc75th = CalculateUpperMedian(values);
 
                                 // Format scale parameter values
                                 string formattedMinMax = FormatMinMaxValue(minValue, maxValue);
                                 string formattedMeanStd = FormatMeanStdValue(meanValue, stdDevValue);
                                 string formattedMedian = FormatSingleValue(medianValue);
-                                string formattedIQR = FormatMinMaxValue(perc25th, perc75th);
+                                //string formattedIQR = FormatMinMaxValue(perc25th, perc75th);
 
                                 //MessageBox.Show(formattedMinMax);
                                 //MessageBox.Show(formattedMinMax);
@@ -570,7 +570,7 @@ namespace ExcelScore.Forms
                                 // Store scale statistics in the FormattedValues dictionary
                                 parameter.FormattedValues[groupValue]["Min-Max"] = formattedMinMax;
                                 parameter.FormattedValues[groupValue]["Mean ± StdDev"] = formattedMeanStd;
-                                parameter.FormattedValues[groupValue]["Median"] = formattedMedian + " (" + formattedIQR + ")";
+                                //parameter.FormattedValues[groupValue]["Median"] = formattedMedian + " (" + formattedIQR + ")";
                                 //parameter.FormattedValues[groupValue]["IQR"] = formattedIQR;
                             }
                         }
@@ -586,7 +586,8 @@ namespace ExcelScore.Forms
 
             int n = values.Count;
             int middle = n / 2;
-
+            MessageBox.Show(n.ToString());
+            MessageBox.Show(middle.ToString());
             if (n % 2 == 0)
             {
                 // Even number of elements, average the middle two
