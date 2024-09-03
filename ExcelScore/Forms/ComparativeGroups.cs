@@ -2863,11 +2863,160 @@ namespace ExcelScore.Forms
                     wordObj.SetComparative_GroupsUp_2Periods_Widths(table  , WordTableRows , WordTableColumns , numberofgroups);
 
 
+                    wordObj.AddHeaderComparative_GroupsUp_2Periods(table, WordTableRows, WordTableColumns, numberofgroups, ComparativeTables[tableindex]);
 
+
+                    InsertScale_GroupsUp_2Periods(table, ComparativeTables[tableindex]);
+
+                    GetPeriodsTests_GroupsUp_2Periods(table, ComparativeTables[tableindex]);
 
                     wordObj.FormatTable(table, 11);
                 }
             }
+        }
+
+        public void GetPeriodsTests_GroupsUp_2Periods(IWTable table, ComparativeTable comparativeTable)
+        {
+            int row = 9;
+            for(int i = 0;i<comparativeTable.Parameters.Count;)
+            {
+                Parameter currentparameter = comparativeTable.Parameters[i];    
+                if(currentparameter.IsGroup)
+                {
+                    i++;
+                    continue;
+                    
+                }
+
+                else if(!currentparameter.IsGroup)
+                {
+                    Parameter nextparameter = comparativeTable.Parameters[i+1];
+
+
+                    var firstParameterValues = new List<double>();
+                    var secondParameterValues = new List<double>();
+
+
+                    int col = 2;
+                    int count = 0;
+                    int tempctr = 0;
+
+
+                    wordObj.AddParaCombined(table, row, 1, "t", false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                    WParagraph testparaHighlightname = (WParagraph)table[row, 1].Paragraphs[0];
+                    WTextRange PTextname = new WTextRange(testparaHighlightname.Document);
+                    PTextname.Text = " (" + "p" + ")";
+                    testparaHighlightname.ChildEntities.Insert(1, PTextname);
+
+
+                    foreach (var kvp in currentparameter.GroupedParameterValues)
+                    {
+                        var key = kvp.Key;
+                        var values = kvp.Value;
+                        count = values.Count + tempctr;
+
+
+                        for (int j = tempctr; j < count; j++)
+                        {
+                            firstParameterValues.Add(currentparameter.ParameterValues[j]);
+                            secondParameterValues.Add(nextparameter.ParameterValues[j]);
+
+                        }
+                        tempctr = count;
+
+                        var firstParameterArray = firstParameterValues.ToArray();
+                        var secondParameterArray = secondParameterValues.ToArray();
+
+
+                        //wordObj.AddPara_Center()
+                        
+
+
+
+
+                        string[] result = manual.Tpaired(firstParameterArray, secondParameterArray);
+
+                        wordObj.AddParaCombined(table, row , col, result[0], false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                        WParagraph testparaHighlight = (WParagraph)table[row, col].Paragraphs[0];
+                        WTextRange PText = new WTextRange(testparaHighlight.Document);
+                        PText.Text = " (" + result[1] + ")";
+                        testparaHighlight.ChildEntities.Insert(1, PText);
+
+
+                        col++;
+                        firstParameterValues.Clear();
+                        secondParameterValues.Clear();
+                        firstParameterArray.Clear();
+                        secondParameterArray.Clear();
+
+
+
+                    }
+
+                    row += 9;
+                    i += 2;
+
+
+
+
+                }
+
+
+
+
+
+            }
+
+
+        }
+        public void InsertScale_GroupsUp_2Periods(IWTable table, ComparativeTable comparativeTable)
+        {
+            int row = 1;
+            int flag = 0;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup)
+                {
+                    continue;
+                }
+                if (parameter.NominalOrScale == "Scale")
+                {
+
+                    var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
+
+
+                    int col = 2;
+                    foreach (var groupValue in sortedKeys)
+                    {
+
+                        Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
+
+                        int temprow = row+1;
+                        foreach (var stat in formattedValues)
+                        {
+                            wordObj.Addpara_CenterNoBOLD(table, temprow, col, stat.Value);
+                            temprow++;
+
+                        }
+                        col++;
+
+
+
+                    }
+                    if (flag == 0)
+                    {
+                        row = row + 4;
+                        flag = 1;
+                    }
+                    else if (flag == 1)
+                    {
+                        row = row + 5;
+                        flag = 0;
+                    }
+
+                }
+            }
+            
         }
         public void ComparativeTableGroups_Layout()
         {

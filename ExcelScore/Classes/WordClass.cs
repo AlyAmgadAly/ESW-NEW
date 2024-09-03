@@ -1069,7 +1069,7 @@ namespace ExcelScore.Classes
             {
                 for (int i = 0; i < WordTableRows; i++)
                 {
-                    table.Rows[i].Cells[col].Width = SetColumnWidthInCentimeters(3.5f);
+                    table.Rows[i].Cells[col].Width = SetColumnWidthInCentimeters(3.75f);
                 }
             }
 
@@ -1080,13 +1080,52 @@ namespace ExcelScore.Classes
         {
             AddPara_Center(table, 0, WordTableColumns - 2, "Test of Sig.");
             AddPara_Center(table, 0, WordTableColumns - 1, "p");
-
+            int row = 1;
+            int flag = 0;
             foreach (var paramter in comparativeTable.Parameters)
             {
                 if(paramter.IsGroup)
                 {
-                    
+                    int col = 2;
+                    foreach (var kvp in paramter.DIC_LablesIfNomainal)
+                    {
+                        int key = kvp.Key;
+                        string label = kvp.Value;
+                        int count = paramter.ParameterValues.Count(x => x == key);
+                        AddPara_Center(table, 0, col, label + "\n(n = " + count + ")");
+                        col++;
+                        //WParagraph groupparagraph = table[0, col].Paragraphs[0];
+                        //groupparagraph.ParagraphFormat.BeforeSpacing = 0;
+                        //groupparagraph.ParagraphFormat.AfterSpacing = 0;
+                    }
                 }
+                
+                
+                if (!paramter.IsGroup) 
+                {
+                    AddPara_NoCenter(table, row, 1, paramter.Name);
+
+                    Addpara_NoCenterNoBOLD(table, row + 1, 1, "Min. – Max.");
+                    LeftIntendBeforeText(table, row + 1, 1, 14.17f);
+
+                    Addpara_NoCenterNoBOLD(table, row + 2, 1, "Mean ± SD.");
+                    LeftIntendBeforeText(table, row + 2, 1, 14.17f);
+
+                    Addpara_NoCenterNoBOLD(table, row + 3, 1, "Median (IQR)");
+                    LeftIntendBeforeText(table, row + 3, 1, 14.17f);
+
+                    if (flag == 0)
+                    {
+                        row = row + 4;
+                        flag = 1;
+                    }
+                    else if (flag == 1)
+                    {
+                        row = row + 5;
+                        flag = 0;
+                    }
+                }
+
             }
         }
         public void SetComparative_PeriodsUp_GroupsWidths(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups, ComparativeTable comparativeTable)
