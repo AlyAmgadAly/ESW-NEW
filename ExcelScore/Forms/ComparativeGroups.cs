@@ -22,6 +22,7 @@ using System.Data.Common;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -857,12 +858,17 @@ namespace ExcelScore.Forms
             int n = values.Count;
             int middle = n / 2;
 
-            if (n % 2 == 0)
+            if (n == 1)
+            {
+                return values[0];
+            }
+            else if (n % 2 == 0)
             {
                 
                 // Even number of elements, average the middle two
                 return (values[middle - 1] + values[middle]) / 2.0;
             }
+            
             else
             {
                 
@@ -908,11 +914,21 @@ namespace ExcelScore.Forms
                 // Even number of elements, calculate median of upper half excluding the median
                 return CalculateMedian(values.GetRange(middle, n - middle));
             }
+            else if (n == 1)
+            {
+                return values[0];
+            }
+            else if(n == 3)
+            {
+                return (values[1] + values[2]) / 2.0;
+            }
+            
             else
             {
                 int middle = (n+1) / 2;
                 // Odd number of elements, calculate median of upper half excluding the median
-                return CalculateMedian(values.GetRange(middle, n - middle-1));
+                return CalculateMedian(values.GetRange(middle, n - middle - 1));
+
             }
         }
         private void pic_removeTableSelected_Click(object sender, EventArgs e)
@@ -2044,6 +2060,8 @@ namespace ExcelScore.Forms
 
                         SplitGroupedParameterValues(parameter, out group1Values, out group2Values);
 
+                        
+
                         string[] values = manual.StudentT_Unpaired(group1Values, group2Values);
 
 
@@ -2345,9 +2363,11 @@ namespace ExcelScore.Forms
                         if(parameter.hasLowerN)
                         {
                             int InsertLowerN = 1;
-                            foreach (double group in parameter.GroupedParameterValues.Keys)
+                            var sortedKeys = parameter.GroupedParameterValues.Keys.OrderBy(key => key).ToList();
+                            foreach (double group in sortedKeys)
                             {
                                 int parameterGroupCount = parameter.GroupedParameterValues[group].Count;
+                                //MessageBox.Show(parameterGroupCount.ToString());
                                 string InsertedN = "(n = " + parameterGroupCount + ")";
                                 wordObj.AddParaCombined(table, currentRow + 1, InsertLowerN, InsertedN, true, true,  Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Red);
                                 InsertLowerN = InsertLowerN + 2;
@@ -2717,7 +2737,7 @@ namespace ExcelScore.Forms
                         pythonStat.InitPython();
 
                         AnovaTestResult anovaTestResult = new AnovaTestResult();
-                        anovaTestResult = pythonStat.KruskalWallisWithDunnDynamic(parameter);
+                        //anovaTestResult = pythonStat.KruskalWallisWithDunnDynamic(parameter);
 
                         anovaTestResult = manual.Kruskal_H(parameter);
                         string[] values = { anovaTestResult.TestValue, anovaTestResult.PValue };

@@ -216,104 +216,133 @@ namespace ExcelScore.Classes
 
         public string[] StudentT_Unpaired(List<double> dataGroup1, List<double> dataGroup2)
         {
-
-
-            bool EqualVariance;
-            double[] dataG1_Array = dataGroup1.ToArray();
-            double[] dataG2_Array = dataGroup2.ToArray();
-
-
-            // Combine the groups into a 2D array
-            double[][] data = new double[][] { dataG1_Array, dataG2_Array };
-
-            // Create and run the Levene's Test
-            var leveneTest = new Accord.Statistics.Testing.LeveneTest(data);
-
-            // Obtain the p-value
-            double pValue = leveneTest.PValue;
-
-
-            if (pValue < 0.05)
+            try
             {
+                bool EqualVariance;
+                double[] dataG1_Array = dataGroup1.ToArray();
+                double[] dataG2_Array = dataGroup2.ToArray();
 
-                EqualVariance = false;
+
+                // Combine the groups into a 2D array
+                double[][] data = new double[][] { dataG1_Array, dataG2_Array };
+
+                // Create and run the Levene's Test
+                var leveneTest = new Accord.Statistics.Testing.LeveneTest(data);
+
+                // Obtain the p-value
+                double pValue = leveneTest.PValue;
+
+
+                if (pValue < 0.05)
+                {
+
+                    EqualVariance = false;
+                }
+                else
+                {
+
+                    EqualVariance = true;
+                }
+                double Ttestt = 0;
+                double pvalueT = 0;
+                try
+                {
+                    var TstudentTest = new Accord.Statistics.Testing.TwoSampleTTest(dataG1_Array, dataG2_Array, assumeEqualVariances: EqualVariance);
+                    Ttestt = TstudentTest.Statistic;
+                    pvalueT = TstudentTest.PValue;
+                }
+                catch (Exception)
+                {
+                    Ttestt = 0;
+                    pvalueT = 0;
+                }
+
+
+
+
+
+
+
+
+                Ttestt = Math.Round(Ttestt, 3);
+                pvalueT = Math.Round(pvalueT, 3);
+
+                string TtestString = Ttestt.ToString("0.000");
+                TtestString = TtestString.Replace("-", "");
+
+                // MessageBox.Show(EqualVariance.ToString());
+                //MessageBox.Show("T test p " + pvalueT.ToString());
+
+                // Format the p-value
+                string pValueString = pvalueT < 0.001 ? "<0.001" : pvalueT.ToString("0.000");
+
+                return new string[] { TtestString, pValueString };
             }
-            else
+            catch(Exception)
             {
-
-                EqualVariance = true;
+                return new string[] { "0", "0"};
             }
 
-            var TstudentTest = new Accord.Statistics.Testing.TwoSampleTTest(dataG1_Array, dataG2_Array, assumeEqualVariances: EqualVariance);
-
-
-
-            double Ttestt = TstudentTest.Statistic;
-            double pvalueT = TstudentTest.PValue;
-
-
-            Ttestt = Math.Round(Ttestt, 3);
-            pvalueT = Math.Round(pvalueT, 3);
-
-            string TtestString = Ttestt.ToString("0.000");
-            TtestString = TtestString.Replace("-", "");
-
-           // MessageBox.Show(EqualVariance.ToString());
-            //MessageBox.Show("T test p " + pvalueT.ToString());
-
-            // Format the p-value
-            string pValueString = pvalueT < 0.001 ? "<0.001" : pvalueT.ToString("0.000");
-
-            return new string[] { TtestString, pValueString };
+            
 
         }
 
         // U Test
         public string[] UTest(List<double> AdataGroup1, List<double> AdataGroup2)
         {
-            double[] group1 = AdataGroup1.ToArray();
-            double[] group2 = AdataGroup2.ToArray();
-
-
-            int totalcount = group1.Length + group2.Length;
-
-            //MessageBox.Show(totalcount.ToString());
-
-            bool CountBool = false;
-
-            if(totalcount > 40)
+            try
             {
-                
-                CountBool = false;
+                double[] group1 = AdataGroup1.ToArray();
+                double[] group2 = AdataGroup2.ToArray();
+
+
+                int totalcount = group1.Length + group2.Length;
+
+                //MessageBox.Show(totalcount.ToString());
+
+                bool CountBool = false;
+
+                if (totalcount > 40)
+                {
+
+                    CountBool = false;
+                }
+                else if (totalcount <= 40)
+                {
+                    CountBool = true;
+                }
+
+
+                var UTest = new Accord.Statistics.Testing.MannWhitneyWilcoxonTest(group1, group2, exact: CountBool);
+
+
+                double UStat = CalculateUStatistic(group1, group2);
+                //double UStat = UTest.Statistic;
+                double Upvalue = UTest.PValue;
+                //double UTEST = UTest.Statistic;
+
+                //MessageBox.Show(UTEST.ToString());
+
+
+                UStat = Math.Round(UStat, 3);
+                Upvalue = Math.Round(Upvalue, 3);
+                //MessageBox.Show("U test : " + UStat.ToString());
+                // MessageBox.Show("U test p " + Upvalue.ToString());
+
+                string UtestString = UStat.ToString("0.000");
+                string pValueString = Upvalue < 0.001 ? "<0.001" : Upvalue.ToString("0.000");
+
+                string[] TestValue = new string[] { UtestString, pValueString };
+
+                return TestValue;
             }
-            else if(totalcount <= 40)
+            catch(Exception)
             {
-                CountBool = true;
+
+                string[] TestValue = new string[] { "0", "0"};
+                return TestValue;
             }
             
-            
-            var UTest = new Accord.Statistics.Testing.MannWhitneyWilcoxonTest(group1, group2, exact: CountBool);
-            
-
-            double UStat = CalculateUStatistic(group1, group2);
-            //double UStat = UTest.Statistic;
-            double Upvalue = UTest.PValue;
-            //double UTEST = UTest.Statistic;
-
-            //MessageBox.Show(UTEST.ToString());
-
-
-            UStat = Math.Round(UStat, 3);
-            Upvalue = Math.Round(Upvalue, 3);
-            //MessageBox.Show("U test : " + UStat.ToString());
-           // MessageBox.Show("U test p " + Upvalue.ToString());
-
-            string UtestString = UStat.ToString("0.000");
-            string pValueString = Upvalue < 0.001 ? "<0.001" : Upvalue.ToString("0.000");
-
-            string[] TestValue = new string[] { UtestString, pValueString };
-
-            return TestValue;
         }
 
         static double CalculateUStatistic(double[] sample1, double[] sample2)
@@ -635,61 +664,89 @@ namespace ExcelScore.Classes
 
         public AnovaTestResult Fanova(Parameter parameter)
         {
-            var groupsData = parameter.GroupedParameterValues.Values;
-            var groupLabelsPair = parameter.GroupedParameterValues.Keys;
-
-
-            double[][] samples = parameter.GroupedParameterValues.Values
-            .Select(list => list.ToArray())
-            .ToArray();
-
-            var Fanova = new Accord.Statistics.Testing.OneWayAnova(samples);
-
-            double F = Fanova.FTest.Statistic;
-
-            double pValue = Fanova.FTest.PValue;
-
-            string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
-
-
-            List<string[]> pairwisecomparisons = new List<string[]>();
-
-
-            return new AnovaTestResult
+            try
             {
-                TestValue = F.ToString("0.000"),
-                PValue = pValueString,
-                PairwiseComparisons = pairwisecomparisons
-            };
+                var groupsData = parameter.GroupedParameterValues.Values;
+                var groupLabelsPair = parameter.GroupedParameterValues.Keys;
+
+
+                double[][] samples = parameter.GroupedParameterValues.Values
+                .Select(list => list.ToArray())
+                .ToArray();
+
+                var Fanova = new Accord.Statistics.Testing.OneWayAnova(samples);
+
+                double F = Fanova.FTest.Statistic;
+
+                double pValue = Fanova.FTest.PValue;
+
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+
+                List<string[]> pairwisecomparisons = new List<string[]>();
+
+
+                return new AnovaTestResult
+                {
+                    TestValue = F.ToString("0.000"),
+                    PValue = pValueString,
+                    PairwiseComparisons = pairwisecomparisons
+                };
+            }
+            catch(Exception)
+            {
+                List<string[]> pairwisecomparisons = new List<string[]>();
+                return new AnovaTestResult
+                {
+                    TestValue = "0",
+                    PValue = "0",
+                    PairwiseComparisons = pairwisecomparisons
+                };
+            }
+            
 
 
         }
 
         public AnovaTestResult Kruskal_H(Parameter parameter) 
         {
-            DoubleVector[] samples = parameter.GroupedParameterValues.Values
+            try
+            {
+                DoubleVector[] samples = parameter.GroupedParameterValues.Values
         .Select(list => new DoubleVector(list.ToArray()))  // Convert each double[] to DoubleVector
         .ToArray();  // Convert IEnumerable<DoubleVector> to DoubleVector[]
 
 
-            var test = new KruskalWallisTest(samples);
+                var test = new KruskalWallisTest(samples);
 
-            double HS = test.Statistic;
+                double HS = test.Statistic;
 
-            double pValue = test.PValue;
+                double pValue = test.PValue;
 
-            string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
-
-
-            List<string[]> pairwisecomparisons = new List<string[]>();
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
 
-            return new AnovaTestResult
+                List<string[]> pairwisecomparisons = new List<string[]>();
+
+
+                return new AnovaTestResult
+                {
+                    TestValue = HS.ToString("0.000"),
+                    PValue = pValueString,
+                    PairwiseComparisons = pairwisecomparisons
+                };
+            }
+            catch (Exception)
             {
-                TestValue = HS.ToString("0.000"),
-                PValue = pValueString,
-                PairwiseComparisons = pairwisecomparisons
-            };
+                List<string[]> pairwisecomparisons = new List<string[]>();
+                return new AnovaTestResult
+                {
+                    TestValue = "0",
+                    PValue = "0",
+                    PairwiseComparisons = pairwisecomparisons
+                };
+            }
+            
 
 
 
