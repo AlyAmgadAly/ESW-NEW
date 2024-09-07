@@ -2234,6 +2234,8 @@ namespace ExcelScore.Forms
                 }
             }
         }
+
+
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -2808,7 +2810,7 @@ namespace ExcelScore.Forms
                         pythonStat.InitPython();
 
                         AnovaTestResult anovaTestResult = new AnovaTestResult();
-                        //anovaTestResult = pythonStat.KruskalWallisWithDunnDynamic(parameter);
+                        anovaTestResult = pythonStat.KruskalWallisWithDunnDynamic(parameter);
 
                         anovaTestResult = manual.Kruskal_H(parameter);
                         string[] values = { anovaTestResult.TestValue, anovaTestResult.PValue };
@@ -3403,6 +3405,76 @@ namespace ExcelScore.Forms
 
 
             }
+
+        }
+
+        public void ChisquarePairwise(IWTable table , ComparativeTable comparativeTable , int numberofgroups)
+        {
+            int startrow = 2;
+            int count = 0;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup)
+                {
+                    continue;
+                }
+
+                else if (parameter.NominalOrScale == "Nominal")
+                {
+                    //count = parameter.ParameterValues.Distinct().Count() + 1;
+                    if (parameter.NominalIsYes)
+                    {
+                        count = 1;
+                    }
+                    else
+                    {
+                        count = parameter.DIC_LablesIfNomainal.Keys.Count() + 1;
+                    }
+
+                }
+                else if (parameter.NominalOrScale == "Scale")
+                {
+                    if (parameter.ISFAnovaSig)
+                    {
+                        count = 5;
+                    }
+                    else
+                    {
+                        count = 4;
+                    }
+
+                }
+
+
+                if(numberofgroups >2)
+                {
+                    if(parameter.NominalOrScale == "Nominal")
+                    {
+
+
+
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
 
         }
 

@@ -157,6 +157,9 @@ namespace ExcelScore.Classes
             
         }
 
+
+        
+
         static double CalculateChiSquare(double a, double b, double c, double d)
         {
             double row1Total = a + b;

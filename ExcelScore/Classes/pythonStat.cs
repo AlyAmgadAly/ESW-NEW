@@ -18,10 +18,7 @@ namespace ExcelScore.Classes
 {
     public class pythonStat
     {
-        dynamic np;
-        dynamic scipyStats;
-        dynamic statsmodels;
-        dynamic importlib;
+        
 
 
 
@@ -34,34 +31,35 @@ namespace ExcelScore.Classes
             //MessageBox.Show(username);
 
 
+            try
 
-
-            if (username != "khaled")
             {
-                pythonDll = $@"C:\Users\{username}\AppData\Local\Programs\Python\Python312\python312.dll";
-                Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll);
-                PythonEngine.Initialize();
+                if (username != "khaled")
+                {
+                    pythonDll = $@"C:\Users\{username}\AppData\Local\Programs\Python\Python312\python312.dll";
+                    Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll);
+                    PythonEngine.Initialize();
+                }
+                else if (username == "khaled")
+                {
+                    pythonDll = @"C:\Users\Khale\AppData\Local\Programs\Python\Python312\python312.dll";
+                    Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll);
+                    PythonEngine.Initialize();
+                }
+                
+
+
+                
             }
-            else if(username == "khaled")
+            catch(Exception)
             {
-                pythonDll = @"C:\Users\Khale\AppData\Local\Programs\Python\Python312\python312.dll";
-                Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll);
-                PythonEngine.Initialize();
+                MessageBox.Show("Init error");
             }
+            
 
 
 
-            using (Py.GIL())
-            {
-                np = Py.Import("numpy");
-                scipyStats = Py.Import("scipy.stats");
-                statsmodels = Py.Import("statsmodels.stats.multicomp");
-                importlib = Py.Import("importlib");
-            }
-
-
-
-
+            
 
 
 
@@ -76,205 +74,10 @@ namespace ExcelScore.Classes
 
         }
 
-        public AnovaTestResult KruskalWallisNoDunnDynamic(Parameter parameter)
-        {
-            using (Py.GIL())
-            {
-                //dynamic np = Py.Import("numpy");
-                //dynamic scipyStats = Py.Import("scipy.stats");
-                //dynamic statsmodels = Py.Import("statsmodels.sandbox.stats.multicomp");
-                //dynamic scikit_posthocs = Py.Import("scikit_posthocs");
-                //dynamic pandas = Py.Import("pandas");
+        
 
-                var groupsData = parameter.GroupedParameterValues.Values;
-                var groupLabelsPair = parameter.GroupedParameterValues.Keys;
 
-                var pyGroupsData = new PyList();
-
-
-
-                foreach (List<double> groupData in groupsData)
-                {
-
-                    var pyGroupData = new PyList();
-                    foreach (double value in groupData)
-                    {
-                        pyGroupData.Append(value.ToPython());
-                    }
-                    pyGroupsData.Append(pyGroupData);
-                }
-
-
-
-                PyTuple pyGroupsDataTuple = new PyTuple(pyGroupsData.ToArray());
-                dynamic groupLabels = parameter.GroupedParameterValues.Keys.ToList().ToPython();
-
-
-
-
-
-
-                List<double> allValues = new List<double>();
-                List<double> allGroupLabels = new List<double>();
-
-                foreach (var kvp in parameter.GroupedParameterValues)
-                {
-                    double groupLabel = kvp.Key;
-                    List<double> groupValues = kvp.Value;
-
-                    allGroupLabels.AddRange(Enumerable.Repeat(groupLabel, groupValues.Count));
-                    allValues.AddRange(groupValues);
-                }
-
-
-
-
-
-
-
-
-
-
-
-
-                dynamic data = np.array(allValues.ToArray());
-                dynamic groupLabelsCombined = np.array(allGroupLabels.ToArray());
-
-
-
-                var dfData = new List<List<object>>();
-                int numRows = (int)data.shape[0];
-                for (int i = 0; i < numRows; i++)
-                {
-                    List<object> row = new List<object>
-                    {
-                        data[i],                  // Value
-                        groupLabelsCombined[i]    // Group
-                    };
-                    dfData.Add(row);
-                }
-
-                //dynamic df = pandas.DataFrame(dfData, columns: new List<string> { "Value", "Group" });
-
-
-                string pythonScript = @"
-result_kw = scipyStats.kruskal(*groups_data)
-";
-
-                dynamic locals = new PyDict();
-                dynamic globals = new PyDict();
-
-                globals["scipyStats"] = scipyStats;
-                //globals["statsmodels"] = statsmodels;
-                globals["groups_data"] = pyGroupsDataTuple;
-                globals["group_labels"] = groupLabels;
-                globals["np"] = np;
-                //globals["df"] = df;
-                //globals["scikit_posthocs"] = scikit_posthocs;
-                globals["data"] = data;
-                globals["group_labels_combined"] = groupLabelsCombined;
-
-
-
-                PythonEngine.Exec(pythonScript, locals, globals);
-
-                dynamic kwResult = globals["result_kw"];
-                //dynamic result = globals["dunn_result"];
-
-
-
-
-
-                // Create a pandas DataFrame
-
-                //dynamic dunnResult = globals["dunn_result"];
-
-                double hValue = kwResult[0].As<double>();
-                double pValueKruskalWallis = kwResult[1].As<double>();
-
-                
-
-                string pValueString = pValueKruskalWallis <= 0.001 ? "<0.001" : pValueKruskalWallis.ToString("0.000");
-
-                //dynamic pValuesDunn = result;
-
-                //List<string[]> pairwisecomparisons = new List<string[]>();
-                //int k = 0;
-
-                //// Assuming groupLabelsCombined contains unique group labels
-                //var uniqueGroupLabels = allGroupLabels.Distinct().ToList();
-
-                //for (int i = 0; i < uniqueGroupLabels.Count; i++)
-                //{
-                //    for (int j = i + 1; j < uniqueGroupLabels.Count; j++)
-                //    {
-                //        string labelA = uniqueGroupLabels[i].ToString();
-                //        string labelB = uniqueGroupLabels[j].ToString();
-
-                //        // Find the corresponding p-value in the correct order
-                //        double pAdjValue = pValuesDunn[k].As<double>();
-
-                //        // Handle rounding only if the value is not zero
-                //        string pAdjString = pAdjValue != 0.0 ? Math.Round(pAdjValue, 3).ToString("0.000") : "0.000";
-
-                //        // Display or use the p-value as needed
-                //        MessageBox.Show(pAdjString);
-
-                //        string comparison = $"{labelA} vs {labelB}";
-                //        pairwisecomparisons.Add(new string[] { comparison, pAdjString });
-
-                //        parameter.FPairwise.Add(pAdjString);
-                //        k++;
-                //    }
-                //}
-
-
-                return new AnovaTestResult
-                {
-                    TestValue = hValue.ToString("0.000"),
-                    PValue = pValueString,
-                    //PairwiseComparisons = pairwisecomparisons
-                };
-            }
-        }
-
-
-        public string[] CalculateCorrelation(double[] x, double[] y, string correlationType)
-        {
-            string[] result = new string[2];
-            double[] tempResult = new double[2];
-
-            if (correlationType == "Pearson")
-            {
-                // Calculate Pearson's correlation coefficient
-                tempResult[0] = Correlation.Pearson(x, y);
-            }
-            else if (correlationType == "Spearman")
-            {
-                // Calculate Spearman's correlation coefficient
-                tempResult[0] = Correlation.Spearman(x, y);
-            }
-
-            // Calculate degrees of freedom (df) for t-distribution
-            int n = x.Length;
-            int df = n - 2; // degrees of freedom for a two-tailed test
-
-            // Calculate t-statistic
-            double t = tempResult[0] * Math.Sqrt(df / (1 - Math.Pow(tempResult[0], 2)));
-
-            // Calculate two-tailed p-value using t-distribution
-            var studentT = new StudentT(0, 1, df);
-            tempResult[1] = 2 * (1 - studentT.CumulativeDistribution(Math.Abs(t)));
-            //tempResult[1] = 2 * (1 - StudentT.CDF(0, 1, df, Math.Abs(t)));
-
-            MessageBox.Show("r " + tempResult[0].ToString());
-            MessageBox.Show("p " + tempResult[1].ToString());
-            // Format the results
-            result[0] = tempResult[0].ToString("0.000");
-            result[1] = tempResult[1] <= 0.001 ? "<0.001" : tempResult[1].ToString("0.000");
-
-            return result;
-        }
+        
         public AnovaTestResult newANOVAWithTukeyHSDNewDynamic(Parameter parameter)
         {
             using (Py.GIL())
@@ -834,9 +637,9 @@ sidak_result = multipletests.multipletests(tukey_result.pvalues, method='sidak')
         {
             using (Py.GIL())
             {
-                //dynamic np = Py.Import("numpy");
-                //dynamic scipyStats = Py.Import("scipy.stats");
-                //dynamic statsmodels = Py.Import("statsmodels.stats.multicomp");
+                dynamic np = Py.Import("numpy");
+                dynamic scipyStats = Py.Import("scipy.stats");
+                dynamic statsmodels = Py.Import("statsmodels.stats.multicomp");
 
                 //dynamic importlib = Py.Import("importlib");
 
@@ -959,7 +762,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
         {
             using (Py.GIL())
             {
-               // dynamic scipyStats = Py.Import("scipy.stats");
+               dynamic scipyStats = Py.Import("scipy.stats");
 
                 // Convert the contingency table to a numpy array
                 dynamic tableArray = new PyList();
@@ -1015,7 +818,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                     pValue = double.Parse(result[1]);
                 }
 
-                //else if(contingencyTable.Count > 2 && contingencyTable[0].Count > 2 && hasSmallExpectedCell)
+                //else if (contingencyTable.Count > 2 && contingencyTable[0].Count > 2 && hasSmallExpectedCell)
                 //{
                 //    dynamic fisherExact = Py.Import("FisherExact.fisher_exact");
 
@@ -1192,6 +995,123 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
             // Perform chi-square test
             return NewChiSquare(contingencyTable , parameter);
+        }
+
+
+
+        public List<string> ChisquarePairwise(Parameter parameter)
+        {
+            if (parameter.IsGroup || parameter.NominalOrScale != "Nominal")
+            {
+                return new List<string> { "Parameter is not relevant for chi-square test", "" };
+            }
+
+            var allValues = parameter.GroupedParameterValues.Values.SelectMany(x => x).Distinct().ToList();
+            var contingencyTable = new List<List<int>>();
+            var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
+
+
+            foreach (var value in allValues)
+            {
+                for(int i = 0;i< sortedKeys.Count;i++)
+                {
+                    for(int j = i+1;j<sortedKeys.Count;j++)
+                    {
+
+                    }
+                }
+
+
+
+
+                var categoryCounts = new List<int>();
+                foreach (var groupData in parameter.GroupedParameterValues.Values)
+                {
+                    categoryCounts.Add(groupData.Count(x => x == value));
+                }
+                contingencyTable.Add(categoryCounts);
+            }
+
+            using (Py.GIL())
+            {
+                dynamic scipyStats = Py.Import("scipy.stats");
+
+                // Convert the contingency table to a numpy array
+                dynamic tableArray = new PyList();
+                foreach (var row in contingencyTable)
+                {
+                    dynamic rowData = new PyList();
+                    foreach (var cell in row)
+                    {
+                        rowData.append(cell);
+                    }
+                    tableArray.append(rowData);
+                }
+
+                // Declare variables to store the chi-square statistic and p-value
+                double chiSquareStatistic = 0.0;
+                double pValue = 0.0;
+
+                // Perform chi-square test without correction
+                dynamic chiSquareResultNoCorrection = scipyStats.chi2_contingency(tableArray, correction: false);
+                chiSquareStatistic = chiSquareResultNoCorrection[0].As<double>();
+                pValue = chiSquareResultNoCorrection[1].As<double>();
+
+                // Extract the expected frequencies without correction
+                dynamic expectedFreqNoCorrection = chiSquareResultNoCorrection[3];
+
+                // Check if any expected cell count is less than 5
+                bool hasSmallExpectedCell = false;
+                foreach (var row in expectedFreqNoCorrection)
+                {
+                    foreach (var cell in row)
+                    {
+                        if (cell.As<double>() < 5)
+                        {
+                            hasSmallExpectedCell = true;
+                            break;
+                        }
+                    }
+                    if (hasSmallExpectedCell)
+                    {
+                        break;
+                    }
+                }
+
+                // If there are small expected cells, perform chi-square test with correction
+                if (contingencyTable.Count == 2 && contingencyTable[0].Count == 2 && hasSmallExpectedCell)
+                {
+                    // Fisher exact test for 2x2 table
+
+
+                    ManualTests manual = new ManualTests();
+                    string[] result = manual.getchi(parameter);
+                    chiSquareStatistic = double.Parse(result[0]);
+                    pValue = double.Parse(result[1]);
+                }
+
+                else
+                {
+                    dynamic chiSquareResult = scipyStats.chi2_contingency(tableArray, correction: false);
+                    chiSquareStatistic = chiSquareResult[0].As<double>();
+                    pValue = chiSquareResult[1].As<double>();
+
+                }
+
+                // Round the chi-square statistic and p-value
+                chiSquareStatistic = Math.Round(chiSquareStatistic, 3);
+                pValue = Math.Round(pValue, 3);
+
+                //MessageBox.Show(chiSquareStatistic.ToString());
+                //MessageBox.Show(pValue.ToString());
+                // Format the p-value
+                string chiSquareString = chiSquareStatistic.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                return new List<string> { chiSquareString, pValueString };
+
+
+            }
         }
 
 

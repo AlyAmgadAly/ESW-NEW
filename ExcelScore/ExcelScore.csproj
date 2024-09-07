@@ -195,7 +195,9 @@
     <Compile Include="Classes\DefinitionUnderTable.cs" />
     <Compile Include="Classes\ManualTests.cs" />
     <Compile Include="Classes\NewDomainClass.cs" />
-    <Compile Include="Classes\pythonStat.cs" />
+    <Compile Include="Classes\pythonStat.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Classes\WordClass.cs" />
     <Compile Include="ExcelFunctions.cs" />
     <Compile Include="Forms\ChooseFrm.cs">
