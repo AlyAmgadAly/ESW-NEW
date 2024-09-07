@@ -7,6 +7,7 @@ using Aspose.Cells.Drawing;
 using CenterSpace.NMath.Core;
 using ExcelScore.Classes;
 using Humanizer;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using MathNet.Numerics.Statistics;
 using Microsoft.SolverFoundation.Services;
 using Python.Runtime;
@@ -26,6 +27,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -1209,6 +1211,38 @@ namespace ExcelScore.Forms
 
             return groupCount;
         }
+
+        public int CountRows_NoIQR(ComparativeTable table)
+        {
+            int rowCount = 0;
+
+            foreach (var parameter in table.Parameters)
+            {
+
+                if (parameter.NominalOrScale == "Nominal")
+                {
+                    int distinctValuesCount = parameter.DIC_LablesIfNomainal.Keys.Count;
+                    rowCount += distinctValuesCount + 1;
+
+                }
+                else if (parameter.NominalOrScale == "Scale")
+                {
+                    if(parameter.ISFAnovaSig)
+                    {
+                        rowCount += 4;
+                    }
+                    else
+                    {
+                        rowCount += 3;
+                    }
+                    
+                }
+            }
+
+            
+
+            return rowCount;
+        }
         public int CountRows(ComparativeTable table)
         {
             int rowCount = 0;
@@ -2162,8 +2196,44 @@ namespace ExcelScore.Forms
                 row = 3;
             }
         }
-        
 
+        public void ComparativeTableGroups_Layout_NoIQR()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Default No IQR")
+                {
+                    bool TableHasSigI = false;
+
+                    IWSection section = wordObj.CreatePortraitSection();
+
+
+
+
+                    int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
+
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
+
+
+                    int Variablerows = CountRows_NoIQR(ComparativeTables[tableindex]);
+                    int WordTableRows = 2 + Variablerows;
+
+                    if(!ComparativeTables[tableindex].HasTotalColumn)
+                    {
+                        int WordTableColumns = 3 + (numberofgroups * 2);
+                    }
+                    else if(ComparativeTables[tableindex].HasTotalColumn)
+                    {
+                        int WordTableColumns = 3 + (numberofgroups * 2) +1;
+                    }
+
+
+
+                    
+
+                }
+            }
+        }
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -2180,11 +2250,11 @@ namespace ExcelScore.Forms
 
             ComparativeTablePeriodsUp_Groups_Layout();
 
+            
 
-
-            wordObj.SaveWord();
-
-
+            string filepath = wordObj.SaveWord();
+            
+            wordObj.removeHeader(filepath);
 
             ClearPara();
 
@@ -2220,7 +2290,7 @@ namespace ExcelScore.Forms
                     //parameter.FormattedValues.Clear();
                     //parameter.GroupedParameterValues.Clear();
                     parameter.EachGroupCount.Clear();
-                    //parameter.FPairwise.Clear();
+                    parameter.FPairwise.Clear();
                     //parameter.LablesIfNomainal.Clear();
                     //parameter.DIC_LablesIfNomainal.Clear();
 
@@ -2694,9 +2764,10 @@ namespace ExcelScore.Forms
 
                     if (parameter.NormalOrAbnormal == "Normal")
                     {
+                        pythonStat.InitPython();
                         comparativeTable.TestsDone.Add("FAnova");
                         AnovaTestResult anovaTestResult = new AnovaTestResult();
-                        //anovaTestResult = pythonStat.ANOVAWithTukeyHSDNewDynamic(parameter);
+                        anovaTestResult = pythonStat.newANOVAWithTukeyHSDNewDynamic(parameter);
 
                         anovaTestResult = manual.Fanova(parameter);
 
@@ -3147,9 +3218,9 @@ namespace ExcelScore.Forms
                             // count = parameter.ParameterValues.Distinct().Count() + 1;
                             count = parameter.DIC_LablesIfNomainal.Keys.Count() + 1;
                             ComparativeTables[tableindex].TestsDone.Add("Chi");
-
-                            //string[] values = pythonStat.PerformChiSquareTest(parameter);
-                            string[] values = manual.getchi(parameter);
+                            pythonStat.InitPython();
+                            string[] values = pythonStat.PerformChiSquareTest(parameter);
+                            //string[] values = manual.getchi(parameter);
 
                             TableHasSigI = TableHasSig(values);
 

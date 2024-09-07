@@ -12,6 +12,7 @@ using MathNet.Numerics.Statistics;
 using Accord.Statistics.Distributions.Univariate;
 using MathNet.Numerics.Distributions;
 using CenterSpace.NMath.Core;
+using System.Data;
 
 namespace ExcelScore.Classes
 {
@@ -274,7 +275,212 @@ result_kw = scipyStats.kruskal(*groups_data)
 
             return result;
         }
+        public AnovaTestResult newANOVAWithTukeyHSDNewDynamic(Parameter parameter)
+        {
+            using (Py.GIL())
+            {
+                dynamic np = Py.Import("numpy");
+                dynamic scipyStats = Py.Import("scipy.stats");
+                dynamic statsmodels = Py.Import("statsmodels.sandbox.stats.multicomp");
+                dynamic scikit_posthocs = Py.Import("scikit_posthocs");
+                dynamic pandas = Py.Import("pandas");
 
+                var groupsData = parameter.GroupedParameterValues.Values;
+                var groupLabelsPair = parameter.GroupedParameterValues.Keys;
+
+                var pyGroupsData = new PyList();
+
+
+
+                foreach (List<double> groupData in groupsData)
+                {
+
+                    var pyGroupData = new PyList();
+                    foreach (double value in groupData)
+                    {
+                        pyGroupData.Append(value.ToPython());
+                    }
+                    pyGroupsData.Append(pyGroupData);
+                }
+
+
+
+                PyTuple pyGroupsDataTuple = new PyTuple(pyGroupsData.ToArray());
+                dynamic groupLabels = parameter.GroupedParameterValues.Keys.ToList().ToPython();
+
+
+
+
+
+
+                List<double> allValues = new List<double>();
+                List<double> allGroupLabels = new List<double>();
+
+                foreach (var kvp in parameter.GroupedParameterValues)
+                {
+                    double groupLabel = kvp.Key;
+                    List<double> groupValues = kvp.Value;
+
+                    allGroupLabels.AddRange(Enumerable.Repeat(groupLabel, groupValues.Count));
+                    allValues.AddRange(groupValues);
+                }
+
+                dynamic data = np.array(allValues.ToArray());
+                dynamic groupLabelsCombined = np.array(allGroupLabels.ToArray());
+
+
+
+                var dfData = new List<List<object>>();
+                int numRows = (int)data.shape[0];
+                for (int i = 0; i < numRows; i++)
+                {
+                    List<object> row = new List<object>
+                    {
+                        data[i],                  // Value
+                        groupLabelsCombined[i]    // Group
+                    };
+                    dfData.Add(row);
+                }
+
+                dynamic df = pandas.DataFrame(dfData, columns: new List<string> { "Value", "Group" });
+
+
+                string pythonScript = @"
+result_kw = scipyStats.kruskal(*groups_data)
+tukey_result = scikit_posthocs.posthoc_tukey(df , val_col=""Value"" , group_col=""Group"")
+";
+
+                dynamic locals = new PyDict();
+                dynamic globals = new PyDict();
+
+                globals["scipyStats"] = scipyStats;
+                globals["statsmodels"] = statsmodels;
+                globals["groups_data"] = pyGroupsDataTuple;
+                globals["group_labels"] = groupLabels;
+                globals["np"] = np;
+                globals["df"] = df;
+                globals["scikit_posthocs"] = scikit_posthocs;
+                globals["data"] = data;
+                globals["group_labels_combined"] = groupLabelsCombined;
+
+
+
+                PythonEngine.Exec(pythonScript, locals, globals);
+
+                dynamic kwResult = globals["result_kw"];
+                dynamic result = globals["tukey_result"];
+
+
+
+                double hValue = kwResult[0].As<double>();
+                double pValueKruskalWallis = kwResult[1].As<double>();
+
+                if (pValueKruskalWallis < 0.05)
+                {
+                    parameter.ISFAnovaSig = true;
+                }
+
+                string pValueString = pValueKruskalWallis <= 0.001 ? "<0.001" : pValueKruskalWallis.ToString("0.000");
+
+                dynamic pValuestukey = result;
+
+
+
+
+                DataTable dataTable = new DataTable();
+
+
+                dynamic columns = result.columns;
+                foreach (var column in columns)
+                {
+                    dataTable.Columns.Add(column.ToString());
+
+                }
+
+                foreach (dynamic row in result.itertuples(index: false, name: null))
+                {
+                    // Create a new row in the DataTable
+                    DataRow dataRow = dataTable.NewRow();
+
+                    // Loop through the row data and assign it to the DataTable row
+                    int colIndex = 0;
+                    foreach (var cell in row)
+                    {
+                        dataRow[colIndex] = cell;
+                        colIndex++;
+                    }
+
+                    // Add the row to the DataTable
+                    dataTable.Rows.Add(dataRow);
+                }
+
+                //foreach (DataColumn column in dataTable.Columns)
+                //{
+                //    MessageBox.Show(column.ColumnName + "\t");
+                //}
+
+
+                //// Print each row of the DataTable
+                //foreach (DataRow row in dataTable.Rows)
+                //{
+                //    foreach (var item in row.ItemArray)
+                //    {
+                //        MessageBox.Show(item + "\t");
+                //    }
+
+                //}
+
+
+
+
+                List<string[]> pairwisecomparisons = new List<string[]>();
+                int k = 0;
+
+                // Assuming groupLabelsCombined contains unique group labels
+                var uniqueGroupLabels = allGroupLabels.Distinct().ToList();
+
+
+
+                for (int i = 0; i < uniqueGroupLabels.Count; i++)
+                {
+                    for (int j = i + 1; j < uniqueGroupLabels.Count; j++)
+                    {
+                        string labelA = uniqueGroupLabels[i].ToString();
+                        string labelB = uniqueGroupLabels[j].ToString();
+
+                        // Find the corresponding p-value in the correct order
+
+                        double pvalue;
+                        // Handle rounding only if the value is not zero
+                        double.TryParse(dataTable.Rows[i][j].ToString(), out pvalue);
+
+
+                        //MessageBox.Show(pvalue.ToString());
+
+                        string pAdjString = pvalue != 0.0 ? Math.Round(pvalue, 3).ToString("0.000") : "0.000";
+
+                        // Display or use the p-value as needed
+                        //MessageBox.Show(pAdjString);
+
+                        string comparison = $"{labelA} vs {labelB}";
+                        pairwisecomparisons.Add(new string[] { comparison, pAdjString });
+
+                        parameter.FPairwise.Add(pAdjString);
+
+
+                        k++;
+                    }
+                }
+
+
+                return new AnovaTestResult
+                {
+                    TestValue = hValue.ToString("0.000"),
+                    PValue = pValueString,
+                    PairwiseComparisons = pairwisecomparisons
+                };
+            }
+        }
         public AnovaTestResult KruskalWallisWithDunnDynamic(Parameter parameter)
         {
             using (Py.GIL())
@@ -308,7 +514,7 @@ result_kw = scipyStats.kruskal(*groups_data)
                 PyTuple pyGroupsDataTuple = new PyTuple(pyGroupsData.ToArray());
                 dynamic groupLabels = parameter.GroupedParameterValues.Keys.ToList().ToPython();
 
-
+                
                
 
 
@@ -380,6 +586,8 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col=""Value"" , group_col=""
 
                 dynamic kwResult = globals["result_kw"];
                 dynamic result = globals["dunn_result"];
+
+                
                 
 
 
@@ -401,11 +609,62 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col=""Value"" , group_col=""
 
                 dynamic pValuesDunn = result;
 
+                
+
+
+                DataTable dataTable = new DataTable();
+
+
+                dynamic columns = result.columns;
+                foreach (var column in columns)
+                {
+                    dataTable.Columns.Add(column.ToString());
+                    
+                }
+
+                foreach (dynamic row in result.itertuples(index: false, name: null))
+                {
+                    // Create a new row in the DataTable
+                    DataRow dataRow = dataTable.NewRow();
+
+                    // Loop through the row data and assign it to the DataTable row
+                    int colIndex = 0;
+                    foreach (var cell in row)
+                    {
+                        dataRow[colIndex] = cell;
+                        colIndex++;
+                    }
+
+                    // Add the row to the DataTable
+                    dataTable.Rows.Add(dataRow);
+                }
+
+                //foreach (DataColumn column in dataTable.Columns)
+                //{
+                //    MessageBox.Show(column.ColumnName + "\t");
+                //}
+               
+
+                // Print each row of the DataTable
+                //foreach (DataRow row in dataTable.Rows)
+                //{
+                //    foreach (var item in row.ItemArray)
+                //    {
+                //        MessageBox.Show(item + "\t");
+                //    }
+                    
+                //}
+
+
+
+
                 List<string[]> pairwisecomparisons = new List<string[]>();
                 int k = 0;
 
                 // Assuming groupLabelsCombined contains unique group labels
                 var uniqueGroupLabels = allGroupLabels.Distinct().ToList();
+
+                
 
                 for (int i = 0; i < uniqueGroupLabels.Count; i++)
                 {
@@ -415,19 +674,29 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col=""Value"" , group_col=""
                         string labelB = uniqueGroupLabels[j].ToString();
 
                         // Find the corresponding p-value in the correct order
-                        var pAdjValue = pValuesDunn[k].As<DataFrame>();
 
+                        double pvalue;
                         // Handle rounding only if the value is not zero
-                        
-                        string pAdjString = pAdjValue[0] != 0.0 ? Math.Round(pAdjValue[0], 3).ToString("0.000") : "0.000";
+                        double.TryParse(dataTable.Rows[i][j].ToString() , out pvalue);
+
+
+
+
+
+
+
+
+                        string pAdjString = pvalue != 0.0 ? Math.Round(pvalue, 3).ToString("0.000") : "0.000";
 
                         // Display or use the p-value as needed
-                        MessageBox.Show(pAdjString);
+                        //MessageBox.Show(pAdjString);
 
                         string comparison = $"{labelA} vs {labelB}";
                         pairwisecomparisons.Add(new string[] { comparison, pAdjString });
 
                         parameter.FPairwise.Add(pAdjString);
+
+                        
                         k++;
                     }
                 }
@@ -661,7 +930,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                         string labelA = parameter.GroupedParameterValues.Keys.ElementAt(i).ToString();
                         string labelB = parameter.GroupedParameterValues.Keys.ElementAt(j).ToString();
                         double pAdjValue = Math.Round(pValuesTukey[k].As<double>(), 3);
-                        string pAdjString = pAdjValue <= 0.001 ? "<0.001" : pAdjValue.ToString("0.000");
+                        string pAdjString = pAdjValue < 0.001 ? "<0.001" : pAdjValue.ToString("0.000");
                         
                         string comparison = $"{labelA} vs {labelB}";
                         pairwisecomparisons.Add(new string[] { comparison, pAdjString });
@@ -686,7 +955,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
 
 
-        public string[] NewChiSquare(List<List<int>> contingencyTable)
+        public string[] NewChiSquare(List<List<int>> contingencyTable , Parameter parameter)
         {
             using (Py.GIL())
             {
@@ -738,12 +1007,36 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 if (contingencyTable.Count == 2 && contingencyTable[0].Count == 2 && hasSmallExpectedCell)
                 {
                     // Fisher exact test for 2x2 table
-                    dynamic fisherResult = scipyStats.fisher_exact(tableArray);
-                    chiSquareStatistic = fisherResult[0].As<double>();
-                    pValue = fisherResult[1].As<double>();
-                    //dynamic chiSquareResult = scipyStats.chi2_contingency(tableArray, correction: false);
-                    //chiSquareStatistic = chiSquareResult[0].As<double>();
+                    
+
+                    ManualTests manual = new ManualTests();
+                    string[] result = manual.getchi(parameter);
+                    chiSquareStatistic = double.Parse(result[0]);
+                    pValue = double.Parse(result[1]);
                 }
+
+                //else if(contingencyTable.Count > 2 && contingencyTable[0].Count > 2 && hasSmallExpectedCell)
+                //{
+                //    dynamic fisherExact = Py.Import("FisherExact.fisher_exact");
+
+                //    // Convert the contingency table for Python consumption
+                //    dynamic fisherTableArray = new PyList();
+                //    foreach (var row in contingencyTable)
+                //    {
+                //        dynamic rowData = new PyList();
+                //        foreach (var cell in row)
+                //        {
+                //            rowData.append(cell);
+                //        }
+                //        fisherTableArray.append(rowData);
+                //    }
+
+                //    // Perform Fisher's exact test for larger tables
+                //    dynamic fisherResult = fisherExact(fisherTableArray);
+
+                //    // Extract the p-value and statistic (if needed)
+                //    pValue = fisherResult[1].As<double>();
+                //}
                 else
                 {
                     dynamic chiSquareResult = scipyStats.chi2_contingency(tableArray, correction: false);
@@ -756,9 +1049,11 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 chiSquareStatistic = Math.Round(chiSquareStatistic, 3);
                 pValue = Math.Round(pValue, 3);
 
+                //MessageBox.Show(chiSquareStatistic.ToString());
+                //MessageBox.Show(pValue.ToString());
                 // Format the p-value
                 string chiSquareString = chiSquareStatistic.ToString("0.000");
-                string pValueString = pValue <= 0.001 ? "<0.001" : pValue.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
                 return new string[] { chiSquareString, pValueString };
             }
@@ -896,7 +1191,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
 
             // Perform chi-square test
-            return NewChiSquare(contingencyTable);
+            return NewChiSquare(contingencyTable , parameter);
         }
 
 
@@ -973,75 +1268,9 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
         }
 
 
-        public void CalculateCorrelations(ComparativeTable table)
-        {
-            double[] x = { 2, 2, 6, 4, 5 };
-            double[] y = { 5, 8, 3, 7, 6 };
+        
 
-            // Calculate Spearman's correlation coefficient
-            double rho = Correlation.Spearman(x, y);
-
-            // Calculate degrees of freedom (df) for t-distribution
-            int n = x.Length;
-            int df = n - 2; // degrees of freedom for a two-tailed test
-
-            // Calculate t-statistic
-            double t = rho * Math.Sqrt(df / (1 - Math.Pow(rho, 2)));
-
-            // Calculate two-tailed p-value using t-distribution
-            double pValue = 2 * (1 - StudentT.CDF(0, 1, df, Math.Abs(t)));
-
-            MessageBox.Show($"Spearman's correlation coefficient: {rho:F3}");
-            MessageBox.Show($"P-value: {pValue:F3}");
-
-
-        }
-
-        public string[] PerformTTest(List<double> dataGroup1, List<double> dataGroup2)
-        {
-            using (Py.GIL())
-            {
-
-               // dynamic np = Py.Import("numpy");
-                //dynamic scipyStats = Py.Import("scipy.stats");
-                // Convert data to NumPy arrays
-                dynamic data1 = np.array(dataGroup1);
-                dynamic data2 = np.array(dataGroup2);
-
-                // Perform F-test for equality of variances
-                dynamic resultFTest = scipyStats.f_oneway(data1, data2);
-                double pValueFTest = resultFTest[1].As<double>();
-
-                // Check if p-value of F-test is less than alpha (e.g., 0.05)
-                double alpha = 0.05;
-                bool equalVariances = pValueFTest >= alpha;
-
-                // Perform t-test
-                dynamic resultTTest;
-                if (equalVariances)
-                {
-                    resultTTest = scipyStats.ttest_ind(data1, data2, equal_var: true);
-                }
-                else
-                {
-                    resultTTest = scipyStats.ttest_ind(data1, data2, equal_var: false);
-                }
-
-                double pValueTTest = resultTTest[1].As<double>();
-                double tStatistic = resultTTest[0].As<double>();
-
-                // Display results
-                //MessageBox.Show("Equal Variances (F-test) : " + equalVariances);
-                
-                string TtestString = tStatistic.ToString("0.000");
-                TtestString= TtestString.Replace("-", "");
-
-                // Format the p-value
-                string pValueString = pValueTTest <= 0.001 ? "<0.001" : pValueTTest.ToString("0.000");
-
-                return new string[] { TtestString, pValueString };
-            }
-        }
+        
 
 
 
