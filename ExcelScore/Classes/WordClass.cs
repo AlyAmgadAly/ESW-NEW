@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Humanizer;
-
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Aspose.Cells;
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
@@ -18,6 +19,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Runtime.CompilerServices;
 using CenterSpace.NMath.Core;
 using System.Collections.ObjectModel;
+using Color = Syncfusion.Drawing.Color;
+using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
+using Hyperlink = DocumentFormat.OpenXml.Wordprocessing.Hyperlink;
 
 namespace ExcelScore.Classes
 {
@@ -37,6 +41,92 @@ namespace ExcelScore.Classes
             return document;
         }
 
+        public void documentformatpage()
+        {
+
+        }
+        public void removeHeader(string filepath)
+        {
+            
+            try
+            {
+                
+                string textToFind1 = "Created with a trial version of Syncfusion Word library or registered the wrong key in your application.";
+                string textToReplace = "";
+                string textToFind2 = "to obtain the valid key.";
+                string textToFind3 = "Click";
+
+                using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(filepath, true))
+                {
+                    var mainPart = wordDoc.MainDocumentPart;
+
+
+                    //removing text 1 & 2
+                    // Loop through all paragraphs in the document body
+                    foreach (var paragraph in mainPart.Document.Body.Elements<Paragraph>())
+                    {
+                        // Loop through each run in the paragraph
+                        foreach (var run in paragraph.Elements<Run>())
+                        {
+                            // Loop through each text element in the run
+                            var textElements = run.Elements<Text>().ToList();
+                            foreach (var text in textElements)
+                            {
+                                // Replace the text if it matches the target string
+                                if (text.Text.Contains(textToFind1))
+                                {
+                                    text.Text = text.Text.Replace(textToFind1, textToReplace);
+                                }
+                                if (text.Text.Contains(textToFind2))
+                                {
+                                    text.Text = text.Text.Replace(textToFind2, textToReplace);
+                                }
+                                if (text.Text.Contains(textToFind3))
+                                {
+                                    text.Text = text.Text.Replace(textToFind3, textToReplace);
+                                }
+                            }
+                        }
+                    }
+
+
+                    //removing hyperlinks
+                    
+
+                    // Remove all hyperlink relationships from the document
+                    
+
+
+                    //removing watermark
+                    // Loop through each section in the document
+                    foreach (var section in wordDoc.MainDocumentPart.Document.Body.Elements<SectionProperties>())
+                    {
+                        // Remove the header references from the section properties
+                        section.RemoveAllChildren<HeaderReference>();
+                    }
+
+                    // Collect all header parts in a list first to avoid modifying the collection during iteration
+                    var headerParts = wordDoc.MainDocumentPart.HeaderParts.ToList();
+
+                    // Remove the header parts from the document
+                    foreach (var header in headerParts)
+                    {
+                        wordDoc.MainDocumentPart.DeletePart(header);
+                    }
+                    var body = wordDoc.MainDocumentPart.Document.Body;
+
+                    // Iterate through all paragraphs in the body
+
+                    // Save the document
+                    wordDoc.MainDocumentPart.Document.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
 
         public void addparag(IWSection section , string Text)
         {
@@ -50,8 +140,23 @@ namespace ExcelScore.Classes
             IWSection Portrait = document.AddSection();
             Portrait.PageSetup.Orientation = PageOrientation.Portrait;
             //Portrait.PageSetup.Margins.Top = 
+            //Margins
+            //Top 3.5
+            //Bottom 3
+            //Left 3.25
+            //Right 2.75
 
+            //Layout
+            //header 2
+            //footer 2
 
+            Portrait.PageSetup.Margins.Top = SetColumnWidthInCentimeters(3.5f);
+            Portrait.PageSetup.Margins.Bottom = SetColumnWidthInCentimeters(3f); 
+            Portrait.PageSetup.Margins.Left = SetColumnWidthInCentimeters(3.25f); 
+            Portrait.PageSetup.Margins.Right = SetColumnWidthInCentimeters(2.75f); 
+
+            Portrait.PageSetup.HeaderDistance = SetColumnWidthInCentimeters(2f); 
+            Portrait.PageSetup.FooterDistance = SetColumnWidthInCentimeters(2f); 
 
             return Portrait;
         }
@@ -1183,7 +1288,7 @@ namespace ExcelScore.Classes
                 }
                 else if(numberofgroups > 2)
                 {
-                    table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(3.75f);
+                    table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(3.5f);
                 }
                 else if(comparativeTable.HasTotalColumn)
                 {
@@ -1224,7 +1329,7 @@ namespace ExcelScore.Classes
                     {
                         for (int j = 1; j <= numberofgroups * 2; j++)
                         {
-                            table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(1.5f);
+                            table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(1.75f);
                         }
                     }
                     
@@ -2284,20 +2389,23 @@ namespace ExcelScore.Classes
 
         
 
-        public void SaveWord()
+        public string SaveWord()
         {
             try
             {
+
+                
+
                 // Initialize the SaveFileDialog
                 saveFileDialog1 = new SaveFileDialog();
                 saveFileDialog1.Filter = "Word Documents (*.docx)|*.docx"; // Filter for Word documents
                 saveFileDialog1.DefaultExt = "docx"; // Default file extension
                 saveFileDialog1.AddExtension = true; // Automatically add extension if the user omits it
-
+                string filePath = "";
                 // Show the dialog and check if the user clicked OK
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    string filePath = saveFileDialog1.FileName; // Get the full file path chosen by the user
+                    filePath = saveFileDialog1.FileName; // Get the full file path chosen by the user
 
                     using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
                     {
@@ -2306,10 +2414,13 @@ namespace ExcelScore.Classes
                         MessageBox.Show("Tables Created!");
                     }
                 }
+
+                return filePath;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
             }
 
 

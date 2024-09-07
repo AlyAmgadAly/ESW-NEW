@@ -248,7 +248,7 @@
             // 
             this.check_Maha.AutoSize = true;
             this.check_Maha.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Maha.Location = new System.Drawing.Point(923, 458);
+            this.check_Maha.Location = new System.Drawing.Point(912, 458);
             this.check_Maha.Name = "check_Maha";
             this.check_Maha.Size = new System.Drawing.Size(80, 29);
             this.check_Maha.TabIndex = 54;
@@ -286,7 +286,7 @@
             this.list_Select.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_Select.FormattingEnabled = true;
             this.list_Select.ItemHeight = 17;
-            this.list_Select.Location = new System.Drawing.Point(453, 615);
+            this.list_Select.Location = new System.Drawing.Point(453, 618);
             this.list_Select.Name = "list_Select";
             this.list_Select.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.list_Select.Size = new System.Drawing.Size(263, 38);
@@ -615,6 +615,7 @@
             this.cmb_ChooseTableFormat.FormattingEnabled = true;
             this.cmb_ChooseTableFormat.Items.AddRange(new object[] {
             "Default",
+            "Default No IQR",
             "Periods Groups",
             "Groups 2 periods"});
             this.cmb_ChooseTableFormat.Location = new System.Drawing.Point(111, 31);
