@@ -31,6 +31,8 @@ namespace ExcelScore.Classes
         public bool Isfisher { get; set; }
 
         public string Periods_ParameterName { get; set; }
+
+        public bool ParameterNominalSig { get; set; }
         public Dictionary<(int, int), string> LabelPairwise { get; set; } = new Dictionary<(int, int), string>();
 
         public Dictionary<double, Dictionary<string, string>> FormattedValues { get; set; } = new Dictionary<double, Dictionary<string, string>>();

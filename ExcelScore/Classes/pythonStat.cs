@@ -998,44 +998,13 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
         }
 
 
-
-        public List<string> ChisquarePairwise(Parameter parameter)
+        public string chisquareCalcPairwise(List<List<int>> contingencyTable)
         {
-            if (parameter.IsGroup || parameter.NominalOrScale != "Nominal")
-            {
-                return new List<string> { "Parameter is not relevant for chi-square test", "" };
-            }
-
-            var allValues = parameter.GroupedParameterValues.Values.SelectMany(x => x).Distinct().ToList();
-            var contingencyTable = new List<List<int>>();
-            var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
-
-
-            foreach (var value in allValues)
-            {
-                for(int i = 0;i< sortedKeys.Count;i++)
-                {
-                    for(int j = i+1;j<sortedKeys.Count;j++)
-                    {
-
-                    }
-                }
-
-
-
-
-                var categoryCounts = new List<int>();
-                foreach (var groupData in parameter.GroupedParameterValues.Values)
-                {
-                    categoryCounts.Add(groupData.Count(x => x == value));
-                }
-                contingencyTable.Add(categoryCounts);
-            }
-
             using (Py.GIL())
             {
                 dynamic scipyStats = Py.Import("scipy.stats");
 
+                
                 // Convert the contingency table to a numpy array
                 dynamic tableArray = new PyList();
                 foreach (var row in contingencyTable)
@@ -1081,20 +1050,59 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 // If there are small expected cells, perform chi-square test with correction
                 if (contingencyTable.Count == 2 && contingencyTable[0].Count == 2 && hasSmallExpectedCell)
                 {
-                    // Fisher exact test for 2x2 table
+                    int a = 0;
+                    int b = 0;
+                    int c = 0;
+                    int d = 0;
 
+                    try
+                    {
+                        a = contingencyTable[0][0];
+                    }
+                    catch (Exception)
+                    {
+                        a = 0;
+                    }
+
+
+                    try
+                    {
+                        b = contingencyTable[0][1];
+                    }
+                    catch (Exception)
+                    {
+                        b = 0;
+                    }
+
+                    try
+                    {
+                        c = contingencyTable[1][0];
+                    }
+                    catch (Exception)
+                    {
+                        c = 0;
+                    }
+
+                    try
+                    {
+                        d = contingencyTable[1][1];
+                    }
+                    catch (Exception)
+                    { d = 0; }
 
                     ManualTests manual = new ManualTests();
-                    string[] result = manual.getchi(parameter);
-                    chiSquareStatistic = double.Parse(result[0]);
-                    pValue = double.Parse(result[1]);
+                    chiSquareStatistic = manual.CalculateChiSquare(a, b, c, d);
+                    pValue = manual.FisherExactTest(a, b, c, d);
+
                 }
 
                 else
                 {
+                    
                     dynamic chiSquareResult = scipyStats.chi2_contingency(tableArray, correction: false);
                     chiSquareStatistic = chiSquareResult[0].As<double>();
                     pValue = chiSquareResult[1].As<double>();
+                    
 
                 }
 
@@ -1108,10 +1116,65 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 string chiSquareString = chiSquareStatistic.ToString("0.000");
                 string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
-                return new List<string> { chiSquareString, pValueString };
+                return pValueString;
 
 
             }
+        }
+        public List<string> ChisquarePairwise(Parameter parameter)
+        {
+            List<string> pairwise = new List<string>(); 
+            if (parameter.IsGroup || parameter.NominalOrScale != "Nominal")
+            {
+                return new List<string> { "Parameter is not relevant for chi-square test", "" };
+            }
+
+            var allValues = parameter.GroupedParameterValues.Values.SelectMany(x => x).Distinct().ToList();
+            var contingencyTable = new List<List<int>>();
+            var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
+
+            for (int i = 0; i < sortedKeys.Count; i++)
+            {
+
+                for (int j = i + 1; j < sortedKeys.Count; j++)
+                {
+                    double keyI = sortedKeys[i];
+                    double keyJ = sortedKeys[j];
+
+
+                    foreach (var value in allValues)
+                    {
+                        var categoryCountsi = new List<int>();
+                        if (parameter.GroupedParameterValues.TryGetValue(keyI, out var valuesI))
+                        {
+                            // Count occurrences of 'value' in each list associated with keyI
+                            categoryCountsi.Add(valuesI.Count(x => x == value));
+                            
+                        }
+                        contingencyTable.Add(categoryCountsi);
+                        
+
+                        var categoryCountsj = new List<int>();
+                        if (parameter.GroupedParameterValues.TryGetValue(keyJ, out var valuesJ))
+                        {
+                            // Count occurrences of 'value' in each list associated with keyJ
+                            categoryCountsj.Add(valuesJ.Count(x => x == value));
+                        }
+
+                        contingencyTable.Add(categoryCountsj);
+
+                        string pvalue = chisquareCalcPairwise(contingencyTable);
+
+                        pairwise.Add(pvalue);
+                    }
+                    
+                    
+
+                }
+            }
+
+
+            return pairwise;
         }
 
 
@@ -1196,6 +1259,8 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
         public string[] TpairedTest(List<double> AdataGroup1 , List<double> AdataGroup2)
         {
+            
+
             using (Py.GIL())
             {
                 dynamic np = Py.Import("numpy");
@@ -1218,7 +1283,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
                 // Format the p-value
                 string TtestString = tStatistic.ToString("0.000");
-                string pValueString = pValue <= 0.001 ? "<0.001" : pValue.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
                 string[] TestValue = new string[] { TtestString, pValueString };
 

@@ -160,7 +160,7 @@ namespace ExcelScore.Classes
 
         
 
-        static double CalculateChiSquare(double a, double b, double c, double d)
+        public  double CalculateChiSquare(double a, double b, double c, double d)
         {
             double row1Total = a + b;
             double row2Total = c + d;
@@ -202,7 +202,7 @@ namespace ExcelScore.Classes
             return expectedA < 5 || expectedB < 5 || expectedC < 5 || expectedD < 5;
         }
 
-        static double FisherExactTest(int a, int b, int c, int d)
+        public  double FisherExactTest(int a, int b, int c, int d)
         {
 
 
@@ -758,11 +758,11 @@ namespace ExcelScore.Classes
         public string[] Tpaired(double[] Para1 , double[] Para2)
         {
 
-            var Tpaired = new Accord.Statistics.Testing.PairedTTest(Para1, Para2);
+            //var Tpaired = new Accord.Statistics.Testing.PairedTTest(Para1, Para2);
 
-
-            double Ttestt = Tpaired.Statistic;
-            double pvalueT = Tpaired.PValue;
+            var Nmatht = new TwoSamplePairedTTest(Para1 , Para2); 
+            double Ttestt = Nmatht.Statistic;
+            double pvalueT = Nmatht.P;
 
 
             Ttestt = Math.Round(Ttestt, 3);
@@ -780,10 +780,79 @@ namespace ExcelScore.Classes
             return new string[] { TtestString, pValueString };
         }
 
-        
+        public string[] Zpaired(double[] Para1, double[] Para2)
+        {
+
+            //var Tpaired = new Accord.Statistics.Testing.PairedTTest(Para1, Para2);
+
+            var differences = Para1.Zip(Para2, (p1, p2) => p1 - p2).ToArray();
+
+            // Step 2: Remove zero differences
+            var nonZeroDifferences = differences.Where(d => d != 0).ToArray();
+
+            if (nonZeroDifferences.Length == 0)
+            {
+                throw new InvalidOperationException("All differences are zero. Cannot perform the test.");
+            }
+
+            // Step 3: Rank the absolute values of the differences
+            var absDifferences = nonZeroDifferences.Select(Math.Abs).ToArray();
+            var rankedAbsDifferences = absDifferences.Select((v, i) => new { Value = v, Index = i })
+                .OrderBy(x => x.Value)
+                .Select((x, i) => new { x.Index, Rank = i + 1 })
+                .ToArray();
+
+            var ranks = new double[nonZeroDifferences.Length];
+            foreach (var rank in rankedAbsDifferences)
+            {
+                ranks[rank.Index] = rank.Rank;
+            }
+
+            // Step 4: Sum the ranks for negative differences
+            double negativeRankSum = 0;
+            for (int i = 0; i < nonZeroDifferences.Length; i++)
+            {
+                if (nonZeroDifferences[i] < 0)
+                {
+                    negativeRankSum += ranks[i];
+                }
+            }
+
+            // Step 5: Calculate the Z value
+            // We use a normal approximation for large samples
+            double n = nonZeroDifferences.Length;
+            double mean = n * (n + 1) / 4;
+            double variance = n * (n + 1) * (2 * n + 1) / 24;
+            double zValue = (negativeRankSum - mean) / Math.Sqrt(variance);
+
+            // Formatting
+            
+
+            var Nmatht = new Accord.Statistics.Testing.TwoSampleWilcoxonSignedRankTest(Para1, Para2);
+            
+            double pvalueT = Nmatht.PValue;
+
+            
+
+            zValue = Math.Round(zValue, 3);
+            pvalueT = Math.Round(pvalueT, 3);
+
+            string TtestString = zValue.ToString("0.000");
+            TtestString = TtestString.Replace("-", "");
+
+            // MessageBox.Show(EqualVariance.ToString());
+            //MessageBox.Show("T test p " + pvalueT.ToString());
+
+            // Format the p-value
+            string pValueString = pvalueT < 0.001 ? "<0.001" : pvalueT.ToString("0.000");
 
 
-        
+            return new string[] { TtestString, pValueString };
+        }
+
+
+
+
 
 
     }

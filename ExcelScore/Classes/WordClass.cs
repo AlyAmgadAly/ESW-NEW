@@ -615,7 +615,6 @@ namespace ExcelScore.Classes
         {
             int row = 1;
             int parametercount = comparativeTable.Parameters.Count-1;
-
             int testrows = parametercount / 2;
 
             for(int testrow = 1;testrow <= testrows; testrow++)
@@ -1742,6 +1741,7 @@ namespace ExcelScore.Classes
 
         public void FormatTable(IWTable table, float fontSize)
         {
+            
             foreach (WTableRow row in table.Rows)
             {
                 foreach (WTableCell cell in row.Cells)
