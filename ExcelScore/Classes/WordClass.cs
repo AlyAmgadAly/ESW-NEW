@@ -343,7 +343,125 @@ namespace ExcelScore.Classes
 
 
         }
-        
+        public void AddHeaderPaper(IWTable table, int WordTableRows , int WordTableColumns , int numberofgroups , ComparativeTable comparativeTable)
+        {
+            AddPara_Center(table, 0, WordTableColumns - 2, "Test of Sig.");
+            AddPara_Center(table, 0, WordTableColumns - 1, "p");
+
+
+            
+            int row = 1;
+            foreach (var paramter in comparativeTable.Parameters)
+            {
+                int rowcount = 0;
+                if (paramter.IsGroup)
+                {
+                    int col = 1;
+                    foreach (var kvp in paramter.DIC_LablesIfNomainal)
+                    {
+                        int key = kvp.Key;
+                        string label = kvp.Value;
+                        int count = paramter.ParameterValues.Count(x => x == key);
+                        AddPara_Center(table, 0, col, label + "\n(n = " + count + ")");
+                        col++;
+                    }
+                }
+
+                else if(paramter.NominalOrScale == "Nominal")
+                {
+                    AddPara_NoCenter(table, row, 0, paramter.Name);
+
+                    int innerrow = row + 1;
+
+                    int mergecountrows = paramter.DIC_LablesIfNomainal.Keys.Count;
+
+                    table.ApplyVerticalMerge(WordTableColumns - 2, innerrow, innerrow + mergecountrows - 1);
+                    table.ApplyVerticalMerge(WordTableColumns - 1, innerrow, innerrow + mergecountrows - 1);
+
+                    foreach (var label in paramter.DIC_LablesIfNomainal.Values)
+                    {
+                        Addpara_NoCenterNoBOLD(table, innerrow, 0, label);
+                        LeftIntendBeforeText(table, innerrow, 0, 14.17f);
+                        innerrow++;
+
+                    }
+
+
+
+                    rowcount = paramter.DIC_LablesIfNomainal.Keys.Count + 1;
+                }
+                else if(paramter.NominalOrScale == "Scale")
+                {
+                    AddPara_NoCenter(table, row, 0, paramter.Name);
+
+
+                    Addpara_NoCenterNoBOLD(table, row+1, 0, "Min. – Max.");
+                    LeftIntendBeforeText(table, row + 1, 0, 14.17f);
+
+                    Addpara_NoCenterNoBOLD(table, row+2, 0, "Mean ± SD.");
+                    LeftIntendBeforeText(table, row + 2, 0, 14.17f);
+
+                    Addpara_NoCenterNoBOLD(table, row+3, 0, "Median (IQR)");
+                    LeftIntendBeforeText(table, row + 3, 0, 14.17f);
+
+
+                    table.ApplyVerticalMerge(WordTableColumns - 2, row+1, row+3);
+                    table.ApplyVerticalMerge(WordTableColumns - 1, row + 1, row + 3);
+
+                    rowcount = 4;
+
+                }
+
+
+
+                row = row + rowcount;
+            }
+        }
+        public void PaperComparative_widths(IWTable table , int WordTableRows , int numberofgroups,int WordTableColumns)
+        {
+            for(int i = 0;i<WordTableRows;i++)
+            {
+                table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(4f);
+                table.Rows[i].Cells[WordTableColumns-2].Width = SetColumnWidthInCentimeters(1.75f);
+                table.Rows[i].Cells[WordTableColumns-1].Width = SetColumnWidthInCentimeters(1.75f);
+
+
+                for(int groups = 1;groups<=numberofgroups;groups++)
+                {
+                    table.Rows[i].Cells[groups].Width = SetColumnWidthInCentimeters(3.75f);
+                }
+            }
+            
+        }
+
+        public void PaperBordersGeneral(IWTable table , int WordTableColumns)
+        {
+            for(int col = 0;col<WordTableColumns;col++)
+            {
+                table.Rows[0].Cells[col].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[0].Cells[col].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+            }
+        }
+        public void PaperGeneralFormat(IWTable table)
+        {
+
+            table.TableFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+            table.TableFormat.Borders.Top.LineWidth = 1.5f;
+
+
+            table.TableFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+            table.TableFormat.Borders.Bottom.LineWidth = 1.5f;
+
+            table.TableFormat.Borders.Horizontal.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Cleared;
+            table.TableFormat.Borders.Vertical.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Cleared;
+            table.TableFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Cleared;
+            table.TableFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Cleared;
+            table.TableFormat.HorizontalAlignment = RowAlignment.Center;
+
+
+
+
+        }
         public void GeneralTableFormat(IWTable table)
         {
             table.TableFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.ThinThickSmallGap;

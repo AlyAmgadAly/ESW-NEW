@@ -1260,8 +1260,6 @@ namespace ExcelScore.Forms
                 }
                 else if (parameter.NominalOrScale == "Scale")
                 {
-                   
-                    // For scale parameters, add 4 (assuming you want to count 4 rows per parameter)
                     rowCount += 4;
                 }
             }
@@ -1709,6 +1707,20 @@ namespace ExcelScore.Forms
 
             }
 
+
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup)
+                {
+
+                    continue;
+                }
+                if (parameter.NominalOrScale == "Nominal")
+                {
+                    tableHasNominal = true;
+                }
+                
+            }
             //Merge Total
 
             table.ApplyHorizontalMerge(0, 1, 2);
@@ -1717,21 +1729,36 @@ namespace ExcelScore.Forms
             //table.ApplyVerticalMerge(1, 0, 1);
 
 
-
+            if (tableHasNominal)
+            {
+                wordObj.AddPara_Center(table, 1, 1, "No.");
+                wordObj.AddPara_Center(table, 1, 2, "%");
+            }
             //boders
+            if (tableHasNominal)
+            {
+                table.Rows[0].Cells[1].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[0].Cells[1].CellFormat.Borders.Bottom.LineWidth = 0.5f;
 
-            table.Rows[0].Cells[1].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-            table.Rows[0].Cells[1].CellFormat.Borders.Bottom.LineWidth = 0.5f;
-
-            table.Rows[0].Cells[0].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-            table.Rows[0].Cells[0].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                table.Rows[0].Cells[0].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[0].Cells[0].CellFormat.Borders.Bottom.LineWidth = 0.5f;
 
 
-            table.Rows[1].Cells[1].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-            table.Rows[1].Cells[1].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+                table.Rows[1].Cells[1].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[1].Cells[1].CellFormat.Borders.Bottom.LineWidth = 1.5f;
 
-            table.Rows[1].Cells[2].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-            table.Rows[1].Cells[2].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+                table.Rows[1].Cells[2].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[1].Cells[2].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            }
+            else if(!tableHasNominal)
+            {
+                table.Rows[0].Cells[1].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[0].Cells[1].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+
+                table.Rows[0].Cells[0].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[0].Cells[0].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            }
+            
 
 
             int TotalN = 0;
@@ -1760,7 +1787,7 @@ namespace ExcelScore.Forms
                 }
                 if (parameter.NominalOrScale == "Nominal")
                 {
-                    tableHasNominal = true;
+                    //tableHasNominal = true;
                     count = parameter.DIC_LablesIfNomainal.Keys.Count+1;
                 }
                 else if (parameter.NominalOrScale == "Scale")
@@ -1783,11 +1810,23 @@ namespace ExcelScore.Forms
                 // except the first one 
                 if(startrow!= 2)
                 {
-                    table.Rows[startrow].Cells[1].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-                    table.Rows[startrow].Cells[1].CellFormat.Borders.Top.LineWidth = 0.5f;
+                    if(tableHasNominal)
+                    {
+                        table.Rows[startrow].Cells[1].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[startrow].Cells[1].CellFormat.Borders.Top.LineWidth = 0.5f;
 
-                    table.Rows[startrow].Cells[2].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-                    table.Rows[startrow].Cells[2].CellFormat.Borders.Top.LineWidth = 0.5f;
+                        table.Rows[startrow].Cells[2].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[startrow].Cells[2].CellFormat.Borders.Top.LineWidth = 0.5f;
+                    }
+                    else if(!tableHasNominal)
+                    {
+                        table.Rows[startrow-1].Cells[1].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[startrow-1].Cells[1].CellFormat.Borders.Top.LineWidth = 0.5f;
+
+                        table.Rows[startrow-1].Cells[2].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[startrow-1].Cells[2].CellFormat.Borders.Top.LineWidth = 0.5f;
+                    }
+                    
                 }
 
 
@@ -1904,7 +1943,7 @@ namespace ExcelScore.Forms
                     }
                     else if(!tableHasNominal)
                     {
-                        table.ApplyHorizontalMerge(1, 1, 2);
+                        table.ApplyHorizontalMerge(startrow-1, 1, 2);
 
                         table.ApplyHorizontalMerge(startrow, 1, 2);
                         table.ApplyHorizontalMerge(startrow + 1, 1, 2);
@@ -1932,11 +1971,7 @@ namespace ExcelScore.Forms
 
 
             }
-            if(tableHasNominal)
-            {
-                wordObj.AddPara_Center(table, 1, 1, "No.");
-                wordObj.AddPara_Center(table, 1, 2, "%");
-            }
+            
             
 
 
@@ -2238,7 +2273,47 @@ namespace ExcelScore.Forms
             }
         }
 
+        public void PaperComparative_Layout()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Paper")
+                {
+                    bool TableHasSigI = false;
 
+                    IWSection section = wordObj.CreatePortraitSection();
+
+
+
+
+                    int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
+
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
+
+                    int Variablerows = CountRows(ComparativeTables[tableindex]);
+
+
+
+                    int WordTableColumns = 3 + numberofgroups;
+
+                    int WordTableRows = 1 + Variablerows;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+                    wordObj.PaperGeneralFormat(table);
+
+                    wordObj.PaperBordersGeneral(table, WordTableColumns);
+                    wordObj.PaperComparative_widths(table, WordTableRows, numberofgroups, WordTableColumns);
+
+                    wordObj.AddHeaderPaper(table, WordTableRows, WordTableColumns, numberofgroups, ComparativeTables[tableindex]);
+
+
+
+
+                    wordObj.FormatTable(table, 12);
+                }
+            }
+        }
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -2255,7 +2330,7 @@ namespace ExcelScore.Forms
 
             ComparativeTablePeriodsUp_Groups_Layout();
 
-            
+            PaperComparative_Layout();
 
             string filepath = wordObj.SaveWord();
             
@@ -3355,10 +3430,7 @@ namespace ExcelScore.Forms
 
                             TableHasSigI = TableHasSig(values);
 
-                            if(TableHasSigI)
-                            {
-                                parameter.ParameterNominalSig = true;
-                            }
+                            
                             
 
                             if (TableHasSigI)
@@ -4357,6 +4429,101 @@ namespace ExcelScore.Forms
         private void data_allPara_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void pic_AllLists_Click(object sender, EventArgs e)
+        {
+            
+
+
+            var selectedItemsNominal = new List<object>();
+            foreach (var selectedItemNominal in list_Nominal.Items)
+            {
+                selectedItemsNominal.Add(selectedItemNominal);
+            }
+
+
+            foreach (var selectedItemNominal in selectedItemsNominal)
+            {
+                list_Nominal.Items.Remove(selectedItemNominal);
+            }
+
+
+
+
+            var selectedItemsNormal = new List<object>();
+            foreach (var selectedItemNormal in list_NormalScale.Items)
+            {
+                selectedItemsNormal.Add(selectedItemNormal);
+            }
+
+
+            foreach (var selectedItemNormal in selectedItemsNormal)
+            {
+                list_NormalScale.Items.Remove(selectedItemNormal);
+            }
+
+
+
+
+
+            var selectedItemsAbnormal = new List<object>();
+            foreach (var selectedItemAbnormal in list_AbnormalScale.Items)
+            {
+                selectedItemsAbnormal.Add(selectedItemAbnormal);
+            }
+
+
+            foreach (var selectedItemAbnormal in selectedItemsAbnormal)
+            {
+                list_AbnormalScale.Items.Remove(selectedItemAbnormal);
+            }
+
+        }
+
+        private void pic_ClearNominalList_Click(object sender, EventArgs e)
+        {
+            var selectedItemsNominal = new List<object>();
+            foreach (var selectedItemNominal in list_Nominal.Items)
+            {
+                selectedItemsNominal.Add(selectedItemNominal);
+            }
+
+
+            foreach (var selectedItemNominal in selectedItemsNominal)
+            {
+                list_Nominal.Items.Remove(selectedItemNominal);
+            }
+        }
+
+        private void pic_clearNormalList_Click(object sender, EventArgs e)
+        {
+            var selectedItemsNormal = new List<object>();
+            foreach (var selectedItemNormal in list_NormalScale.Items)
+            {
+                selectedItemsNormal.Add(selectedItemNormal);
+            }
+
+
+            foreach (var selectedItemNormal in selectedItemsNormal)
+            {
+                list_NormalScale.Items.Remove(selectedItemNormal);
+            }
+        }
+
+        private void pic_ClearAbnormalList_Click(object sender, EventArgs e)
+        {
+            var selectedItemsAbnormal = new List<object>();
+            foreach (var selectedItemAbnormal in list_AbnormalScale.Items)
+            {
+                selectedItemsAbnormal.Add(selectedItemAbnormal);
+            }
+
+
+            foreach (var selectedItemAbnormal in selectedItemsAbnormal)
+            {
+                list_AbnormalScale.Items.Remove(selectedItemAbnormal);
+            }
         }
     }
 }

@@ -1163,6 +1163,9 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
                         contingencyTable.Add(categoryCountsj);
 
+                        MessageBox.Show(contingencyTable[0][0].ToString());
+                        MessageBox.Show(contingencyTable[0][0].ToString());
+
                         string pvalue = chisquareCalcPairwise(contingencyTable);
 
                         pairwise.Add(pvalue);

@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComparativeGroups));
             this.list_Nominal = new System.Windows.Forms.ListBox();
             this.list_NormalScale = new System.Windows.Forms.ListBox();
@@ -76,6 +76,10 @@
             this.cmb_ChooseTableFormat = new System.Windows.Forms.ComboBox();
             this.txt_ParaName = new System.Windows.Forms.TextBox();
             this.lbl_Periods = new System.Windows.Forms.Label();
+            this.pic_AllLists = new System.Windows.Forms.PictureBox();
+            this.pic_ClearNominalList = new System.Windows.Forms.PictureBox();
+            this.pic_clearNormalList = new System.Windows.Forms.PictureBox();
+            this.pic_ClearAbnormalList = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).BeginInit();
@@ -93,6 +97,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_TableFormat)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_AllLists)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearNominalList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_clearNormalList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAbnormalList)).BeginInit();
             this.SuspendLayout();
             // 
             // list_Nominal
@@ -312,28 +320,28 @@
             this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.data_allPara.ColumnHeadersHeight = 54;
             this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Col_Name,
             this.ColMeasure,
             this.ColNormality});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle10.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle10;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.Location = new System.Drawing.Point(22, 67);
@@ -617,7 +625,8 @@
             "Default",
             "Default No IQR",
             "Periods Groups",
-            "Groups 2 periods"});
+            "Groups 2 periods",
+            "Paper"});
             this.cmb_ChooseTableFormat.Location = new System.Drawing.Point(111, 31);
             this.cmb_ChooseTableFormat.Name = "cmb_ChooseTableFormat";
             this.cmb_ChooseTableFormat.Size = new System.Drawing.Size(202, 30);
@@ -645,12 +654,60 @@
             this.lbl_Periods.Size = new System.Drawing.Size(0, 30);
             this.lbl_Periods.TabIndex = 68;
             // 
+            // pic_AllLists
+            // 
+            this.pic_AllLists.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllLists.Image")));
+            this.pic_AllLists.Location = new System.Drawing.Point(376, 31);
+            this.pic_AllLists.Name = "pic_AllLists";
+            this.pic_AllLists.Size = new System.Drawing.Size(45, 31);
+            this.pic_AllLists.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_AllLists.TabIndex = 69;
+            this.pic_AllLists.TabStop = false;
+            this.pic_AllLists.Click += new System.EventHandler(this.pic_AllLists_Click);
+            // 
+            // pic_ClearNominalList
+            // 
+            this.pic_ClearNominalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_ClearNominalList.Image")));
+            this.pic_ClearNominalList.Location = new System.Drawing.Point(608, 26);
+            this.pic_ClearNominalList.Name = "pic_ClearNominalList";
+            this.pic_ClearNominalList.Size = new System.Drawing.Size(45, 31);
+            this.pic_ClearNominalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_ClearNominalList.TabIndex = 70;
+            this.pic_ClearNominalList.TabStop = false;
+            this.pic_ClearNominalList.Click += new System.EventHandler(this.pic_ClearNominalList_Click);
+            // 
+            // pic_clearNormalList
+            // 
+            this.pic_clearNormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_clearNormalList.Image")));
+            this.pic_clearNormalList.Location = new System.Drawing.Point(657, 177);
+            this.pic_clearNormalList.Name = "pic_clearNormalList";
+            this.pic_clearNormalList.Size = new System.Drawing.Size(45, 31);
+            this.pic_clearNormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_clearNormalList.TabIndex = 72;
+            this.pic_clearNormalList.TabStop = false;
+            this.pic_clearNormalList.Click += new System.EventHandler(this.pic_clearNormalList_Click);
+            // 
+            // pic_ClearAbnormalList
+            // 
+            this.pic_ClearAbnormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_ClearAbnormalList.Image")));
+            this.pic_ClearAbnormalList.Location = new System.Drawing.Point(671, 327);
+            this.pic_ClearAbnormalList.Name = "pic_ClearAbnormalList";
+            this.pic_ClearAbnormalList.Size = new System.Drawing.Size(45, 31);
+            this.pic_ClearAbnormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_ClearAbnormalList.TabIndex = 73;
+            this.pic_ClearAbnormalList.TabStop = false;
+            this.pic_ClearAbnormalList.Click += new System.EventHandler(this.pic_ClearAbnormalList_Click);
+            // 
             // ComparativeGroups
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.pic_ClearAbnormalList);
+            this.Controls.Add(this.pic_clearNormalList);
+            this.Controls.Add(this.pic_ClearNominalList);
+            this.Controls.Add(this.pic_AllLists);
             this.Controls.Add(this.lbl_Periods);
             this.Controls.Add(this.txt_ParaName);
             this.Controls.Add(this.cmb_ChooseTableFormat);
@@ -715,6 +772,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_TableFormat)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_AllLists)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearNominalList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_clearNormalList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAbnormalList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -766,5 +827,9 @@
         private System.Windows.Forms.DataGridViewImageColumn ColMeasure;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColNormality;
         private System.Windows.Forms.Label lbl_Periods;
+        private System.Windows.Forms.PictureBox pic_AllLists;
+        private System.Windows.Forms.PictureBox pic_ClearNominalList;
+        private System.Windows.Forms.PictureBox pic_clearNormalList;
+        private System.Windows.Forms.PictureBox pic_ClearAbnormalList;
     }
 }
