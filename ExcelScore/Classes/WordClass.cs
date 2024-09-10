@@ -345,7 +345,7 @@ namespace ExcelScore.Classes
         }
         public void AddHeaderPaper(IWTable table, int WordTableRows , int WordTableColumns , int numberofgroups , ComparativeTable comparativeTable)
         {
-            AddPara_Center(table, 0, WordTableColumns - 2, "Test of Sig.");
+            //AddPara_Center(table, 0, WordTableColumns - 2, "Test of Sig.");
             AddPara_Center(table, 0, WordTableColumns - 1, "p");
 
 
@@ -782,6 +782,170 @@ namespace ExcelScore.Classes
             }
 
         }
+        public void Insert_Inner_Header_Merges_Pathology(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns, int numberofgroups)
+        {
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup)
+                {
+                    continue;
+                }
+
+
+                if (parameter.NominalOrScale == "Scale")
+                {
+                    
+                }
+                else if (parameter.NominalOrScale == "Nominal")
+                {
+
+
+                }
+            }
+        }
+        public void Apply_AllHeaders_Inner_Merges_Pathology(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns, int numberofgroups)
+        {
+            //Insert N
+            AddPara_Center(table, 0, 2, "N");
+
+            //Insert Group Name
+            Parameter groupParameter = null;
+
+            int starting_row = 3;
+            int row_current_count = 0;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                int labelinsert = starting_row;
+                if(parameter.IsGroup)
+                {
+                    groupParameter = parameter;
+                }
+                else if(parameter.NominalOrScale == "Nominal")
+                {
+                    AddPara_NoCenter(table, starting_row, 0, parameter.Name);
+                    row_current_count = parameter.DIC_LablesIfNomainal.Keys.Count;
+
+
+                    foreach (var kvp in parameter.DIC_LablesIfNomainal)
+                    {
+                        int key = kvp.Key;
+                        string label = kvp.Value;
+                        int count = parameter.ParameterValues.Count(x => x == key);
+
+                        Addpara_NoCenterNoBOLD(table, labelinsert, 1, label);
+                        Addpara_NoCenterNoBOLD(table, labelinsert, 2, count.ToString());
+
+                        labelinsert++;
+                    }
+
+
+
+                }
+
+
+
+
+
+                starting_row = starting_row + row_current_count;
+            }
+
+
+
+
+            AddPara_Center(table, 0, 3, groupParameter.Name);
+
+            int col = 3;
+            foreach (var kvp in groupParameter.DIC_LablesIfNomainal)
+            {
+                int key = kvp.Key;
+                string label = kvp.Value;
+                int count = groupParameter.ParameterValues.Count(x => x == key);
+                AddPara_Center(table, 1, col, label + "\n(n = " + count + ")");
+
+                AddPara_Center(table, 2, col, "No.");
+                AddPara_Center(table, 2, col+1, "%");
+                col = col+2;
+            }
+
+
+
+            AddPara_Center(table, 0, WordTableColumns-1, "p");
+
+
+
+        }
+
+        public void ApplyPathology_Widths(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns, int numberofgroups)
+        {
+
+
+            for (int row = 0; row < WordTableRows; row++)
+            {
+                table.Rows[row].Cells[0].Width = SetColumnWidthInCentimeters(3f);
+                table.Rows[row].Cells[1].Width = SetColumnWidthInCentimeters(3.5f);
+                table.Rows[row].Cells[2].Width = SetColumnWidthInCentimeters(1.1f);
+                table.Rows[row].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.5f);
+                table.Rows[row].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.5f);
+
+                for (int col = 3; col < WordTableColumns - 2; col++)
+                {
+                    table.Rows[row].Cells[col].Width = SetColumnWidthInCentimeters(1.1f);
+                }
+
+            }
+
+        }
+        public void ApplyPathology_Outer_Borders(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns, int numberofgroups)
+        {
+            for (int row = 0; row < WordTableRows; row++)
+            {
+                table.Rows[row].Cells[2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[row].Cells[2].CellFormat.Borders.Left.LineWidth = 1.5f;
+
+                table.Rows[row].Cells[WordTableColumns-2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[row].Cells[WordTableColumns-2].CellFormat.Borders.Left.LineWidth = 1.5f;
+
+            }
+
+            for (int column = 0; column < WordTableColumns; column++)
+            {
+                table.Rows[2].Cells[column].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[2].Cells[column].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            }
+
+            for (int column = 3; column < WordTableColumns-2; column++)
+            {
+                table.Rows[0].Cells[column].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[0].Cells[column].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+                table.Rows[1].Cells[column].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[1].Cells[column].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+            }
+        }
+        public void ApplyPathology_Outer_Merges(IWTable table,ComparativeTable comparativeTable,int WordTableRows ,int WordTableColumns, int numberofgroups)
+        {
+            //Merge empty space
+            table.ApplyVerticalMerge(0, 0, 2);
+            table.ApplyVerticalMerge(1, 0, 2);
+
+            //N column
+            table.ApplyVerticalMerge(2, 0, 2);
+
+
+            table.ApplyHorizontalMerge(0, 3, WordTableColumns - 3);
+
+            table.ApplyVerticalMerge(WordTableColumns-2, 0, 2);
+            table.ApplyVerticalMerge(WordTableColumns -1, 0, 2);
+
+
+            for(int i = 3; i < (numberofgroups*2)+3 ;i =i+2)
+            {
+                table.ApplyHorizontalMerge(1, i, i+1);
+            }
+
+            
+        }
+
         public void ApplyGeneralComparativeMerges(IWTable table ,int WordTableColumns , int numberofgroups)
         {
             table.ApplyVerticalMerge(0, 0, 1);
@@ -1281,8 +1445,8 @@ namespace ExcelScore.Classes
                 table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(1f);
                 table.Rows[i].Cells[1].Width = SetColumnWidthInCentimeters(3.75f);
 
-                table.Rows[i].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.55f);
-                table.Rows[i].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.55f);
+                table.Rows[i].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.65f);
+                table.Rows[i].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.65f);
             }
 
 
@@ -2135,6 +2299,56 @@ namespace ExcelScore.Classes
                 
             }
             
+        }
+
+
+        public void HighlightCellContent_Paper(IWTable table, int row, int WordTableColumns)
+        {
+
+            WParagraph firstparagraph = table[row, 0].Paragraphs[0];
+
+            if (firstparagraph != null)
+            {
+
+                // Retrieve the text content of the cell
+                string cellText = firstparagraph.Text;
+
+                firstparagraph.Text = "";
+
+
+                WTextRange newTextRange = (WTextRange)firstparagraph.AppendText(cellText);
+                newTextRange.CharacterFormat.HighlightColor = Color.Yellow;
+            }
+
+            // Get the first paragraph of the specified cell
+            for (int i = 1; i < WordTableColumns - 2; i ++)
+            {
+
+                if (table[row, i].Paragraphs.Count > 0)
+                {
+                    WParagraph paragraph = table[row, i].Paragraphs[0];
+
+                    if (paragraph != null)
+                    {
+
+                        // Retrieve the text content of the cell
+                        string cellText = paragraph.Text;
+
+                        paragraph.Text = "";
+
+
+                        WTextRange newTextRange = (WTextRange)paragraph.AppendText(cellText);
+                        newTextRange.CharacterFormat.HighlightColor = Color.Yellow;
+                    }
+                }
+
+
+
+
+
+
+            }
+
         }
         public void InsertHighlightTestName(IWTable table , int InsertRow , int InsertColumn , string TestName)
         {

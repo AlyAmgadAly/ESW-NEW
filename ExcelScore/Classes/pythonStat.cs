@@ -124,8 +124,11 @@ namespace ExcelScore.Classes
                     double groupLabel = kvp.Key;
                     List<double> groupValues = kvp.Value;
 
-                    allGroupLabels.AddRange(Enumerable.Repeat(groupLabel, groupValues.Count));
-                    allValues.AddRange(groupValues);
+                    if (groupValues.Count > 1)
+                    {
+                        allGroupLabels.AddRange(Enumerable.Repeat(groupLabel, groupValues.Count));
+                        allValues.AddRange(groupValues);
+                    }
                 }
 
                 dynamic data = np.array(allValues.ToArray());
@@ -330,8 +333,11 @@ tukey_result = scikit_posthocs.posthoc_tukey(df , val_col=""Value"" , group_col=
                     double groupLabel = kvp.Key;
                     List<double> groupValues = kvp.Value;
 
-                    allGroupLabels.AddRange(Enumerable.Repeat(groupLabel, groupValues.Count));
-                    allValues.AddRange(groupValues);
+                    if (groupValues.Count > 1)
+                    {
+                        allGroupLabels.AddRange(Enumerable.Repeat(groupLabel, groupValues.Count));
+                        allValues.AddRange(groupValues);
+                    }
                 }
 
 
