@@ -30,7 +30,9 @@ namespace ExcelScore.Forms
             "S1LJJ1NQC12283" ,
             "202020202020202020202020563542564a535850",
             "     WD-WCAV3E296961",
-            "     WD-WCAP9C351984"
+            "     WD-WCAP9C351984" ,
+            "            Z3TXT3DA",
+            "            ZA428LY9"
         };    
         
 

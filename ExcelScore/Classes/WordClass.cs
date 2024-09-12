@@ -22,6 +22,8 @@ using System.Collections.ObjectModel;
 using Color = Syncfusion.Drawing.Color;
 using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
 using Hyperlink = DocumentFormat.OpenXml.Wordprocessing.Hyperlink;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
 
 namespace ExcelScore.Classes
 {
@@ -823,9 +825,12 @@ namespace ExcelScore.Classes
                 else if(parameter.NominalOrScale == "Nominal")
                 {
                     AddPara_NoCenter(table, starting_row, 0, parameter.Name);
+
+                    
                     row_current_count = parameter.DIC_LablesIfNomainal.Keys.Count;
-
-
+                    table.ApplyVerticalMerge(0, starting_row, starting_row + row_current_count-1);
+                    table.ApplyVerticalMerge(WordTableColumns-2, starting_row, starting_row + row_current_count - 1);
+                    table.ApplyVerticalMerge(WordTableColumns - 1, starting_row, starting_row + row_current_count - 1);
                     foreach (var kvp in parameter.DIC_LablesIfNomainal)
                     {
                         int key = kvp.Key;
@@ -833,12 +838,64 @@ namespace ExcelScore.Classes
                         int count = parameter.ParameterValues.Count(x => x == key);
 
                         Addpara_NoCenterNoBOLD(table, labelinsert, 1, label);
-                        Addpara_NoCenterNoBOLD(table, labelinsert, 2, count.ToString());
+                        LeftIntendBeforeText(table, labelinsert, 1, SetColumnWidthInCentimeters(0.3f));
+
+                        AddPara_Center(table, labelinsert, 2, count.ToString());
 
                         labelinsert++;
                     }
+                    for(int colctrborder = 0; colctrborder < WordTableColumns; colctrborder++)
+                    {
+                        if(labelinsert < WordTableRows)
+                        {
+                            table.Rows[labelinsert].Cells[colctrborder].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                            table.Rows[labelinsert].Cells[colctrborder].CellFormat.Borders.Top.LineWidth = 0.5f;
+                        }
+                        
+                    }
+                }
+                else if (parameter.NominalOrScale == "Scale")
+                {
+                    AddPara_NoCenter(table, starting_row, 0, parameter.Name);
+                    row_current_count = 2;
+                    table.ApplyVerticalMerge(0, starting_row, starting_row + row_current_count - 1);
 
 
+                    Addpara_NoCenterNoBOLD(table, labelinsert, 1, "Mean ± SD.");
+                    LeftIntendBeforeText(table, labelinsert, 1, SetColumnWidthInCentimeters(0.3f));
+
+                    Addpara_NoCenterNoBOLD(table, labelinsert+1, 1, "Median (Min. – Max.)");
+                    LeftIntendBeforeText(table, labelinsert+1, 1, SetColumnWidthInCentimeters(0.3f));
+
+
+                    table.ApplyVerticalMerge(WordTableColumns - 2, labelinsert, labelinsert+1);
+                    table.ApplyVerticalMerge(WordTableColumns - 1, labelinsert, labelinsert + 1);
+
+
+                    table.ApplyVerticalMerge(2, labelinsert, labelinsert + 1);
+
+                    //Merging Data cells
+                    int innerMergeCol = 3;
+                    foreach (var kvp in parameter.GroupedParameterValues)
+                    {
+                        table.ApplyHorizontalMerge(labelinsert, innerMergeCol, innerMergeCol + 1);
+                        table.ApplyHorizontalMerge(labelinsert+1, innerMergeCol, innerMergeCol + 1);
+                        innerMergeCol += 2;
+
+                    }
+
+
+                    labelinsert += 2;
+
+                    for (int colctrborder = 0; colctrborder < WordTableColumns; colctrborder++)
+                    {
+                        if (labelinsert < WordTableRows)
+                        {
+                            table.Rows[labelinsert].Cells[colctrborder].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                            table.Rows[labelinsert].Cells[colctrborder].CellFormat.Borders.Top.LineWidth = 0.5f;
+                        }
+
+                    }
 
                 }
 
@@ -846,7 +903,9 @@ namespace ExcelScore.Classes
 
 
 
-                starting_row = starting_row + row_current_count;
+
+
+                    starting_row = starting_row + row_current_count;
             }
 
 
@@ -858,13 +917,18 @@ namespace ExcelScore.Classes
             foreach (var kvp in groupParameter.DIC_LablesIfNomainal)
             {
                 int key = kvp.Key;
+                
                 string label = kvp.Value;
                 int count = groupParameter.ParameterValues.Count(x => x == key);
-                AddPara_Center(table, 1, col, label + "\n(n = " + count + ")");
 
-                AddPara_Center(table, 2, col, "No.");
-                AddPara_Center(table, 2, col+1, "%");
-                col = col+2;
+                if (count != 0)
+                {
+                    AddPara_Center(table, 1, col, label + "\n(n = " + count + ")");
+                    AddPara_Center(table, 2, col, "No.");
+                    AddPara_Center(table, 2, col + 1, "%");
+                    col = col + 2;
+                }
+                
             }
 
 
@@ -882,7 +946,7 @@ namespace ExcelScore.Classes
             for (int row = 0; row < WordTableRows; row++)
             {
                 table.Rows[row].Cells[0].Width = SetColumnWidthInCentimeters(3f);
-                table.Rows[row].Cells[1].Width = SetColumnWidthInCentimeters(3.5f);
+                table.Rows[row].Cells[1].Width = SetColumnWidthInCentimeters(3.65f);
                 table.Rows[row].Cells[2].Width = SetColumnWidthInCentimeters(1.1f);
                 table.Rows[row].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.5f);
                 table.Rows[row].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.5f);
@@ -1478,7 +1542,7 @@ namespace ExcelScore.Classes
                         int key = kvp.Key;
                         string label = kvp.Value;
                         int count = paramter.ParameterValues.Count(x => x == key);
-                        AddPara_Center(table, 0, col, label + "\n(n = " + count + ")");
+                        AddPara_Center(table, 0, col, label + Convert.ToChar(11) + "(n = " + count + ")");
                         col++;
                         //WParagraph groupparagraph = table[0, col].Paragraphs[0];
                         //groupparagraph.ParagraphFormat.BeforeSpacing = 0;
@@ -2254,8 +2318,16 @@ namespace ExcelScore.Classes
         }
         public void HighlightCellContent(IWTable table, int row, int WordTableColumns)
         {
-
-            WParagraph firstparagraph = table[row, 0].Paragraphs[0];
+            WParagraph firstparagraph = null;
+            try
+            {
+                firstparagraph = table[row, 0].Paragraphs[0];
+            }
+            catch(Exception)
+            {
+                firstparagraph = null;
+            }
+           
 
             if (firstparagraph != null)
             {

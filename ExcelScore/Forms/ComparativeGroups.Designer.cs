@@ -218,6 +218,7 @@
             this.txt_TableName.Name = "txt_TableName";
             this.txt_TableName.Size = new System.Drawing.Size(183, 28);
             this.txt_TableName.TabIndex = 46;
+            this.txt_TableName.TextChanged += new System.EventHandler(this.txt_TableName_TextChanged);
             // 
             // label5
             // 

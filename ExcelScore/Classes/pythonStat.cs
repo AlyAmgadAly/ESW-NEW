@@ -28,28 +28,35 @@ namespace ExcelScore.Classes
         {
             string pythonDll = "";
             string username = Environment.UserName;
-            //MessageBox.Show(username);
+            
 
 
             try
 
             {
-                if (username != "khaled")
-                {
-                    pythonDll = $@"C:\Users\{username}\AppData\Local\Programs\Python\Python312\python312.dll";
-                    Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll);
-                    PythonEngine.Initialize();
-                }
-                else if (username == "khaled")
+                
+                if (username == "khaled")
                 {
                     pythonDll = @"C:\Users\Khale\AppData\Local\Programs\Python\Python312\python312.dll";
                     Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll);
                     PythonEngine.Initialize();
                 }
-                
+                else if (username == "Esraa")
+                {
+                    //MessageBox.Show(username);
+                    pythonDll = @"C:\Users\MMM\AppData\Local\Programs\Python\Python312\python312.dll";
+                    Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll);
+                    PythonEngine.Initialize();
+                }
+                else if (username != "khaled")
+                {
+                    pythonDll = $@"C:\Users\{username}\AppData\Local\Programs\Python\Python312\python312.dll";
+                    Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonDll);
+                    PythonEngine.Initialize();
+                }
 
 
-                
+
             }
             catch(Exception)
             {
@@ -824,34 +831,18 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                     pValue = double.Parse(result[1]);
                 }
 
-                //else if (contingencyTable.Count > 2 && contingencyTable[0].Count > 2 && hasSmallExpectedCell)
-                //{
-                //    dynamic fisherExact = Py.Import("FisherExact.fisher_exact");
-
-                //    // Convert the contingency table for Python consumption
-                //    dynamic fisherTableArray = new PyList();
-                //    foreach (var row in contingencyTable)
-                //    {
-                //        dynamic rowData = new PyList();
-                //        foreach (var cell in row)
-                //        {
-                //            rowData.append(cell);
-                //        }
-                //        fisherTableArray.append(rowData);
-                //    }
-
-                //    // Perform Fisher's exact test for larger tables
-                //    dynamic fisherResult = fisherExact(fisherTableArray);
-
-                //    // Extract the p-value and statistic (if needed)
-                //    pValue = fisherResult[1].As<double>();
-                //}
                 else
                 {
-                    dynamic chiSquareResult = scipyStats.chi2_contingency(tableArray, correction: false);
-                    chiSquareStatistic = chiSquareResult[0].As<double>();
-                    pValue = chiSquareResult[1].As<double>();
-
+                    if(hasSmallExpectedCell)
+                    {
+                        return new string[] { "FET", "0"};
+                    }
+                    else
+                    {
+                        dynamic chiSquareResult = scipyStats.chi2_contingency(tableArray, correction: false);
+                        chiSquareStatistic = chiSquareResult[0].As<double>();
+                        pValue = chiSquareResult[1].As<double>();
+                    }    
                 }
 
                 // Round the chi-square statistic and p-value
@@ -1237,12 +1228,12 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 if (combinedSize > 40)
                 {
                     // Use the asymptotic method
-                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, method : "asymptotic", alternative: "two-sided");
+                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: true, method : "asymptotic", alternative: "two-sided");
                 }
                 else
                 {
                     // Use the exact method
-                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, method: "exact", alternative: "two-sided");
+                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: false, method: "exact", alternative: "two-sided");
                 }
 
                 // Extract the p-value and U-statistic from the result

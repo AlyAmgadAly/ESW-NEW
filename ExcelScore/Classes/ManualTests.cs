@@ -295,16 +295,16 @@ namespace ExcelScore.Classes
         {
             try
             {
+                
                 double[] group1 = AdataGroup1.ToArray();
                 double[] group2 = AdataGroup2.ToArray();
 
 
                 int totalcount = group1.Length + group2.Length;
 
-                //MessageBox.Show(totalcount.ToString());
 
                 bool CountBool = false;
-
+                bool adjustedforties = false;
                 if (totalcount > 40)
                 {
 
@@ -316,21 +316,18 @@ namespace ExcelScore.Classes
                 }
 
 
-                var UTest = new Accord.Statistics.Testing.MannWhitneyWilcoxonTest(group1, group2, exact: CountBool);
+                var UTest = new Accord.Statistics.Testing.MannWhitneyWilcoxonTest(group1, group2, exact: CountBool , adjustForTies: adjustedforties);
 
 
                 double UStat = CalculateUStatistic(group1, group2);
-                //double UStat = UTest.Statistic;
-                double Upvalue = UTest.PValue;
-                //double UTEST = UTest.Statistic;
 
-                //MessageBox.Show(UTEST.ToString());
+                double Upvalue = UTest.PValue;
+
 
 
                 UStat = Math.Round(UStat, 3);
                 Upvalue = Math.Round(Upvalue, 3);
-                //MessageBox.Show("U test : " + UStat.ToString());
-                // MessageBox.Show("U test p " + Upvalue.ToString());
+
 
                 string UtestString = UStat.ToString("0.000");
                 string pValueString = Upvalue < 0.001 ? "<0.001" : Upvalue.ToString("0.000");
