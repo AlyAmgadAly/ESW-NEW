@@ -617,12 +617,187 @@ namespace ExcelScore.Forms
                 }
             }
         }
+
+        public List<int> newFindGroups_ColumnIndexes_Relation(ComparativeTable comparativeTable)
+        {
+            List<int> Group_Indexes = new List<int>();
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(parameter.IsGroup)
+                {
+                    for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
+                    {
+                        object cellValue = worksheet.Cells[0, col].Value;
+                        string parameterName = cellValue?.ToString();
+                        if (!string.IsNullOrEmpty(parameterName))
+                        {
+                            if (parameter.Name == parameterName && parameter.IsGroup)
+                            {
+                                Group_Indexes.Add(col);
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            return Group_Indexes;
+           
+        }
+        public void ComparativeBasic_Relation(string TableName)
+        {
+            GetDataValues(TableName);
+
+            foreach (ComparativeTable table in ComparativeTables)
+            {
+                if (TableName == table.TableName)
+                {
+                    excelFunctionsobj.ReadLablesIfNominal(table);
+                    List<int>GroupColumn_Indexes = newFindGroups_ColumnIndexes_Relation(table);
+                    foreach (Parameter parameter in table.Parameters)
+                    {
+
+                        if (parameter.IsGroup)
+                        {
+                            continue;
+                        }
+
+                        // Get the column index of the parameter
+                        int parameterColumnIndex = -1;
+
+                        for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
+                        {
+                            object cellValue = worksheet.Cells[0, col].Value;
+                            string parameterName = cellValue?.ToString();
+
+                            if (!string.IsNullOrEmpty(parameterName) && parameterName == parameter.Name)
+                            {
+                                parameterColumnIndex = col;
+                                break;
+                            }
+                        }
+
+                        if (parameterColumnIndex != -1)
+                        {
+                            foreach (int GroupColumn_index in GroupColumn_Indexes)
+                            {
+                                for (int row = 1; row <= worksheet.Cells.MaxDataRow; row++)
+                                {
+                                    object groupCellValue = worksheet.Cells[row, GroupColumn_index].Value;
+                                    double groupValue;
+
+                                    object groupcellName = worksheet.Cells[0, GroupColumn_index].Value;
+                                    string GroupName = groupcellName.ToString();
+
+
+                                    if (groupCellValue != null && double.TryParse(groupCellValue.ToString(), out groupValue))
+                                    {
+                                        object parameterCellValue = worksheet.Cells[row, parameterColumnIndex].Value;
+                                        double parameterValue;
+
+                                        if (parameterCellValue == null)
+                                        {
+
+                                            break;
+                                        }
+                                        if (parameterCellValue.ToString() == ".")
+                                        {
+                                            parameter.hasLowerN = true;
+                                            continue;
+                                        }
+
+                                        if (list_Select.Items.Count == 0)
+                                        {
+                                            if (parameterCellValue != null && double.TryParse(parameterCellValue.ToString(), out parameterValue))
+                                            {
+                                                // Add the parameter value to the corresponding group
+
+                                                if(!parameter.GroupedParameterValues_Relation.ContainsKey(GroupName))
+                                                {
+                                                    parameter.GroupedParameterValues_Relation[GroupName] = new Dictionary<double, List<double>>();
+                                                }
+
+                                                if (!parameter.GroupedParameterValues_Relation[GroupName].ContainsKey(groupValue))
+                                                {
+                                                    parameter.GroupedParameterValues_Relation[GroupName][groupValue] = new List<double>();
+                                                }
+                                                parameter.GroupedParameterValues_Relation[GroupName][groupValue].Add(parameterValue);
+
+
+
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            object SelectData = worksheet.Cells[row, SelectParameterColIndex].Value;
+                                            //MessageBox.Show(SelectParameterColIndex.ToString());
+
+                                            double SelectDataDouble;
+                                            if (SelectData != null && double.TryParse(SelectData.ToString(), out SelectDataDouble))
+                                            {
+                                                if (parameterCellValue != null && double.TryParse(parameterCellValue.ToString(), out parameterValue))
+                                                {
+                                                    // Add the parameter value to the corresponding group
+
+                                                    if (!parameter.GroupedParameterValues_Relation.ContainsKey(GroupName))
+                                                    {
+                                                        parameter.GroupedParameterValues_Relation[GroupName] = new Dictionary<double, List<double>>();
+                                                        if (!parameter.GroupedParameterValues_Relation[GroupName].ContainsKey(groupValue))
+                                                        {
+                                                            parameter.GroupedParameterValues_Relation[GroupName][groupValue] = new List<double>();
+                                                        }
+                                                        parameter.GroupedParameterValues_Relation[GroupName][groupValue].Add(parameterValue);
+                                                    }
+
+
+
+
+                                                }
+                                            }
+
+                                        }
+
+
+
+
+
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+
+
+                }
+            }
+
+
+            
+        }
         private void pic_addTable_Click(object sender, EventArgs e)
         {
             
             string TableName = AddTableUI();
             check_TotalColumn.Checked = false;
-            ComparativeBasic(TableName);
+
+
+            
+
+            if(cmb_ChooseTableFormat.Text == "Relation")
+            {
+                ComparativeBasic_Relation(TableName);
+            }
+            else
+            {
+                ComparativeBasic(TableName);
+            }
+            
+
+
             CheckFullEmptyParameters(TableName);
             CheckForOthers_inNominal(TableName);
 

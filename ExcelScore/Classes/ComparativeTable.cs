@@ -20,6 +20,8 @@ namespace ExcelScore.Classes
         public List<double> ParameterValues { get; set; } = new List<double>();
         public Dictionary<double, List<double>> GroupedParameterValues { get; set; } = new Dictionary<double, List<double>>();
 
+        public Dictionary<string ,  Dictionary<double, List<double>>> GroupedParameterValues_Relation { get; set; } = new Dictionary<string, Dictionary<double, List<double>>>();
+
         public List<string> FPairwise { get; set; } = new List<string>();
         public bool ISFAnovaSig { get; set; }
 
@@ -38,6 +40,7 @@ namespace ExcelScore.Classes
         public Dictionary<double, Dictionary<string, string>> FormattedValues { get; set; } = new Dictionary<double, Dictionary<string, string>>();
         public Parameter()
         {
+            GroupedParameterValues_Relation = new Dictionary<string, Dictionary<double, List<double>>>();
             GroupedParameterValues = new Dictionary<double, List<double>>();
             ParameterValues = new List<double>();
             LabelPairwise = new Dictionary<(int, int), string>(); // Initialize ParameterValues list in constructor as well
