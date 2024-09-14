@@ -318,6 +318,7 @@ namespace ExcelScore.Classes
 
                 var UTest = new Accord.Statistics.Testing.MannWhitneyWilcoxonTest(group1, group2, exact: CountBool , adjustForTies: adjustedforties);
 
+                
 
                 double UStat = CalculateUStatistic(group1, group2);
 

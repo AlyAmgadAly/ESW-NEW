@@ -939,6 +939,146 @@ namespace ExcelScore.Classes
 
         }
 
+
+        public void Apply_AllHeaders_Inner_Merges_Pathology_IQR(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns, int numberofgroups)
+        {
+            //Insert N
+            AddPara_Center(table, 0, 2, "N");
+
+            //Insert Group Name
+            Parameter groupParameter = null;
+
+            int starting_row = 3;
+            int row_current_count = 0;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                int labelinsert = starting_row;
+                if (parameter.IsGroup)
+                {
+                    groupParameter = parameter;
+                }
+                else if (parameter.NominalOrScale == "Nominal")
+                {
+                    AddPara_NoCenter(table, starting_row, 0, parameter.Name);
+
+
+                    row_current_count = parameter.DIC_LablesIfNomainal.Keys.Count;
+                    table.ApplyVerticalMerge(0, starting_row, starting_row + row_current_count - 1);
+                    table.ApplyVerticalMerge(WordTableColumns - 2, starting_row, starting_row + row_current_count - 1);
+                    table.ApplyVerticalMerge(WordTableColumns - 1, starting_row, starting_row + row_current_count - 1);
+                    foreach (var kvp in parameter.DIC_LablesIfNomainal)
+                    {
+                        int key = kvp.Key;
+                        string label = kvp.Value;
+                        int count = parameter.ParameterValues.Count(x => x == key);
+
+                        Addpara_NoCenterNoBOLD(table, labelinsert, 1, label);
+                        LeftIntendBeforeText(table, labelinsert, 1, SetColumnWidthInCentimeters(0.3f));
+
+                        AddPara_Center(table, labelinsert, 2, count.ToString());
+
+                        labelinsert++;
+                    }
+                    for (int colctrborder = 0; colctrborder < WordTableColumns; colctrborder++)
+                    {
+                        if (labelinsert < WordTableRows)
+                        {
+                            table.Rows[labelinsert].Cells[colctrborder].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                            table.Rows[labelinsert].Cells[colctrborder].CellFormat.Borders.Top.LineWidth = 0.5f;
+                        }
+
+                    }
+                }
+                else if (parameter.NominalOrScale == "Scale")
+                {
+                    AddPara_NoCenter(table, starting_row, 0, parameter.Name);
+                    row_current_count = 3;
+                    table.ApplyVerticalMerge(0, starting_row, starting_row + row_current_count - 1);
+
+                    Addpara_NoCenterNoBOLD(table, labelinsert , 1, "Min. – Max.");
+                    LeftIntendBeforeText(table, labelinsert , 1, SetColumnWidthInCentimeters(0.3f));
+
+
+                    Addpara_NoCenterNoBOLD(table, labelinsert+1, 1, "Mean ± SD.");
+                    LeftIntendBeforeText(table, labelinsert+1, 1, SetColumnWidthInCentimeters(0.3f));
+
+                    Addpara_NoCenterNoBOLD(table, labelinsert + 2, 1, "Median (IQR)");
+                    LeftIntendBeforeText(table, labelinsert + 2, 1, SetColumnWidthInCentimeters(0.3f));
+
+
+
+
+                    table.ApplyVerticalMerge(WordTableColumns - 2, labelinsert, labelinsert + 2);
+                    table.ApplyVerticalMerge(WordTableColumns - 1, labelinsert, labelinsert + 2);
+
+
+                    table.ApplyVerticalMerge(2, labelinsert, labelinsert + 2);
+
+                    //Merging Data cells
+                    int innerMergeCol = 3;
+                    foreach (var kvp in parameter.GroupedParameterValues)
+                    {
+                        table.ApplyHorizontalMerge(labelinsert, innerMergeCol, innerMergeCol + 1);
+                        table.ApplyHorizontalMerge(labelinsert + 1, innerMergeCol, innerMergeCol + 1);
+                        table.ApplyHorizontalMerge(labelinsert + 2, innerMergeCol, innerMergeCol + 1);
+                        innerMergeCol += 2;
+
+                    }
+
+
+                    labelinsert += 3;
+
+                    for (int colctrborder = 0; colctrborder < WordTableColumns; colctrborder++)
+                    {
+                        if (labelinsert < WordTableRows)
+                        {
+                            table.Rows[labelinsert].Cells[colctrborder].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                            table.Rows[labelinsert].Cells[colctrborder].CellFormat.Borders.Top.LineWidth = 0.5f;
+                        }
+
+                    }
+
+                }
+
+
+
+
+
+
+
+                starting_row = starting_row + row_current_count;
+            }
+
+
+
+
+            AddPara_Center(table, 0, 3, groupParameter.Name);
+
+            int col = 3;
+            foreach (var kvp in groupParameter.DIC_LablesIfNomainal)
+            {
+                int key = kvp.Key;
+
+                string label = kvp.Value;
+                int count = groupParameter.ParameterValues.Count(x => x == key);
+
+                if (count != 0)
+                {
+                    AddPara_Center(table, 1, col, label + "\n(n = " + count + ")");
+                    AddPara_Center(table, 2, col, "No.");
+                    AddPara_Center(table, 2, col + 1, "%");
+                    col = col + 2;
+                }
+
+            }
+
+
+
+            AddPara_Center(table, 0, WordTableColumns - 1, "p");
+
+
+
+        }
         public void ApplyPathology_Widths(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns, int numberofgroups)
         {
 

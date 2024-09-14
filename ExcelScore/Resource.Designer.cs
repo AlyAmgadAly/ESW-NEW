@@ -149,5 +149,15 @@ namespace ExcelScore {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Pathology_Comparative {
+            get {
+                object obj = ResourceManager.GetObject("Pathology_Comparative", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
