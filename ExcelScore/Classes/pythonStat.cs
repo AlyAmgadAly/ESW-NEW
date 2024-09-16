@@ -268,9 +268,8 @@ tukey_result = scikit_posthocs.posthoc_tukey(df , val_col=""Value"" , group_col=
                         double.TryParse(dataTable.Rows[i][j].ToString(), out pvalue);
 
 
-                        //MessageBox.Show(pvalue.ToString());
 
-                        string pAdjString = pvalue != 0.0 ? Math.Round(pvalue, 3).ToString("0.000") : "0.000";
+                        string pAdjString = pvalue < 0.001 ? "<0.001" : pvalue.ToString("0.000");
 
                         // Display or use the p-value as needed
                         //MessageBox.Show(pAdjString);
@@ -421,7 +420,7 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col=""Value"" , group_col=""
                     parameter.ISFAnovaSig = true;
                 }
 
-                string pValueString = pValueKruskalWallis <= 0.001 ? "<0.001" : pValueKruskalWallis.ToString("0.000");
+                string pValueString = pValueKruskalWallis < 0.001 ? "<0.001" : pValueKruskalWallis.ToString("0.000");
 
                 dynamic pValuesDunn = result;
 
@@ -502,7 +501,7 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col=""Value"" , group_col=""
 
 
 
-                        string pAdjString = pvalue != 0.0 ? Math.Round(pvalue, 3).ToString("0.000") : "0.000";
+                        string pAdjString = pvalue < 0.001 ? "<0.001" : pvalue.ToString("0.000");
 
                         // Display or use the p-value as needed
                         //MessageBox.Show(pAdjString);

@@ -451,13 +451,20 @@ namespace ExcelScore.Forms
             int n = values.Count;
             int middle = n / 2;
 
-            if (n % 2 == 0)
+            if (n == 1)
             {
+                return values[0];
+            }
+            else if (n % 2 == 0)
+            {
+
                 // Even number of elements, average the middle two
                 return (values[middle - 1] + values[middle]) / 2.0;
             }
+
             else
             {
+
                 // Odd number of elements, return the middle one
                 return values[middle];
             }
@@ -500,11 +507,21 @@ namespace ExcelScore.Forms
                 // Even number of elements, calculate median of upper half excluding the median
                 return CalculateMedian(values.GetRange(middle, n - middle));
             }
+            else if (n == 1)
+            {
+                return values[0];
+            }
+            else if (n == 3)
+            {
+                return (values[1] + values[2]) / 2.0;
+            }
+
             else
             {
                 int middle = (n + 1) / 2;
                 // Odd number of elements, calculate median of upper half excluding the median
                 return CalculateMedian(values.GetRange(middle, n - middle - 1));
+
             }
         }
         string FormatMinMaxValue(double minValue, double maxValue)

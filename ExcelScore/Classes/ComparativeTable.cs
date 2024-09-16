@@ -22,6 +22,8 @@ namespace ExcelScore.Classes
 
         public Dictionary<string ,  Dictionary<double, List<double>>> GroupedParameterValues_Relation { get; set; } = new Dictionary<string, Dictionary<double, List<double>>>();
 
+        public Dictionary<string , Dictionary<double, Dictionary<string, string>>> FormattedValues_Relation { get; set; } = new Dictionary<string, Dictionary<double, Dictionary<string, string>>>();
+
         public List<string> FPairwise { get; set; } = new List<string>();
         public bool ISFAnovaSig { get; set; }
 
@@ -44,6 +46,7 @@ namespace ExcelScore.Classes
             GroupedParameterValues = new Dictionary<double, List<double>>();
             ParameterValues = new List<double>();
             LabelPairwise = new Dictionary<(int, int), string>(); // Initialize ParameterValues list in constructor as well
+            FormattedValues_Relation = new Dictionary<string, Dictionary<double, Dictionary<string, string>>>();
         }
     }
     public class ComparativeTable
