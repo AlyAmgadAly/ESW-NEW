@@ -402,7 +402,8 @@
             "Paper",
             "Pathology Relation",
             "Pathology Comparative",
-            "Relation"});
+            "Relation",
+            "Relation Scale Pathology"});
             this.cmb_ChooseTableFormat.Location = new System.Drawing.Point(111, 31);
             this.cmb_ChooseTableFormat.Name = "cmb_ChooseTableFormat";
             this.cmb_ChooseTableFormat.Size = new System.Drawing.Size(202, 30);

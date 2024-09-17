@@ -539,11 +539,30 @@ namespace ExcelScore.Classes
                 table.Rows[row].Cells[2].Width = SetColumnWidthInCentimeters(3.5f);
                 table.Rows[row].Cells[3].Width = SetColumnWidthInCentimeters(4.25f);
 
-                table.Rows[row].Cells[4].Width = SetColumnWidthInCentimeters(1.65f);
-                table.Rows[row].Cells[5].Width = SetColumnWidthInCentimeters(1.65f);
+                table.Rows[row].Cells[4].Width = SetColumnWidthInCentimeters(1.75f);
+                table.Rows[row].Cells[5].Width = SetColumnWidthInCentimeters(1.75f);
 
             }
             
+        }
+
+        public void ApplyRelation_Widths_Pathology(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            for (int row = 0; row < WordTableRows; row++)
+            {
+                table.Rows[row].Cells[0].Width = SetColumnWidthInCentimeters(3.85f);
+                table.Rows[row].Cells[1].Width = SetColumnWidthInCentimeters(3.75f);
+
+                table.Rows[row].Cells[2].Width = SetColumnWidthInCentimeters(1f);
+
+                table.Rows[row].Cells[3].Width = SetColumnWidthInCentimeters(2.75f);
+                table.Rows[row].Cells[4].Width = SetColumnWidthInCentimeters(3.75f);
+
+                table.Rows[row].Cells[5].Width = SetColumnWidthInCentimeters(1.7f);
+                table.Rows[row].Cells[5].Width = SetColumnWidthInCentimeters(1.7f);
+
+            }
+
         }
 
         public void InsertRelation_InnerHeader_Merges(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
@@ -609,6 +628,93 @@ namespace ExcelScore.Classes
                 }
             }
         }
+
+        public void InsertRelation_InnerHeader_Merges_Pathology(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
+        {
+            WordClass wordObj = new WordClass();
+            int StartingRow = 2;
+
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+
+
+                if (parameter.IsGroup)
+                {
+                    int ParameterLabelCtr = parameter.DIC_LablesIfNomainal.Keys.Count;
+
+                    string InsertedN = null;
+                    if (parameter.hasLowerN)
+                    {
+                        InsertedN = "(n = " + parameter.ParameterValues.Count + ")";
+                        
+                    }
+
+                    if(InsertedN == null)
+                    {
+                        AddPara_NoCenter(table, StartingRow, 0, parameter.Name);
+                    }
+                    if (InsertedN != null)
+                    {
+                        AddPara_NoCenter(table, StartingRow, 0, parameter.Name);
+                        wordObj.AddParaCombined(table, StartingRow, 0, InsertedN, true, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Red);
+                    }
+
+
+
+                    table.ApplyVerticalMerge(0, StartingRow, StartingRow +1);
+
+                    table.ApplyVerticalMerge(WordTableColumns - 2, StartingRow, StartingRow + ParameterLabelCtr - 1);
+                    table.ApplyVerticalMerge(WordTableColumns - 1, StartingRow, StartingRow + ParameterLabelCtr - 1);
+
+
+                    if (StartingRow + ParameterLabelCtr - 1 < WordTableRows - 1)
+                    {
+                        for (int col = 0; col < WordTableColumns; col++)
+                        {
+                            table.Rows[StartingRow + ParameterLabelCtr - 1].Cells[col].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                            table.Rows[StartingRow + ParameterLabelCtr - 1].Cells[col].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                        }
+                    }
+                    foreach (var kvp in parameter.DIC_LablesIfNomainal)
+                    {
+                        int key = kvp.Key;
+
+                        string label = kvp.Value;
+                        int count = parameter.ParameterValues.Count(x => x == key);
+
+                        if (count > 1)
+                        {
+                            Addpara_NoCenterNoBOLD(table, StartingRow, 1, label);
+                            LeftIntendBeforeText(table, StartingRow, 1, SetColumnWidthInCentimeters(0.5f));
+                            AddPara_Center(table, StartingRow, 2, count.ToString());
+                            StartingRow++;
+                        }
+                        else if (count == 0)
+                        {
+                            Addpara_NoCenterNoBOLD(table, StartingRow, 1, label);
+                            LeftIntendBeforeText(table, StartingRow, 1, SetColumnWidthInCentimeters(0.5f));
+                            AddPara_Center(table, StartingRow, 2, "0");
+                            StartingRow++;
+                        }
+                        else if (count == 1)
+                        {
+                            Addpara_NoCenterNoBOLD(table, StartingRow, 1, label);
+                            LeftIntendBeforeText(table, StartingRow, 1, SetColumnWidthInCentimeters(0.5f));
+                            AddPara_Center(table, StartingRow, 2, "1");
+                            SubSuperScriptText(table, StartingRow, 2, Color.White, "#", "Super");
+                            StartingRow++;
+                        }
+
+
+                    }
+
+
+
+
+
+                }
+            }
+        }
         public void ApplyRelation_OuterHeaders(IWTable table,ComparativeTable comparativeTable ,int WordTableRows, int WordTableColumns)
         {
             AddPara_Center(table, 0, 1, "No.");
@@ -618,6 +724,21 @@ namespace ExcelScore.Classes
 
             AddPara_Center(table, 1, 2, "Mean ± SD.");
             AddPara_Center(table, 1, 3, "Median (Min. – Max.)");
+
+            AddPara_Center(table, 0, WordTableColumns - 1, "p");
+
+
+        }
+
+        public void ApplyRelation_OuterHeaders_Pathology(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
+        {
+            AddPara_Center(table, 0, 2, "N");
+
+            AddPara_Center(table, 0, 3, comparativeTable.TableName);
+
+
+            AddPara_Center(table, 1, 3, "Mean ± SD.");
+            AddPara_Center(table, 1, 4, "Median (Min. – Max.)");
 
             AddPara_Center(table, 0, WordTableColumns - 1, "p");
 
@@ -649,6 +770,31 @@ namespace ExcelScore.Classes
             table.Rows[0].Cells[3].CellFormat.Borders.Bottom.LineWidth = 0.5f;
 
         }
+
+        public void ApplyRelation_OuterBorders_Pathology(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            for (int j = 0; j < WordTableColumns; j++)
+            {
+                table.Rows[1].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[1].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            }
+
+            for (int k = 0; k < WordTableRows; k++)
+            {
+                table.Rows[k].Cells[2].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[k].Cells[2].CellFormat.Borders.Right.LineWidth = 1.5f;
+
+                table.Rows[k].Cells[WordTableColumns - 2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[k].Cells[WordTableColumns - 2].CellFormat.Borders.Left.LineWidth = 1.5f;
+            }
+
+            table.Rows[0].Cells[3].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+            table.Rows[0].Cells[3].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+            table.Rows[0].Cells[4].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+            table.Rows[0].Cells[4].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+        }
         public void ApplyRelation_OuterMerges(IWTable table , int WordTableRows, int WordTableColumns)
         {
             table.ApplyVerticalMerge(1, 0, 1);
@@ -656,6 +802,19 @@ namespace ExcelScore.Classes
             table.ApplyVerticalMerge(WordTableColumns-1, 0, 1);
 
             table.ApplyHorizontalMerge(0, 2, 3);
+
+
+        }
+
+        public void ApplyRelation_OuterMerges_Pathology(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            table.ApplyVerticalMerge(0, 0, 1);
+            table.ApplyVerticalMerge(1, 0, 1);
+            table.ApplyVerticalMerge(2, 0, 1);
+            table.ApplyVerticalMerge(WordTableColumns - 2, 0, 1);
+            table.ApplyVerticalMerge(WordTableColumns - 1, 0, 1);
+
+            table.ApplyHorizontalMerge(0, 3, 4);
 
 
         }

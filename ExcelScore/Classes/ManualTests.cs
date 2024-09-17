@@ -710,6 +710,53 @@ namespace ExcelScore.Classes
 
         }
 
+        public AnovaTestResult Fanova_Relation(Parameter parameter , Parameter groupParameter)
+        {
+            try
+            {
+                var groupsData = parameter.GroupedParameterValues_Relation.Values;
+                var groupLabelsPair = parameter.GroupedParameterValues_Relation.Keys;
+
+
+                double[][] samples = parameter.GroupedParameterValues_Relation[groupParameter.Name].Values
+                    .Select(list => list.ToArray())
+                    .Where(array => array.Length > 1)
+                    .ToArray();
+
+                var Fanova = new Accord.Statistics.Testing.OneWayAnova(samples);
+
+                double F = Fanova.FTest.Statistic;
+
+                double pValue = Fanova.FTest.PValue;
+
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+
+                List<string[]> pairwisecomparisons = new List<string[]>();
+
+
+                return new AnovaTestResult
+                {
+                    TestValue = F.ToString("0.000"),
+                    PValue = pValueString,
+                    PairwiseComparisons = pairwisecomparisons
+                };
+            }
+            catch (Exception)
+            {
+                List<string[]> pairwisecomparisons = new List<string[]>();
+                return new AnovaTestResult
+                {
+                    TestValue = "0",
+                    PValue = "0",
+                    PairwiseComparisons = pairwisecomparisons
+                };
+            }
+
+
+
+        }
+
         public AnovaTestResult Kruskal_H(Parameter parameter) 
         {
             try
@@ -751,6 +798,52 @@ namespace ExcelScore.Classes
                 };
             }
             
+
+
+
+        }
+
+        public AnovaTestResult Kruskal_H_Relation(Parameter parameter , Parameter GroupParameter)
+        {
+            try
+            {
+                DoubleVector[] samples = parameter.GroupedParameterValues_Relation[GroupParameter.Name].Values
+                        .Select(list => list.ToArray())  // Convert each list to double[]
+                        .Where(array => array.Length > 1)  // Filter out arrays with 1 or fewer elements
+                        .Select(array => new DoubleVector(array))  // Convert each valid double[] to DoubleVector
+                        .ToArray(); // Convert IEnumerable<DoubleVector> to DoubleVector[]
+
+
+                var test = new KruskalWallisTest(samples);
+
+                double HS = test.Statistic;
+
+                double pValue = test.PValue;
+
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+
+                List<string[]> pairwisecomparisons = new List<string[]>();
+
+
+                return new AnovaTestResult
+                {
+                    TestValue = HS.ToString("0.000"),
+                    PValue = pValueString,
+                    PairwiseComparisons = pairwisecomparisons
+                };
+            }
+            catch (Exception)
+            {
+                List<string[]> pairwisecomparisons = new List<string[]>();
+                return new AnovaTestResult
+                {
+                    TestValue = "0",
+                    PValue = "0",
+                    PairwiseComparisons = pairwisecomparisons
+                };
+            }
+
 
 
 

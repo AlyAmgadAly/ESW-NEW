@@ -7,6 +7,7 @@ using Aspose.Cells.Drawing;
 using CenterSpace.NMath.Core;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using ExcelScore.Classes;
@@ -739,25 +740,31 @@ namespace ExcelScore.Forms
                                             double SelectDataDouble;
                                             if (SelectData != null && double.TryParse(SelectData.ToString(), out SelectDataDouble))
                                             {
-                                                if (parameterCellValue != null && double.TryParse(parameterCellValue.ToString(), out parameterValue))
+                                                if (SelectedParameterValues_CompaFrm.Contains(SelectDataDouble))
                                                 {
-                                                    // Add the parameter value to the corresponding group
 
-                                                    if (!parameter.GroupedParameterValues_Relation.ContainsKey(GroupName))
+                                                    if (parameterCellValue != null && double.TryParse(parameterCellValue.ToString(), out parameterValue))
                                                     {
-                                                        parameter.GroupedParameterValues_Relation[GroupName] = new Dictionary<double, List<double>>();
+                                                        // Add the parameter value to the corresponding group
+
+                                                        if (!parameter.GroupedParameterValues_Relation.ContainsKey(GroupName))
+                                                        {
+                                                            parameter.GroupedParameterValues_Relation[GroupName] = new Dictionary<double, List<double>>();
+                                                        }
+
+                                                        if (!parameter.GroupedParameterValues_Relation[GroupName].ContainsKey(groupValue))
+                                                        {
+                                                            parameter.GroupedParameterValues_Relation[GroupName][groupValue] = new List<double>();
+                                                        }
+                                                        parameter.GroupedParameterValues_Relation[GroupName][groupValue].Add(parameterValue);
+
+
+
+
                                                     }
-
-                                                    if (!parameter.GroupedParameterValues_Relation[GroupName].ContainsKey(groupValue))
-                                                    {
-                                                        parameter.GroupedParameterValues_Relation[GroupName][groupValue] = new List<double>();
-                                                    }
-                                                    parameter.GroupedParameterValues_Relation[GroupName][groupValue].Add(parameterValue);
-
-
-
 
                                                 }
+
                                             }
 
                                         }
@@ -918,7 +925,7 @@ namespace ExcelScore.Forms
 
             
 
-            if(cmb_ChooseTableFormat.Text == "Relation")
+            if(cmb_ChooseTableFormat.Text == "Relation" || cmb_ChooseTableFormat.Text == "Relation Scale Pathology")
             {
                 ComparativeBasic_Relation(TableName);
             }
@@ -973,6 +980,7 @@ namespace ExcelScore.Forms
                                     }
                                     else if (cellData.ToString() == ".")
                                     {
+                                        parameter.hasLowerN = true;
                                         continue;
                                     }
 
@@ -1042,8 +1050,12 @@ namespace ExcelScore.Forms
                             if (parameter.Name == parameterName && parameter.IsGroup)
                             {
                                 comparativeTable.GroupColumnIndex = col;
+
+
                                 //MessageBox.Show(col.ToString());// Set the group column index for this table
                                 return col;
+
+
                             }
                         }
                     }
@@ -1429,8 +1441,15 @@ namespace ExcelScore.Forms
         }
         string FormatMinMaxValue(double minValue, double maxValue)
         {
-            string minValueString = minValue.ToString("0.00");
-            string maxValueString = maxValue.ToString("0.00");
+
+            string minValueString = "";
+            string maxValueString = "";
+
+
+
+            minValueString = minValue.ToString("0.00");
+            maxValueString = maxValue.ToString("0.00");
+
 
             // Check if one value has three numbers (having three digits after the decimal point)
             bool isMinThreeNumbers = minValueString.Split('.')[0].Length == 3;
@@ -1455,6 +1474,12 @@ namespace ExcelScore.Forms
             {
                 maxValueString = maxValueString.Substring(0, maxValueString.Length - 1);
             }
+
+
+
+
+
+
 
             return minValueString + " – " + maxValueString;
         }
@@ -1710,7 +1735,7 @@ namespace ExcelScore.Forms
         public void InsertPairwiseF(IWTable table ,ComparativeTable comparativeTable , int WordTableColumns)
         {
             
-            int startrow = 1;
+            int startrow = 2;
             int count = 0;
 
             Parameter lastParameter = null;
@@ -1730,7 +1755,7 @@ namespace ExcelScore.Forms
                 if(parameter.NominalOrScale =="Nominal")
                 {
                     //count = parameter.ParameterValues.Distinct().Count() + 2;
-                    count = parameter.DIC_LablesIfNomainal.Keys.Count() + 2;
+                    count = parameter.DIC_LablesIfNomainal.Keys.Count() +1;
                 }
                 else if(parameter.NominalOrScale == "Scale")
                 {
@@ -2833,6 +2858,196 @@ namespace ExcelScore.Forms
 
             return TotalRows;
         }
+
+        public int Relation_DependentNumber_Rows_Pathology(ComparativeTable comparativeTable)
+        {
+            int TotalRows = 0;
+
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup)
+                {
+                    int count = parameter.DIC_LablesIfNomainal.Keys.Count;
+                    TotalRows += count;
+                }
+
+
+            }
+
+
+            return TotalRows;
+        }
+        public void Relation_Layout_DependentNumber_Pathology()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Relation Scale Pathology")
+                {
+                    IWSection section = wordObj.CreatePortraitSection();
+
+
+
+                    wordObj.AddRelationTitle(section, ComparativeTables[tableindex].TableName);
+
+
+
+                    int Variablerows = Relation_DependentNumber_Rows_Pathology(ComparativeTables[tableindex]);
+
+
+                    int WordTableColumns = 7;
+
+                    int WordTableRows = 2 + Variablerows;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+                    wordObj.GeneralTableFormat(table);
+
+
+                    //Merges
+                    wordObj.ApplyRelation_OuterMerges_Pathology(table, WordTableRows, WordTableColumns);
+
+                    //Borders
+                    wordObj.ApplyRelation_OuterBorders_Pathology(table, WordTableRows, WordTableColumns);
+
+                    //Widths
+                    wordObj.ApplyRelation_Widths_Pathology(table, WordTableRows, WordTableColumns);
+
+
+                    //Outer Headers
+                    wordObj.ApplyRelation_OuterHeaders_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+
+                    wordObj.InsertRelation_InnerHeader_Merges_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+                    wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test of Sig.");
+
+
+                    foreach (var parameter in ComparativeTables[tableindex].Parameters)
+                    {
+
+                        if (parameter.IsGroup || parameter.GroupedParameterValues_Relation.Count == 0)
+                        {
+                            continue;
+                        }
+                        int StartingRow = 2;
+                        foreach (var GroupNameKvp in parameter.FormattedValues_Relation)
+                        {
+                            string GroupName = GroupNameKvp.Key;
+                            
+                           
+                            Parameter groupParameter = ComparativeTables[tableindex].Parameters.SingleOrDefault(p => p.Name == GroupName);
+                            PerformTest_Relation(ComparativeTables[tableindex], table, StartingRow, WordTableColumns - 2, parameter, groupParameter);
+
+
+                            var sortedGroups = parameter.FormattedValues_Relation[GroupName].Keys.OrderBy(key => key).ToList();
+
+                            var SortedGroupDIC = groupParameter.DIC_LablesIfNomainal.Keys.OrderBy(key => key).ToList();
+
+                            foreach (var GroupValue in SortedGroupDIC)
+                            {
+                                if (sortedGroups.Contains((int)GroupValue))
+                                {
+                                    if (parameter.GroupedParameterValues_Relation[GroupName][GroupValue].Count > 1)
+                                    {
+                                        Dictionary<string, string> formattedValues = parameter.FormattedValues_Relation[GroupName][GroupValue];
+
+                                        //string MinMax
+
+                                        string MeanSD = "";
+                                        string Median = "";
+                                        string MinMax = "";
+                                        string FormattedMedianMinMax = "";
+
+                                        foreach (var stat in formattedValues)
+                                        {
+                                            if (stat.Key == "Mean ± StdDev")
+                                            {
+                                                MeanSD = stat.Value;
+                                            }
+                                            if (stat.Key == "Median")
+                                            {
+
+                                                string[] valuessplit = stat.Value.Split(' ');
+                                                Median = valuessplit[0];
+                                            }
+                                            if (stat.Key == "Min-Max")
+                                            {
+                                                MinMax = stat.Value;
+                                            }
+
+                                        }
+
+                                        FormattedMedianMinMax = Median + " (" + MinMax + ")";
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 3, MeanSD);
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 4, FormattedMedianMinMax);
+
+                                        StartingRow++;
+                                    }
+
+                                        
+
+
+                                    else if (parameter.GroupedParameterValues_Relation[GroupName][GroupValue].Count == 1)
+                                    {
+                                        Dictionary<string, string> formattedValues = parameter.FormattedValues_Relation[GroupName][GroupValue];
+                                        string MinMax = "";
+                                        string OnlyValue = "";
+                                        foreach (var stat in formattedValues)
+                                        {
+
+                                            if (stat.Key == "Min-Max")
+                                            {
+                                                MinMax = stat.Value;
+                                                string[] values = MinMax.Split(' ');
+                                                OnlyValue = values[0];
+                                            }
+
+                                        }
+                                        table.ApplyHorizontalMerge(StartingRow, 3, 4);
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 3, OnlyValue);
+                                        wordObj.SubSuperScriptText(table, StartingRow, 3, Syncfusion.Drawing.Color.White, "#", "Super");
+                                        StartingRow++;
+
+                                    }
+
+
+
+
+
+                                }
+                                else
+                                {
+                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 3, "–");
+                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 4, "–");
+                                    StartingRow++;
+                                }
+
+
+
+                            }
+
+
+
+
+                        }
+
+
+
+
+                    }
+
+
+
+
+
+
+                    wordObj.LeftAndRightCellMarginCustom(table, 0, 0);
+                    wordObj.FormatTableCustom(table, 10.5f, 0, 0);
+
+                }
+            }
+        }
+
         public void Relation_Layout_DependentNumber()
         {
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
@@ -2906,48 +3121,74 @@ namespace ExcelScore.Forms
                             {
                                 if (sortedGroups.Contains((int)GroupValue))
                                 {
-
-                                    Dictionary<string, string> formattedValues = parameter.FormattedValues_Relation[GroupName][GroupValue];
-
-                                    //string MinMax
-
-                                    string MeanSD = "";
-                                    string Median = "";
-                                    string MinMax = "";
-                                    string FormattedMedianMinMax = "";
-                                    
-                                    foreach (var stat in formattedValues)
+                                    if (parameter.GroupedParameterValues_Relation[GroupName][GroupValue].Count > 1)
                                     {
-                                        if (stat.Key == "Mean ± StdDev")
+                                        Dictionary<string, string> formattedValues = parameter.FormattedValues_Relation[GroupName][GroupValue];
+
+                                        //string MinMax
+
+                                        string MeanSD = "";
+                                        string Median = "";
+                                        string MinMax = "";
+                                        string FormattedMedianMinMax = "";
+
+                                        foreach (var stat in formattedValues)
                                         {
-                                            MeanSD = stat.Value;
+                                            if (stat.Key == "Mean ± StdDev")
+                                            {
+                                                MeanSD = stat.Value;
+                                            }
+                                            if (stat.Key == "Median")
+                                            {
+
+                                                string[] valuessplit = stat.Value.Split(' ');
+                                                Median = valuessplit[0];
+                                            }
+                                            if (stat.Key == "Min-Max")
+                                            {
+                                                MinMax = stat.Value;
+                                            }
+
                                         }
-                                        if (stat.Key == "Median")
+
+                                        FormattedMedianMinMax = Median + " (" + MinMax + ")";
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, MeanSD);
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 3, FormattedMedianMinMax);
+
+                                        StartingRow++;
+                                    }
+                                        
+
+
+                                    else if (parameter.GroupedParameterValues_Relation[GroupName][GroupValue].Count == 1)
+                                    {
+                                        Dictionary<string, string> formattedValues = parameter.FormattedValues_Relation[GroupName][GroupValue];
+                                        string MinMax = "";
+                                        string OnlyValue = "";
+                                        foreach (var stat in formattedValues)
                                         {
 
-                                            string[] valuessplit = stat.Value.Split(' ');
-                                            Median = valuessplit[0];
+                                            if (stat.Key == "Min-Max")
+                                            {
+                                                MinMax = stat.Value;
+                                                string[] values = MinMax.Split(' ');
+                                                OnlyValue = values[0];
+                                            }
+
                                         }
-                                        if (stat.Key == "Min-Max")
-                                        {
-                                            MinMax = stat.Value;
-                                        }
+                                        table.ApplyHorizontalMerge(StartingRow, 2, 3);
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, OnlyValue);
+                                        wordObj.SubSuperScriptText(table, StartingRow, 2, Syncfusion.Drawing.Color.White, "#", "Super");
+                                        StartingRow++;
 
                                     }
-
-                                    FormattedMedianMinMax = Median + " (" + MinMax + ")";
-                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, MeanSD);
-                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 3, FormattedMedianMinMax);
-
-                                    StartingRow++;
-
 
                                 }
 
                                 else
                                 {
-                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, "0.0 ± 0.0");
-                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 3, "0 (0.0 – 0.0)");
+                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, "–");
+                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 3, "–");
                                     StartingRow++;
                                 }
 
@@ -2979,7 +3220,18 @@ namespace ExcelScore.Forms
         public void PerformTest_Relation(ComparativeTable comparativeTable,IWTable table,int addrow , int addColumn, Parameter parameter , Parameter GroupParameter)
         {
             int numberofgroups = parameter.FormattedValues_Relation[GroupParameter.Name].Keys.Count;
-            if (numberofgroups == 2)
+
+            var SortedGroupsValues = parameter.GroupedParameterValues_Relation[GroupParameter.Name].Keys;
+            int ValueOne = 0;
+            foreach (var key in SortedGroupsValues)
+            {
+                if(parameter.GroupedParameterValues_Relation[GroupParameter.Name][key].Count == 1)
+                {
+                    ValueOne++;
+                }
+            }
+
+            if (numberofgroups - ValueOne <= 2)
             {
                 List<double> group1Values = new List<double>();
                 List<double> group2Values = new List<double>();
@@ -3018,14 +3270,75 @@ namespace ExcelScore.Forms
                     comparativeTable.TestsDone.Add("U");
 
                     string[] values = manual.UTest(group1Values, group2Values);
-                    values[0] = "U=" + Convert.ToChar(11) + values[0];
-                    wordObj.InsertTest_P(table, addrow, addColumn, values);
+
+                    string[] Threezerosarray = values[0].Split('.');
+                    string threezeros = "000";
+
+                    try
+                    {
+                        if (Threezerosarray[1] == threezeros)
+                        {
+                            double doubleValue = double.Parse(values[0]); // Assuming values[0] is a string containing a double
+                            values[0] = doubleValue.ToString("0.0");
+                        }
+                    }
+                    catch(Exception)
+                    {
+                        
+                    }
+                    finally
+                    {
+                        values[0] = "U=" + Convert.ToChar(11) + values[0];
+                        wordObj.InsertTest_P(table, addrow, addColumn, values);
+                    }
+                    
+
+
                 }
                 
             }
 
+            if (numberofgroups- ValueOne > 2)
+            {
+                if (parameter.NormalOrAbnormal == "Normal")
+                {
+                    comparativeTable.TestsDone.Add("FAnova");
+
+                    AnovaTestResult anovaTest = new AnovaTestResult();
+
+                    anovaTest = manual.Fanova_Relation(parameter, GroupParameter);
+                    string[] values = { anovaTest.TestValue, anovaTest.PValue };
+
+                    
+
+
+
+                    values[0] = "F=" + Convert.ToChar(11) + values[0];
+                    wordObj.InsertTest_P(table, addrow, addColumn, values);
+
+                }
+                else if (parameter.NormalOrAbnormal == "Abnormal")
+                {
+
+                    comparativeTable.TestsDone.Add("H");
+
+
+                    AnovaTestResult anovaTestResult = new AnovaTestResult();
+
+                    anovaTestResult = manual.Kruskal_H_Relation(parameter , GroupParameter);
+                    string[] values = { anovaTestResult.TestValue, anovaTestResult.PValue };
+
+                    values[0] = "H=" + Convert.ToChar(11) + values[0];
+                    wordObj.InsertTest_P(table, addrow, addColumn, values);
+
+
+                }
+
+            }
+
             
         }
+
 
         private void btn_Done_Click(object sender, EventArgs e)
         {
@@ -3053,6 +3366,7 @@ namespace ExcelScore.Forms
             Relation_Layout_DependentNumber();
 
 
+            Relation_Layout_DependentNumber_Pathology();
 
             string filepath = wordObj.SaveWord();
             
@@ -5026,40 +5340,46 @@ namespace ExcelScore.Forms
 
                             var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
 
-                            
+                            var SortedGroupKeysAll = GroupPara.ParameterValues.Distinct().OrderBy(key => key).ToList();
 
-                            foreach (int groupValue in sortedKeys)
+
+
+                            foreach (int groupValue in SortedGroupKeysAll)
                             {
-                                Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
-                                foreach (var distinctValue in parameter.DIC_LablesIfNomainal.Keys)
+                                if(sortedKeys.Contains(groupValue))
                                 {
-
-                                    string frequency = formattedValues.ContainsKey($"Frequency_{distinctValue}") ? formattedValues[$"Frequency_{distinctValue}"] : "0";
-                                    wordObj.Addpara_CenterNoBOLD(table, startingRow, column, frequency);
-                                    column++;
-
-                                    string percentage = formattedValues.ContainsKey($"Percentage_{distinctValue}") ? formattedValues[$"Percentage_{distinctValue}"] : "0.0";
-                                    percentage = percentage.Replace("%", "");
-
-
-                                    if (percentage.EndsWith("0"))
+                                    Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
+                                    foreach (var distinctValue in parameter.DIC_LablesIfNomainal.Keys)
                                     {
-                                        wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage);
+
+                                        string frequency = formattedValues.ContainsKey($"Frequency_{distinctValue}") ? formattedValues[$"Frequency_{distinctValue}"] : "0";
+                                        wordObj.Addpara_CenterNoBOLD(table, startingRow, column, frequency);
+                                        column++;
+
+                                        string percentage = formattedValues.ContainsKey($"Percentage_{distinctValue}") ? formattedValues[$"Percentage_{distinctValue}"] : "0.0";
+                                        percentage = percentage.Replace("%", "");
+
+
+                                        if (percentage.EndsWith("0"))
+                                        {
+                                            wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage);
+                                        }
+
+                                        else
+                                        {
+                                            wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage.ToString());
+                                        }
+                                        startingRow++; // Move to the next row
+                                        column--;
                                     }
 
-                                    else
-                                    {
-                                        wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage.ToString());
-                                    }
-                                    startingRow++; // Move to the next row
-                                    column--;
+                                    startingRow = newRowCount;
+                                    column = column + 2;
                                 }
-
-                                startingRow = newRowCount;
-                                column = column + 2;
-
-
-                                // Reset startingRow and increment column for the next group
+                                else
+                                {
+                                    column = column + 2;
+                                }
 
                             }
 
@@ -5073,26 +5393,39 @@ namespace ExcelScore.Forms
 
 
                             var sortedKeys = parameter.FormattedValues.Keys.OrderBy(key => key).ToList();
+                            var SortedGroupKeysAll = GroupPara.ParameterValues.Distinct().OrderBy(key => key).ToList();
+
+
+
                             count = 4; // Count for scale parameters
 
 
-                            foreach (int groupValue in sortedKeys)
+
+                            foreach (int groupValue in SortedGroupKeysAll)
                             {
-
-                                //double groupValue = kvp.Key;
-                                Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
-                                //Dictionary<string, string> scaleStats = kvp.Value;
-
-                                foreach (var stat in formattedValues)
+                                if (sortedKeys.Contains(groupValue))
                                 {
-                                    wordObj.Addpara_CenterNoBOLD(table, startingRow, column, stat.Value);
-                                    startingRow++; // Move to the next row
+                                    //double groupValue = kvp.Key;
+                                    Dictionary<string, string> formattedValues = parameter.FormattedValues[groupValue];
+                                    //Dictionary<string, string> scaleStats = kvp.Value;
+
+                                    foreach (var stat in formattedValues)
+                                    {
+                                        wordObj.Addpara_CenterNoBOLD(table, startingRow, column, stat.Value);
+                                        startingRow++; // Move to the next row
+                                    }
+
+                                    // Reset startingRow and increment column for the next group
+                                    startingRow = newRowCount;
+
+                                    column = column + 2;
                                 }
 
-                                // Reset startingRow and increment column for the next group
-                                startingRow = newRowCount;
+                                else
+                                {
+                                    column = column + 2;
+                                }
 
-                                column = column + 2;
 
 
                             }
