@@ -32,7 +32,9 @@ namespace ExcelScore.Forms
             "     WD-WCAV3E296961",
             "     WD-WCAP9C351984" ,
             "            Z3TXT3DA",
-            "            ZA428LY9"
+            "            ZA428LY9",
+            "     WD-WCAV9L3N7RFP",
+            "4C530201731113100112"
         };    
         
 
