@@ -1734,8 +1734,28 @@ namespace ExcelScore.Forms
 
         public void InsertPairwiseF(IWTable table ,ComparativeTable comparativeTable , int WordTableColumns)
         {
+            bool Hasnominal = false;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                // MessageBox.Show(parameter.Name);
+                if(parameter.NominalOrScale == "Nominal")
+                {
+                    Hasnominal = true;
+                }
+            }
+            int startrow = 0;
+            if (Hasnominal)
+            {
+                startrow = 2;
+            }
+            else
+            {
+                startrow = 1;
+            }
+           
             
-            int startrow = 2;
+            
+            
             int count = 0;
 
             Parameter lastParameter = null;
@@ -2877,6 +2897,12 @@ namespace ExcelScore.Forms
 
             return TotalRows;
         }
+
+        public void Periods_Layout()
+        {
+
+        }
+
         public void Relation_Layout_DependentNumber_Pathology()
         {
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
@@ -3340,6 +3366,7 @@ namespace ExcelScore.Forms
         }
 
 
+
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -3361,6 +3388,8 @@ namespace ExcelScore.Forms
             Pathology_Layout_NoIQR();
 
             Pathology_Layout();
+
+
 
 
             Relation_Layout_DependentNumber();

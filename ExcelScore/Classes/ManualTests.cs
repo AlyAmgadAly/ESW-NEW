@@ -304,7 +304,6 @@ namespace ExcelScore.Classes
 
 
                 bool CountBool = false;
-                bool adjustedforties = false;
                 if (totalcount > 40)
                 {
 
@@ -316,7 +315,7 @@ namespace ExcelScore.Classes
                 }
 
 
-                var UTest = new Accord.Statistics.Testing.MannWhitneyWilcoxonTest(group1, group2, exact: CountBool , adjustForTies: adjustedforties);
+                var UTest = new Accord.Statistics.Testing.MannWhitneyWilcoxonTest(group1, group2, exact: CountBool);
 
                 
 
