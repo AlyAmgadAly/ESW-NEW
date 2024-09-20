@@ -17,6 +17,8 @@ namespace ExcelScore.Forms
     {
         private ComparativeGroups _comparativeGroups;
         private Letters _letters;
+        private Regression_Frm _regression_Frm;
+
         public Select_Groups(ComparativeGroups comparativeGroups)
         {
             InitializeComponent();
@@ -27,6 +29,12 @@ namespace ExcelScore.Forms
         {
             InitializeComponent();
             _letters = letters;
+        }
+
+        public Select_Groups(Regression_Frm regression_Frm)
+        {
+            InitializeComponent();
+            _regression_Frm = regression_Frm;
         }
 
         public string SelectParaName_SelectGrFrm { get; set; }
@@ -91,6 +99,11 @@ namespace ExcelScore.Forms
             {
                 _letters.SelectedParameterValues_LetterFrm = selectedValues;
             }
+            if(_regression_Frm != null)
+            {
+                _regression_Frm.SelectedParameterValues_CompaFrm = selectedValues;
+            }
+
             this.Close();
 
 

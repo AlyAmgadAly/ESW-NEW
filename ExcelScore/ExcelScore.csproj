@@ -272,6 +272,12 @@
     <Compile Include="Forms\PreivewImage.Designer.cs">
       <DependentUpon>PreivewImage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Regression_Frm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Regression_Frm.Designer.cs">
+      <DependentUpon>Regression_Frm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\RelationsFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -351,6 +357,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PreivewImage.resx">
       <DependentUpon>PreivewImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Regression_Frm.resx">
+      <DependentUpon>Regression_Frm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\RelationsFrm.resx">
       <DependentUpon>RelationsFrm.cs</DependentUpon>

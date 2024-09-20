@@ -116,7 +116,10 @@ namespace ExcelScore.Forms
 
         private void btn_Regression_Click(object sender, EventArgs e)
         {
-
+            Regression_Frm regression_ = new Regression_Frm();
+            regression_.Dgv = Dgv;
+            regression_.Show();
+            this.Hide();
         }
 
         private void btn_Relations_Click(object sender, EventArgs e)

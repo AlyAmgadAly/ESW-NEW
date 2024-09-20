@@ -116,13 +116,7 @@ namespace ExcelScore
                                 {
                                     Cell cell = Sheet2.Cells[row, column];
                                     string cellstring = cell.Value.ToString();
-                                    //string[] data = cellstring.Split(' ');
 
-
-
-
-                                    //parameter.DIC_LablesIfNomainal[int.Parse(data[0])] = data[2];
-                                    //parameter.LablesIfNomainal.Add(cellstring);
 
 
 

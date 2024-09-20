@@ -275,6 +275,38 @@ namespace ExcelScore.Classes
             }
         }
 
+        public void AddRgressionTitle(IWSection section, string TableName ,string RegressionType)
+        {
+            IWParagraph firstParagraph = section.AddParagraph();
+            WParagraphFormat paragraphFormat = firstParagraph.ParagraphFormat;
+
+
+
+            //Title
+            IWTextRange firstTextRange = firstParagraph.AppendText("Table ():	Univariate and multivariate "+RegressionType+" regression analysis for the parameters affecting "+TableName);
+            paragraphFormat.AfterSpacing = 10;
+            paragraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Justify;
+            //-70.56f
+            paragraphFormat.FirstLineIndent = SetColumnWidthInCentimeters(-2.5f);
+            paragraphFormat.LeftIndent = SetColumnWidthInCentimeters(2.5f);
+            //Line Spacing Multiple - 1.25
+            paragraphFormat.LineSpacingRule = LineSpacingRule.Multiple;
+            paragraphFormat.LineSpacing = 15f;
+
+
+
+            foreach (ParagraphItem item in firstParagraph.ChildEntities)
+            {
+                if (item is WTextRange)
+                {
+                    WTextRange text = item as WTextRange;
+                    //Modifies the character format of the text
+                    text.CharacterFormat.Bold = true;
+                    break;
+                }
+            }
+        }
+
 
         public void AddRelationTitle(IWSection section, string TableName)
         {

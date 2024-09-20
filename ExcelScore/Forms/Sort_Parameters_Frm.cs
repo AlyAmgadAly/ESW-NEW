@@ -87,6 +87,11 @@ namespace ExcelScore.Forms
 
 
             }
+            else if(TableType == "Regression")
+            {
+                Regression_Frm.DoneSortedComparative = SortcomparativeTable;
+                this.Close();
+            }
 
         }
     }
