@@ -12,6 +12,7 @@ using CenterSpace.NMath.Core;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Accord.Statistics.Analysis;
 using Accord.Math;
+using Accord.Statistics.Models.Regression.Linear;
 
 namespace ExcelScore.Classes
 {
@@ -19,6 +20,74 @@ namespace ExcelScore.Classes
 
     public class ManualTests
     {
+
+        //Linear Reg
+
+
+        public List<double> LinearRegressionn(double[] Indepenent , double[] Dependent)
+        {
+            List<double> Result = new List<double>();
+
+            try
+            {
+                var regression = new OrdinaryLeastSquares() { UseIntercept = true };
+
+                SimpleLinearRegression model = regression.Learn(Indepenent, Dependent);
+
+                double[] residuals = new double[Dependent.Length];
+
+                for (int i = 0; i < Dependent.Length; i++)
+                {
+                    residuals[i] = Dependent[i] - model.Transform(Indepenent[i]);
+                }
+
+
+                double meanSquaredError = residuals.Select(r => r * r).Sum() / (residuals.Length - 2);
+                double standardError = Math.Sqrt(meanSquaredError);
+
+
+                double slopeStandardError = standardError / Math.Sqrt(Indepenent.Select(xi => (xi - Indepenent.Average()) * (xi - Indepenent.Average())).Sum());
+
+
+                var studentT = new StudentT(0, 1, Dependent.Length - 2);
+                double tValue = studentT.InverseCumulativeDistribution(0.975);
+
+
+
+                double tStatistic = model.Slope / slopeStandardError;
+                double pValue = 2 * (1 - studentT.CumulativeDistribution(Math.Abs(tStatistic)));
+
+
+                double marginOfError = tValue * slopeStandardError;
+                double lowerBound = model.Slope - marginOfError;
+                double upperBound = model.Slope + marginOfError;
+
+
+                Result.Add(model.Slope);
+                Result.Add(lowerBound);
+                Result.Add(upperBound);
+                Result.Add(pValue);
+
+                return Result;
+            }
+            catch (Exception)
+            {
+                return new List<double> { 0, 0, 0, 0 };
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         // chi square : 
 
         public string[] getchi(Parameter parameter)

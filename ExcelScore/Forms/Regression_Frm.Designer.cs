@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Regression_Frm));
             this.txt_ParaName = new System.Windows.Forms.TextBox();
             this.data_allPara = new System.Windows.Forms.DataGridView();
@@ -52,9 +52,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lbl_Nominal = new System.Windows.Forms.Label();
             this.pic_AllParaToNominal = new System.Windows.Forms.PictureBox();
-            this.list_AbnormalScale = new System.Windows.Forms.ListBox();
-            this.list_NormalScale = new System.Windows.Forms.ListBox();
-            this.list_Nominal = new System.Windows.Forms.ListBox();
+            this.list_Seperated = new System.Windows.Forms.ListBox();
+            this.list_NotSeperatedScale = new System.Windows.Forms.ListBox();
+            this.list_Dependent = new System.Windows.Forms.ListBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txt_TableName = new System.Windows.Forms.TextBox();
             this.pic_removeTableSelected = new System.Windows.Forms.PictureBox();
@@ -71,6 +71,11 @@
             this.list_Select = new System.Windows.Forms.ListBox();
             this.lbl_Select = new System.Windows.Forms.Label();
             this.pic_groups_select = new System.Windows.Forms.PictureBox();
+            this.pic_clearNotSeperatedNominal = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.list_NotSeperatedNominal = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAbnormalList)).BeginInit();
@@ -88,6 +93,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_groups_select)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_clearNotSeperatedNominal)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
             // txt_ParaName
@@ -109,28 +117,28 @@
             this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.data_allPara.ColumnHeadersHeight = 54;
             this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Col_Name,
             this.ColMeasure,
             this.ColNormality});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle4;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.Location = new System.Drawing.Point(10, 69);
@@ -189,7 +197,7 @@
             // pic_ClearAbnormalList
             // 
             this.pic_ClearAbnormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_ClearAbnormalList.Image")));
-            this.pic_ClearAbnormalList.Location = new System.Drawing.Point(614, 316);
+            this.pic_ClearAbnormalList.Location = new System.Drawing.Point(614, 410);
             this.pic_ClearAbnormalList.Name = "pic_ClearAbnormalList";
             this.pic_ClearAbnormalList.Size = new System.Drawing.Size(45, 31);
             this.pic_ClearAbnormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -200,7 +208,7 @@
             // pic_clearNormalList
             // 
             this.pic_clearNormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_clearNormalList.Image")));
-            this.pic_clearNormalList.Location = new System.Drawing.Point(660, 147);
+            this.pic_clearNormalList.Location = new System.Drawing.Point(563, 135);
             this.pic_clearNormalList.Name = "pic_clearNormalList";
             this.pic_clearNormalList.Size = new System.Drawing.Size(45, 31);
             this.pic_clearNormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -244,7 +252,7 @@
             // pic_RemoveAbNormalList
             // 
             this.pic_RemoveAbNormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveAbNormalList.Image")));
-            this.pic_RemoveAbNormalList.Location = new System.Drawing.Point(573, 316);
+            this.pic_RemoveAbNormalList.Location = new System.Drawing.Point(573, 410);
             this.pic_RemoveAbNormalList.Name = "pic_RemoveAbNormalList";
             this.pic_RemoveAbNormalList.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveAbNormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -255,7 +263,7 @@
             // pic_RemoveNormalList
             // 
             this.pic_RemoveNormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveNormalList.Image")));
-            this.pic_RemoveNormalList.Location = new System.Drawing.Point(617, 147);
+            this.pic_RemoveNormalList.Location = new System.Drawing.Point(520, 135);
             this.pic_RemoveNormalList.Name = "pic_RemoveNormalList";
             this.pic_RemoveNormalList.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveNormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -277,7 +285,7 @@
             // pic_AllParaToAbnormal
             // 
             this.pic_AllParaToAbnormal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToAbnormal.Image")));
-            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(360, 388);
+            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(360, 467);
             this.pic_AllParaToAbnormal.Name = "pic_AllParaToAbnormal";
             this.pic_AllParaToAbnormal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToAbnormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -288,7 +296,7 @@
             // pic_AllParaToNormal
             // 
             this.pic_AllParaToNormal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToNormal.Image")));
-            this.pic_AllParaToNormal.Location = new System.Drawing.Point(360, 207);
+            this.pic_AllParaToNormal.Location = new System.Drawing.Point(360, 188);
             this.pic_AllParaToNormal.Name = "pic_AllParaToNormal";
             this.pic_AllParaToNormal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToNormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -301,7 +309,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label2.Location = new System.Drawing.Point(440, 314);
+            this.label2.Location = new System.Drawing.Point(440, 408);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(131, 30);
@@ -313,12 +321,12 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label1.Location = new System.Drawing.Point(440, 147);
+            this.label1.Location = new System.Drawing.Point(443, 135);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(176, 30);
+            this.label1.Size = new System.Drawing.Size(72, 30);
             this.label1.TabIndex = 80;
-            this.label1.Text = "Not Seperated :";
+            this.label1.Text = "Scale:";
             // 
             // lbl_Nominal
             // 
@@ -335,7 +343,7 @@
             // pic_AllParaToNominal
             // 
             this.pic_AllParaToNominal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToNominal.Image")));
-            this.pic_AllParaToNominal.Location = new System.Drawing.Point(360, 94);
+            this.pic_AllParaToNominal.Location = new System.Drawing.Point(360, 89);
             this.pic_AllParaToNominal.Name = "pic_AllParaToNominal";
             this.pic_AllParaToNominal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToNominal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -343,41 +351,41 @@
             this.pic_AllParaToNominal.TabStop = false;
             this.pic_AllParaToNominal.Click += new System.EventHandler(this.pic_AllParaToNominal_Click);
             // 
-            // list_AbnormalScale
+            // list_Seperated
             // 
-            this.list_AbnormalScale.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            this.list_AbnormalScale.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.list_AbnormalScale.FormattingEnabled = true;
-            this.list_AbnormalScale.ItemHeight = 17;
-            this.list_AbnormalScale.Location = new System.Drawing.Point(442, 347);
-            this.list_AbnormalScale.Name = "list_AbnormalScale";
-            this.list_AbnormalScale.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_AbnormalScale.Size = new System.Drawing.Size(263, 123);
-            this.list_AbnormalScale.TabIndex = 76;
+            this.list_Seperated.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.list_Seperated.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.list_Seperated.FormattingEnabled = true;
+            this.list_Seperated.ItemHeight = 17;
+            this.list_Seperated.Location = new System.Drawing.Point(442, 445);
+            this.list_Seperated.Name = "list_Seperated";
+            this.list_Seperated.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.list_Seperated.Size = new System.Drawing.Size(263, 89);
+            this.list_Seperated.TabIndex = 76;
             // 
-            // list_NormalScale
+            // list_NotSeperatedScale
             // 
-            this.list_NormalScale.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            this.list_NormalScale.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.list_NormalScale.FormattingEnabled = true;
-            this.list_NormalScale.ItemHeight = 17;
-            this.list_NormalScale.Location = new System.Drawing.Point(445, 180);
-            this.list_NormalScale.Name = "list_NormalScale";
-            this.list_NormalScale.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_NormalScale.Size = new System.Drawing.Size(263, 123);
-            this.list_NormalScale.TabIndex = 75;
+            this.list_NotSeperatedScale.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.list_NotSeperatedScale.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.list_NotSeperatedScale.FormattingEnabled = true;
+            this.list_NotSeperatedScale.ItemHeight = 17;
+            this.list_NotSeperatedScale.Location = new System.Drawing.Point(445, 167);
+            this.list_NotSeperatedScale.Name = "list_NotSeperatedScale";
+            this.list_NotSeperatedScale.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.list_NotSeperatedScale.Size = new System.Drawing.Size(263, 89);
+            this.list_NotSeperatedScale.TabIndex = 75;
             // 
-            // list_Nominal
+            // list_Dependent
             // 
-            this.list_Nominal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            this.list_Nominal.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.list_Nominal.FormattingEnabled = true;
-            this.list_Nominal.ItemHeight = 17;
-            this.list_Nominal.Location = new System.Drawing.Point(445, 85);
-            this.list_Nominal.Name = "list_Nominal";
-            this.list_Nominal.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_Nominal.Size = new System.Drawing.Size(263, 55);
-            this.list_Nominal.TabIndex = 74;
+            this.list_Dependent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.list_Dependent.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.list_Dependent.FormattingEnabled = true;
+            this.list_Dependent.ItemHeight = 17;
+            this.list_Dependent.Location = new System.Drawing.Point(445, 85);
+            this.list_Dependent.Name = "list_Dependent";
+            this.list_Dependent.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.list_Dependent.Size = new System.Drawing.Size(263, 38);
+            this.list_Dependent.TabIndex = 74;
             // 
             // label5
             // 
@@ -521,7 +529,7 @@
             // pic_RemoveSelectPara
             // 
             this.pic_RemoveSelectPara.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveSelectPara.Image")));
-            this.pic_RemoveSelectPara.Location = new System.Drawing.Point(575, 499);
+            this.pic_RemoveSelectPara.Location = new System.Drawing.Point(575, 551);
             this.pic_RemoveSelectPara.Name = "pic_RemoveSelectPara";
             this.pic_RemoveSelectPara.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveSelectPara.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -532,7 +540,7 @@
             // pic_AllParaToSelect
             // 
             this.pic_AllParaToSelect.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToSelect.Image")));
-            this.pic_AllParaToSelect.Location = new System.Drawing.Point(360, 535);
+            this.pic_AllParaToSelect.Location = new System.Drawing.Point(363, 587);
             this.pic_AllParaToSelect.Name = "pic_AllParaToSelect";
             this.pic_AllParaToSelect.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToSelect.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -546,7 +554,7 @@
             this.list_Select.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_Select.FormattingEnabled = true;
             this.list_Select.ItemHeight = 17;
-            this.list_Select.Location = new System.Drawing.Point(442, 535);
+            this.list_Select.Location = new System.Drawing.Point(448, 587);
             this.list_Select.Name = "list_Select";
             this.list_Select.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.list_Select.Size = new System.Drawing.Size(263, 38);
@@ -557,7 +565,7 @@
             this.lbl_Select.AutoSize = true;
             this.lbl_Select.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Select.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.lbl_Select.Location = new System.Drawing.Point(440, 499);
+            this.lbl_Select.Location = new System.Drawing.Point(446, 551);
             this.lbl_Select.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_Select.Name = "lbl_Select";
             this.lbl_Select.Size = new System.Drawing.Size(87, 30);
@@ -567,7 +575,7 @@
             // pic_groups_select
             // 
             this.pic_groups_select.Image = ((System.Drawing.Image)(resources.GetObject("pic_groups_select.Image")));
-            this.pic_groups_select.Location = new System.Drawing.Point(532, 499);
+            this.pic_groups_select.Location = new System.Drawing.Point(532, 551);
             this.pic_groups_select.Name = "pic_groups_select";
             this.pic_groups_select.Size = new System.Drawing.Size(37, 30);
             this.pic_groups_select.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -575,12 +583,74 @@
             this.pic_groups_select.TabStop = false;
             this.pic_groups_select.Click += new System.EventHandler(this.pic_groups_select_Click);
             // 
+            // pic_clearNotSeperatedNominal
+            // 
+            this.pic_clearNotSeperatedNominal.Image = ((System.Drawing.Image)(resources.GetObject("pic_clearNotSeperatedNominal.Image")));
+            this.pic_clearNotSeperatedNominal.Location = new System.Drawing.Point(593, 273);
+            this.pic_clearNotSeperatedNominal.Name = "pic_clearNotSeperatedNominal";
+            this.pic_clearNotSeperatedNominal.Size = new System.Drawing.Size(45, 31);
+            this.pic_clearNotSeperatedNominal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_clearNotSeperatedNominal.TabIndex = 120;
+            this.pic_clearNotSeperatedNominal.TabStop = false;
+            this.pic_clearNotSeperatedNominal.Click += new System.EventHandler(this.pic_clearNotSeperatedNominal_Click);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(550, 273);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(37, 30);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 119;
+            this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+            this.pictureBox3.Location = new System.Drawing.Point(360, 335);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(59, 38);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox3.TabIndex = 118;
+            this.pictureBox3.TabStop = false;
+            this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.label3.Location = new System.Drawing.Point(443, 273);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(112, 30);
+            this.label3.TabIndex = 117;
+            this.label3.Text = "Nominal :";
+            // 
+            // list_NotSeperatedNominal
+            // 
+            this.list_NotSeperatedNominal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.list_NotSeperatedNominal.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.list_NotSeperatedNominal.FormattingEnabled = true;
+            this.list_NotSeperatedNominal.ItemHeight = 17;
+            this.list_NotSeperatedNominal.Location = new System.Drawing.Point(445, 305);
+            this.list_NotSeperatedNominal.Name = "list_NotSeperatedNominal";
+            this.list_NotSeperatedNominal.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.list_NotSeperatedNominal.Size = new System.Drawing.Size(263, 89);
+            this.list_NotSeperatedNominal.TabIndex = 116;
+            // 
             // Regression_Frm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1015, 650);
+            this.Controls.Add(this.pic_clearNotSeperatedNominal);
+            this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.pictureBox3);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.list_NotSeperatedNominal);
             this.Controls.Add(this.pic_RemoveSelectPara);
             this.Controls.Add(this.pic_AllParaToSelect);
             this.Controls.Add(this.list_Select);
@@ -611,9 +681,9 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lbl_Nominal);
             this.Controls.Add(this.pic_AllParaToNominal);
-            this.Controls.Add(this.list_AbnormalScale);
-            this.Controls.Add(this.list_NormalScale);
-            this.Controls.Add(this.list_Nominal);
+            this.Controls.Add(this.list_Seperated);
+            this.Controls.Add(this.list_NotSeperatedScale);
+            this.Controls.Add(this.list_Dependent);
             this.Controls.Add(this.pic_back);
             this.Controls.Add(this.panelmove);
             this.Controls.Add(this.txt_ParaName);
@@ -640,6 +710,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectPara)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelect)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_groups_select)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_clearNotSeperatedNominal)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -668,9 +741,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lbl_Nominal;
         private System.Windows.Forms.PictureBox pic_AllParaToNominal;
-        private System.Windows.Forms.ListBox list_AbnormalScale;
-        private System.Windows.Forms.ListBox list_NormalScale;
-        private System.Windows.Forms.ListBox list_Nominal;
+        private System.Windows.Forms.ListBox list_Seperated;
+        private System.Windows.Forms.ListBox list_NotSeperatedScale;
+        private System.Windows.Forms.ListBox list_Dependent;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txt_TableName;
         private System.Windows.Forms.PictureBox pic_removeTableSelected;
@@ -687,5 +760,10 @@
         private System.Windows.Forms.ListBox list_Select;
         private System.Windows.Forms.Label lbl_Select;
         private System.Windows.Forms.PictureBox pic_groups_select;
+        private System.Windows.Forms.PictureBox pic_clearNotSeperatedNominal;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ListBox list_NotSeperatedNominal;
     }
 }

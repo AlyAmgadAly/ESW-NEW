@@ -190,6 +190,7 @@ namespace ExcelScore.Forms
 
             // Accessing the first worksheet in the Excel file
             worksheet = workbook.Worksheets[0];
+            Sheet2 = workbook.Worksheets[1];
 
             MessageBox.Show("File Updated");
         }
@@ -253,7 +254,7 @@ namespace ExcelScore.Forms
                 if (cellValue != null)
                 {
                     string item = cellValue.ToString();
-                    list_Nominal.Items.Add(item);
+                    list_Dependent.Items.Add(item);
                 }
 
             }
@@ -261,11 +262,11 @@ namespace ExcelScore.Forms
 
         private void pic_RemoveNominalList_Click(object sender, EventArgs e)
         {
-            if (list_Nominal.SelectedIndex != -1)
+            if (list_Dependent.SelectedIndex != -1)
             {
 
                 var selectedItems = new List<object>();
-                foreach (var selectedItem in list_Nominal.SelectedItems)
+                foreach (var selectedItem in list_Dependent.SelectedItems)
                 {
                     selectedItems.Add(selectedItem);
                 }
@@ -273,7 +274,7 @@ namespace ExcelScore.Forms
 
                 foreach (var selectedItem in selectedItems)
                 {
-                    list_Nominal.Items.Remove(selectedItem);
+                    list_Dependent.Items.Remove(selectedItem);
                 }
 
             }
@@ -284,7 +285,7 @@ namespace ExcelScore.Forms
         private void pic_ClearNominalList_Click(object sender, EventArgs e)
         {
             var selectedItemsNominal = new List<object>();
-            foreach (var selectedItemNominal in list_Nominal.Items)
+            foreach (var selectedItemNominal in list_Dependent.Items)
             {
                 selectedItemsNominal.Add(selectedItemNominal);
             }
@@ -292,7 +293,7 @@ namespace ExcelScore.Forms
 
             foreach (var selectedItemNominal in selectedItemsNominal)
             {
-                list_Nominal.Items.Remove(selectedItemNominal);
+                list_Dependent.Items.Remove(selectedItemNominal);
             }
         }
 
@@ -300,7 +301,7 @@ namespace ExcelScore.Forms
         {
 
             var selectedItemsNominal = new List<object>();
-            foreach (var selectedItemNominal in list_Nominal.Items)
+            foreach (var selectedItemNominal in list_Dependent.Items)
             {
                 selectedItemsNominal.Add(selectedItemNominal);
             }
@@ -308,14 +309,14 @@ namespace ExcelScore.Forms
 
             foreach (var selectedItemNominal in selectedItemsNominal)
             {
-                list_Nominal.Items.Remove(selectedItemNominal);
+                list_Dependent.Items.Remove(selectedItemNominal);
             }
 
 
 
 
             var selectedItemsNormal = new List<object>();
-            foreach (var selectedItemNormal in list_NormalScale.Items)
+            foreach (var selectedItemNormal in list_NotSeperatedScale.Items)
             {
                 selectedItemsNormal.Add(selectedItemNormal);
             }
@@ -323,15 +324,30 @@ namespace ExcelScore.Forms
 
             foreach (var selectedItemNormal in selectedItemsNormal)
             {
-                list_NormalScale.Items.Remove(selectedItemNormal);
+                list_NotSeperatedScale.Items.Remove(selectedItemNormal);
             }
 
 
 
 
 
+            var selectedItemsNomianlNotSeperated = new List<object>();
+            foreach (var selectedItemAbnormal in list_NotSeperatedNominal.Items)
+            {
+                selectedItemsNomianlNotSeperated.Add(selectedItemAbnormal);
+            }
+
+
+            foreach (var selectedItemAbnormal in selectedItemsNomianlNotSeperated)
+            {
+                list_NotSeperatedNominal.Items.Remove(selectedItemAbnormal);
+            }
+
+
+
+
             var selectedItemsAbnormal = new List<object>();
-            foreach (var selectedItemAbnormal in list_AbnormalScale.Items)
+            foreach (var selectedItemAbnormal in list_Seperated.Items)
             {
                 selectedItemsAbnormal.Add(selectedItemAbnormal);
             }
@@ -339,7 +355,7 @@ namespace ExcelScore.Forms
 
             foreach (var selectedItemAbnormal in selectedItemsAbnormal)
             {
-                list_AbnormalScale.Items.Remove(selectedItemAbnormal);
+                list_Seperated.Items.Remove(selectedItemAbnormal);
             }
         }
 
@@ -352,7 +368,7 @@ namespace ExcelScore.Forms
                 if (cellValue != null)
                 {
                     string item = cellValue.ToString();
-                    list_NormalScale.Items.Add(item);
+                    list_NotSeperatedScale.Items.Add(item);
                 }
 
             }
@@ -360,11 +376,11 @@ namespace ExcelScore.Forms
 
         private void pic_RemoveNormalList_Click(object sender, EventArgs e)
         {
-            if (list_NormalScale.SelectedIndex != -1)
+            if (list_NotSeperatedScale.SelectedIndex != -1)
             {
 
                 var selectedItems = new List<object>();
-                foreach (var selectedItem in list_NormalScale.SelectedItems)
+                foreach (var selectedItem in list_NotSeperatedScale.SelectedItems)
                 {
                     selectedItems.Add(selectedItem);
                 }
@@ -372,7 +388,7 @@ namespace ExcelScore.Forms
 
                 foreach (var selectedItem in selectedItems)
                 {
-                    list_NormalScale.Items.Remove(selectedItem);
+                    list_NotSeperatedScale.Items.Remove(selectedItem);
                 }
 
             }
@@ -383,7 +399,7 @@ namespace ExcelScore.Forms
         private void pic_clearNormalList_Click(object sender, EventArgs e)
         {
             var selectedItemsNormal = new List<object>();
-            foreach (var selectedItemNormal in list_NormalScale.Items)
+            foreach (var selectedItemNormal in list_NotSeperatedScale.Items)
             {
                 selectedItemsNormal.Add(selectedItemNormal);
             }
@@ -391,7 +407,7 @@ namespace ExcelScore.Forms
 
             foreach (var selectedItemNormal in selectedItemsNormal)
             {
-                list_NormalScale.Items.Remove(selectedItemNormal);
+                list_NotSeperatedScale.Items.Remove(selectedItemNormal);
             }
         }
 
@@ -404,7 +420,7 @@ namespace ExcelScore.Forms
                 if (cellValue != null)
                 {
                     string item = cellValue.ToString();
-                    list_AbnormalScale.Items.Add(item);
+                    list_Seperated.Items.Add(item);
                 }
 
             }
@@ -412,11 +428,11 @@ namespace ExcelScore.Forms
 
         private void pic_RemoveAbNormalList_Click(object sender, EventArgs e)
         {
-            if (list_AbnormalScale.SelectedIndex != -1)
+            if (list_Seperated.SelectedIndex != -1)
             {
 
                 var selectedItems = new List<object>();
-                foreach (var selectedItem in list_AbnormalScale.SelectedItems)
+                foreach (var selectedItem in list_Seperated.SelectedItems)
                 {
                     selectedItems.Add(selectedItem);
                 }
@@ -424,7 +440,7 @@ namespace ExcelScore.Forms
 
                 foreach (var selectedItem in selectedItems)
                 {
-                    list_AbnormalScale.Items.Remove(selectedItem);
+                    list_Seperated.Items.Remove(selectedItem);
                 }
 
             }
@@ -435,7 +451,7 @@ namespace ExcelScore.Forms
         private void pic_ClearAbnormalList_Click(object sender, EventArgs e)
         {
             var selectedItemsAbnormal = new List<object>();
-            foreach (var selectedItemAbnormal in list_AbnormalScale.Items)
+            foreach (var selectedItemAbnormal in list_Seperated.Items)
             {
                 selectedItemsAbnormal.Add(selectedItemAbnormal);
             }
@@ -443,7 +459,7 @@ namespace ExcelScore.Forms
 
             foreach (var selectedItemAbnormal in selectedItemsAbnormal)
             {
-                list_AbnormalScale.Items.Remove(selectedItemAbnormal);
+                list_Seperated.Items.Remove(selectedItemAbnormal);
             }
         }
         public string AddTableUI()
@@ -451,7 +467,7 @@ namespace ExcelScore.Forms
             string TableName = null;
             if (!string.IsNullOrWhiteSpace(txt_TableName.Text) &&
                  !string.IsNullOrWhiteSpace(cmb_ChooseTableFormat.Text) &&
-                (list_Nominal.Items.Count > 0 || list_NormalScale.Items.Count > 0 || list_AbnormalScale.Items.Count > 0))
+                (list_Dependent.Items.Count > 0 || list_NotSeperatedScale.Items.Count > 0 || list_Seperated.Items.Count > 0))
             {
                 // Check if the table name already exists
                 bool tableExists = false;
@@ -498,7 +514,7 @@ namespace ExcelScore.Forms
 
 
             // Add parameters from list_Nominal
-            foreach (var item in list_Nominal.Items)
+            foreach (var item in list_Dependent.Items)
             {
                 var parameter = new Parameter
                 {
@@ -514,7 +530,23 @@ namespace ExcelScore.Forms
 
 
             // Add parameters from list_NormalScale
-            foreach (var item in list_NormalScale.Items)
+            foreach (var item in list_NotSeperatedScale.Items)
+            {
+                var parameter = new Parameter
+                {
+
+                    Name = item.ToString(),
+                    NominalOrScale = "Scale",
+                    NormalOrAbnormal = "Not Seperated",
+                    GroupedParameterValues = new Dictionary<double, List<double>>(),
+                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
+                };
+
+
+                comparativeTable.Parameters.Add(parameter);
+            }
+
+            foreach (var item in list_NotSeperatedNominal.Items)
             {
                 var parameter = new Parameter
                 {
@@ -530,8 +562,11 @@ namespace ExcelScore.Forms
                 comparativeTable.Parameters.Add(parameter);
             }
 
+
+
+
             // Add parameters from list_AbnormalScale
-            foreach (var item in list_AbnormalScale.Items)
+            foreach (var item in list_Seperated.Items)
             {
                 var parameter = new Parameter
                 {
@@ -851,6 +886,7 @@ namespace ExcelScore.Forms
 
             return TotalRows;
         }
+        ManualTests manual = new ManualTests();
         public void LinearRegression_Layout()
         {
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
@@ -860,7 +896,7 @@ namespace ExcelScore.Forms
 
                     IWSection section = wordObj.CreatePortraitSection();
 
-                    wordObj.AddRgressionTitle(section, ComparativeTables[tableindex].TableName , "linear" );
+                    wordObj.AddRgressionTitle(section, ComparativeTables[tableindex].TableName , "linear");
 
                     int Variablerows = CountRows(ComparativeTables[tableindex]);
 
@@ -874,9 +910,100 @@ namespace ExcelScore.Forms
 
                     wordObj.GeneralTableFormat(table);
 
+
+                    //Merges
+                    wordObj.ApplyRegression_OuterMerges(table, WordTableRows, WordTableColumns);
+
+                    //Borders
+                    wordObj.ApplyRegression_OuterBorders(table, WordTableRows, WordTableColumns);
+
+                    //Widths
+                    wordObj.ApplyRegression_Widths(table, WordTableRows, WordTableColumns);
+
+
+                    //Outer Headers
+                    wordObj.Apply_Linear_Regression_OuterHeaders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , "B");
+
+
+
+                    wordObj.InsertRegression_InnerHeader_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+                    Parameter DependentParameter = GetDependentParameter(ComparativeTables[tableindex]);
+
+
+
+                    int StartingRow = 2;
+                    foreach (var parameter in ComparativeTables[tableindex].Parameters)
+                    {
+                        List<double> Result = new List<double>;
+                        if (parameter.NominalOrScale == "Dependent")
+                        {
+                            continue;
+                        }
+
+                        else if(parameter.NominalOrScale == "Scale")
+                        {
+
+
+
+                            Result = manual.LinearRegressionn(parameter.ParameterValues.ToArray(), DependentParameter.ParameterValues.ToArray());
+
+
+                            //string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+                        }
+                    }
+
+
+
+                    wordObj.FormatTableCustom(table, 9.5f, 0, 0);
+                    wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+
+
+
                 }
             }
         }
+
+        public Parameter GetDependentParameter(ComparativeTable comparativeTable)
+        {
+            Parameter DependentParameter = null;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.NominalOrScale == "Dependent")
+                {
+                    DependentParameter = parameter;
+                    break;
+                }
+            }
+
+            return DependentParameter;  
+
+
+        }
+
+        public (List<double>, List<double>) ReturnTrueParameterValues(Parameter Independent , Parameter Dependent)
+        {
+            List<double> TrueIndependentParaValues = new List<double>();
+            List<double> TrueDependentParaValues = new List<double>();
+            for (int i = 0;i< Independent.ParameterValues.Count;i++)
+            {
+                double IndependentValue = Independent.ParameterValues[i];
+                double DependentValue = Dependent.ParameterValues[i];
+
+                if((IndependentValue != -1) && (DependentValue!=-1))
+                {
+
+                }
+
+
+
+            }
+
+            return (TrueIndependentParaValues, TrueDependentParaValues);
+        }
+
+
         WordDocument document;
         private void btn_Done_Click(object sender, EventArgs e)
         {
@@ -888,6 +1015,58 @@ namespace ExcelScore.Forms
 
             wordObj.removeHeader(filepath);
 
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            for (int i = data_allPara.SelectedRows.Count - 1; i >= 0; i--)
+            {
+                DataGridViewRow row = data_allPara.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    list_NotSeperatedNominal.Items.Add(item);
+                }
+
+            }
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            if (list_NotSeperatedNominal.SelectedIndex != -1)
+            {
+
+                var selectedItems = new List<object>();
+                foreach (var selectedItem in list_NotSeperatedNominal.SelectedItems)
+                {
+                    selectedItems.Add(selectedItem);
+                }
+
+
+                foreach (var selectedItem in selectedItems)
+                {
+                    list_NotSeperatedNominal.Items.Remove(selectedItem);
+                }
+
+            }
+            else
+                MessageBox.Show("Please Select Item!");
+        }
+
+        private void pic_clearNotSeperatedNominal_Click(object sender, EventArgs e)
+        {
+            var selectedItemsNormal = new List<object>();
+            foreach (var selectedItemNormal in list_NotSeperatedNominal.Items)
+            {
+                selectedItemsNormal.Add(selectedItemNormal);
+            }
+
+
+            foreach (var selectedItemNormal in selectedItemsNormal)
+            {
+                list_NotSeperatedNominal.Items.Remove(selectedItemNormal);
+            }
         }
     }
 }
