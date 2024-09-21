@@ -936,7 +936,8 @@ namespace ExcelScore.Forms
                     int StartingRow = 2;
                     foreach (var parameter in ComparativeTables[tableindex].Parameters)
                     {
-                        List<double> Result = new List<double>;
+                        List<double> ResultIndependent = new List<double>();
+                        List<double> ResultDependent = new List<double>();
                         if (parameter.NominalOrScale == "Dependent")
                         {
                             continue;
@@ -944,13 +945,21 @@ namespace ExcelScore.Forms
 
                         else if(parameter.NominalOrScale == "Scale")
                         {
+                            (ResultIndependent, ResultDependent) = ReturnTrueParameterValues(parameter, DependentParameter);
 
+                            List<double> RegressionResult = new List<double>();
+                            RegressionResult = manual.LinearRegressionn(ResultIndependent.ToArray(), ResultDependent.ToArray());
 
+                            //Result.Add(model.Slope);
+                            //Result.Add(lowerBound);
+                            //Result.Add(upperBound);
+                            //Result.Add(pValue);
 
-                            Result = manual.LinearRegressionn(parameter.ParameterValues.ToArray(), DependentParameter.ParameterValues.ToArray());
-
-
-                            //string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+                            string pValueString = RegressionResult[3] < 0.001 ? "<0.001" : RegressionResult[3].ToString("0.000");
+                            MessageBox.Show(RegressionResult[0].ToString());
+                            MessageBox.Show(RegressionResult[1].ToString());
+                            MessageBox.Show(RegressionResult[2].ToString());
+                            MessageBox.Show(pValueString);
                         }
                     }
 
@@ -993,7 +1002,8 @@ namespace ExcelScore.Forms
 
                 if((IndependentValue != -1) && (DependentValue!=-1))
                 {
-
+                    TrueIndependentParaValues.Add(IndependentValue);
+                    TrueDependentParaValues.Add(DependentValue);
                 }
 
 
