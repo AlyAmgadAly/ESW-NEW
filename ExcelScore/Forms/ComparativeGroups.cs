@@ -581,7 +581,8 @@ namespace ExcelScore.Forms
                 {
                     foreach (var parameter in table.Parameters)
                     {
-                        if(parameter.NominalOrScale == "Nominal")
+                        List<double> valuesErrored = new List<double>();
+                        if (parameter.NominalOrScale == "Nominal")
                         {
                             List<double> keys = new List<double>();
                             foreach (var kvp in parameter.DIC_LablesIfNomainal)
@@ -592,10 +593,25 @@ namespace ExcelScore.Forms
 
                             foreach (var value in parameter.ParameterValues)
                             {
-                                if(!keys.Contains(value))
+                                if (!keys.Contains(value))
                                 {
-                                    MessageBox.Show("Value " + value + " doesn't exist at Parameter : " + parameter.Name ,"Error",MessageBoxButtons.OK , MessageBoxIcon.Error);
+                                    valuesErrored.Add(value);
+
                                 }
+
+                            }
+
+                            if (valuesErrored.Count > 7)
+                            {
+                                MessageBox.Show("Did you enter a Scale Parameter in Nominal ? : " + parameter.Name, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            else
+                            {
+                                foreach (var Errorvalue in valuesErrored)
+                                {
+                                    MessageBox.Show("Value " + Errorvalue + " doesn't exist at Parameter : " + parameter.Name, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+
                             }
                         }
                     }
@@ -3364,8 +3380,97 @@ namespace ExcelScore.Forms
 
             
         }
+        public bool DetermineHasNominal(ComparativeTable comparativeTable)
+        {
+            bool HasNominal = false;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.NominalOrScale == "Nominal")
+                {
+                    HasNominal = true;
+                    break;
+                }
+
+            }
+            return HasNominal;
+        }
+        public int Count_Rows_Descriptive(ComparativeTable table)
+        {
+
+            int rowCount = 0;
+            bool HasNominal = DetermineHasNominal(table);
+            foreach (var parameter in table.Parameters)
+            {
+                if (HasNominal)
+                {
+                    if (parameter.NominalOrScale == "Nominal")
+                    {
+                        int distinctValuesCount = parameter.DIC_LablesIfNomainal.Keys.Count;
+                        rowCount += distinctValuesCount + 1;
+
+                    }
+                    else if (parameter.NominalOrScale == "Scale")
+                    {
+                        rowCount += 4;
+
+                    }
+                }
+                else if (!HasNominal)
+                {
+                    rowCount++;
+
+                }
+
+            }
+
+            return rowCount;
 
 
+        }
+        public void Descriptive_Layout()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Descriptive")
+                {
+                    IWSection section = wordObj.CreatePortraitSection();
+
+
+
+                    wordObj.AddDescriptiveTitle(section, ComparativeTables[tableindex].TableName);
+
+
+
+                    int Variablerows = Count_Rows_Descriptive(ComparativeTables[tableindex]);
+
+
+                    int WordTableColumns = 7;
+
+                    int WordTableRows = 2 + Variablerows;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+                    wordObj.GeneralTableFormat(table);
+
+
+                    //Merges
+                    wordObj.ApplyRelation_OuterMerges_Pathology(table, WordTableRows, WordTableColumns);
+
+                    //Borders
+                    wordObj.ApplyRelation_OuterBorders_Pathology(table, WordTableRows, WordTableColumns);
+
+                    //Widths
+                    wordObj.ApplyRelation_Widths_Pathology(table, WordTableRows, WordTableColumns);
+
+
+                    //Outer Headers
+                    wordObj.ApplyRelation_OuterHeaders_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+
+                    wordObj.InsertRelation_InnerHeader_Merges_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+                }
+            }
+        }
 
         private void btn_Done_Click(object sender, EventArgs e)
         {

@@ -90,8 +90,6 @@ namespace ExcelScore.Forms
                 
             }
 
-
-            //MessageBox.Show(rowCount.ToString());
             return rowCount;
         }
 

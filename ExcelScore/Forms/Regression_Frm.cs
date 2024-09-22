@@ -1,7 +1,10 @@
 ﻿using Aspose.Cells;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using ExcelScore.Classes;
 using Syncfusion.DocIO.DLS;
+using Syncfusion.Drawing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +15,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Parameter = ExcelScore.Classes.Parameter;
+using Worksheet = Aspose.Cells.Worksheet;
 
 namespace ExcelScore.Forms
 {
@@ -466,8 +471,8 @@ namespace ExcelScore.Forms
         {
             string TableName = null;
             if (!string.IsNullOrWhiteSpace(txt_TableName.Text) &&
-                 !string.IsNullOrWhiteSpace(cmb_ChooseTableFormat.Text) &&
-                (list_Dependent.Items.Count > 0 || list_NotSeperatedScale.Items.Count > 0 || list_Seperated.Items.Count > 0))
+                 !string.IsNullOrWhiteSpace(cmb_ChooseTableFormat.Text) && list_Dependent.Items.Count > 0 &&
+                (list_NotSeperatedScale.Items.Count > 0 || list_Seperated.Items.Count > 0 || list_NotSeperatedNominal.Items.Count >0))
             {
                 // Check if the table name already exists
                 bool tableExists = false;
@@ -615,6 +620,7 @@ namespace ExcelScore.Forms
                 {
                     foreach (var parameter in table.Parameters)
                     {
+                        List<double> valuesErrored = new List<double>();
                         if (parameter.NominalOrScale == "Nominal")
                         {
                             List<double> keys = new List<double>();
@@ -628,8 +634,23 @@ namespace ExcelScore.Forms
                             {
                                 if (!keys.Contains(value))
                                 {
-                                    MessageBox.Show("Value " + value + " doesn't exist at Parameter : " + parameter.Name, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    valuesErrored.Add(value);
+                                    
                                 }
+
+                            }
+
+                            if(valuesErrored.Count > 7 )
+                            {
+                                MessageBox.Show("Did you enter a Scale Parameter in Nominal ? : " + parameter.Name, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            else
+                            {
+                                foreach (var Errorvalue in valuesErrored)
+                                {
+                                    MessageBox.Show("Value " + Errorvalue + " doesn't exist at Parameter : " + parameter.Name, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                
                             }
                         }
                     }
@@ -887,8 +908,13 @@ namespace ExcelScore.Forms
             return TotalRows;
         }
         ManualTests manual = new ManualTests();
+        ColorClass colorClass = new ColorClass();
+        Syncfusion.Drawing.Color lighterOrange;
+
         public void LinearRegression_Layout()
         {
+            lighterOrange = colorClass.LightOrange();
+
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
             {
                 if (ComparativeTables[tableindex].FormatType == "Linear")
@@ -896,7 +922,7 @@ namespace ExcelScore.Forms
 
                     IWSection section = wordObj.CreatePortraitSection();
 
-                    wordObj.AddRgressionTitle(section, ComparativeTables[tableindex].TableName , "linear");
+                    wordObj.AddRgressionTitle(section, ComparativeTables[tableindex].TableName, "linear");
 
                     int Variablerows = CountRows(ComparativeTables[tableindex]);
 
@@ -922,7 +948,152 @@ namespace ExcelScore.Forms
 
 
                     //Outer Headers
-                    wordObj.Apply_Linear_Regression_OuterHeaders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , "B");
+                    wordObj.Apply_Linear_Regression_OuterHeaders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns, "B");
+
+
+
+                    wordObj.InsertRegression_InnerHeader_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+                    Parameter DependentParameter = GetDependentParameter(ComparativeTables[tableindex]);
+
+
+
+                    int StartingRow = 2;
+                    foreach (var parameter in ComparativeTables[tableindex].Parameters)
+                    {
+                        List<double> ResultIndependent = new List<double>();
+                        List<double> ResultDependent = new List<double>();
+                        if (parameter.NominalOrScale == "Dependent")
+                        {
+                            continue;
+                        }
+
+                        else if (parameter.NominalOrScale == "Scale")
+                        {
+                            (ResultIndependent, ResultDependent) = ReturnTrueParameterValues(parameter, DependentParameter);
+
+                            List<double> RegressionResult = new List<double>();
+                            RegressionResult = manual.LinearRegressionn(ResultIndependent.ToArray(), ResultDependent.ToArray());
+
+
+                            InsertDataRegression(table, RegressionResult, StartingRow);
+
+
+                            StartingRow++;
+
+
+                        }
+                        //NominalOrScale = "Nominal",
+                        //NormalOrAbnormal = "Not Seperated",
+                        else if (parameter.NominalOrScale == "Nominal")
+                        {
+
+                            if (parameter.NormalOrAbnormal == "Not Seperated")
+                            {
+                                (ResultIndependent, ResultDependent) = ReturnTrueParameterValues(parameter, DependentParameter);
+
+                                List<double> RegressionResult = new List<double>();
+                                RegressionResult = manual.LinearRegressionn(ResultIndependent.ToArray(), ResultDependent.ToArray());
+
+
+                                InsertDataRegression(table, RegressionResult, StartingRow);
+
+
+                                StartingRow++;
+                            }
+                            else if (parameter.NormalOrAbnormal == "Seperated")
+                            {
+                                StartingRow++;
+                                (ResultIndependent, ResultDependent) = ReturnTrueParameterValues(parameter, DependentParameter);
+
+                                var SortedIndependentKeys = ResultIndependent.Distinct().OrderBy(key => key).ToList();
+
+                                var SortedGroupDIC = parameter.DIC_LablesIfNomainal.Keys.OrderBy(key => key).ToList();
+
+                                foreach (var item in SortedGroupDIC)
+                                {
+                                    if (SortedIndependentKeys.Contains(item))
+                                    {
+                                        List<double> ResultIndependent_Seperated = new List<double>();
+                                        foreach (var Independentvalue in ResultIndependent)
+                                        {
+                                            if (Independentvalue == item)
+                                            {
+                                                ResultIndependent_Seperated.Add(1);
+                                            }
+                                            else
+                                            {
+                                                ResultIndependent_Seperated.Add(0);
+                                            }
+                                        }
+                                        List<double> RegressionResult = new List<double>();
+                                        RegressionResult = manual.LinearRegressionn(ResultIndependent_Seperated.ToArray(), ResultDependent.ToArray());
+
+                                        InsertDataRegression(table, RegressionResult, StartingRow);
+                                        StartingRow++;
+                                    }
+                                    else if (!SortedIndependentKeys.Contains(item))
+                                    {
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 1, "–");
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, "–");
+                                        StartingRow++;
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+
+
+                    wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+                    wordObj.FormatTableCustom(table, 9.5f, 0, 0);
+
+
+
+
+                }
+            }
+        }
+        public void LogisticRegression_Layout()
+        {
+            lighterOrange = colorClass.LightOrange();
+
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Logistic")
+                {
+
+                    IWSection section = wordObj.CreatePortraitSection();
+
+                    wordObj.AddRgressionTitle(section, ComparativeTables[tableindex].TableName , "logistic");
+
+                    int Variablerows = CountRows(ComparativeTables[tableindex]);
+
+
+                    int WordTableColumns = 5;
+
+                    int WordTableRows = 2 + Variablerows;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+
+                    wordObj.GeneralTableFormat(table);
+
+
+                    //Merges
+                    wordObj.ApplyRegression_OuterMerges(table, WordTableRows, WordTableColumns);
+
+                    //Borders
+                    wordObj.ApplyRegression_OuterBorders(table, WordTableRows, WordTableColumns);
+
+                    //Widths
+                    wordObj.ApplyRegression_Widths(table, WordTableRows, WordTableColumns);
+
+
+                    //Outer Headers
+                    wordObj.Apply_Linear_Regression_OuterHeaders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , "OR");
 
 
 
@@ -948,25 +1119,82 @@ namespace ExcelScore.Forms
                             (ResultIndependent, ResultDependent) = ReturnTrueParameterValues(parameter, DependentParameter);
 
                             List<double> RegressionResult = new List<double>();
-                            RegressionResult = manual.LinearRegressionn(ResultIndependent.ToArray(), ResultDependent.ToArray());
+                            RegressionResult = manual.LogisticRegression(ResultIndependent.ToArray(), ResultDependent.ToArray());
+                            
 
-                            //Result.Add(model.Slope);
-                            //Result.Add(lowerBound);
-                            //Result.Add(upperBound);
-                            //Result.Add(pValue);
+                            InsertDataRegression(table, RegressionResult, StartingRow);
 
-                            string pValueString = RegressionResult[3] < 0.001 ? "<0.001" : RegressionResult[3].ToString("0.000");
-                            MessageBox.Show(RegressionResult[0].ToString());
-                            MessageBox.Show(RegressionResult[1].ToString());
-                            MessageBox.Show(RegressionResult[2].ToString());
-                            MessageBox.Show(pValueString);
+
+                            StartingRow++;
+
+
+                        }
+                        //NominalOrScale = "Nominal",
+                    //NormalOrAbnormal = "Not Seperated",
+                        else if(parameter.NominalOrScale == "Nominal")
+                        {
+
+                            if(parameter.NormalOrAbnormal == "Not Seperated")
+                            {
+                                (ResultIndependent, ResultDependent) = ReturnTrueParameterValues(parameter, DependentParameter);
+
+                                List<double> RegressionResult = new List<double>();
+                                RegressionResult = manual.LogisticRegression(ResultIndependent.ToArray(), ResultDependent.ToArray());
+
+
+                                InsertDataRegression(table, RegressionResult, StartingRow);
+
+
+                                StartingRow++;
+                            }
+                            else if (parameter.NormalOrAbnormal == "Seperated")
+                            {
+                                StartingRow++;
+                                (ResultIndependent, ResultDependent) = ReturnTrueParameterValues(parameter, DependentParameter);
+
+                                var SortedIndependentKeys = ResultIndependent.Distinct().OrderBy(key => key).ToList();
+
+                                var SortedGroupDIC = parameter.DIC_LablesIfNomainal.Keys.OrderBy(key => key).ToList();
+
+                                foreach (var item in SortedGroupDIC)
+                                {
+                                    if(SortedIndependentKeys.Contains(item))
+                                    {
+                                        List<double> ResultIndependent_Seperated = new List<double>();
+                                        foreach (var Independentvalue in ResultIndependent)
+                                        {
+                                            if(Independentvalue == item)
+                                            {
+                                                ResultIndependent_Seperated.Add(1);
+                                            }
+                                            else
+                                            {
+                                                ResultIndependent_Seperated.Add(0);
+                                            }
+                                        }
+                                        List<double> RegressionResult = new List<double>();
+                                        RegressionResult = manual.LogisticRegression(ResultIndependent_Seperated.ToArray(), ResultDependent.ToArray());
+
+                                        InsertDataRegression(table, RegressionResult, StartingRow);
+                                        StartingRow++;
+                                    }
+                                    else if(!SortedIndependentKeys.Contains(item))
+                                    {
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 1, "–");
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, "–");
+                                        StartingRow++;
+                                    }
+                                }
+
+                            }
+
                         }
                     }
 
 
-
-                    wordObj.FormatTableCustom(table, 9.5f, 0, 0);
                     wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+                    wordObj.FormatTableCustom(table, 9.5f, 0, 0);
+                    
 
 
 
@@ -974,6 +1202,32 @@ namespace ExcelScore.Forms
             }
         }
 
+
+        public void InsertDataRegression(IWTable table ,List<double> RegressionResult , int StartingRow)
+        {
+            string pValueString = RegressionResult[3] < 0.001 ? "<0.001" : RegressionResult[3].ToString("0.000");
+            string B = RegressionResult[0].ToString("0.000");
+            string CI_L = RegressionResult[1].ToString("0.000");
+            string CI_U = RegressionResult[2].ToString("0.000");
+
+
+
+            wordObj.Addpara_CenterNoBOLD(table, StartingRow, 1, pValueString);
+
+            string B_Ci = $"{B} ({CI_L} – {CI_U})";
+            wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, B_Ci);
+
+            bool PSig = generalFunctions.PvalueHasSig(pValueString);
+
+            if (PSig)
+            {
+                wordObj.SubSuperScriptText(table, StartingRow, 1, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                table.Rows[StartingRow].Cells[1].CellFormat.BackColor = lighterOrange;
+                table.Rows[StartingRow].Cells[2].CellFormat.BackColor = lighterOrange;
+            }
+        }
+
+        GeneralFunctions generalFunctions = new GeneralFunctions();
         public Parameter GetDependentParameter(ComparativeTable comparativeTable)
         {
             Parameter DependentParameter = null;
@@ -1020,6 +1274,7 @@ namespace ExcelScore.Forms
             document = wordObj.InitWord();
 
             LinearRegression_Layout();
+            LogisticRegression_Layout();
 
             string filepath = wordObj.SaveWord();
 

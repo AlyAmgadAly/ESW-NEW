@@ -768,10 +768,10 @@ namespace ExcelScore.Classes
             }
         }
 
-
+       
         public void InsertRegression_InnerHeader_Merges(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
         {
-            WordClass wordObj = new WordClass();
+            
             int StartingRow = 2;
 
             foreach (var parameter in comparativeTable.Parameters)
@@ -789,12 +789,15 @@ namespace ExcelScore.Classes
 
                         AddPara_NoCenter(table, StartingRow, 0, parameter.Name);
 
-
-                        for(int j = 0;j< WordTableColumns;j++)
+                        if(StartingRow < WordTableRows - 1)
                         {
-                            table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-                            table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                            for (int j = 0; j < WordTableColumns; j++)
+                            {
+                                table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                                table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                            }
                         }
+                        
 
                         StartingRow++;
 
@@ -804,10 +807,13 @@ namespace ExcelScore.Classes
                         if (parameter.DIC_LablesIfNomainal[1] == "Yes")
                         {
                             AddPara_NoCenter(table, StartingRow, 0, parameter.Name+" [Yes]");
-                            for (int j = 0; j < WordTableColumns; j++)
+                            if (StartingRow < WordTableRows - 1)
                             {
-                                table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-                                table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                                for (int j = 0; j < WordTableColumns; j++)
+                                {
+                                    table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                                    table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                                }
                             }
                             StartingRow++;
                         }
@@ -817,10 +823,13 @@ namespace ExcelScore.Classes
                             int lastKey = parameter.DIC_LablesIfNomainal.Keys.LastOrDefault();
 
                             AddPara_NoCenter(table, StartingRow, 0, parameter.DIC_LablesIfNomainal[lastKey]);
-                            for (int j = 0; j < WordTableColumns; j++)
+                            if (StartingRow < WordTableRows - 1)
                             {
-                                table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-                                table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                                for (int j = 0; j < WordTableColumns; j++)
+                                {
+                                    table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                                    table.Rows[StartingRow].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                                }
                             }
                             StartingRow++;
                         }
@@ -829,6 +838,18 @@ namespace ExcelScore.Classes
                 }
                 else if(parameter.NormalOrAbnormal == "Seperated")
                 {
+                    
+
+                    int count = StartingRow + parameter.DIC_LablesIfNomainal.Keys.Count;
+                    if (count < WordTableRows - 1)
+                    {
+                        for (int j = 0; j < WordTableColumns; j++)
+                        {
+                            table.Rows[count].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                            table.Rows[count].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                        }
+                    }
+
                     AddPara_NoCenter(table, StartingRow, 0, parameter.Name);
                     StartingRow++;
 
@@ -839,6 +860,7 @@ namespace ExcelScore.Classes
                         LeftIntendBeforeText(table, StartingRow, 0, SetColumnWidthInCentimeters(0.5f));
                         StartingRow++;
                     }
+
                 }
 
             }
@@ -2789,13 +2811,17 @@ namespace ExcelScore.Classes
                     {
                         // If the cell is empty, create a new paragraph and text range
                         WParagraph paragraph = (WParagraph)cell.AddParagraph();
+
+
+                        WTextRange textRange = (WTextRange)paragraph.AppendText(" ");
+                        paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                        cell.CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+
                         paragraph.ParagraphFormat.BeforeSpacing = beforeSpacing;
                         paragraph.ParagraphFormat.AfterSpacing = AfterSpacing;
 
                         // Create a new text range in the paragraph
-                        WTextRange textRange = (WTextRange)paragraph.AppendText("");
-                        paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
-                        cell.CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+                        
 
                         // Set the font properties for the text range
                         textRange.CharacterFormat.FontName = "Times New Roman";

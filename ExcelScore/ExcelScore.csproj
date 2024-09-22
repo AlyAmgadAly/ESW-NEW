@@ -193,6 +193,7 @@
     <Compile Include="Classes\ComparativeClass.cs" />
     <Compile Include="Classes\ComparativeTable.cs" />
     <Compile Include="Classes\DefinitionUnderTable.cs" />
+    <Compile Include="Classes\GeneralFunctions.cs" />
     <Compile Include="Classes\ManualTests.cs" />
     <Compile Include="Classes\NewDomainClass.cs" />
     <Compile Include="Classes\pythonStat.cs">

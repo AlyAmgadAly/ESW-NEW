@@ -13,6 +13,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Accord.Statistics.Analysis;
 using Accord.Math;
 using Accord.Statistics.Models.Regression.Linear;
+using Accord.Statistics.Models.Regression.Fitting;
+using Accord.Statistics.Models.Regression;
+using Accord;
 
 namespace ExcelScore.Classes
 {
@@ -75,6 +78,46 @@ namespace ExcelScore.Classes
                 return new List<double> { 0, 0, 0, 0 };
             }
 
+        }
+
+        public List<double> LogisticRegression(double[] Indepenent, double[] Dependent)
+        {
+            List<double> Result = new List<double>();
+
+            double[][] inputs = Indepenent.Select(value => new double[] { value }).ToArray();
+            var outputs = Dependent;
+
+            var learner = new IterativeReweightedLeastSquares<LogisticRegression>()
+            {
+                Tolerance = 1e-4,
+                MaxIterations = 100,    // Start with a moderate number of iterations
+                Regularization = 0
+            };
+
+            try
+            {
+                LogisticRegression regression = learner.Learn(inputs, outputs);
+                WaldTest Wald = regression.GetWaldTest(1);
+                double B = regression.GetOddsRatio(1);
+                double p = Wald.PValue;
+                DoubleRange CI = regression.GetConfidenceInterval(1);
+                double CI_Lower = CI.Min;
+                double CI_Upper = CI.Max;
+
+
+                Result.Add(B);
+                Result.Add(CI_Lower);
+                Result.Add(CI_Upper);
+                Result.Add(p);
+
+
+                return Result;
+
+            }
+            catch (Exception ex)
+            {
+                return new List<double> { 0, 0, 0, 0 };
+            }
         }
 
 
