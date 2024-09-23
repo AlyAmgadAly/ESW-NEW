@@ -267,6 +267,12 @@
     <Compile Include="Forms\NominalYesOnly.Designer.cs">
       <DependentUpon>NominalYesOnly.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Options_Frm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Options_Frm.Designer.cs">
+      <DependentUpon>Options_Frm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PreivewImage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -355,6 +361,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\NominalYesOnly.resx">
       <DependentUpon>NominalYesOnly.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Options_Frm.resx">
+      <DependentUpon>Options_Frm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PreivewImage.resx">
       <DependentUpon>PreivewImage.cs</DependentUpon>

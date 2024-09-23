@@ -439,7 +439,7 @@ namespace ExcelScore.Forms
 
         public void AddTableClass(string tableName)
         {
-            bool totalcolumn = check_TotalColumn.Checked;
+            bool totalcolumn = Total_Column_Comparative;
             
             var comparativeTable = new ComparativeTable
             {
@@ -859,14 +859,14 @@ namespace ExcelScore.Forms
                                             Totalrowfreq += frequency2;
                                         }
 
-                                        if (check_Perc_Row.Checked)
+                                        if (Row_Percent_Comparative)
                                         {
                                             int frequency = values.Count(v => v == distinctValue);
                                             double percentage = (frequency / (double)Totalrowfreq) * 100;
                                             parameter.FormattedValues_Relation[GroupName][groupvalue][$"Frequency_{distinctValue}"] = frequency.ToString();
                                             parameter.FormattedValues_Relation[GroupName][groupvalue][$"Percentage_{distinctValue}"] = $"{percentage:F1}%";
                                         }
-                                        else if (!check_Perc_Row.Checked)
+                                        else if (!Row_Percent_Comparative)
                                         {
                                             int frequency = values.Count(v => v == distinctValue);
                                             double percentage = (frequency / (double)totalCount) * 100;
@@ -932,11 +932,17 @@ namespace ExcelScore.Forms
 
             }
         }
+
+        public static bool Row_Percent_Comparative { get; set; }
+        public static bool Maha_Comparative { get; set; }
+        public static bool Total_Column_Comparative { get; set; }
         private void pic_addTable_Click(object sender, EventArgs e)
         {
             
             string TableName = AddTableUI();
-            check_TotalColumn.Checked = false;
+
+
+            ///check_TotalColumn.Checked = false;
 
 
             
@@ -1129,15 +1135,15 @@ namespace ExcelScore.Forms
                                         Totalrowfreq += frequency2;
                                     }
                                     //MessageBox.Show(frequency2.ToString());
-
-                                    if(check_Perc_Row.Checked)
+                                    //check_Perc_Row.Checked
+                                    if (Row_Percent_Comparative)
                                     {
                                         int frequency = values.Count(v => v == distinctValue);
                                         double percentage = (frequency / (double)Totalrowfreq) * 100;
                                         parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
                                         parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F1}%";
                                     }
-                                    else if(!check_Perc_Row.Checked)
+                                    else if(!Row_Percent_Comparative)
                                     {
                                         int frequency = values.Count(v => v == distinctValue);
                                         double percentage = (frequency / (double)totalCount) * 100;
@@ -5819,7 +5825,8 @@ namespace ExcelScore.Forms
         public void CustomMarginFormat(IWTable table)
         {
             //Designed for maha till now
-            if (check_Maha.Checked) 
+            //check_Maha.Checked
+            if (Maha_Comparative) 
             {
                 wordObj.LeftAndRightCellMarginCustom(table, wordObj.SetColumnWidthInCentimeters(0.09f), wordObj.SetColumnWidthInCentimeters(0.05f));
             }
@@ -6205,6 +6212,10 @@ namespace ExcelScore.Forms
         }
 
         public static ComparativeTable DoneSortedComparative { get; set; }
+
+
+
+
         private void button1_Click(object sender, EventArgs e)
         {
             
@@ -6607,6 +6618,12 @@ namespace ExcelScore.Forms
             {
                 list_Groups.Items.Remove(selectedItemGroup);
             }
+        }
+
+        private void btn_Options_Click(object sender, EventArgs e)
+        {
+            Options_Frm options_ = new Options_Frm();
+            options_.ShowDialog();
         }
     }
 }

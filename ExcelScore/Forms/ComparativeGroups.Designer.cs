@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComparativeGroups));
             this.list_Nominal = new System.Windows.Forms.ListBox();
             this.list_NormalScale = new System.Windows.Forms.ListBox();
@@ -43,12 +43,9 @@
             this.txt_TableName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.panelmove = new System.Windows.Forms.Panel();
-            this.check_TotalColumn = new System.Windows.Forms.CheckBox();
-            this.check_Maha = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lbl_Select = new System.Windows.Forms.Label();
             this.list_Select = new System.Windows.Forms.ListBox();
-            this.check_Perc_Row = new System.Windows.Forms.CheckBox();
             this.data_allPara = new System.Windows.Forms.DataGridView();
             this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
@@ -82,6 +79,7 @@
             this.pic_AllParaToNominal = new System.Windows.Forms.PictureBox();
             this.pic_Minimize = new System.Windows.Forms.PictureBox();
             this.pic_removeallGroupsList = new System.Windows.Forms.PictureBox();
+            this.btn_Options = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAbnormalList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_clearNormalList)).BeginInit();
@@ -245,30 +243,6 @@
             this.panelmove.TabIndex = 49;
             this.panelmove.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelmove_MouseDown);
             // 
-            // check_TotalColumn
-            // 
-            this.check_TotalColumn.AutoSize = true;
-            this.check_TotalColumn.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_TotalColumn.Location = new System.Drawing.Point(760, 502);
-            this.check_TotalColumn.Name = "check_TotalColumn";
-            this.check_TotalColumn.Size = new System.Drawing.Size(149, 29);
-            this.check_TotalColumn.TabIndex = 52;
-            this.check_TotalColumn.Text = "Total Column";
-            this.check_TotalColumn.UseVisualStyleBackColor = true;
-            this.check_TotalColumn.CheckedChanged += new System.EventHandler(this.check_TotalColumn_CheckedChanged);
-            // 
-            // check_Maha
-            // 
-            this.check_Maha.AutoSize = true;
-            this.check_Maha.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Maha.Location = new System.Drawing.Point(912, 458);
-            this.check_Maha.Name = "check_Maha";
-            this.check_Maha.Size = new System.Drawing.Size(80, 29);
-            this.check_Maha.TabIndex = 54;
-            this.check_Maha.Text = "Maha";
-            this.check_Maha.UseVisualStyleBackColor = true;
-            this.check_Maha.CheckedChanged += new System.EventHandler(this.check_Maha_CheckedChanged);
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -305,17 +279,6 @@
             this.list_Select.Size = new System.Drawing.Size(263, 38);
             this.list_Select.TabIndex = 56;
             // 
-            // check_Perc_Row
-            // 
-            this.check_Perc_Row.AutoSize = true;
-            this.check_Perc_Row.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.check_Perc_Row.Location = new System.Drawing.Point(760, 458);
-            this.check_Perc_Row.Name = "check_Perc_Row";
-            this.check_Perc_Row.Size = new System.Drawing.Size(91, 29);
-            this.check_Perc_Row.TabIndex = 61;
-            this.check_Perc_Row.Text = "% Row";
-            this.check_Perc_Row.UseVisualStyleBackColor = true;
-            // 
             // data_allPara
             // 
             this.data_allPara.AllowUserToAddRows = false;
@@ -325,28 +288,28 @@
             this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.data_allPara.ColumnHeadersHeight = 54;
             this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Col_Name,
             this.ColMeasure,
             this.ColNormality});
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.Location = new System.Drawing.Point(22, 67);
@@ -499,7 +462,7 @@
             this.btn_Update.ForeColor = System.Drawing.Color.Black;
             this.btn_Update.Image = ((System.Drawing.Image)(resources.GetObject("btn_Update.Image")));
             this.btn_Update.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_Update.Location = new System.Drawing.Point(798, 618);
+            this.btn_Update.Location = new System.Drawing.Point(775, 617);
             this.btn_Update.Name = "btn_Update";
             this.btn_Update.Size = new System.Drawing.Size(108, 54);
             this.btn_Update.TabIndex = 60;
@@ -549,7 +512,7 @@
             this.btn_SortTable.ForeColor = System.Drawing.Color.Black;
             this.btn_SortTable.Image = ((System.Drawing.Image)(resources.GetObject("btn_SortTable.Image")));
             this.btn_SortTable.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_SortTable.Location = new System.Drawing.Point(798, 558);
+            this.btn_SortTable.Location = new System.Drawing.Point(775, 557);
             this.btn_SortTable.Name = "btn_SortTable";
             this.btn_SortTable.Size = new System.Drawing.Size(108, 54);
             this.btn_SortTable.TabIndex = 51;
@@ -577,7 +540,7 @@
             this.btn_Done.ForeColor = System.Drawing.Color.Black;
             this.btn_Done.Image = ((System.Drawing.Image)(resources.GetObject("btn_Done.Image")));
             this.btn_Done.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_Done.Location = new System.Drawing.Point(912, 618);
+            this.btn_Done.Location = new System.Drawing.Point(889, 617);
             this.btn_Done.Name = "btn_Done";
             this.btn_Done.Size = new System.Drawing.Size(108, 54);
             this.btn_Done.TabIndex = 48;
@@ -729,12 +692,30 @@
             this.pic_removeallGroupsList.TabStop = false;
             this.pic_removeallGroupsList.Click += new System.EventHandler(this.pic_removeallGroupsList_Click);
             // 
+            // btn_Options
+            // 
+            this.btn_Options.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.btn_Options.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Options.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Options.ForeColor = System.Drawing.Color.Black;
+            this.btn_Options.Image = ((System.Drawing.Image)(resources.GetObject("btn_Options.Image")));
+            this.btn_Options.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_Options.Location = new System.Drawing.Point(889, 557);
+            this.btn_Options.Name = "btn_Options";
+            this.btn_Options.Size = new System.Drawing.Size(108, 54);
+            this.btn_Options.TabIndex = 76;
+            this.btn_Options.Text = "Options";
+            this.btn_Options.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_Options.UseVisualStyleBackColor = false;
+            this.btn_Options.Click += new System.EventHandler(this.btn_Options_Click);
+            // 
             // ComparativeGroups
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.btn_Options);
             this.Controls.Add(this.pic_removeallGroupsList);
             this.Controls.Add(this.pic_Minimize);
             this.Controls.Add(this.pic_ClearAbnormalList);
@@ -747,15 +728,12 @@
             this.Controls.Add(this.pic_TableFormat);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.data_allPara);
-            this.Controls.Add(this.check_Perc_Row);
             this.Controls.Add(this.btn_Update);
             this.Controls.Add(this.pic_RemoveSelectPara);
             this.Controls.Add(this.pic_AllParaToSelect);
             this.Controls.Add(this.list_Select);
             this.Controls.Add(this.lbl_Select);
-            this.Controls.Add(this.check_Maha);
             this.Controls.Add(this.pic_groups_select);
-            this.Controls.Add(this.check_TotalColumn);
             this.Controls.Add(this.btn_SortTable);
             this.Controls.Add(this.pic_ifyes);
             this.Controls.Add(this.btn_Done);
@@ -843,16 +821,13 @@
         private System.Windows.Forms.Panel panelmove;
         private System.Windows.Forms.PictureBox pic_ifyes;
         private System.Windows.Forms.Button btn_SortTable;
-        private System.Windows.Forms.CheckBox check_TotalColumn;
         private System.Windows.Forms.PictureBox pic_groups_select;
-        private System.Windows.Forms.CheckBox check_Maha;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lbl_Select;
         private System.Windows.Forms.ListBox list_Select;
         private System.Windows.Forms.PictureBox pic_AllParaToSelect;
         private System.Windows.Forms.PictureBox pic_RemoveSelectPara;
         private System.Windows.Forms.Button btn_Update;
-        private System.Windows.Forms.CheckBox check_Perc_Row;
         private System.Windows.Forms.DataGridView data_allPara;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.PictureBox pic_TableFormat;
@@ -868,5 +843,6 @@
         private System.Windows.Forms.PictureBox pic_ClearAbnormalList;
         private System.Windows.Forms.PictureBox pic_Minimize;
         private System.Windows.Forms.PictureBox pic_removeallGroupsList;
+        private System.Windows.Forms.Button btn_Options;
     }
 }
