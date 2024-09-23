@@ -80,6 +80,8 @@
             this.pic_back = new System.Windows.Forms.PictureBox();
             this.pic_addTable = new System.Windows.Forms.PictureBox();
             this.pic_AllParaToNominal = new System.Windows.Forms.PictureBox();
+            this.pic_Minimize = new System.Windows.Forms.PictureBox();
+            this.pic_removeallGroupsList = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAbnormalList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_clearNormalList)).BeginInit();
@@ -101,6 +103,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_Minimize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_removeallGroupsList)).BeginInit();
             this.SuspendLayout();
             // 
             // list_Nominal
@@ -234,10 +238,10 @@
             // 
             // panelmove
             // 
-            this.panelmove.Location = new System.Drawing.Point(11, 6);
+            this.panelmove.Location = new System.Drawing.Point(16, 6);
             this.panelmove.Margin = new System.Windows.Forms.Padding(2);
             this.panelmove.Name = "panelmove";
-            this.panelmove.Size = new System.Drawing.Size(918, 25);
+            this.panelmove.Size = new System.Drawing.Size(821, 25);
             this.panelmove.TabIndex = 49;
             this.panelmove.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelmove_MouseDown);
             // 
@@ -703,12 +707,36 @@
             this.pic_AllParaToNominal.TabStop = false;
             this.pic_AllParaToNominal.Click += new System.EventHandler(this.pic_AllParaToNominal_Click);
             // 
+            // pic_Minimize
+            // 
+            this.pic_Minimize.Image = ((System.Drawing.Image)(resources.GetObject("pic_Minimize.Image")));
+            this.pic_Minimize.Location = new System.Drawing.Point(842, 6);
+            this.pic_Minimize.Name = "pic_Minimize";
+            this.pic_Minimize.Size = new System.Drawing.Size(86, 50);
+            this.pic_Minimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_Minimize.TabIndex = 74;
+            this.pic_Minimize.TabStop = false;
+            this.pic_Minimize.Click += new System.EventHandler(this.pic_Minimize_Click);
+            // 
+            // pic_removeallGroupsList
+            // 
+            this.pic_removeallGroupsList.Image = ((System.Drawing.Image)(resources.GetObject("pic_removeallGroupsList.Image")));
+            this.pic_removeallGroupsList.Location = new System.Drawing.Point(597, 484);
+            this.pic_removeallGroupsList.Name = "pic_removeallGroupsList";
+            this.pic_removeallGroupsList.Size = new System.Drawing.Size(45, 31);
+            this.pic_removeallGroupsList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_removeallGroupsList.TabIndex = 75;
+            this.pic_removeallGroupsList.TabStop = false;
+            this.pic_removeallGroupsList.Click += new System.EventHandler(this.pic_removeallGroupsList_Click);
+            // 
             // ComparativeGroups
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.pic_removeallGroupsList);
+            this.Controls.Add(this.pic_Minimize);
             this.Controls.Add(this.pic_ClearAbnormalList);
             this.Controls.Add(this.pic_clearNormalList);
             this.Controls.Add(this.pic_ClearNominalList);
@@ -781,6 +809,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_Minimize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_removeallGroupsList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -836,5 +866,7 @@
         private System.Windows.Forms.PictureBox pic_ClearNominalList;
         private System.Windows.Forms.PictureBox pic_clearNormalList;
         private System.Windows.Forms.PictureBox pic_ClearAbnormalList;
+        private System.Windows.Forms.PictureBox pic_Minimize;
+        private System.Windows.Forms.PictureBox pic_removeallGroupsList;
     }
 }

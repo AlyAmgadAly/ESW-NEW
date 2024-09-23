@@ -26,7 +26,10 @@ namespace ExcelScore.Classes
 
         //Linear Reg
 
-
+        public void FRepeated()
+        {
+            var Fanova = new Accord.Statistics.Analysis.RocAreaMethod();
+        }
         public List<double> LinearRegressionn(double[] Indepenent , double[] Dependent)
         {
             List<double> Result = new List<double>();

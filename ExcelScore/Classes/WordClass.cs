@@ -2333,7 +2333,7 @@ namespace ExcelScore.Classes
                     {
                         for (int j = 1; j <= numberofgroups * 2; j++)
                         {
-                            table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(1.65f);
+                            table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(2f);
                         }
                         
                     }

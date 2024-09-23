@@ -33,6 +33,7 @@
             this.pic_SortQuestionsUP = new System.Windows.Forms.PictureBox();
             this.pic_DoneSorting = new System.Windows.Forms.PictureBox();
             this.pic_SortQuestionsDown = new System.Windows.Forms.PictureBox();
+            this.panelmove = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pic_SortQuestionsUP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_DoneSorting)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_SortQuestionsDown)).BeginInit();
@@ -44,10 +45,10 @@
             this.list_AllParameters.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_AllParameters.FormattingEnabled = true;
             this.list_AllParameters.ItemHeight = 17;
-            this.list_AllParameters.Location = new System.Drawing.Point(12, 12);
+            this.list_AllParameters.Location = new System.Drawing.Point(12, 46);
             this.list_AllParameters.Name = "list_AllParameters";
             this.list_AllParameters.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_AllParameters.Size = new System.Drawing.Size(263, 480);
+            this.list_AllParameters.Size = new System.Drawing.Size(263, 446);
             this.list_AllParameters.TabIndex = 8;
             this.list_AllParameters.SelectedIndexChanged += new System.EventHandler(this.list_AllParameters_SelectedIndexChanged);
             // 
@@ -84,12 +85,23 @@
             this.pic_SortQuestionsDown.TabStop = false;
             this.pic_SortQuestionsDown.Click += new System.EventHandler(this.pic_SortQuestionsDown_Click);
             // 
+            // panelmove
+            // 
+            this.panelmove.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.panelmove.Location = new System.Drawing.Point(12, 2);
+            this.panelmove.Margin = new System.Windows.Forms.Padding(2);
+            this.panelmove.Name = "panelmove";
+            this.panelmove.Size = new System.Drawing.Size(314, 39);
+            this.panelmove.TabIndex = 72;
+            this.panelmove.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelmove_MouseDown);
+            // 
             // Sort_Parameters_Frm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(331, 507);
+            this.Controls.Add(this.panelmove);
             this.Controls.Add(this.pic_SortQuestionsDown);
             this.Controls.Add(this.pic_SortQuestionsUP);
             this.Controls.Add(this.pic_DoneSorting);
@@ -111,5 +123,6 @@
         private System.Windows.Forms.PictureBox pic_DoneSorting;
         private System.Windows.Forms.PictureBox pic_SortQuestionsUP;
         private System.Windows.Forms.PictureBox pic_SortQuestionsDown;
+        private System.Windows.Forms.Panel panelmove;
     }
 }

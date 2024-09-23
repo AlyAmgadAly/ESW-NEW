@@ -3934,7 +3934,19 @@ namespace ExcelScore.Forms
             if (parameter.NominalOrScale == "Scale")
             {
 
-                if (numberofgroups == 2)
+
+
+                var SortedGroupsValues = parameter.GroupedParameterValues.Keys;
+                int ValueOne = 0;
+                foreach (var key in SortedGroupsValues)
+                {
+                    if (parameter.GroupedParameterValues[key].Count == 1)
+                    {
+                        ValueOne++;
+                    }
+                }
+
+                if (numberofgroups - ValueOne <= 2)
                 {
                     if (parameter.NormalOrAbnormal == "Normal")
                     {
@@ -4009,7 +4021,7 @@ namespace ExcelScore.Forms
                     }
                 }
 
-                else if (numberofgroups > 2)
+                else if (numberofgroups - ValueOne > 2)
                 {
 
                     if (parameter.NormalOrAbnormal == "Normal")
@@ -6575,6 +6587,26 @@ namespace ExcelScore.Forms
         private void txt_TableName_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void pic_Minimize_Click(object sender, EventArgs e)
+        {
+            WindowState = FormWindowState.Minimized;
+        }
+
+        private void pic_removeallGroupsList_Click(object sender, EventArgs e)
+        {
+            var selectedItemsGroups = new List<object>();
+            foreach (var selectedItemGroup in list_Groups.Items)
+            {
+                selectedItemsGroups.Add(selectedItemGroup);
+            }
+
+
+            foreach (var selectedItemGroup in selectedItemsGroups)
+            {
+                list_Groups.Items.Remove(selectedItemGroup);
+            }
         }
     }
 }
