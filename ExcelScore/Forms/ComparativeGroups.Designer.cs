@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComparativeGroups));
             this.list_Nominal = new System.Windows.Forms.ListBox();
             this.list_NormalScale = new System.Windows.Forms.ListBox();
@@ -80,6 +80,10 @@
             this.pic_Minimize = new System.Windows.Forms.PictureBox();
             this.pic_removeallGroupsList = new System.Windows.Forms.PictureBox();
             this.btn_Options = new System.Windows.Forms.Button();
+            this.cmb_UpdateTableType = new System.Windows.Forms.ComboBox();
+            this.pic_DoneUpdatingTableType = new System.Windows.Forms.PictureBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.pic_UpdateTableParameters = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAbnormalList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_clearNormalList)).BeginInit();
@@ -103,6 +107,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_Minimize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeallGroupsList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_DoneUpdatingTableType)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).BeginInit();
             this.SuspendLayout();
             // 
             // list_Nominal
@@ -159,7 +165,7 @@
             this.list_ViewTableParameters.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_ViewTableParameters.FormattingEnabled = true;
             this.list_ViewTableParameters.ItemHeight = 17;
-            this.list_ViewTableParameters.Location = new System.Drawing.Point(775, 168);
+            this.list_ViewTableParameters.Location = new System.Drawing.Point(775, 185);
             this.list_ViewTableParameters.Name = "list_ViewTableParameters";
             this.list_ViewTableParameters.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_ViewTableParameters.Size = new System.Drawing.Size(183, 208);
@@ -288,28 +294,28 @@
             this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.data_allPara.ColumnHeadersHeight = 54;
             this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Col_Name,
             this.ColMeasure,
             this.ColNormality});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle4;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.Location = new System.Drawing.Point(22, 67);
@@ -709,12 +715,69 @@
             this.btn_Options.UseVisualStyleBackColor = false;
             this.btn_Options.Click += new System.EventHandler(this.btn_Options_Click);
             // 
+            // cmb_UpdateTableType
+            // 
+            this.cmb_UpdateTableType.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F);
+            this.cmb_UpdateTableType.FormattingEnabled = true;
+            this.cmb_UpdateTableType.Items.AddRange(new object[] {
+            "Default",
+            "Periods Groups",
+            "Groups 2 periods",
+            "Paper",
+            "Pathology Relation",
+            "Pathology Comparative",
+            "Relation",
+            "Relation Scale Pathology",
+            "Descriptive"});
+            this.cmb_UpdateTableType.Location = new System.Drawing.Point(775, 484);
+            this.cmb_UpdateTableType.Name = "cmb_UpdateTableType";
+            this.cmb_UpdateTableType.Size = new System.Drawing.Size(183, 30);
+            this.cmb_UpdateTableType.TabIndex = 77;
+            // 
+            // pic_DoneUpdatingTableType
+            // 
+            this.pic_DoneUpdatingTableType.Image = ((System.Drawing.Image)(resources.GetObject("pic_DoneUpdatingTableType.Image")));
+            this.pic_DoneUpdatingTableType.Location = new System.Drawing.Point(974, 484);
+            this.pic_DoneUpdatingTableType.Name = "pic_DoneUpdatingTableType";
+            this.pic_DoneUpdatingTableType.Size = new System.Drawing.Size(37, 30);
+            this.pic_DoneUpdatingTableType.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_DoneUpdatingTableType.TabIndex = 78;
+            this.pic_DoneUpdatingTableType.TabStop = false;
+            this.pic_DoneUpdatingTableType.Click += new System.EventHandler(this.pic_DoneUpdatingTableType_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.label4.Location = new System.Drawing.Point(771, 451);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(182, 30);
+            this.label4.TabIndex = 79;
+            this.label4.Text = "Update Format :";
+            // 
+            // pic_UpdateTableParameters
+            // 
+            this.pic_UpdateTableParameters.Image = ((System.Drawing.Image)(resources.GetObject("pic_UpdateTableParameters.Image")));
+            this.pic_UpdateTableParameters.Location = new System.Drawing.Point(775, 147);
+            this.pic_UpdateTableParameters.Name = "pic_UpdateTableParameters";
+            this.pic_UpdateTableParameters.Size = new System.Drawing.Size(59, 32);
+            this.pic_UpdateTableParameters.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_UpdateTableParameters.TabIndex = 80;
+            this.pic_UpdateTableParameters.TabStop = false;
+            this.pic_UpdateTableParameters.Click += new System.EventHandler(this.pic_UpdateTableParameters_Click);
+            // 
             // ComparativeGroups
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.pic_UpdateTableParameters);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.pic_DoneUpdatingTableType);
+            this.Controls.Add(this.cmb_UpdateTableType);
             this.Controls.Add(this.btn_Options);
             this.Controls.Add(this.pic_removeallGroupsList);
             this.Controls.Add(this.pic_Minimize);
@@ -789,6 +852,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_Minimize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeallGroupsList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_DoneUpdatingTableType)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -844,5 +909,9 @@
         private System.Windows.Forms.PictureBox pic_Minimize;
         private System.Windows.Forms.PictureBox pic_removeallGroupsList;
         private System.Windows.Forms.Button btn_Options;
+        private System.Windows.Forms.ComboBox cmb_UpdateTableType;
+        private System.Windows.Forms.PictureBox pic_DoneUpdatingTableType;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.PictureBox pic_UpdateTableParameters;
     }
 }

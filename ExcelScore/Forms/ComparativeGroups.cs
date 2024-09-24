@@ -1344,6 +1344,20 @@ namespace ExcelScore.Forms
                     
                 }
             }
+
+
+
+
+            string tabletype = selectedTable.FormatType;
+
+            cmb_UpdateTableType.Text = tabletype;
+
+
+
+
+
+
+
         }
         
         
@@ -6624,6 +6638,193 @@ namespace ExcelScore.Forms
         {
             Options_Frm options_ = new Options_Frm();
             options_.ShowDialog();
+        }
+
+        private void pic_DoneUpdatingTableType_Click(object sender, EventArgs e)
+        {
+            if(cmb_TableNames.SelectedIndex != -1)
+            {
+                string UpdatedTableType = cmb_UpdateTableType.Text;
+
+                string selectedTableName = cmb_TableNames.SelectedItem.ToString();
+
+                // Find the ComparativeTable instance corresponding to the selected table name
+                var selectedTable = ComparativeTables.FirstOrDefault(table => table.TableName == selectedTableName);
+
+                if (selectedTable.FormatType != UpdatedTableType)
+                {
+                    selectedTable.FormatType = UpdatedTableType;
+                    MessageBox.Show($"Update table {selectedTableName} type to : {selectedTable.FormatType}", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show($"Table {selectedTableName} already with same Format", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                MessageBox.Show($"Please Select a table", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+            
+
+
+            
+        }
+
+        private void pic_UpdateTableParameters_Click(object sender, EventArgs e)
+        {
+            //if (cmb_TableNames.SelectedIndex != -1)
+            //{
+            //    string selectedTableName = cmb_TableNames.SelectedItem.ToString();
+            //    int flag = 0;
+
+            //    // Find the ComparativeTable instance corresponding to the selected table name
+            //    var comparativeTable = ComparativeTables.FirstOrDefault(table => table.TableName == selectedTableName);
+
+            //    List<string> Groups = new List<string>();
+            //    List<string> Nominal = new List<string>();
+            //    List<string> Normal_Scale = new List<string>();
+            //    List<string> Abnormal_Scale = new List<string>();
+
+            //    // Build the message string with conditional formatting for non-null lists
+            //    StringBuilder messageBuilder = new StringBuilder("Are you sure you want to add the following parameters?\n");
+
+            //    if (list_Groups.Items.Count > 0)
+            //    {
+            //        flag = 1;
+            //        messageBuilder.AppendLine("Groups:\n" + String.Join("\n", list_Groups.Items.Cast<string>()));
+            //    }
+
+            //    if (list_Nominal.Items.Count > 0)
+            //    {
+            //        flag = 1;
+            //        messageBuilder.AppendLine("Nominal:\n" + String.Join("\n", list_Nominal.Items.Cast<string>()));
+            //    }
+
+            //    if (list_NormalScale.Items.Count > 0)
+            //    {
+            //        flag = 1;
+            //        messageBuilder.AppendLine("Normal Scale:\n" + String.Join("\n", list_NormalScale.Items.Cast<string>()));
+            //    }
+
+            //    if (list_AbnormalScale.Items.Count > 0)
+            //    {
+            //        flag = 1;
+            //        messageBuilder.AppendLine("Abnormal Scale:\n" + String.Join("\n", list_AbnormalScale.Items.Cast<string>()));
+            //    }
+
+            //    string message = messageBuilder.ToString();
+
+            //    if (flag == 1)
+            //    {
+            //        // Show the MessageBox only if there are parameters to display
+            //        if (MessageBox.Show(message, "Adding Parameter", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+            //        {
+
+            //            List<Parameter> oldParameters = comparativeTable.Parameters.ToList();
+
+                        
+
+            //            comparativeTable.Parameters.Clear();
+
+            //            ClearPara();
+
+            //            comparativeTable.Parameters.AddRange(oldParameters);
+
+
+
+            //            foreach (var item in list_Groups.Items)
+            //            {
+            //                var parameter = new Parameter
+            //                {
+            //                    Name = item.ToString(),
+            //                    IsGroup = true,
+            //                    GroupedParameterValues = new Dictionary<double, List<double>>(),
+            //                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
+            //                };
+            //                comparativeTable.Parameters.Add(parameter);
+            //            }
+
+            //            // Add parameters from list_Nominal
+            //            foreach (var item in list_Nominal.Items)
+            //            {
+            //                var parameter = new Parameter
+            //                {
+            //                    Name = item.ToString(),
+            //                    NominalOrScale = "Nominal",
+            //                    GroupedParameterValues = new Dictionary<double, List<double>>(),
+            //                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
+            //                };
+            //                comparativeTable.Parameters.Add(parameter);
+            //            }
+
+
+
+            //            // Add parameters from list_NormalScale
+            //            foreach (var item in list_NormalScale.Items)
+            //            {
+            //                var parameter = new Parameter
+            //                {
+
+            //                    Name = item.ToString(),
+            //                    NominalOrScale = "Scale",
+            //                    NormalOrAbnormal = "Normal",
+            //                    GroupedParameterValues = new Dictionary<double, List<double>>(),
+            //                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
+            //                };
+
+
+            //                comparativeTable.Parameters.Add(parameter);
+            //            }
+
+            //            // Add parameters from list_AbnormalScale
+            //            foreach (var item in list_AbnormalScale.Items)
+            //            {
+            //                var parameter = new Parameter
+            //                {
+            //                    Name = item.ToString(),
+            //                    NominalOrScale = "Scale",
+            //                    NormalOrAbnormal = "Abnormal",
+            //                    GroupedParameterValues = new Dictionary<double, List<double>>(),
+            //                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
+            //                };
+            //                comparativeTable.Parameters.Add(parameter);
+            //            }
+
+            //            if (comparativeTable.FormatType == "Relation" || comparativeTable.FormatType == "Relation Scale Pathology")
+            //            {
+            //                ComparativeBasic_Relation(comparativeTable.TableName);
+            //            }
+            //            else
+            //            {
+            //                ComparativeBasic(comparativeTable.TableName);
+            //            }
+
+
+
+            //            oldParameters.Clear();
+
+            //        }
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("No Parameters selected to be added", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    }
+
+                
+
+                
+
+
+            //}
+            //else
+            //{
+            //    MessageBox.Show("No table selected to be Updated", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+
+                
+            
         }
     }
 }
