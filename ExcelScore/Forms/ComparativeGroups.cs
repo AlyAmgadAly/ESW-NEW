@@ -1292,6 +1292,28 @@ namespace ExcelScore.Forms
 
             }
         }
+
+        public void RemoveTable()
+        {
+            string selectedTableName = cmb_TableNames.SelectedItem?.ToString();
+
+            if (!string.IsNullOrEmpty(selectedTableName))
+            {
+                // Remove the selected table name from the ComboBox
+                cmb_TableNames.Items.RemoveAt(cmb_TableNames.SelectedIndex);
+
+                // Find and remove the corresponding ComparativeTable instance from the ComparativeTables list
+                var tableToRemove = ComparativeTables.FirstOrDefault(table => table.TableName == selectedTableName);
+                if (tableToRemove != null)
+                {
+                    ComparativeTables.Remove(tableToRemove);
+                    ClearTable(tableToRemove);
+                }
+            }
+
+            cmb_TableNames.Text = "";
+            list_ViewTableParameters.Items.Clear();
+        }
         private void pic_removeTableSelected_Click(object sender, EventArgs e)
         {
 
@@ -6563,7 +6585,63 @@ namespace ExcelScore.Forms
             }
 
         }
+        public void ClearAllLists()
+        {
+            var selectedItemsNominal = new List<object>();
+            foreach (var selectedItemNominal in list_Nominal.Items)
+            {
+                selectedItemsNominal.Add(selectedItemNominal);
+            }
 
+
+            foreach (var selectedItemNominal in selectedItemsNominal)
+            {
+                list_Nominal.Items.Remove(selectedItemNominal);
+            }
+
+
+
+
+            var selectedItemsNormal = new List<object>();
+            foreach (var selectedItemNormal in list_NormalScale.Items)
+            {
+                selectedItemsNormal.Add(selectedItemNormal);
+            }
+
+
+            foreach (var selectedItemNormal in selectedItemsNormal)
+            {
+                list_NormalScale.Items.Remove(selectedItemNormal);
+            }
+
+
+
+
+
+            var selectedItemsAbnormal = new List<object>();
+            foreach (var selectedItemAbnormal in list_AbnormalScale.Items)
+            {
+                selectedItemsAbnormal.Add(selectedItemAbnormal);
+            }
+
+
+            foreach (var selectedItemAbnormal in selectedItemsAbnormal)
+            {
+                list_AbnormalScale.Items.Remove(selectedItemAbnormal);
+            }
+
+            var selectedItemsGroups = new List<object>();
+            foreach (var selectedItemGroup in list_Groups.Items)
+            {
+                selectedItemsGroups.Add(selectedItemGroup);
+            }
+
+
+            foreach (var selectedItemGroup in selectedItemsGroups)
+            {
+                list_Groups.Items.Remove(selectedItemGroup);
+            }
+        }
         private void pic_ClearNominalList_Click(object sender, EventArgs e)
         {
             var selectedItemsNominal = new List<object>();
@@ -6674,157 +6752,233 @@ namespace ExcelScore.Forms
 
         private void pic_UpdateTableParameters_Click(object sender, EventArgs e)
         {
-            //if (cmb_TableNames.SelectedIndex != -1)
-            //{
-            //    string selectedTableName = cmb_TableNames.SelectedItem.ToString();
-            //    int flag = 0;
+            if (cmb_TableNames.SelectedIndex != -1)
+            {
+                string selectedTableName = cmb_TableNames.SelectedItem.ToString();
+                
+                var comparativeTable = ComparativeTables.FirstOrDefault(table => table.TableName == selectedTableName);
 
-            //    // Find the ComparativeTable instance corresponding to the selected table name
-            //    var comparativeTable = ComparativeTables.FirstOrDefault(table => table.TableName == selectedTableName);
+                List<Parameter> oldParameters = comparativeTable.Parameters.ToList();
 
-            //    List<string> Groups = new List<string>();
-            //    List<string> Nominal = new List<string>();
-            //    List<string> Normal_Scale = new List<string>();
-            //    List<string> Abnormal_Scale = new List<string>();
+                bool HasGroup = oldParameters.Any(p => p.IsGroup);
+                bool HasNominal = oldParameters.Any(p => p.NominalOrScale == "Nominal");
+                bool HasNormalScale = oldParameters.Any(p => p.NormalOrAbnormal == "Normal");
+                bool HasAbnormalScale= oldParameters.Any(p => p.NormalOrAbnormal == "Abnormal");
 
-            //    // Build the message string with conditional formatting for non-null lists
-            //    StringBuilder messageBuilder = new StringBuilder("Are you sure you want to add the following parameters?\n");
+                int flag = 0;
 
-            //    if (list_Groups.Items.Count > 0)
-            //    {
-            //        flag = 1;
-            //        messageBuilder.AppendLine("Groups:\n" + String.Join("\n", list_Groups.Items.Cast<string>()));
-            //    }
+                // Build the message string with conditional formatting for non-null lists
+                StringBuilder messageBuilder = new StringBuilder("Are you sure you want to add the following Table?\n");
 
-            //    if (list_Nominal.Items.Count > 0)
-            //    {
-            //        flag = 1;
-            //        messageBuilder.AppendLine("Nominal:\n" + String.Join("\n", list_Nominal.Items.Cast<string>()));
-            //    }
+                if (list_Groups.Items.Count > 0)
+                {
+                    if (!HasGroup)
+                    {
+                        flag = 1;
+                        //messageBuilder.AppendLine("Groups:\n" + String.Join("\n", list_Groups.Items.Cast<string>()));
+                    }
 
-            //    if (list_NormalScale.Items.Count > 0)
-            //    {
-            //        flag = 1;
-            //        messageBuilder.AppendLine("Normal Scale:\n" + String.Join("\n", list_NormalScale.Items.Cast<string>()));
-            //    }
+                    foreach (var listItem in list_Groups.Items)
+                    {
+                        foreach (var ParameterItem in oldParameters)
+                        {
+                            if(ParameterItem.IsGroup)
+                            {
+                                if (!(listItem.ToString() == ParameterItem.Name))
+                                {
+                                    flag = 1;
+                                    //messageBuilder.AppendLine("Groups:\n" + String.Join("\n", list_Groups.Items.Cast<string>()));
+                                }
+                            }
+                        }
+                    }
 
-            //    if (list_AbnormalScale.Items.Count > 0)
-            //    {
-            //        flag = 1;
-            //        messageBuilder.AppendLine("Abnormal Scale:\n" + String.Join("\n", list_AbnormalScale.Items.Cast<string>()));
-            //    }
+                    
 
-            //    string message = messageBuilder.ToString();
+                }
 
-            //    if (flag == 1)
-            //    {
-            //        // Show the MessageBox only if there are parameters to display
-            //        if (MessageBox.Show(message, "Adding Parameter", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-            //        {
+                if (list_Nominal.Items.Count > 0)
+                {
+                    if (!HasNominal)
+                    {
+                        flag = 1;
+                        //messageBuilder.AppendLine("Nominal:\n" + String.Join("\n", list_Nominal.Items.Cast<string>()));
+                    }
 
-            //            List<Parameter> oldParameters = comparativeTable.Parameters.ToList();
+                    foreach (var listItem in list_Nominal.Items)
+                    {
+                        foreach (var ParameterItem in oldParameters)
+                        {
+                            if (ParameterItem.NominalOrScale == "Nominal")
+                            {
+                                if (!(listItem.ToString() == ParameterItem.Name))
+                                {
+                                    flag = 1;
+                                    //messageBuilder.AppendLine("Nominal:\n" + String.Join("\n", list_Nominal.Items.Cast<string>()));
+                                }
+                            }
+                                
+                        }
+                    }
+                }
 
-                        
+                if (list_NormalScale.Items.Count > 0)
+                {
+                    if (!HasNormalScale)
+                    {
+                        flag = 1;
+                        //messageBuilder.AppendLine("Normal Scale:\n" + String.Join("\n", list_NormalScale.Items.Cast<string>()));
+                    }
 
-            //            comparativeTable.Parameters.Clear();
+                    foreach (var listItem in list_NormalScale.Items)
+                    {
+                        foreach (var ParameterItem in oldParameters)
+                        {
+                            if (ParameterItem.NominalOrScale == "Scale")
+                            {
+                                if (ParameterItem.NormalOrAbnormal == "Normal")
+                                {
+                                    if (!(listItem.ToString() == ParameterItem.Name))
+                                    {
+                                        flag = 1;
+                                        //messageBuilder.AppendLine("Normal Scale:\n" + String.Join("\n", list_NormalScale.Items.Cast<string>()));
+                                    }
+                                }
+                            }
+                                
+                        }
+                    }
+                    
+                }
 
-            //            ClearPara();
+                if (list_AbnormalScale.Items.Count > 0)
+                {
+                    if (!HasAbnormalScale)
+                    {
+                        flag = 1;
+                        //messageBuilder.AppendLine("Abnormal Scale:\n" + String.Join("\n", list_AbnormalScale.Items.Cast<string>()));
+                    }
 
-            //            comparativeTable.Parameters.AddRange(oldParameters);
+                    foreach (var listItem in list_AbnormalScale.Items)
+                    {
+                        foreach (var ParameterItem in oldParameters)
+                        {
+                            if (ParameterItem.NominalOrScale == "Scale")
+                            {
+                                if (ParameterItem.NormalOrAbnormal == "Abnormal")
+                                {
+                                    if (!(listItem.ToString() == ParameterItem.Name))
+                                    {
+                                        flag = 1;
+                                       //messageBuilder.AppendLine("Abnormal Scale:\n" + String.Join("\n", list_AbnormalScale.Items.Cast<string>()));
+                                    }
+                                }
+                            }
+                                
+                        }
+                    }
+                    
+                }
+                messageBuilder.AppendLine("Groups:\n" + String.Join("\n", list_Groups.Items.Cast<string>()));
+                messageBuilder.AppendLine("Nominal:\n" + String.Join("\n", list_Nominal.Items.Cast<string>()));
+                messageBuilder.AppendLine("Normal Scale:\n" + String.Join("\n", list_NormalScale.Items.Cast<string>()));
+                messageBuilder.AppendLine("Abnormal Scale:\n" + String.Join("\n", list_AbnormalScale.Items.Cast<string>()));
 
+                string message = messageBuilder.ToString();
 
-
-            //            foreach (var item in list_Groups.Items)
-            //            {
-            //                var parameter = new Parameter
-            //                {
-            //                    Name = item.ToString(),
-            //                    IsGroup = true,
-            //                    GroupedParameterValues = new Dictionary<double, List<double>>(),
-            //                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
-            //                };
-            //                comparativeTable.Parameters.Add(parameter);
-            //            }
-
-            //            // Add parameters from list_Nominal
-            //            foreach (var item in list_Nominal.Items)
-            //            {
-            //                var parameter = new Parameter
-            //                {
-            //                    Name = item.ToString(),
-            //                    NominalOrScale = "Nominal",
-            //                    GroupedParameterValues = new Dictionary<double, List<double>>(),
-            //                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
-            //                };
-            //                comparativeTable.Parameters.Add(parameter);
-            //            }
-
-
-
-            //            // Add parameters from list_NormalScale
-            //            foreach (var item in list_NormalScale.Items)
-            //            {
-            //                var parameter = new Parameter
-            //                {
-
-            //                    Name = item.ToString(),
-            //                    NominalOrScale = "Scale",
-            //                    NormalOrAbnormal = "Normal",
-            //                    GroupedParameterValues = new Dictionary<double, List<double>>(),
-            //                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
-            //                };
+                if (flag == 1)
+                {
+                    // Show the MessageBox only if there are parameters to display
+                    if (MessageBox.Show(message, "Adding Table", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
 
 
-            //                comparativeTable.Parameters.Add(parameter);
-            //            }
-
-            //            // Add parameters from list_AbnormalScale
-            //            foreach (var item in list_AbnormalScale.Items)
-            //            {
-            //                var parameter = new Parameter
-            //                {
-            //                    Name = item.ToString(),
-            //                    NominalOrScale = "Scale",
-            //                    NormalOrAbnormal = "Abnormal",
-            //                    GroupedParameterValues = new Dictionary<double, List<double>>(),
-            //                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
-            //                };
-            //                comparativeTable.Parameters.Add(parameter);
-            //            }
-
-            //            if (comparativeTable.FormatType == "Relation" || comparativeTable.FormatType == "Relation Scale Pathology")
-            //            {
-            //                ComparativeBasic_Relation(comparativeTable.TableName);
-            //            }
-            //            else
-            //            {
-            //                ComparativeBasic(comparativeTable.TableName);
-            //            }
+                        RemoveTable();
+                        oldParameters.Clear();
 
 
 
-            //            oldParameters.Clear();
+                        string TableName = AddTableUI();
 
-            //        }
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("No Parameters selected to be added", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    }
 
+                        if (cmb_ChooseTableFormat.Text == "Relation" || cmb_ChooseTableFormat.Text == "Relation Scale Pathology")
+                        {
+                            ComparativeBasic_Relation(TableName);
+                        }
+                        else
+                        {
+                            ComparativeBasic(TableName);
+                        }
+
+
+
+                        CheckFullEmptyParameters(TableName);
+                        CheckForOthers_inNominal(TableName);
+
+
+
+
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No Parameters selected to be added", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+
+
+
+
+
+            }
+            else
+            {
+                MessageBox.Show("No table selected to be Updated", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+
+
+        }
+
+        private void pic_RefreshListsUpdate_Click(object sender, EventArgs e)
+        {
+            if (cmb_TableNames.SelectedIndex != -1)
+            {
+                ClearAllLists();
                 
 
-                
 
 
-            //}
-            //else
-            //{
-            //    MessageBox.Show("No table selected to be Updated", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
+                string selectedTableName = cmb_TableNames.SelectedItem.ToString();
 
-                
-            
+                var comparativeTable = ComparativeTables.FirstOrDefault(table => table.TableName == selectedTableName);
+
+                foreach (var parameter in comparativeTable.Parameters)
+                {
+                    if(parameter.IsGroup)
+                    {
+                        list_Groups.Items.Add(parameter.Name);
+                    }
+                    else if (parameter.NominalOrScale == "Nominal")
+                    {
+                        list_Nominal.Items.Add(parameter.Name);
+                    }
+                    else if (parameter.NominalOrScale == "Scale")
+                    {
+                        if(parameter.NormalOrAbnormal == "Normal")
+                        {
+                            list_NormalScale.Items.Add(parameter.Name);
+                        }
+                        else if(parameter.NormalOrAbnormal == "Abnormal")
+                        {
+                            list_AbnormalScale.Items.Add(parameter.Name);
+                        }
+                    }
+                }
+
+
+                MessageBox.Show("Lists Updated", "Update Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }
