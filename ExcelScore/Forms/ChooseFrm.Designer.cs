@@ -39,6 +39,7 @@
             this.btn_Regression = new System.Windows.Forms.Button();
             this.btn_Relations = new System.Windows.Forms.Button();
             this.btn_GetNormality = new System.Windows.Forms.Button();
+            this.btn_Coding = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Pic_back)).BeginInit();
             this.SuspendLayout();
             // 
@@ -198,12 +199,30 @@
             this.btn_GetNormality.UseVisualStyleBackColor = false;
             this.btn_GetNormality.Click += new System.EventHandler(this.btn_GetNormality_Click);
             // 
+            // btn_Coding
+            // 
+            this.btn_Coding.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.btn_Coding.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Coding.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Coding.ForeColor = System.Drawing.Color.Black;
+            this.btn_Coding.Image = ((System.Drawing.Image)(resources.GetObject("btn_Coding.Image")));
+            this.btn_Coding.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_Coding.Location = new System.Drawing.Point(565, 161);
+            this.btn_Coding.Name = "btn_Coding";
+            this.btn_Coding.Size = new System.Drawing.Size(155, 75);
+            this.btn_Coding.TabIndex = 34;
+            this.btn_Coding.Text = "Coding";
+            this.btn_Coding.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_Coding.UseVisualStyleBackColor = false;
+            this.btn_Coding.Click += new System.EventHandler(this.btn_Coding_Click);
+            // 
             // ChooseFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(800, 467);
+            this.Controls.Add(this.btn_Coding);
             this.Controls.Add(this.btn_GetNormality);
             this.Controls.Add(this.btn_Relations);
             this.Controls.Add(this.btn_Regression);
@@ -237,5 +256,6 @@
         private System.Windows.Forms.Button btn_Regression;
         private System.Windows.Forms.Button btn_Relations;
         private System.Windows.Forms.Button btn_GetNormality;
+        private System.Windows.Forms.Button btn_Coding;
     }
 }

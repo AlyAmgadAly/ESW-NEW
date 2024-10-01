@@ -179,6 +179,12 @@ namespace ExcelScore.Forms
 
         }
 
-        
+        private void btn_Coding_Click(object sender, EventArgs e)
+        {
+            Coding_Frm coding_ = new Coding_Frm();
+            coding_.Dgv = Dgv;
+            coding_.Show();
+            this.Hide();
+        }
     }
 }

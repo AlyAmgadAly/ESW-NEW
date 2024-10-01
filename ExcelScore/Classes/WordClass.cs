@@ -25,6 +25,7 @@ using Hyperlink = DocumentFormat.OpenXml.Wordprocessing.Hyperlink;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
 using System.Collections;
+using Accord.IO;
 
 namespace ExcelScore.Classes
 {
@@ -2365,6 +2366,7 @@ namespace ExcelScore.Classes
             
             
         }
+        
         public void SetDescriptiveWidths(IWTable table, int WordTableRows , bool Ahasnominal)
         {
             for (int i = 0; i < WordTableRows; i++)
