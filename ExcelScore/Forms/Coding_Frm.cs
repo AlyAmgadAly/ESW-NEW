@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aspose.Cells;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,6 +18,11 @@ namespace ExcelScore.Forms
             InitializeComponent();
         }
         public DataGridView Dgv { get; set; }
+
+        ExcelFunctions excelFunctions = new ExcelFunctions();
+
+        //public Workbook OrginalWorkbook = 
+
         private void Coding_Frm_Load(object sender, EventArgs e)
         {
 
