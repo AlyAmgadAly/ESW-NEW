@@ -968,11 +968,11 @@ namespace ExcelScore.Classes
         {
             try
             {
-                PairedTTest test = new PairedTTest(Para1, Para2);
+                //PairedTTest test = new PairedTTest(Para1, Para2 , TwoSampleHypothesis.ValuesAreDifferent);
 
-                //var Nmatht = new TwoSamplePairedTTest(Para1, Para2);
-                double Ttestt = test.Statistic;
-                double pvalueT = test.PValue;
+                var Nmatht = new CenterSpace.NMath.Core.TwoSamplePairedTTest(Para1, Para2 ,0.05 , HypothesisType.TwoSided);
+                double Ttestt = Nmatht.Statistic;
+                double pvalueT = Nmatht.P;
 
 
                 Ttestt = Math.Round(Ttestt, 3);
