@@ -2544,6 +2544,8 @@ namespace ExcelScore.Forms
                     var firstParameterArray = firstParameterValues.ToArray();
                     var secondParameterArray = secondParameterValues.ToArray();
 
+                    
+
                     string[] result = manual.Tpaired(firstParameterArray, secondParameterArray);
 
 

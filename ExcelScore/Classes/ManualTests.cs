@@ -16,6 +16,7 @@ using Accord.Statistics.Models.Regression.Linear;
 using Accord.Statistics.Models.Regression.Fitting;
 using Accord.Statistics.Models.Regression;
 using Accord;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace ExcelScore.Classes
 {
@@ -967,11 +968,11 @@ namespace ExcelScore.Classes
         {
             try
             {
-                //var Tpaired = new Accord.Statistics.Testing.PairedTTest(Para1, Para2);
+                PairedTTest test = new PairedTTest(Para1, Para2);
 
-                var Nmatht = new TwoSamplePairedTTest(Para1, Para2);
-                double Ttestt = Nmatht.Statistic;
-                double pvalueT = Nmatht.P;
+                //var Nmatht = new TwoSamplePairedTTest(Para1, Para2);
+                double Ttestt = test.Statistic;
+                double pvalueT = test.PValue;
 
 
                 Ttestt = Math.Round(Ttestt, 3);
