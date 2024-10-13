@@ -3966,6 +3966,14 @@ namespace ExcelScore.Forms
             bool TableHasSigI;
 
 
+
+            foreach (var GroupParameter in comparativeTable.Parameters)
+            {
+
+            }
+
+
+
             if (parameter.IsGroup)
             {
                 return;
@@ -3977,10 +3985,9 @@ namespace ExcelScore.Forms
             }
             if (parameter.NominalOrScale == "Scale")
             {
-
-
-
+                int numberofgroupsTrue = parameter.FormattedValues.Keys.Count;
                 var SortedGroupsValues = parameter.GroupedParameterValues.Keys;
+
                 int ValueOne = 0;
                 foreach (var key in SortedGroupsValues)
                 {
@@ -3990,7 +3997,8 @@ namespace ExcelScore.Forms
                     }
                 }
 
-                if (numberofgroups - ValueOne <= 2)
+
+                if (numberofgroupsTrue - ValueOne <= 2)
                 {
                     if (parameter.NormalOrAbnormal == "Normal")
                     {
@@ -4065,7 +4073,7 @@ namespace ExcelScore.Forms
                     }
                 }
 
-                else if (numberofgroups - ValueOne > 2)
+                else if (numberofgroupsTrue - ValueOne > 2)
                 {
 
                     if (parameter.NormalOrAbnormal == "Normal")
