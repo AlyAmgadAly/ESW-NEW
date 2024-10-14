@@ -28,6 +28,22 @@ namespace ExcelScore
         //public int ExcelDataCount = Sheet1.Cells.MaxDataRow - 1;
 
 
+        public Workbook GetNewWorkBook()
+        {
+            Workbook workbook = new Workbook(); 
+
+            OpenFileDialog op = new OpenFileDialog();
+            op.Filter = "Excel Sheet(*.xlsx)|*.xlsx|All Files(*.*)|*.*";
+            if (op.ShowDialog() == DialogResult.OK)
+            {
+                string filepath = op.FileName;
+                workbook = new Aspose.Cells.Workbook(filepath);
+            }
+
+            return workbook;
+        }
+
+
         public Worksheet GetWorksheet()
         {
             return worksheet;
