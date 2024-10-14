@@ -2301,7 +2301,7 @@ namespace ExcelScore.Classes
                 }
                 else if(numberofgroups > 2)
                 {
-                    table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(3.5f);
+                    table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(4f);
                 }
                 else if(comparativeTable.HasTotalColumn)
                 {
@@ -2317,13 +2317,13 @@ namespace ExcelScore.Classes
                 }
                 else if (numberofgroups > 2)
                 {
-                    table.Rows[i].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.65f);
-                    table.Rows[i].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.65f);
+                    table.Rows[i].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.75f);
+                    table.Rows[i].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.75f);
                 }
                 else if (comparativeTable.HasTotalColumn)
                 {
-                    table.Rows[i].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.65f);
-                    table.Rows[i].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.65f);
+                    table.Rows[i].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.75f);
+                    table.Rows[i].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.75f);
                 }
                
                 
@@ -2334,7 +2334,7 @@ namespace ExcelScore.Classes
                     {
                         for (int j = 1; j <= numberofgroups * 2; j++)
                         {
-                            table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(2f);
+                            table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(1.75f);
                         }
                         
                     }
