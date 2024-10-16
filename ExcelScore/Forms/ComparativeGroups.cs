@@ -18,7 +18,10 @@ using Microsoft.SolverFoundation.Services;
 using Python.Runtime;
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
+using Syncfusion.DocIORenderer;
 using Syncfusion.Drawing;
+using Syncfusion.Pdf.Graphics;
+using Syncfusion.Pdf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -3515,7 +3518,7 @@ namespace ExcelScore.Forms
                 }
             }
         }
-
+        
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
