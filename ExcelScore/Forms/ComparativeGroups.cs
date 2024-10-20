@@ -47,6 +47,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskBand;
 using Application = System.Windows.Forms.Application;
 using Parameter = ExcelScore.Classes.Parameter;
 using Worksheet = Aspose.Cells.Worksheet;
+using System.IO;
+using Accord.Statistics.Testing;
 
 namespace ExcelScore.Forms
 {
@@ -3518,7 +3520,31 @@ namespace ExcelScore.Forms
                 }
             }
         }
-        
+        public void TestPic(string filePath)
+        {
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // Get path to desktop
+            using (FileStream docStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                // Load an existing Word document
+                using (WordDocument wordDocument = new WordDocument(docStream, FormatType.Automatic))
+                {
+                    // Create a new instance of DocIORenderer
+                    using (DocIORenderer render = new DocIORenderer())
+                    {
+                        // Convert an entire Word document to images
+                        Stream[] imageStreams = wordDocument.RenderAsImages();
+                        for (int i = 0; i < imageStreams.Length; i++)
+                        {
+                            string outputPath = Path.Combine(desktopPath, "WordToImage_" + i + ".jpeg");
+                            using (FileStream fileStreamOutput = File.Create(outputPath))
+                            {
+                                imageStreams[i].CopyTo(fileStreamOutput);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -3556,6 +3582,9 @@ namespace ExcelScore.Forms
             ClearPara();
 
             
+
+
+
 
         }
         WordClass wordObj = new WordClass();
@@ -4472,7 +4501,8 @@ namespace ExcelScore.Forms
 
                         if(currentparameter.NormalOrAbnormal == "Normal")
                         {
-                            result = manual.Tpaired(firstParameterArray, secondParameterArray);
+                            result = pythonStat.TpairedTest(firstParameterArray.ToList(), secondParameterArray.ToList());
+                            //result = manual.Tpaired(firstParameterArray, secondParameterArray);
                         }
                         else if(currentparameter.NormalOrAbnormal == "Abnormal")
                         {

@@ -835,12 +835,16 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 if (contingencyTable.Count == 2 && contingencyTable[0].Count == 2 && hasSmallExpectedCell)
                 {
                     // Fisher exact test for 2x2 table
-                    
 
-                    ManualTests manual = new ManualTests();
-                    string[] result = manual.getchi(parameter);
-                    chiSquareStatistic = double.Parse(result[0]);
-                    pValue = double.Parse(result[1]);
+
+                    //
+                    //ManualTests manual = new ManualTests();
+                    //string[] result = manual.getchi(parameter);
+                    //chiSquareStatistic = double.Parse(result[0]);
+                    //pValue = double.Parse(result[1]);
+
+                    dynamic fisherResult = scipyStats.fisher_exact(tableArray);
+                    pValue = fisherResult[1].As<double>();
                 }
 
                 else
@@ -1293,8 +1297,10 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 double pValue = Math.Round(result[1].As<double>(), 3);
                 double tStatistic = Math.Round(result[0].As<double>(), 3);
 
-                // Format the p-value
+
                 string TtestString = tStatistic.ToString("0.000");
+                TtestString = TtestString.Replace("-", "");
+
                 string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
                 string[] TestValue = new string[] { TtestString, pValueString };
@@ -1304,6 +1310,39 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 
             }
 
+        }
+
+        public string[] WilcoxonTest(List<double> AdataGroup1, List<double> AdataGroup2)
+        {
+            using (Py.GIL())
+            {
+                dynamic np = Py.Import("numpy");
+                dynamic scipyStats = Py.Import("scipy.stats");
+
+                // Define your paired data
+                List<double> dataGroup1 = AdataGroup1;
+                List<double> dataGroup2 = AdataGroup2;
+
+                // Convert the lists to numpy arrays
+                dynamic data1 = np.array(dataGroup1);
+                dynamic data2 = np.array(dataGroup2);
+
+                // Perform the Wilcoxon signed-rank test
+                dynamic result = scipyStats.wilcoxon(data1, data2);
+
+                // Extract the p-value and test statistic from the result
+                double pValue = Math.Round(result[1].As<double>(), 3);
+                double wStatistic = Math.Round(result[0].As<double>(), 3);
+
+                string WtestString = wStatistic.ToString("0.000");
+                WtestString = WtestString.Replace("-", "");
+
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                string[] TestValue = new string[] { WtestString, pValueString };
+
+                return TestValue;
+            }
         }
     }
 }

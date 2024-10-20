@@ -1041,14 +1041,12 @@ namespace ExcelScore.Classes
                 // Formatting
 
 
-                var Nmatht = new Accord.Statistics.Testing.TwoSampleWilcoxonSignedRankTest(Para1, Para2);
-
-                double pvalueT = Nmatht.PValue;
+                double pValue = 2 * (1 - CDFNormal(Math.Abs(zValue)));
 
 
 
                 zValue = Math.Round(zValue, 3);
-                pvalueT = Math.Round(pvalueT, 3);
+                pValue = Math.Round(pValue, 3);
 
                 string TtestString = zValue.ToString("0.000");
                 TtestString = TtestString.Replace("-", "");
@@ -1057,7 +1055,7 @@ namespace ExcelScore.Classes
                 //MessageBox.Show("T test p " + pvalueT.ToString());
 
                 // Format the p-value
-                string pValueString = pvalueT < 0.001 ? "<0.001" : pvalueT.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
 
                 return new string[] { TtestString, pValueString };
@@ -1067,6 +1065,33 @@ namespace ExcelScore.Classes
                 return new string[] { "-", "-" };
             }
             
+        }
+
+        public static double CDFNormal(double z)
+        {
+            return 0.5 * (1 + Erf(z / Math.Sqrt(2)));
+        }
+
+        // Error function approximation (Erf) for normal CDF calculation
+        public static double Erf(double x)
+        {
+            // Using Abramowitz and Stegun approximation for Erf function
+            double a1 = 0.254829592;
+            double a2 = -0.284496736;
+            double a3 = 1.421413741;
+            double a4 = -1.453152027;
+            double a5 = 1.061405429;
+            double p = 0.3275911;
+
+            // Save the sign of x
+            int sign = (x >= 0) ? 1 : -1;
+            x = Math.Abs(x);
+
+            // A&S formula 7.1.26
+            double t = 1.0 / (1.0 + p * x);
+            double y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.Exp(-x * x);
+
+            return sign * y;
         }
 
 
