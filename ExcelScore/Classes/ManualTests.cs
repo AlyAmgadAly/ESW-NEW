@@ -411,78 +411,101 @@ namespace ExcelScore.Classes
         {
             try
             {
-                
                 double[] group1 = AdataGroup1.ToArray();
                 double[] group2 = AdataGroup2.ToArray();
 
-
                 int totalcount = group1.Length + group2.Length;
 
+                bool exact = totalcount <= 40;
 
-                bool CountBool = false;
-                if (totalcount > 40)
-                {
-
-                    CountBool = false;
-                }
-                else if (totalcount <= 40)
-                {
-                    CountBool = true;
-                }
-
-
-                var UTest = new Accord.Statistics.Testing.MannWhitneyWilcoxonTest(group1, group2, exact: CountBool);
-
-                
-
+                // Compute the U statistic manually
                 double UStat = CalculateUStatistic(group1, group2);
+                double Upvalue;
 
-                double Upvalue = UTest.PValue;
+                if (exact)
+                {
+                    // Use Accord library for exact p-value calculation (small sample case)
+                    var UTest = new Accord.Statistics.Testing.MannWhitneyWilcoxonTest(group1, group2, exact: true);
+                    Upvalue = UTest.PValue;
+                }
+                else
+                {
+                    // Calculate p-value using normal approximation (large sample case)
+                    Upvalue = CalculatePValueForLargeSample(UStat, group1.Length, group2.Length);
+                }
 
-
-
+                // Round the U statistic and p-value for display
                 UStat = Math.Round(UStat, 3);
                 Upvalue = Math.Round(Upvalue, 3);
-
 
                 string UtestString = UStat.ToString("0.000");
                 string pValueString = Upvalue < 0.001 ? "<0.001" : Upvalue.ToString("0.000");
 
-                string[] TestValue = new string[] { UtestString, pValueString };
-
-                return TestValue;
+                return new string[] { UtestString, pValueString };
             }
-            catch(Exception)
+            catch (Exception)
             {
-
-                string[] TestValue = new string[] { "0", "0"};
-                return TestValue;
+                return new string[] { "0", "0" };
             }
-            
         }
 
+        // Calculate U statistic as before
         static double CalculateUStatistic(double[] sample1, double[] sample2)
         {
-            // Combine both samples
             var allData = sample1.Concat(sample2).ToArray();
             var sample1Count = sample1.Length;
             var sample2Count = sample2.Length;
 
-            // Rank data
             var ranks = RankData(allData);
 
-            // Calculate sum of ranks for each sample
             double rankSum1 = sample1.Sum(x => ranks[x]);
             double rankSum2 = sample2.Sum(x => ranks[x]);
 
-            // Calculate U statistic
             double u1 = rankSum1 - sample1Count * (sample1Count + 1) / 2.0;
             double u2 = rankSum2 - sample2Count * (sample2Count + 1) / 2.0;
 
-            // Return the smaller U value
             return Math.Min(u1, u2);
         }
 
+        // Function to calculate p-value for large samples using normal approximation
+        static double CalculatePValueForLargeSample(double U, int n1, int n2)
+        {
+            // Mean and standard deviation for U distribution under null hypothesis
+            double meanU = (n1 * n2) / 2.0;
+            double stdDevU = Math.Sqrt((n1 * n2 * (n1 + n2 + 1)) / 12.0);
+
+            // Z value
+            double zValue = (U - meanU) / stdDevU;
+
+            // Calculate p-value using the CDF of the normal distribution (two-tailed)
+            double pValue = 2 * (1 - CDFNormal(Math.Abs(zValue)));
+
+            return pValue;
+        }
+
+        // CDF function for standard normal distribution (same as before)
+        
+
+        // Error function approximation (Erf) for normal CDF calculation (same as before)
+        public static double Erf(double x)
+        {
+            double a1 = 0.254829592;
+            double a2 = -0.284496736;
+            double a3 = 1.421413741;
+            double a4 = -1.453152027;
+            double a5 = 1.061405429;
+            double p = 0.3275911;
+
+            int sign = (x >= 0) ? 1 : -1;
+            x = Math.Abs(x);
+
+            double t = 1.0 / (1.0 + p * x);
+            double y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.Exp(-x * x);
+
+            return sign * y;
+        }
+
+        // Ranking function remains unchanged
         static Dictionary<double, double> RankData(double[] data)
         {
             var sortedData = data.OrderBy(x => x).ToArray();
@@ -517,7 +540,6 @@ namespace ExcelScore.Classes
                 }
             }
 
-            // Handle the last tie or single element
             if (tieCount > 1)
             {
                 double averageRank = rankSum / tieCount;
@@ -533,6 +555,7 @@ namespace ExcelScore.Classes
 
             return ranks;
         }
+
 
 
         //Correlation
@@ -1073,26 +1096,7 @@ namespace ExcelScore.Classes
         }
 
         // Error function approximation (Erf) for normal CDF calculation
-        public static double Erf(double x)
-        {
-            // Using Abramowitz and Stegun approximation for Erf function
-            double a1 = 0.254829592;
-            double a2 = -0.284496736;
-            double a3 = 1.421413741;
-            double a4 = -1.453152027;
-            double a5 = 1.061405429;
-            double p = 0.3275911;
-
-            // Save the sign of x
-            int sign = (x >= 0) ? 1 : -1;
-            x = Math.Abs(x);
-
-            // A&S formula 7.1.26
-            double t = 1.0 / (1.0 + p * x);
-            double y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.Exp(-x * x);
-
-            return sign * y;
-        }
+        
 
 
 

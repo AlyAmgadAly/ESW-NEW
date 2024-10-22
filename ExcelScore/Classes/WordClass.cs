@@ -2705,7 +2705,7 @@ namespace ExcelScore.Classes
             AddPara_Center(table, 0, 2 * LikertScore + 2, "Post");
             AddPara_Center(table, 0, 4 * LikertScore + 2, "3M");
 
-            for (int i = 2; i <= Columns - 1; i = i + 2)
+            for (int i = 2; i < Columns - 2; i = i + 2)
             {
 
                 string headerlisttext = HeadersList[headerlistctr];
@@ -2739,7 +2739,7 @@ namespace ExcelScore.Classes
 
         public void AddNo_perc_Center_periods(IWTable table, int WordTableColumns)
         {
-            for (int f = 2; f < WordTableColumns; f++)
+            for (int f = 2; f < WordTableColumns-2; f++)
             {
                 if (f % 2 == 0)
                 {

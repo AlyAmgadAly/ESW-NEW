@@ -273,7 +273,10 @@ namespace ExcelScore.Forms
 
         }
 
+        public void ThreePeriods_New(string[] Adomains)
+        {
 
+        }
 
 
 
@@ -305,7 +308,7 @@ namespace ExcelScore.Forms
 
 
             int WordTableRows = 3 + dataCount;
-            int WordTableColumns = (numberofperiods * LikertScore * 2) + 2;
+            int WordTableColumns = (numberofperiods * LikertScore * 2) + 2 + 2;
 
 
             IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
@@ -318,29 +321,28 @@ namespace ExcelScore.Forms
 
             wordObj.SetThreePeriodsWidths(table, WordTableRows, LikertScore, numberofperiods);
 
-                wordObj.Add_Headers_ThreePeriods_Center(table, DomainName, WordTableColumns, LikertScore);
+            wordObj.Add_Headers_ThreePeriods_Center(table, DomainName, WordTableColumns, LikertScore);
 
-                wordObj.AddNo_perc_Center_periods(table, WordTableColumns);
+            wordObj.AddNo_perc_Center_periods(table, WordTableColumns);
 
-                wordObj.AddQuestionNo_Periods(table, dataCount);
+            wordObj.AddQuestionNo_Periods(table, dataCount);
 
-
-                foreach (string Mydomain in domains)
-                {
+            foreach (string Mydomain in domains)
+            {
                 int counter = 0;
-                    startrow = 3;
-                    int Currentindex = AllDomainsWord.FindIndex(domain => domain.DomainName == Mydomain);
-                    string CurrentDomainName = AllDomainsWord[index].DomainName;
-                    int CurrentRangeFrom = AllDomainsWord[index].RangeFrom;
-                    int CurrentRangeTo = AllDomainsWord[index].RangeTo;
-                    int CurrentLikertScore = RangeTo - RangeFrom + 1;
-                    int CurrentdataCount = AllDomainsWord[index].QuestionsSorted_ReverseValue.Count;
-                    if (Currentindex == 0)
-                    {
+                startrow = 3;
+                int Currentindex = AllDomainsWord.FindIndex(domain => domain.DomainName == Mydomain);
+                string CurrentDomainName = AllDomainsWord[index].DomainName;
+                int CurrentRangeFrom = AllDomainsWord[index].RangeFrom;
+                int CurrentRangeTo = AllDomainsWord[index].RangeTo;
+                int CurrentLikertScore = RangeTo - RangeFrom + 1;
+                int CurrentdataCount = AllDomainsWord[index].QuestionsSorted_ReverseValue.Count;
+                if (Currentindex == 0)
+                {
                     counter = 0;
-                    }
-                    else if (Currentindex > 0)
-                    {
+                }
+                else if (Currentindex > 0)
+                {
                     for (int i = 0; i < Currentindex; i++)
                     {
                         counter = counter + AllDomainsWord[i].QuestionsSorted_ReverseValue.Count;
@@ -351,12 +353,22 @@ namespace ExcelScore.Forms
                 ReadIndexesExcel_periods(Sheet2, table, rows, CurrentdataCount, CurrentRangeFrom, CurrentRangeTo, Exceldatacount, WordTableColumns, ColumnStart, counter);
 
                 ColumnStart = ColumnStart + LikertScore * 2;
-                    
-                }
 
-                wordObj.LeftAndRightCellMargin(table);
-                wordObj.Font(table, 9.5f);
-            
+            }
+
+            if(LikertScore == 2)
+            {
+                for(int i = 1; i <= dataCount;i++)
+                {
+
+                }
+            }
+
+
+            wordObj.LeftAndRightCellMargin(table);
+            wordObj.Font(table, 9.5f);
+
+
 
 
         }
