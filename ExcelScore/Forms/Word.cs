@@ -1,5 +1,6 @@
 ﻿using Aspose.Cells;
 using Aspose.Cells.Drawing;
+using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelScore.Classes;
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
@@ -20,7 +21,10 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using BorderStyle = Syncfusion.DocIO.DLS.BorderStyle;
+using Cell = Aspose.Cells.Cell;
 using Color = Syncfusion.Drawing.Color;
+using Workbook = Aspose.Cells.Workbook;
+using Worksheet = Aspose.Cells.Worksheet;
 
 namespace ExcelScore.Forms
 {
@@ -358,8 +362,113 @@ namespace ExcelScore.Forms
 
             if(LikertScore == 2)
             {
-                for(int i = 1; i <= dataCount;i++)
+                int incrementctr = 0;
+                int startingrow = 3;
+                for (int i = 1; i <= dataCount;i++)
                 {
+                    List<List<double>> Domain_Items = new List<List<double>>();
+
+                    
+
+                    for (int row = 2; row <= rows; row++)
+                    {
+                        List<double> Domain_Item = new List<double>();
+
+                        foreach (string Mydomain_Name in domains)
+                        {
+                            for (int col = 0; col < cols; col++)
+                            {
+                                
+                                if (Sheet2.Cells[0, col].Value != null)
+                                {
+                                    if (Sheet2.Cells[0, col].Value.ToString() == Mydomain_Name)
+                                    {
+                                        
+
+                                        string value = Sheet2.Cells[row, col+incrementctr].Value.ToString();
+                                        Domain_Item.Add(double.Parse(value));
+                                        
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        Domain_Items.Add(Domain_Item);
+
+
+                    }
+
+                    incrementctr++;
+
+
+
+
+
+
+                    string[] result = new string[2];
+                    result = pyobj.CochranQTest(Domain_Items);
+
+                    wordObj.Addpara_CenterNoBOLD(table, startingrow, WordTableColumns - 2, "Q=" + Convert.ToChar(11) + result[0]);
+                    wordObj.Addpara_CenterNoBOLD(table, startingrow, WordTableColumns - 1, result[1]);
+
+                    startingrow++;
+
+
+                }
+            }
+
+
+            if (LikertScore > 2)
+            {
+                int incrementctr = 0;
+                int startingrow = 3;
+
+                for (int i = 1; i <= dataCount; i++)
+                {
+                    List<List<double>> Domain_Items = new List<List<double>>();
+
+                    foreach (string Mydomain_Name in domains)
+                    {
+                        for (int col = 0; col < cols; col++)
+                        {
+
+                            if (Sheet2.Cells[0, col].Value != null)
+                            {
+                                if (Sheet2.Cells[0, col].Value.ToString() == Mydomain_Name)
+                                {
+
+                                    List<double> Domain_Item = new List<double>();
+                                    for (int row = 2; row <= rows; row++)
+                                    {      
+                                        string value = Sheet2.Cells[row, col + incrementctr].Value.ToString();
+                                        Domain_Item.Add(double.Parse(value));
+                                    }
+
+                                    Domain_Items.Add(Domain_Item);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    
+
+                    incrementctr++;
+
+
+
+
+
+
+                    string[] result = new string[2];
+                    result = pyobj.FriedmanTest(Domain_Items);
+
+                    wordObj.Addpara_CenterNoBOLD(table, startingrow, WordTableColumns - 2, "Fr=" + Convert.ToChar(11) + result[0]);
+                    wordObj.Addpara_CenterNoBOLD(table, startingrow, WordTableColumns - 1, result[1]);
+
+                    startingrow++;
+
 
                 }
             }
@@ -375,8 +484,8 @@ namespace ExcelScore.Forms
 
         private void Word_Load(object sender, EventArgs e)
         {
-            
-            for(int i = 0; i< AllDomainsWord.Count;i++)
+            pyobj.InitPython();
+            for (int i = 0; i< AllDomainsWord.Count;i++)
             {
                 AllDomainsWord[i].LikertScore = "";
                 list_allDomains.Items.Add(AllDomainsWord[i].DomainName);

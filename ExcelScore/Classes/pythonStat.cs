@@ -1349,18 +1349,18 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
         }
 
 
-        public string[] CochranQTest(List<List<int>> data)
+        public string[] CochranQTest(List<List<double>> data)
         {
             using (Py.GIL())
             {
                 dynamic np = Py.Import("numpy");
-                dynamic scipyStats = Py.Import("scipy.stats");
+                dynamic statsmodels = Py.Import("statsmodels.stats.contingency_tables");
 
                 // Convert the list of lists to a 2D numpy array
                 dynamic dataArray = np.array(data);
 
-                // Perform the Cochran's Q test
-                dynamic result = scipyStats.cochran(dataArray);
+                // Perform the Cochran's Q test using statsmodels
+                dynamic result = statsmodels.cochrans_q(dataArray);
 
                 // Extract the p-value and test statistic from the result
                 double pValue = Math.Round(result.pvalue.As<double>(), 3);
@@ -1375,5 +1375,41 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 return TestValue;
             }
         }
+
+        public string[] FriedmanTest(List<List<double>> data)
+        {
+            using (Py.GIL())
+            {
+                dynamic np = Py.Import("numpy");
+                dynamic stats = Py.Import("scipy.stats");
+
+                // Convert the list of lists to a 2D numpy array
+
+                List<double> Pre = data[0];
+                List<double> follow = data[1];
+                List<double> post = data[2];
+
+                dynamic dataArrayPre = np.array(Pre);
+                dynamic dataArrayfollow = np.array(follow);
+                dynamic dataArraypost = np.array(post);
+
+
+                // Perform the Friedman's test using scipy
+                dynamic result = stats.friedmanchisquare(dataArrayPre , dataArrayfollow , dataArraypost);
+
+                // Extract the p-value and test statistic from the result
+                double pValue = Math.Round(result.pvalue.As<double>(), 3);
+                double testStatistic = Math.Round(result.statistic.As<double>(), 3);
+
+                // Format the p-value
+                string testStatisticString = testStatistic.ToString("0.000");
+                string pValueString = pValue <= 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                string[] TestValue = new string[] { testStatisticString, pValueString };
+
+                return TestValue;
+            }
+        }
+
     }
 }
