@@ -419,7 +419,7 @@ namespace ExcelScore.Forms
             }
 
 
-            if (LikertScore > 2)
+            else if (LikertScore > 2)
             {
                 int incrementctr = 0;
                 int startingrow = 3;
