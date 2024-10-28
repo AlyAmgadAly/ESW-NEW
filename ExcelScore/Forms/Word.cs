@@ -20,6 +20,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static SkiaSharp.HarfBuzz.SKShaper;
 using BorderStyle = Syncfusion.DocIO.DLS.BorderStyle;
 using Cell = Aspose.Cells.Cell;
 using Color = Syncfusion.Drawing.Color;
@@ -409,6 +410,9 @@ namespace ExcelScore.Forms
                     string[] result = new string[2];
                     result = pyobj.CochranQTest(Domain_Items);
 
+                    //result = pyobj.RepeatedMeasuresAnova(Domain_Items);
+                    
+
                     wordObj.Addpara_CenterNoBOLD(table, startingrow, WordTableColumns - 2, "Q=" + Convert.ToChar(11) + result[0]);
                     wordObj.Addpara_CenterNoBOLD(table, startingrow, WordTableColumns - 1, result[1]);
 
@@ -459,19 +463,53 @@ namespace ExcelScore.Forms
 
 
 
-
+                    
 
                     string[] result = new string[2];
                     result = pyobj.FriedmanTest(Domain_Items);
+
+                   
 
                     wordObj.Addpara_CenterNoBOLD(table, startingrow, WordTableColumns - 2, "Fr=" + Convert.ToChar(11) + result[0]);
                     wordObj.Addpara_CenterNoBOLD(table, startingrow, WordTableColumns - 1, result[1]);
 
                     startingrow++;
-
-
                 }
             }
+
+            //ExcelWorksheet_ToWord.CalculateFormula();
+            //List<List<double>> Domain_Items_totals = new List<List<double>>();
+            //foreach (var domain in domains)
+            //{
+            //    for (int col = 0; col < cols; col++)
+            //    {
+
+            //        if (Sheet2.Cells[0, col].Value != null)
+            //        {
+            //            if (Sheet2.Cells[0, col].Value.ToString() == domain)
+            //            {
+
+            //                List<double> Domain_Item_totals = new List<double>();
+            //                for (int row = 2; row <= rows; row++)
+            //                {
+            //                    string value = Sheet2.Cells[row, col+dataCount].Value.ToString();
+            //                    Domain_Item_totals.Add(double.Parse(value));
+            //                }
+
+            //                Domain_Items_totals.Add(Domain_Item_totals);
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+            //string[] resultRep = new string[2];
+            //resultRep = pyobj.FRepeatedMeasures(Domain_Items_totals);
+
+
+            //MessageBox.Show(resultRep[0]);
+            //MessageBox.Show(resultRep[1]);
+
+
 
 
             wordObj.LeftAndRightCellMargin(table);
@@ -988,13 +1026,19 @@ namespace ExcelScore.Forms
 
         public void OverallPeriods()
         {
+            int numberofperiods = 1;
+            foreach (var item in list_Overall.Items)
+            {
+                string[] domains = item.ToString().Split(' ');
+                numberofperiods = domains.Length;
+            }
 
             Worksheet Sheet2 = ExcelWorksheet_ToWord.Worksheets[1];
             Worksheet Sheet3 = ExcelWorksheet_ToWord.Worksheets[2];
             int Excelrows = Sheet2.Cells.MaxDataRow;
             int ExcelCols = Sheet2.Cells.MaxDataColumn;
             float Exceldatacount = Excelrows - 1;
-            int WordTableColumns = 7;
+            int WordTableColumns = 3+(numberofperiods*2);
 
 
             List<double[]> TpairedLists = new List<double[]>();
@@ -1323,6 +1367,9 @@ namespace ExcelScore.Forms
 
 
         }
+
+
+
         public void TotalScorePeriods()
         {
            
@@ -1471,11 +1518,15 @@ namespace ExcelScore.Forms
             }
             if(list_Overall.Items.Count >0)
             {
-                OverallNoPeriods();
+                
                 if (periods_check.Checked)
                 {
                     OverallPeriods();
                 }  
+                else
+                {
+                    OverallNoPeriods();
+                }
             }
             
             

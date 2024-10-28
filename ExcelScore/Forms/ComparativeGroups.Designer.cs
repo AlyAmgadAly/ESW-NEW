@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComparativeGroups));
             this.list_Nominal = new System.Windows.Forms.ListBox();
             this.list_NormalScale = new System.Windows.Forms.ListBox();
@@ -54,6 +54,14 @@
             this.cmb_ChooseTableFormat = new System.Windows.Forms.ComboBox();
             this.txt_ParaName = new System.Windows.Forms.TextBox();
             this.lbl_Periods = new System.Windows.Forms.Label();
+            this.cmb_UpdateTableType = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.pic_RefreshListsUpdate = new System.Windows.Forms.PictureBox();
+            this.pic_UpdateTableParameters = new System.Windows.Forms.PictureBox();
+            this.pic_DoneUpdatingTableType = new System.Windows.Forms.PictureBox();
+            this.btn_Options = new System.Windows.Forms.Button();
+            this.pic_removeallGroupsList = new System.Windows.Forms.PictureBox();
+            this.pic_Minimize = new System.Windows.Forms.PictureBox();
             this.pic_ClearAbnormalList = new System.Windows.Forms.PictureBox();
             this.pic_clearNormalList = new System.Windows.Forms.PictureBox();
             this.pic_ClearNominalList = new System.Windows.Forms.PictureBox();
@@ -77,15 +85,13 @@
             this.pic_back = new System.Windows.Forms.PictureBox();
             this.pic_addTable = new System.Windows.Forms.PictureBox();
             this.pic_AllParaToNominal = new System.Windows.Forms.PictureBox();
-            this.pic_Minimize = new System.Windows.Forms.PictureBox();
-            this.pic_removeallGroupsList = new System.Windows.Forms.PictureBox();
-            this.btn_Options = new System.Windows.Forms.Button();
-            this.cmb_UpdateTableType = new System.Windows.Forms.ComboBox();
-            this.pic_DoneUpdatingTableType = new System.Windows.Forms.PictureBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.pic_UpdateTableParameters = new System.Windows.Forms.PictureBox();
-            this.pic_RefreshListsUpdate = new System.Windows.Forms.PictureBox();
+            this.pic_SigAdj = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_RefreshListsUpdate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_DoneUpdatingTableType)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_removeallGroupsList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_Minimize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAbnormalList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_clearNormalList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearNominalList)).BeginInit();
@@ -106,11 +112,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_Minimize)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_removeallGroupsList)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_DoneUpdatingTableType)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_RefreshListsUpdate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_SigAdj)).BeginInit();
             this.SuspendLayout();
             // 
             // list_Nominal
@@ -296,28 +298,28 @@
             this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.data_allPara.ColumnHeadersHeight = 54;
             this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Col_Name,
             this.ColMeasure,
             this.ColNormality});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle4;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.Location = new System.Drawing.Point(22, 67);
@@ -405,6 +407,109 @@
             this.lbl_Periods.Name = "lbl_Periods";
             this.lbl_Periods.Size = new System.Drawing.Size(0, 30);
             this.lbl_Periods.TabIndex = 68;
+            // 
+            // cmb_UpdateTableType
+            // 
+            this.cmb_UpdateTableType.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F);
+            this.cmb_UpdateTableType.FormattingEnabled = true;
+            this.cmb_UpdateTableType.Items.AddRange(new object[] {
+            "Default",
+            "Periods Groups",
+            "Groups 2 periods",
+            "Paper",
+            "Pathology Relation",
+            "Pathology Comparative",
+            "Relation",
+            "Relation Scale Pathology",
+            "Descriptive"});
+            this.cmb_UpdateTableType.Location = new System.Drawing.Point(775, 484);
+            this.cmb_UpdateTableType.Name = "cmb_UpdateTableType";
+            this.cmb_UpdateTableType.Size = new System.Drawing.Size(183, 30);
+            this.cmb_UpdateTableType.TabIndex = 77;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.label4.Location = new System.Drawing.Point(771, 451);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(182, 30);
+            this.label4.TabIndex = 79;
+            this.label4.Text = "Update Format :";
+            // 
+            // pic_RefreshListsUpdate
+            // 
+            this.pic_RefreshListsUpdate.Image = ((System.Drawing.Image)(resources.GetObject("pic_RefreshListsUpdate.Image")));
+            this.pic_RefreshListsUpdate.Location = new System.Drawing.Point(776, 147);
+            this.pic_RefreshListsUpdate.Name = "pic_RefreshListsUpdate";
+            this.pic_RefreshListsUpdate.Size = new System.Drawing.Size(59, 32);
+            this.pic_RefreshListsUpdate.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_RefreshListsUpdate.TabIndex = 81;
+            this.pic_RefreshListsUpdate.TabStop = false;
+            this.pic_RefreshListsUpdate.Click += new System.EventHandler(this.pic_RefreshListsUpdate_Click);
+            // 
+            // pic_UpdateTableParameters
+            // 
+            this.pic_UpdateTableParameters.Image = ((System.Drawing.Image)(resources.GetObject("pic_UpdateTableParameters.Image")));
+            this.pic_UpdateTableParameters.Location = new System.Drawing.Point(842, 147);
+            this.pic_UpdateTableParameters.Name = "pic_UpdateTableParameters";
+            this.pic_UpdateTableParameters.Size = new System.Drawing.Size(59, 32);
+            this.pic_UpdateTableParameters.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_UpdateTableParameters.TabIndex = 80;
+            this.pic_UpdateTableParameters.TabStop = false;
+            this.pic_UpdateTableParameters.Click += new System.EventHandler(this.pic_UpdateTableParameters_Click);
+            // 
+            // pic_DoneUpdatingTableType
+            // 
+            this.pic_DoneUpdatingTableType.Image = ((System.Drawing.Image)(resources.GetObject("pic_DoneUpdatingTableType.Image")));
+            this.pic_DoneUpdatingTableType.Location = new System.Drawing.Point(974, 484);
+            this.pic_DoneUpdatingTableType.Name = "pic_DoneUpdatingTableType";
+            this.pic_DoneUpdatingTableType.Size = new System.Drawing.Size(37, 30);
+            this.pic_DoneUpdatingTableType.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_DoneUpdatingTableType.TabIndex = 78;
+            this.pic_DoneUpdatingTableType.TabStop = false;
+            this.pic_DoneUpdatingTableType.Click += new System.EventHandler(this.pic_DoneUpdatingTableType_Click);
+            // 
+            // btn_Options
+            // 
+            this.btn_Options.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.btn_Options.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Options.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Options.ForeColor = System.Drawing.Color.Black;
+            this.btn_Options.Image = ((System.Drawing.Image)(resources.GetObject("btn_Options.Image")));
+            this.btn_Options.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_Options.Location = new System.Drawing.Point(889, 557);
+            this.btn_Options.Name = "btn_Options";
+            this.btn_Options.Size = new System.Drawing.Size(108, 54);
+            this.btn_Options.TabIndex = 76;
+            this.btn_Options.Text = "Options";
+            this.btn_Options.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_Options.UseVisualStyleBackColor = false;
+            this.btn_Options.Click += new System.EventHandler(this.btn_Options_Click);
+            // 
+            // pic_removeallGroupsList
+            // 
+            this.pic_removeallGroupsList.Image = ((System.Drawing.Image)(resources.GetObject("pic_removeallGroupsList.Image")));
+            this.pic_removeallGroupsList.Location = new System.Drawing.Point(597, 484);
+            this.pic_removeallGroupsList.Name = "pic_removeallGroupsList";
+            this.pic_removeallGroupsList.Size = new System.Drawing.Size(45, 31);
+            this.pic_removeallGroupsList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_removeallGroupsList.TabIndex = 75;
+            this.pic_removeallGroupsList.TabStop = false;
+            this.pic_removeallGroupsList.Click += new System.EventHandler(this.pic_removeallGroupsList_Click);
+            // 
+            // pic_Minimize
+            // 
+            this.pic_Minimize.Image = ((System.Drawing.Image)(resources.GetObject("pic_Minimize.Image")));
+            this.pic_Minimize.Location = new System.Drawing.Point(842, 6);
+            this.pic_Minimize.Name = "pic_Minimize";
+            this.pic_Minimize.Size = new System.Drawing.Size(86, 50);
+            this.pic_Minimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_Minimize.TabIndex = 74;
+            this.pic_Minimize.TabStop = false;
+            this.pic_Minimize.Click += new System.EventHandler(this.pic_Minimize_Click);
             // 
             // pic_ClearAbnormalList
             // 
@@ -677,108 +782,16 @@
             this.pic_AllParaToNominal.TabStop = false;
             this.pic_AllParaToNominal.Click += new System.EventHandler(this.pic_AllParaToNominal_Click);
             // 
-            // pic_Minimize
+            // pic_SigAdj
             // 
-            this.pic_Minimize.Image = ((System.Drawing.Image)(resources.GetObject("pic_Minimize.Image")));
-            this.pic_Minimize.Location = new System.Drawing.Point(842, 6);
-            this.pic_Minimize.Name = "pic_Minimize";
-            this.pic_Minimize.Size = new System.Drawing.Size(86, 50);
-            this.pic_Minimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_Minimize.TabIndex = 74;
-            this.pic_Minimize.TabStop = false;
-            this.pic_Minimize.Click += new System.EventHandler(this.pic_Minimize_Click);
-            // 
-            // pic_removeallGroupsList
-            // 
-            this.pic_removeallGroupsList.Image = ((System.Drawing.Image)(resources.GetObject("pic_removeallGroupsList.Image")));
-            this.pic_removeallGroupsList.Location = new System.Drawing.Point(597, 484);
-            this.pic_removeallGroupsList.Name = "pic_removeallGroupsList";
-            this.pic_removeallGroupsList.Size = new System.Drawing.Size(45, 31);
-            this.pic_removeallGroupsList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_removeallGroupsList.TabIndex = 75;
-            this.pic_removeallGroupsList.TabStop = false;
-            this.pic_removeallGroupsList.Click += new System.EventHandler(this.pic_removeallGroupsList_Click);
-            // 
-            // btn_Options
-            // 
-            this.btn_Options.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.btn_Options.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Options.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Options.ForeColor = System.Drawing.Color.Black;
-            this.btn_Options.Image = ((System.Drawing.Image)(resources.GetObject("btn_Options.Image")));
-            this.btn_Options.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_Options.Location = new System.Drawing.Point(889, 557);
-            this.btn_Options.Name = "btn_Options";
-            this.btn_Options.Size = new System.Drawing.Size(108, 54);
-            this.btn_Options.TabIndex = 76;
-            this.btn_Options.Text = "Options";
-            this.btn_Options.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.btn_Options.UseVisualStyleBackColor = false;
-            this.btn_Options.Click += new System.EventHandler(this.btn_Options_Click);
-            // 
-            // cmb_UpdateTableType
-            // 
-            this.cmb_UpdateTableType.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F);
-            this.cmb_UpdateTableType.FormattingEnabled = true;
-            this.cmb_UpdateTableType.Items.AddRange(new object[] {
-            "Default",
-            "Periods Groups",
-            "Groups 2 periods",
-            "Paper",
-            "Pathology Relation",
-            "Pathology Comparative",
-            "Relation",
-            "Relation Scale Pathology",
-            "Descriptive"});
-            this.cmb_UpdateTableType.Location = new System.Drawing.Point(775, 484);
-            this.cmb_UpdateTableType.Name = "cmb_UpdateTableType";
-            this.cmb_UpdateTableType.Size = new System.Drawing.Size(183, 30);
-            this.cmb_UpdateTableType.TabIndex = 77;
-            // 
-            // pic_DoneUpdatingTableType
-            // 
-            this.pic_DoneUpdatingTableType.Image = ((System.Drawing.Image)(resources.GetObject("pic_DoneUpdatingTableType.Image")));
-            this.pic_DoneUpdatingTableType.Location = new System.Drawing.Point(974, 484);
-            this.pic_DoneUpdatingTableType.Name = "pic_DoneUpdatingTableType";
-            this.pic_DoneUpdatingTableType.Size = new System.Drawing.Size(37, 30);
-            this.pic_DoneUpdatingTableType.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_DoneUpdatingTableType.TabIndex = 78;
-            this.pic_DoneUpdatingTableType.TabStop = false;
-            this.pic_DoneUpdatingTableType.Click += new System.EventHandler(this.pic_DoneUpdatingTableType_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label4.Location = new System.Drawing.Point(771, 451);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(182, 30);
-            this.label4.TabIndex = 79;
-            this.label4.Text = "Update Format :";
-            // 
-            // pic_UpdateTableParameters
-            // 
-            this.pic_UpdateTableParameters.Image = ((System.Drawing.Image)(resources.GetObject("pic_UpdateTableParameters.Image")));
-            this.pic_UpdateTableParameters.Location = new System.Drawing.Point(842, 147);
-            this.pic_UpdateTableParameters.Name = "pic_UpdateTableParameters";
-            this.pic_UpdateTableParameters.Size = new System.Drawing.Size(59, 32);
-            this.pic_UpdateTableParameters.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_UpdateTableParameters.TabIndex = 80;
-            this.pic_UpdateTableParameters.TabStop = false;
-            this.pic_UpdateTableParameters.Click += new System.EventHandler(this.pic_UpdateTableParameters_Click);
-            // 
-            // pic_RefreshListsUpdate
-            // 
-            this.pic_RefreshListsUpdate.Image = ((System.Drawing.Image)(resources.GetObject("pic_RefreshListsUpdate.Image")));
-            this.pic_RefreshListsUpdate.Location = new System.Drawing.Point(776, 147);
-            this.pic_RefreshListsUpdate.Name = "pic_RefreshListsUpdate";
-            this.pic_RefreshListsUpdate.Size = new System.Drawing.Size(59, 32);
-            this.pic_RefreshListsUpdate.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_RefreshListsUpdate.TabIndex = 81;
-            this.pic_RefreshListsUpdate.TabStop = false;
-            this.pic_RefreshListsUpdate.Click += new System.EventHandler(this.pic_RefreshListsUpdate_Click);
+            this.pic_SigAdj.Image = ((System.Drawing.Image)(resources.GetObject("pic_SigAdj.Image")));
+            this.pic_SigAdj.Location = new System.Drawing.Point(974, 361);
+            this.pic_SigAdj.Name = "pic_SigAdj";
+            this.pic_SigAdj.Size = new System.Drawing.Size(37, 30);
+            this.pic_SigAdj.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_SigAdj.TabIndex = 82;
+            this.pic_SigAdj.TabStop = false;
+            this.pic_SigAdj.Click += new System.EventHandler(this.pic_SigAdj_Click);
             // 
             // ComparativeGroups
             // 
@@ -786,6 +799,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.pic_SigAdj);
             this.Controls.Add(this.pic_RefreshListsUpdate);
             this.Controls.Add(this.pic_UpdateTableParameters);
             this.Controls.Add(this.label4);
@@ -843,6 +857,11 @@
             this.Text = "ComparativeGroups";
             this.Load += new System.EventHandler(this.ComparativeGroups_Load);
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_RefreshListsUpdate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_DoneUpdatingTableType)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_removeallGroupsList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_Minimize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAbnormalList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_clearNormalList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearNominalList)).EndInit();
@@ -863,11 +882,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_Minimize)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_removeallGroupsList)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_DoneUpdatingTableType)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_RefreshListsUpdate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_SigAdj)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -928,5 +943,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.PictureBox pic_UpdateTableParameters;
         private System.Windows.Forms.PictureBox pic_RefreshListsUpdate;
+        private System.Windows.Forms.PictureBox pic_SigAdj;
     }
 }

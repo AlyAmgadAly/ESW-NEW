@@ -7023,5 +7023,22 @@ namespace ExcelScore.Forms
                 MessageBox.Show("Lists Updated", "Update Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        private void pic_SigAdj_Click(object sender, EventArgs e)
+        {
+            if(cmb_TableNames.SelectedIndex != -1)
+            {
+                string selectedTableName = cmb_TableNames.SelectedItem.ToString();
+                var selectedTable = ComparativeTables.FirstOrDefault(table => table.TableName == selectedTableName);
+
+                Significant_Adjust_Frm significant_Adjust_ = new Significant_Adjust_Frm();
+                significant_Adjust_.comparativeTable_ToModify_SignifAdj = selectedTable;
+                significant_Adjust_.ShowDialog();
+            }
+
+
+
+            
+        }
     }
 }

@@ -330,6 +330,12 @@
     <Compile Include="Forms\Select Groups.Designer.cs">
       <DependentUpon>Select Groups.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Significant_Adjust_Frm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Significant_Adjust_Frm.Designer.cs">
+      <DependentUpon>Significant_Adjust_Frm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Sort_Parameters_Frm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -412,6 +418,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Select Groups.resx">
       <DependentUpon>Select Groups.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Significant_Adjust_Frm.resx">
+      <DependentUpon>Significant_Adjust_Frm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Sort_Parameters_Frm.resx">
       <DependentUpon>Sort_Parameters_Frm.cs</DependentUpon>

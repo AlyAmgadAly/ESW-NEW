@@ -1254,7 +1254,7 @@ namespace ExcelScore.Forms
                 double IndependentValue = Independent.ParameterValues[i];
                 double DependentValue = Dependent.ParameterValues[i];
 
-                if((IndependentValue != -1) && (DependentValue!=-1))
+                if((IndependentValue != -999) && (DependentValue!= -999))
                 {
                     TrueIndependentParaValues.Add(IndependentValue);
                     TrueDependentParaValues.Add(DependentValue);

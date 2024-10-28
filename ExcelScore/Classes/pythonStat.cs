@@ -1368,13 +1368,126 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
                 // Format the p-value
                 string testStatisticString = testStatistic.ToString("0.000");
-                string pValueString = pValue <= 0.001 ? "<0.001" : pValue.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
                 string[] TestValue = new string[] { testStatisticString, pValueString };
 
                 return TestValue;
             }
         }
+
+        public string[] FRepeatedMeasures(List<List<double>> data)
+        {
+            using (Py.GIL())
+            {
+                // Import necessary Python libraries
+                dynamic np = Py.Import("numpy");
+                dynamic pd = Py.Import("pandas");
+                dynamic pg = Py.Import("pingouin");
+
+                // Convert the list of lists to a numpy array
+                dynamic dataArray = np.array(data);
+
+                // Get the number of subjects and periods
+                int numSubjects = dataArray.shape[0];
+                int numPeriods = dataArray.shape[1];
+
+                // Dynamically create period labels based on the number of periods
+                string[] periodLabels = new string[numPeriods];
+                for (int j = 0; j < numPeriods; j++)
+                {
+                    periodLabels[j] = $"period{j + 1}";  // Labels like "period1", "period2", etc.
+                }
+
+                // Flatten data for easier conversion to a DataFrame
+                List<double> flattenedData = new List<double>();
+                List<int> subjects = new List<int>();
+                List<string> periods = new List<string>();
+
+                for (int i = 0; i < numSubjects; i++)
+                {
+                    for (int j = 0; j < numPeriods; j++)
+                    {
+                        flattenedData.Add(data[i][j]);
+                        subjects.Add(i + 1);
+                        periods.Add(periodLabels[j]);
+                    }
+                }
+
+                // Create DataFrame
+                var dataDict = new PyDict();
+                dataDict["subject"] = pd.Series(subjects);
+                dataDict["period"] = pd.Series(periods);
+                dataDict["score"] = pd.Series(flattenedData);
+
+                dynamic df = pd.DataFrame(dataDict);
+
+                // Run the repeated measures ANOVA using pingouin
+                dynamic anova = pg.rm_anova(data: df, dv: "score", within: "period", subject: "subject", detailed: true);
+
+                // Extract the F-statistic and p-value
+                double fValue = Math.Round(anova["F"][0].As<double>(), 3);
+                double pValue = Math.Round(anova["p-unc"][0].As<double>(), 3);
+
+                // Format the output
+                string fValueString = fValue.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                return new string[] { fValueString, pValueString };
+            }
+        }
+
+
+
+        public string[] RepeatedMeasuresAnova(List<List<double>> data)
+        {
+            using (Py.GIL())
+            {
+                // Import necessary Python libraries
+                dynamic np = Py.Import("numpy");
+                dynamic pd = Py.Import("pandas");
+                dynamic sm = Py.Import("statsmodels.api");
+                dynamic AnovaRM = Py.Import("statsmodels.stats.anova");
+
+                // Convert the list of lists to a 2D numpy array
+                dynamic dataArray = np.array(data);
+
+                // Prepare the data for ANOVA
+                var periods = data[0].Count;
+                var subjects = data.Count;
+                List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+
+                for (int i = 0; i < subjects; i++)
+                {
+                    for (int j = 0; j < periods; j++)
+                    {
+                        rows.Add(new Dictionary<string, object>
+                {
+                    { "Subject", i + 1 },
+                    { "Period", $"Period{j + 1}" },
+                    { "Score", data[i][j] }
+                });
+                    }
+                }
+
+                dynamic df = pd.DataFrame.from_records(rows);
+
+                // Perform repeated measures ANOVA using AnovaRM
+                dynamic aovrm = AnovaRM(data: df, depvar: "Score", subject: "Subject", within: new List<string> { "Period" }).fit();
+
+                // Extract F-statistic and p-value from the ANOVA table
+                double fValue = Math.Round(aovrm.anova_table.loc["Period", "F Value"].As<double>(), 3);
+                double pValue = Math.Round(aovrm.anova_table.loc["Period", "Pr > F"].As<double>(), 3);
+
+                // Format the p-value
+                string fValueString = fValue.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                // Return the results
+                return new string[] { fValueString, pValueString };
+            }
+        }
+
 
         public string[] FriedmanTest(List<List<double>> data)
         {
@@ -1403,7 +1516,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
                 // Format the p-value
                 string testStatisticString = testStatistic.ToString("0.000");
-                string pValueString = pValue <= 0.001 ? "<0.001" : pValue.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
                 string[] TestValue = new string[] { testStatisticString, pValueString };
 
