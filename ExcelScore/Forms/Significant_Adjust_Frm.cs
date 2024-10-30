@@ -49,15 +49,71 @@ namespace ExcelScore.Forms
             int y = (screen.Bounds.Height - this.Height) / 2 + screen.Bounds.Y;
             this.Location = new System.Drawing.Point(x, y);
         }
+        public void FillComboBox()
+        {
 
+            foreach (var parameter in comparativeTable_ToModify_SignifAdj.Parameters)
+            {
+                if(parameter.IsGroup)
+                {
+                    foreach (var kvp in parameter.DIC_LablesIfNomainal)
+                    {
+                        cmb_TotalOrGroup.Items.Add(kvp.Value);
+                    }
+                    continue;
+                }
+                cmb_ParameterResult.Items.Add(parameter.Name);
+            }
+        }
         private void Significant_Adjust_Frm_Load(object sender, EventArgs e)
         {
             CenterOnScreen();
             data_allPara.CellValueChanged -= data_allPara_CellValueChanged;
             FillDatagridview();
-            InitializeOldValues(); // Initialize old values here
+            FillComboBox();
             data_allPara.CellValueChanged += data_allPara_CellValueChanged;
             
+        }
+        public void GetN()
+        {
+            
+        }
+        public (int , int) GetColumnIndexes(string AParameterName , string AGroupName)
+        {
+            int groupColumnIndex = -1;
+            int ParameterColumnIndex = -1;
+            for (int excelcol = 0; excelcol <= worksheet.Cells.MaxDataColumn; excelcol++)
+            {
+                if (worksheet.Cells[0, excelcol].Value?.ToString() == AGroupName)
+                {
+                    groupColumnIndex = excelcol;
+                    break;
+                }
+                else if(worksheet.Cells[0, excelcol].Value?.ToString() == AParameterName)
+                {
+                    ParameterColumnIndex = excelcol;
+                    break;
+                }
+            }
+
+
+            return (ParameterColumnIndex, groupColumnIndex);
+        }
+        public void CalculateData()
+        {
+            if(cmb_ParameterResult.SelectedIndex != -1)
+            {
+                if(cmb_TotalOrGroup.SelectedIndex != -1)
+                {
+                    string ParameterName = cmb_ParameterResult.Text;
+                    string GroupName = cmb_TotalOrGroup.Text;
+
+
+
+                    GetColumnIndexes(ParameterName , GroupName);
+                    GetN();
+                }
+            }
         }
 
         public void AddDataGridColumns()
@@ -92,16 +148,7 @@ namespace ExcelScore.Forms
             this.Controls.Add(data_allPara);
         }
 
-        private void InitializeOldValues()
-        {
-            for (int i = 0; i < data_allPara.Rows.Count; i++)
-            {
-                for (int j = 0; j < data_allPara.Columns.Count; j++)
-                {
-                    
-                }
-            }
-        }
+        
 
         public void DeleteSheetsExcept(string filePath)
         {
@@ -242,6 +289,8 @@ namespace ExcelScore.Forms
                 // Update Excel cell
                 UpdateExcelCell(e.RowIndex, e.ColumnIndex, newValue);
                 
+
+
             }
         }
 
