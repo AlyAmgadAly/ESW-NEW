@@ -17,6 +17,10 @@ using Accord.IO;
 using System.IO;
 using DocumentFormat.OpenXml;
 using System.Diagnostics;
+using MathNet.Numerics.Statistics;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using Humanizer;
+using static Humanizer.On;
 
 namespace ExcelScore.Forms
 {
@@ -74,9 +78,83 @@ namespace ExcelScore.Forms
             data_allPara.CellValueChanged += data_allPara_CellValueChanged;
             
         }
-        public void GetN()
+
+        public List<double> GetColData(int col)
         {
-            
+            List<double> Values = new List<double>();
+
+            int rowCount = worksheet.Cells.MaxDataRow;
+
+
+            for (int i = 1; i <= rowCount; i++)
+            {
+                if(worksheet.Cells[i, col].Value.ToString() == ".")
+                {
+                    continue;
+                }
+                string value = worksheet.Cells[i, col].Value.ToString();
+                Values.Add(double.Parse(value));
+            }
+
+            return Values;
+
+        }
+        public void GetN(int ParameterColumnIndex , int GroupColIndex , Classes.Parameter GroupParameter)
+        {
+            int rowCount = worksheet.Cells.MaxDataRow;
+
+            List<double> ParameterValues = new List<double>();
+            string ParameterName = cmb_ParameterResult.Text;
+            int Count = -1;
+
+
+
+            if (cmb_TotalOrGroup.Text == "Total")
+            {
+                ParameterValues = GetColData(ParameterColumnIndex);
+                Count = ParameterValues.Count;
+
+                
+                lbl_N.Text = "(n = " + Count + " )";
+            }
+            else
+            {
+                // A group selected
+                string GroupName = cmb_TotalOrGroup.Text;
+                double requiredGroupValue = -1;
+
+                foreach (var kvp in GroupParameter.DIC_LablesIfNomainal)
+                {
+                    if(kvp.Value == GroupName)
+                    {
+                        requiredGroupValue = kvp.Key;
+                    }
+                }
+
+                for (int i = 1; i <= rowCount; i++)
+                {
+                    string GroupValue = worksheet.Cells[i, GroupColIndex].Value.ToString();
+                    string ParameterValue = worksheet.Cells[i, ParameterColumnIndex].Value.ToString();
+
+                    if ((GroupValue == ".") || (ParameterValue == "."))
+                    {
+                        continue;
+                    }
+                    if(double.Parse(GroupValue) == requiredGroupValue)
+                    {
+                        ParameterValues.Add(double.Parse(ParameterValue));
+                    }
+                    
+                }
+                Count = ParameterValues.Count;
+                lbl_N.Text = "(n = " + Count + " )";
+
+            }
+
+
+
+
+
         }
         public (int , int) GetColumnIndexes(string AParameterName , string AGroupName)
         {
@@ -87,11 +165,14 @@ namespace ExcelScore.Forms
                 if (worksheet.Cells[0, excelcol].Value?.ToString() == AGroupName)
                 {
                     groupColumnIndex = excelcol;
-                    break;
                 }
                 else if(worksheet.Cells[0, excelcol].Value?.ToString() == AParameterName)
                 {
                     ParameterColumnIndex = excelcol;
+                }
+
+                if((groupColumnIndex != -1) && (ParameterColumnIndex != -1))
+                {
                     break;
                 }
             }
@@ -99,21 +180,226 @@ namespace ExcelScore.Forms
 
             return (ParameterColumnIndex, groupColumnIndex);
         }
+
+        public string ConvertDoubletoStringDec(double number)
+        {
+            string strnum = number.ToString("0.00");
+            return strnum;
+        }
+        public double CalculateMedian(List<double> values)
+        {
+            values.Sort();
+
+            int n = values.Count;
+            int middle = n / 2;
+
+            if (n == 1)
+            {
+                return values[0];
+            }
+            else if (n % 2 == 0)
+            {
+
+                // Even number of elements, average the middle two
+                return (values[middle - 1] + values[middle]) / 2.0;
+            }
+
+            else
+            {
+
+                // Odd number of elements, return the middle one
+                return values[middle];
+            }
+        }
+        public double CalculateLowerMedian(List<double> values)
+        {
+            values.Sort();
+
+            int n = values.Count;
+
+
+            if (n % 2 == 0)
+            {
+                int middle = n / 2;
+                // Even number of elements, calculate median of upper half excluding the median
+                return CalculateMedian(values.GetRange(0, middle));
+            }
+            else
+            {
+                //The fix was here we get same range from zero to middle but middle index is different
+
+                int middle = (n + 1) / 2;
+
+                return CalculateMedian(values.GetRange(0, middle));
+            }
+
+        }
+
+        public double CalculateUpperMedian(List<double> values)
+        {
+            values.Sort();
+
+            int n = values.Count;
+
+
+            if (n % 2 == 0)
+            {
+                int middle = n / 2;
+                // Even number of elements, calculate median of upper half excluding the median
+                return CalculateMedian(values.GetRange(middle, n - middle));
+            }
+            else if (n == 1)
+            {
+                return values[0];
+            }
+            else if (n == 3)
+            {
+                return (values[1] + values[2]) / 2.0;
+            }
+
+            else
+            {
+                int middle = (n + 1) / 2;
+                // Odd number of elements, calculate median of upper half excluding the median
+                return CalculateMedian(values.GetRange(middle, n - middle - 1));
+
+            }
+        }
+        public void DescriptiveEquationInsert(List<double> ParameterValues)
+        {
+            double Min = -1;
+            double Max = -1;
+
+            double Mean = -1;
+            double SD = -1;
+            double medianValue = -1;
+            double perc25th = -1;
+            double perc75th = -1;
+
+
+            Min = ParameterValues.Min();
+            Max = ParameterValues.Max();
+            Mean = ParameterValues.Average();
+            SD = ParameterValues.StandardDeviation();
+
+
+
+            int middleIndex = ParameterValues.Count / 2;
+            if (ParameterValues.Count % 2 == 0)
+            {
+                // For even count of elements, take the average of the two middle values
+                double middleValue1 = ParameterValues.OrderBy(x => x).ElementAt(middleIndex - 1);
+                double middleValue2 = ParameterValues.OrderBy(x => x).ElementAt(middleIndex);
+                medianValue = (middleValue1 + middleValue2) / 2.0;
+            }
+            else
+            {
+                // For odd count of elements, directly take the middle value
+                medianValue = ParameterValues.OrderBy(x => x).ElementAt(middleIndex);
+            }
+
+            perc25th = CalculateLowerMedian(ParameterValues);
+            perc75th = CalculateUpperMedian(ParameterValues);
+
+            txt_MinMax.Text = ConvertDoubletoStringDec(Min) + " - " + ConvertDoubletoStringDec(Max);
+            txt_MeanSD.Text = ConvertDoubletoStringDec(Mean) + " ± " + ConvertDoubletoStringDec(SD);
+            txt_MedianIQR.Text = ConvertDoubletoStringDec(medianValue) + "( " + ConvertDoubletoStringDec(perc25th) + " - " + ConvertDoubletoStringDec(perc75th) + " )";
+        }
+        public void GetDescriptive(int ParameterColIndex, int GroupColIndex, Classes.Parameter GroupParameter)
+        {
+            int rowCount = worksheet.Cells.MaxDataRow;
+
+            List<double> ParameterValues = new List<double>();
+
+            
+
+            if (cmb_TotalOrGroup.Text == "Total")
+            {
+                ParameterValues = GetColData(ParameterColIndex);
+
+                DescriptiveEquationInsert(ParameterValues);
+
+
+            }
+
+            else
+            {
+                string GroupName = cmb_TotalOrGroup.Text;
+                double requiredGroupValue = -1;
+
+                foreach (var kvp in GroupParameter.DIC_LablesIfNomainal)
+                {
+                    if (kvp.Value == GroupName)
+                    {
+                        requiredGroupValue = kvp.Key;
+                    }
+                }
+
+                for (int i = 1; i <= rowCount; i++)
+                {
+                    string GroupValue = worksheet.Cells[i, GroupColIndex].Value.ToString();
+                    string ParameterValue = worksheet.Cells[i, ParameterColIndex].Value.ToString();
+
+                    if ((GroupValue == ".") || (ParameterValue == "."))
+                    {
+                        continue;
+                    }
+                    if (double.Parse(GroupValue) == requiredGroupValue)
+                    {
+                        ParameterValues.Add(double.Parse(ParameterValue));
+                    }
+                }
+
+
+                DescriptiveEquationInsert(ParameterValues);
+
+
+
+            }
+        }
+
         public void CalculateData()
         {
-            if(cmb_ParameterResult.SelectedIndex != -1)
+            try
             {
-                if(cmb_TotalOrGroup.SelectedIndex != -1)
+                if (cmb_ParameterResult.SelectedIndex != -1)
                 {
-                    string ParameterName = cmb_ParameterResult.Text;
-                    string GroupName = cmb_TotalOrGroup.Text;
+                    if (cmb_TotalOrGroup.SelectedIndex != -1)
+                    {
+
+                        Classes.Parameter GroupParameter = null;
+
+                        string ParameterName = cmb_ParameterResult.Text;
+                        
 
 
+                        int GroupColIndex = -1;
+                        int ParameterColIndex = -1;
 
-                    GetColumnIndexes(ParameterName , GroupName);
-                    GetN();
+
+                        foreach (var parameter in comparativeTable_ToModify_SignifAdj.Parameters)
+                        {
+                            if (parameter.IsGroup)
+                            {
+                                GroupParameter = parameter;
+                                break;
+                            }
+                        }
+
+                        (ParameterColIndex, GroupColIndex) = GetColumnIndexes(ParameterName, GroupParameter.Name);
+
+                        GetN(ParameterColIndex, GroupColIndex, GroupParameter);
+
+                        GetDescriptive(ParameterColIndex, GroupColIndex, GroupParameter);
+                    }
                 }
             }
+            catch(IOException)
+            {
+                MessageBox.Show("Close Excel File and save again!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            
         }
 
         public void AddDataGridColumns()
@@ -252,6 +538,10 @@ namespace ExcelScore.Forms
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+            data_allPara.SelectionMode = DataGridViewSelectionMode.CellSelect;
+
+            // Optionally, disable row header selection to make it clear that only cells can be selected
+            data_allPara.RowHeadersVisible = false;
         }
 
         private void pic_back_Click(object sender, EventArgs e)
@@ -288,8 +578,8 @@ namespace ExcelScore.Forms
 
                 // Update Excel cell
                 UpdateExcelCell(e.RowIndex, e.ColumnIndex, newValue);
-                
 
+                
 
             }
         }
@@ -314,8 +604,24 @@ namespace ExcelScore.Forms
                 try
                 {
                     int excelRow = rowIndex + 1;
-                    worksheet.Cells[excelRow, excelCol].PutValue(Convert.ToDouble(newValue));
+
+
+                    if (double.TryParse((string)newValue, out double parsedValue))
+                    {
+                        worksheet.Cells[excelRow, excelCol].PutValue(parsedValue);
+                    }
+                    else if ((string)newValue == ".")
+                    {
+                        worksheet.Cells[excelRow, excelCol].PutValue(".");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid input. Please enter a valid number or '.'", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     workbook.Save(ExcelFunctions.filepath);
+
+
+                    CalculateData();
                 }
                 catch (IOException)
                 {
@@ -330,8 +636,26 @@ namespace ExcelScore.Forms
             DeleteSheetsExcept(ExcelFunctions.filepath);
         }
 
-        
+        private void cmb_ParameterResult_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(cmb_ParameterResult.SelectedIndex != - 1)
+            {
+                if(cmb_TotalOrGroup.SelectedIndex != -1)
+                {
+                    CalculateData();
+                }
+            }
+        }
 
-        
+        private void cmb_TotalOrGroup_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmb_ParameterResult.SelectedIndex != -1)
+            {
+                if (cmb_TotalOrGroup.SelectedIndex != -1)
+                {
+                    CalculateData();
+                }
+            }
+        }
     }
 }
