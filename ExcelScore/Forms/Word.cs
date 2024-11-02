@@ -477,33 +477,43 @@ namespace ExcelScore.Forms
                 }
             }
 
+
+
+
+
+
+
+
             //ExcelWorksheet_ToWord.CalculateFormula();
             //List<List<double>> Domain_Items_totals = new List<List<double>>();
+
+
             //foreach (var domain in domains)
             //{
+            //    List<double> Domain_Item_totals = new List<double>();
             //    for (int col = 0; col < cols; col++)
             //    {
-
             //        if (Sheet2.Cells[0, col].Value != null)
             //        {
             //            if (Sheet2.Cells[0, col].Value.ToString() == domain)
             //            {
-
-            //                List<double> Domain_Item_totals = new List<double>();
             //                for (int row = 2; row <= rows; row++)
             //                {
-            //                    string value = Sheet2.Cells[row, col+dataCount].Value.ToString();
+            //                    string value = Sheet2.Cells[row, col + dataCount].Value.ToString();
             //                    Domain_Item_totals.Add(double.Parse(value));
             //                }
-
-            //                Domain_Items_totals.Add(Domain_Item_totals);
-            //                break;
+            //                break;   
             //            }
             //        }
+
             //    }
+            //    Domain_Items_totals.Add(Domain_Item_totals);
             //}
+            
+            
+
             //string[] resultRep = new string[2];
-            //resultRep = pyobj.FRepeatedMeasures(Domain_Items_totals);
+            //resultRep = pyobj.FRepeatedMeasuresAnovaNEW(Domain_Items_totals);
 
 
             //MessageBox.Show(resultRep[0]);

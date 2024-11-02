@@ -55,6 +55,7 @@
             this.list_Select = new System.Windows.Forms.ListBox();
             this.lbl_Select = new System.Windows.Forms.Label();
             this.pic_groups_select = new System.Windows.Forms.PictureBox();
+            this.cmb_NormalORAb = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pic_back)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSelectedPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSelected)).BeginInit();
@@ -371,12 +372,25 @@
             this.pic_groups_select.TabStop = false;
             this.pic_groups_select.Click += new System.EventHandler(this.pic_groups_select_Click);
             // 
+            // cmb_NormalORAb
+            // 
+            this.cmb_NormalORAb.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F);
+            this.cmb_NormalORAb.FormattingEnabled = true;
+            this.cmb_NormalORAb.Items.AddRange(new object[] {
+            "Normal",
+            "Not Normal"});
+            this.cmb_NormalORAb.Location = new System.Drawing.Point(607, 71);
+            this.cmb_NormalORAb.Name = "cmb_NormalORAb";
+            this.cmb_NormalORAb.Size = new System.Drawing.Size(146, 30);
+            this.cmb_NormalORAb.TabIndex = 78;
+            // 
             // Letters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 648);
+            this.Controls.Add(this.cmb_NormalORAb);
             this.Controls.Add(this.pic_RemoveSelectPara);
             this.Controls.Add(this.pic_AllParaToSelect);
             this.Controls.Add(this.list_Select);
@@ -451,5 +465,6 @@
         private System.Windows.Forms.ListBox list_Select;
         private System.Windows.Forms.Label lbl_Select;
         private System.Windows.Forms.PictureBox pic_groups_select;
+        private System.Windows.Forms.ComboBox cmb_NormalORAb;
     }
 }

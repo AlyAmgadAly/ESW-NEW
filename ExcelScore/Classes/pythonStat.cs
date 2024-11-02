@@ -1524,5 +1524,56 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
             }
         }
 
+        public string[] FRepeatedMeasuresAnovaNEW(List<List<double>> data)
+        {
+            using (Py.GIL())
+            {
+                dynamic np = Py.Import("numpy");
+                dynamic pd = Py.Import("pandas");
+                dynamic pingouin = Py.Import("pingouin");
+
+                int numSubjects = data[0].Count; // Number of subjects, assuming each inner list has the same number of subjects
+                int numPeriods = data.Count; // Number of periods (should be 3 in this case)
+
+                // Create a list of subject IDs
+                List<int> subjects = Enumerable.Range(1, numSubjects).ToList();
+
+                // Initialize the DataFrame columns
+                var dfData = new Dictionary<string, dynamic>
+        {
+            { "Subject", np.array(subjects) }, // First column for subject IDs
+            { "Period1", np.array(data[0]) },   // Second column for Period 1 data
+            { "Period2", np.array(data[1]) },   // Third column for Period 2 data
+            { "Period3", np.array(data[2]) }    // Fourth column for Period 3 data
+        };
+
+                // Create the DataFrame in wide format
+                dynamic df = pd.DataFrame(dfData);
+
+                // Melt the DataFrame to long format for pingouin
+                dynamic df_long = pd.melt(df, id_vars: "Subject", var_name: "Time", value_name: "Score");
+
+                // Perform repeated measures ANOVA using pingouin
+                dynamic anova_result = pingouin.rm_anova(data: df_long, dv: "Score", within: "Time", subject: "Subject", detailed: true);
+
+                // Extract the Greenhouse-Geisser corrected p-value, test statistic, and F-value
+                double testStatistic = Math.Round(anova_result.loc[0, "F"].As<double>(), 3);
+                double pValue = Math.Round(anova_result.loc[0, "p-GG-corr"].As<double>(), 3);
+
+                // Format the p-value
+                string testStatisticString = testStatistic.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                // Return the formatted test statistic and p-value
+                string[] TestValue = new string[] { testStatisticString, pValueString };
+
+                return TestValue;
+            }
+        }
+
+
+
+
+
     }
 }

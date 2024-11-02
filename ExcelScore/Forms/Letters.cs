@@ -1200,7 +1200,7 @@ namespace ExcelScore.Forms
 
        
 
-        public void InsertMeanStd(IWTable table , ComparativeTable comparativeTable)
+        public void InsertMeanStd(IWTable table , ComparativeTable comparativeTable , string NormalOR)
         {
             int startColumn = 1;
             foreach (var parameter in comparativeTable.Parameters)
@@ -1240,15 +1240,24 @@ namespace ExcelScore.Forms
                         }
                         startRow++;
                     }
-
-                    AnovaTestResult LetteranovaTestResult = new AnovaTestResult();
-                    LetteranovaTestResult = pythonStat.ANOVAWithTukeyHSDNewDynamic(parameter);
-                    //anovaTestResult = pythonStat.ANOVAWithMultipleComparisons(parameter);
-
-
-
                     AnovaTestResult StatTestResult = new AnovaTestResult();
-                    StatTestResult = manualTests.Fanova(parameter);
+                    if (NormalOR == "Normal")
+                    {
+                        AnovaTestResult LetteranovaTestResult = new AnovaTestResult();
+                        LetteranovaTestResult = pythonStat.ANOVAWithTukeyHSDNewDynamic(parameter);
+                        //anovaTestResult = pythonStat.ANOVAWithMultipleComparisons(parameter);
+                        
+                        StatTestResult = manualTests.Fanova(parameter);
+                    }
+                    else if(NormalOR == "Not Normal")
+                    {
+
+                        AnovaTestResult LetteranovaTestResult = new AnovaTestResult();
+                        StatTestResult = pythonStat.KruskalWallisWithDunnDynamic(parameter);
+                        //anovaTestResult = pythonStat.ANOVAWithMultipleComparisons(parameter);
+
+                    }
+                    
 
 
                     string[] values = { StatTestResult.TestValue, StatTestResult.PValue };
@@ -1317,7 +1326,7 @@ namespace ExcelScore.Forms
                 AddGroupAndVariableNames(table , WordTableRows , WordTableColumns , ComparativeTables[tableindex]);
 
 
-                InsertMeanStd(table, ComparativeTables[tableindex]);
+                InsertMeanStd(table, ComparativeTables[tableindex] , cmb_NormalORAb.Text);
 
 
 
