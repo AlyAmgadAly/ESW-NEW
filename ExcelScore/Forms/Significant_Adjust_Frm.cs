@@ -362,14 +362,23 @@ namespace ExcelScore.Forms
         {
             List<double> Groups = GetColData(GroupColIndex);
 
+            List<double> validGroups = new List<double>();
+
             int GroupCount = Groups.GroupBy(g => g)
                                    .Where(g => g.Count() > 1)
                                    .Count();
+
+
+            
+
+            
 
             if (Parameter.NominalOrScale== "Scale")
             {
                 if(Parameter.NormalOrAbnormal == "Normal")
                 {
+
+
 
 
 
