@@ -358,6 +358,25 @@ namespace ExcelScore.Forms
             }
         }
 
+        public void GetTest(Classes.Parameter Parameter , Classes.Parameter GroupParameter , int ParameterColIndex , int GroupColIndex )
+        {
+            List<double> Groups = GetColData(GroupColIndex);
+
+            int GroupCount = Groups.GroupBy(g => g)
+                                   .Where(g => g.Count() > 1)
+                                   .Count();
+
+            if (Parameter.NominalOrScale== "Scale")
+            {
+                if(Parameter.NormalOrAbnormal == "Normal")
+                {
+
+
+
+                }
+            }
+        }
+
         public void CalculateData()
         {
             try
@@ -386,11 +405,18 @@ namespace ExcelScore.Forms
                             }
                         }
 
+                        Classes.Parameter MyParameter = comparativeTable_ToModify_SignifAdj.Parameters.SingleOrDefault(p => p.Name == ParameterName);
+
                         (ParameterColIndex, GroupColIndex) = GetColumnIndexes(ParameterName, GroupParameter.Name);
 
                         GetN(ParameterColIndex, GroupColIndex, GroupParameter);
 
                         GetDescriptive(ParameterColIndex, GroupColIndex, GroupParameter);
+
+                        GetTest(MyParameter, GroupParameter , ParameterColIndex , GroupColIndex);
+
+
+
                     }
                 }
             }

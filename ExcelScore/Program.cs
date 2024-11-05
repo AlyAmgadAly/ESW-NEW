@@ -17,7 +17,7 @@ namespace ExcelScore
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new LoadExcel());
+            Application.Run(new SplashScreen());
         }
     }
 }
