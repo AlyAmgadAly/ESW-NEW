@@ -242,7 +242,10 @@ namespace ExcelScore.Forms
         public Dictionary<string, string> NormalityParaNameList_ComparaGroups { get; set; } = new Dictionary<string, string>();
         private void ComparativeGroups_Load(object sender, EventArgs e)
         {
+            lbl_PeriodsCount.Hide();
+            txt_PeriodCount.Hide();
             
+
             //pythonStat.InitPython();
 
             //Margins
@@ -3476,50 +3479,7 @@ namespace ExcelScore.Forms
 
 
         }
-        public void Descriptive_Layout()
-        {
-            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
-            {
-                if (ComparativeTables[tableindex].FormatType == "Descriptive")
-                {
-                    IWSection section = wordObj.CreatePortraitSection();
-
-
-
-                    wordObj.AddDescriptiveTitle(section, ComparativeTables[tableindex].TableName);
-
-
-
-                    int Variablerows = Count_Rows_Descriptive(ComparativeTables[tableindex]);
-
-
-                    int WordTableColumns = 7;
-
-                    int WordTableRows = 2 + Variablerows;
-
-                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
-                    wordObj.GeneralTableFormat(table);
-
-
-                    //Merges
-                    wordObj.ApplyRelation_OuterMerges_Pathology(table, WordTableRows, WordTableColumns);
-
-                    //Borders
-                    wordObj.ApplyRelation_OuterBorders_Pathology(table, WordTableRows, WordTableColumns);
-
-                    //Widths
-                    wordObj.ApplyRelation_Widths_Pathology(table, WordTableRows, WordTableColumns);
-
-
-                    //Outer Headers
-                    wordObj.ApplyRelation_OuterHeaders_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
-
-
-
-                    wordObj.InsertRelation_InnerHeader_Merges_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
-                }
-            }
-        }
+        
         public void TestPic(string filePath)
         {
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // Get path to desktop
@@ -3545,6 +3505,475 @@ namespace ExcelScore.Forms
                 }
             }
         }
+        public void DrawDescriptiveTable()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+
+                if (ComparativeTables[tableindex].FormatType == "Descriptive")
+                {
+                    
+
+                    IWSection section = wordObj.CreatePortraitSection();
+
+
+                    wordObj.AddDescriptiveTitle(section, ComparativeTables[tableindex].TableName);
+
+                    int Variablerows = CountRows(ComparativeTables[tableindex]);
+
+                    //MessageBox.Show(Variablerows.ToString());
+
+                    int WordTableColumns = 0;
+
+                    bool HasNominal = DetermineHasNominal(ComparativeTables[tableindex]);
+
+                    if (!HasNominal)
+                    {
+                        WordTableColumns = 4;
+                    }
+                    else if (HasNominal)
+                    {
+                        WordTableColumns = 3;
+                    }
+
+
+                    int WordTableRows = 1 + Variablerows;
+
+
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+
+                    wordObj.GeneralTableFormat(table);
+
+
+
+                    wordObj.ApplyGeneralDescritiveBorders(table, WordTableRows, WordTableColumns);
+
+                    wordObj.SetDescriptiveWidths(table, WordTableRows, HasNominal);
+
+
+                    wordObj.Add_GeneralHeaders_Descriptive(table, HasNominal);
+
+                    DescriptiveParameterBorders_text(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex], HasNominal);
+
+
+                    InsertData_Descriptive(table, ComparativeTables[tableindex], HasNominal);
+
+                    wordObj.FormatTable(table, 12);
+                }
+
+                    
+
+
+
+
+
+            }
+        }
+
+        public void DescriptiveParameterBorders_text(IWTable table, int WordTableRows, int WordTableColumns, ComparativeTable comparativeTable, bool hasnominal)
+        {
+            int currentrow = 1;
+            int count = 0;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+
+
+
+                if (parameter.NominalOrScale == "Nominal")
+                {
+                    count = parameter.DIC_LablesIfNomainal.Keys.Count + 1;
+
+                }
+                else if (parameter.NominalOrScale == "Scale")
+                {
+                    count = 4;
+
+                }
+
+                if (hasnominal)
+                {
+                    if (count > 0)
+                    {
+
+                        if (parameter.NominalOrScale == "Scale")
+                        {
+                            for (int j = 0; j < 4; j++)
+                            {
+                                table.ApplyHorizontalMerge(currentrow + j, 1, 2);
+
+                            }
+
+                            wordObj.AddPara_NoCenter(table, currentrow, 0, parameter.Name);
+
+                            if (parameter.hasLowerN)
+                            {
+                                int InsertLowerN = 1;
+                                foreach (double group in parameter.GroupedParameterValues.Keys)
+                                {
+                                    int parameterGroupCount = parameter.GroupedParameterValues[group].Count;
+                                    string InsertedN = "(n = " + parameterGroupCount + ")";
+                                    wordObj.AddParaCombined(table, currentrow, InsertLowerN, InsertedN, true, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Red);
+                                    InsertLowerN = InsertLowerN + 2;
+                                }
+                            }
+
+                            wordObj.Addpara_NoCenterNoBOLD(table, currentrow + 1, 0, "Min – Max.");
+                            wordObj.LeftIntendBeforeText(table, currentrow + 1, 0, 14.17f);
+
+
+                            wordObj.Addpara_NoCenterNoBOLD(table, currentrow + 2, 0, "Mean ± SD.");
+                            wordObj.LeftIntendBeforeText(table, currentrow + 2, 0, 14.17f);
+
+                            wordObj.Addpara_NoCenterNoBOLD(table, currentrow + 3, 0, "Median (IQR)");
+                            wordObj.LeftIntendBeforeText(table, currentrow + 3, 0, 14.17f);
+                        }
+                        else if (parameter.NominalOrScale == "Nominal")
+                        {
+                            wordObj.AddPara_NoCenter(table, currentrow, 0, parameter.Name);
+
+
+                            if (parameter.hasLowerN)
+                            {
+                                int InsertLowerN = 1;
+                                foreach (double group in parameter.GroupedParameterValues.Keys)
+                                {
+                                    table.ApplyHorizontalMerge(currentrow, InsertLowerN, InsertLowerN + 1);
+                                    int parameterGroupCount = parameter.GroupedParameterValues[group].Count;
+                                    string InsertedN = "(n = " + parameterGroupCount + ")";
+                                    wordObj.AddParaCombined(table, currentrow, InsertLowerN, InsertedN, true, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Red);
+                                    InsertLowerN = InsertLowerN + 2;
+                                }
+                            }
+
+                            int row = 1;
+
+
+                            foreach (var label in parameter.DIC_LablesIfNomainal.Values)
+                            {
+                                //MessageBox.Show(label.ToString());
+                                wordObj.Addpara_NoCenterNoBOLD(table, currentrow + row, 0, label.ToString());
+                                wordObj.LeftIntendBeforeText(table, currentrow + row, 0, 14.17f);
+                                row++;
+                            }
+
+
+                            //var sortedValues = parameter.ParameterValues.Distinct().OrderBy(value => value);
+                            //foreach (var value in sortedValues)
+                            //{
+                            //    wordObj.Addpara_NoCenterNoBOLD(table, currentrow + row, 0, value.ToString());
+                            //    wordObj.LeftIntendBeforeText(table, currentrow + row, 0, 14.17f);
+                            //    row++;
+                            //}
+
+                        }
+
+                    }
+
+
+
+                    if (currentrow + count < WordTableRows - 1)
+                    {
+
+                        // Insert bottom border for each parameter
+                        if (count > 0)
+                        {
+                            for (int i = 0; i < WordTableColumns; i++)
+                            {
+                                table.Rows[currentrow + count].Cells[i].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                                table.Rows[currentrow + count].Cells[i].CellFormat.Borders.Top.LineWidth = 0.5f;
+                            }
+
+                            currentrow = currentrow + count;
+
+                        }
+
+
+                    }
+                }
+
+
+                else if (!hasnominal)
+                {
+                    wordObj.AddPara_NoCenter(table, currentrow, 0, parameter.Name);
+
+                    if(parameter.hasLowerN)
+                    {
+                        wordObj.AddParaCombined(table, currentrow, 0, "(n = " + parameter.ParameterValues.Count + ")", true, false , Syncfusion.Drawing.Color.Empty , Syncfusion.Drawing.Color.Red) ;
+                    }
+
+                    if (currentrow < WordTableRows - 1)
+                    {
+                        for (int i = 0; i < WordTableColumns; i++)
+                        {
+                            table.Rows[currentrow].Cells[i].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                            table.Rows[currentrow].Cells[i].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                        }
+
+                        currentrow++;
+                    }
+                }
+
+            }
+        }
+
+
+
+
+        public void InsertData_Descriptive(IWTable table, ComparativeTable comparativeTable, bool hasnominal)
+        {
+            if (hasnominal)
+            {
+                int startingRow = 2;
+                foreach (Parameter parameter in comparativeTable.Parameters)
+                {
+
+                    int column = 1;
+                    int count = 0;
+
+                    // Skip if the parameter is a group or not nominal
+                    if (parameter.IsGroup || parameter.FormattedValues.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    // Determine the count based on parameter type
+                    if (parameter.NominalOrScale == "Nominal")
+                    {
+                        count = parameter.ParameterValues.Distinct().Count() + 1;
+
+
+                        // Insert frequency and percentage for nominal parameters
+
+                        foreach (var kvp in parameter.FormattedValues)
+                        {
+                            double groupValue = kvp.Key;
+                            Dictionary<string, string> formattedValues = kvp.Value;
+                            // Insert frequencies for the current group
+                            foreach (var distinctValue in parameter.DIC_LablesIfNomainal.Keys)
+                            {
+
+                                string frequency = formattedValues.ContainsKey($"Frequency_{distinctValue}") ? formattedValues[$"Frequency_{distinctValue}"] : "0";
+                                wordObj.Addpara_CenterNoBOLD(table, startingRow, column, frequency);
+                                //MessageBox.Show(frequency);
+                                column++;
+
+                                string percentage = formattedValues.ContainsKey($"Percentage_{distinctValue}") ? formattedValues[$"Percentage_{distinctValue}"] : "0.0";
+                                percentage = percentage.Replace("%", "");
+
+
+                                if (percentage.EndsWith("0"))
+                                {
+                                    //percentage = percentage.Substring(0, percentage.Length - 1);
+
+                                    wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage);
+                                }
+                                else
+                                {
+                                    //MessageBox.Show(percentage);
+                                    //double percentageDouble = Math.Round(double.Parse(percentage), 1);
+                                    wordObj.Addpara_CenterNoBOLD(table, startingRow, column, percentage.ToString());
+                                }
+
+
+                                startingRow++;
+                                column--;
+                            }
+
+                        }
+
+                        startingRow++;
+
+
+
+                    }
+                    else if (parameter.NominalOrScale == "Scale")
+                    {
+                        count = 4;
+
+                        // Insert scale statistics for scale parameters
+                        foreach (var kvp in parameter.FormattedValues)
+                        {
+                            double groupValue = kvp.Key;
+                            Dictionary<string, string> scaleStats = kvp.Value;
+
+                            foreach (var stat in scaleStats)
+                            {
+                                wordObj.Addpara_CenterNoBOLD(table, startingRow, column, stat.Value);
+                                startingRow++; // Move to the next row
+                            }
+                        }
+                        startingRow++;
+
+                    }
+
+                }
+            }
+            else if (!hasnominal)
+            {
+                int startingRow = 1;
+
+                foreach (var parameter in comparativeTable.Parameters)
+                {
+                    int column = 1;
+                    foreach (var kvp in parameter.FormattedValues)
+                    {
+                        double groupValue = kvp.Key;
+                        Dictionary<string, string> scaleStats = kvp.Value;
+
+                        foreach (var stat in scaleStats)
+                        {
+                            wordObj.Addpara_CenterNoBOLD(table, startingRow, column, stat.Value);
+                            column++;
+                        }
+                    }
+
+                    startingRow++;
+                }
+            }
+
+
+        }
+
+        public int Count_Rows_Columns_Descriptive_Periods(ComparativeTable comparativeTable)
+        {
+            int rowcount = 0;
+            bool hasNominal = false;
+
+
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(parameter.IsGroup)
+                {
+                    continue;
+                }
+
+                if(parameter.NominalOrScale == "Nominal")
+                {
+                    rowcount += parameter.DIC_LablesIfNomainal.Keys.Count + 1;
+                    hasNominal = true;
+                }
+                else if(parameter.NominalOrScale == "Scale")
+                {
+                    rowcount += 4;
+                }
+
+            }
+
+
+            if (hasNominal)
+            {
+                rowcount++;
+            }
+
+
+
+
+
+
+
+
+
+
+
+            return rowcount;
+        }
+
+        public bool Tablehasnominal_fn(ComparativeTable comparativeTable)
+        {
+
+            bool hasNominal = false;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(parameter.IsGroup)
+                {
+                    continue;
+                }
+                if( parameter.NominalOrScale == "Nominal")
+                {
+                    hasNominal = true;
+                }
+            }
+
+            return hasNominal;
+        }
+        public void DescriptivePeriodsNoTest()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Descriptive Periods No Test")
+                {
+                    IWSection section = wordObj.CreatePortraitSection();
+
+                    bool Tablehasnominal = false;
+
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName , 1);
+
+
+
+                    int Variablerows = Count_Rows_Columns_Descriptive_Periods(ComparativeTables[tableindex]);
+
+
+                    int PeriodCount = 0;
+
+                    if (!string.IsNullOrWhiteSpace(txt_PeriodCount.Text) && int.TryParse(txt_PeriodCount.Text, out PeriodCount))
+                    {
+                        PeriodCount = int.Parse(txt_PeriodCount.Text);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please enter a valid period count");
+                    }
+
+                    
+                    
+                    int WordTableColumns = 1 + (PeriodCount*2);
+
+                    int WordTableRows = 2 + Variablerows;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+                    wordObj.GeneralTableFormat(table);
+
+                    //Merges
+                    wordObj.Apply_Descriptive_periodsNoTest_OuterMerges(table, WordTableRows, WordTableColumns, PeriodCount);
+                    
+                    ///Stopped here (below is false)
+
+
+
+
+                    //Borders
+                    wordObj.ApplyRelation_OuterBorders_Pathology(table, WordTableRows, WordTableColumns);
+
+                    //Widths
+                    wordObj.ApplyRelation_Widths_Pathology(table, WordTableRows, WordTableColumns);
+
+
+                    //Outer Headers
+                    wordObj.ApplyRelation_OuterHeaders_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+
+                    wordObj.InsertRelation_InnerHeader_Merges_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+                    wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test of Sig.");
+
+
+                    
+
+
+
+
+
+
+                    wordObj.LeftAndRightCellMarginCustom(table, 0, 0);
+                    wordObj.FormatTableCustom(table, 10.5f, 0, 0);
+
+                }
+            }
+        }
+
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -3574,6 +4003,8 @@ namespace ExcelScore.Forms
 
 
             Relation_Layout_DependentNumber_Pathology();
+
+            DrawDescriptiveTable();
 
             string filepath = wordObj.SaveWord();
             

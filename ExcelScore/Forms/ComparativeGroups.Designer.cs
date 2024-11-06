@@ -86,6 +86,8 @@
             this.pic_addTable = new System.Windows.Forms.PictureBox();
             this.pic_AllParaToNominal = new System.Windows.Forms.PictureBox();
             this.pic_SigAdj = new System.Windows.Forms.PictureBox();
+            this.lbl_PeriodsCount = new System.Windows.Forms.Label();
+            this.txt_PeriodCount = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RefreshListsUpdate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).BeginInit();
@@ -322,14 +324,14 @@
             this.data_allPara.DefaultCellStyle = dataGridViewCellStyle4;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            this.data_allPara.Location = new System.Drawing.Point(22, 67);
+            this.data_allPara.Location = new System.Drawing.Point(22, 94);
             this.data_allPara.Name = "data_allPara";
             this.data_allPara.ReadOnly = true;
             this.data_allPara.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.data_allPara.RowHeadersVisible = false;
             this.data_allPara.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.data_allPara.Size = new System.Drawing.Size(334, 604);
+            this.data_allPara.Size = new System.Drawing.Size(334, 577);
             this.data_allPara.TabIndex = 62;
             this.data_allPara.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.data_allPara_CellContentClick);
             // 
@@ -380,7 +382,9 @@
             "Pathology Comparative",
             "Relation",
             "Relation Scale Pathology",
-            "Descriptive"});
+            "Descriptive",
+            "Descriptive Periods No Test",
+            "Descriptive Periods Test"});
             this.cmb_ChooseTableFormat.Location = new System.Drawing.Point(111, 31);
             this.cmb_ChooseTableFormat.Name = "cmb_ChooseTableFormat";
             this.cmb_ChooseTableFormat.Size = new System.Drawing.Size(202, 30);
@@ -390,7 +394,7 @@
             // txt_ParaName
             // 
             this.txt_ParaName.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_ParaName.Location = new System.Drawing.Point(66, 80);
+            this.txt_ParaName.Location = new System.Drawing.Point(66, 109);
             this.txt_ParaName.Margin = new System.Windows.Forms.Padding(2);
             this.txt_ParaName.Name = "txt_ParaName";
             this.txt_ParaName.Size = new System.Drawing.Size(96, 28);
@@ -547,7 +551,7 @@
             // pic_AllLists
             // 
             this.pic_AllLists.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllLists.Image")));
-            this.pic_AllLists.Location = new System.Drawing.Point(376, 31);
+            this.pic_AllLists.Location = new System.Drawing.Point(376, 30);
             this.pic_AllLists.Name = "pic_AllLists";
             this.pic_AllLists.Size = new System.Drawing.Size(45, 31);
             this.pic_AllLists.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -793,12 +797,35 @@
             this.pic_SigAdj.TabStop = false;
             this.pic_SigAdj.Click += new System.EventHandler(this.pic_SigAdj_Click);
             // 
+            // lbl_PeriodsCount
+            // 
+            this.lbl_PeriodsCount.AutoSize = true;
+            this.lbl_PeriodsCount.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_PeriodsCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.lbl_PeriodsCount.Location = new System.Drawing.Point(11, 61);
+            this.lbl_PeriodsCount.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_PeriodsCount.Name = "lbl_PeriodsCount";
+            this.lbl_PeriodsCount.Size = new System.Drawing.Size(102, 30);
+            this.lbl_PeriodsCount.TabIndex = 83;
+            this.lbl_PeriodsCount.Text = "Periods :";
+            // 
+            // txt_PeriodCount
+            // 
+            this.txt_PeriodCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_PeriodCount.Location = new System.Drawing.Point(111, 64);
+            this.txt_PeriodCount.Margin = new System.Windows.Forms.Padding(2);
+            this.txt_PeriodCount.Name = "txt_PeriodCount";
+            this.txt_PeriodCount.Size = new System.Drawing.Size(51, 28);
+            this.txt_PeriodCount.TabIndex = 84;
+            // 
             // ComparativeGroups
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.txt_PeriodCount);
+            this.Controls.Add(this.lbl_PeriodsCount);
             this.Controls.Add(this.pic_SigAdj);
             this.Controls.Add(this.pic_RefreshListsUpdate);
             this.Controls.Add(this.pic_UpdateTableParameters);
@@ -944,5 +971,7 @@
         private System.Windows.Forms.PictureBox pic_UpdateTableParameters;
         private System.Windows.Forms.PictureBox pic_RefreshListsUpdate;
         private System.Windows.Forms.PictureBox pic_SigAdj;
+        private System.Windows.Forms.Label lbl_PeriodsCount;
+        private System.Windows.Forms.TextBox txt_PeriodCount;
     }
 }

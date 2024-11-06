@@ -1014,6 +1014,21 @@ namespace ExcelScore.Classes
 
         }
 
+        public void Apply_Descriptive_periodsNoTest_OuterMerges(IWTable table, int WordTableRows, int WordTableColumns , int numberofPeriods)
+        {
+            
+
+
+            int startcol = 1;
+            for(int i = 0; i < numberofPeriods;i++)
+            {
+                table.ApplyHorizontalMerge(0, startcol, startcol + 1);
+                startcol = startcol +2;
+            }
+
+
+        }
+
         public void ApplyRegression_OuterMerges(IWTable table, int WordTableRows, int WordTableColumns)
         {
             table.ApplyHorizontalMerge(0, 1, 2);
