@@ -935,6 +935,10 @@ namespace ExcelScore.Classes
 
         }
 
+        public void Apply_Descriptive_OuterBorders_PeriodsNoTest()
+        {
+
+        }
         public void ApplyRelation_OuterBorders_Pathology(IWTable table, int WordTableRows, int WordTableColumns)
         {
             for (int j = 0; j < WordTableColumns; j++)

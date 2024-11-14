@@ -242,9 +242,9 @@ namespace ExcelScore.Forms
         public Dictionary<string, string> NormalityParaNameList_ComparaGroups { get; set; } = new Dictionary<string, string>();
         private void ComparativeGroups_Load(object sender, EventArgs e)
         {
-            lbl_PeriodsCount.Hide();
-            txt_PeriodCount.Hide();
-            
+            lbl_PeriodsCount.Visible = false;
+            txt_PeriodCount.Visible = false;
+
 
             //pythonStat.InitPython();
 
@@ -3836,7 +3836,7 @@ namespace ExcelScore.Forms
 
         }
 
-        public int Count_Rows_Columns_Descriptive_Periods(ComparativeTable comparativeTable)
+        public int Count_Rows_Columns_Descriptive_Periods(ComparativeTable comparativeTable , int numberofperiods)
         {
             int rowcount = 0;
             bool hasNominal = false;
@@ -3861,6 +3861,7 @@ namespace ExcelScore.Forms
 
             }
 
+            rowcount = rowcount / numberofperiods;
 
             if (hasNominal)
             {
@@ -3910,11 +3911,6 @@ namespace ExcelScore.Forms
 
                     wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName , 1);
 
-
-
-                    int Variablerows = Count_Rows_Columns_Descriptive_Periods(ComparativeTables[tableindex]);
-
-
                     int PeriodCount = 0;
 
                     if (!string.IsNullOrWhiteSpace(txt_PeriodCount.Text) && int.TryParse(txt_PeriodCount.Text, out PeriodCount))
@@ -3925,6 +3921,11 @@ namespace ExcelScore.Forms
                     {
                         MessageBox.Show("Please enter a valid period count");
                     }
+
+                    int Variablerows = Count_Rows_Columns_Descriptive_Periods(ComparativeTables[tableindex] , PeriodCount);
+
+
+                    
 
                     
                     
@@ -3937,30 +3938,28 @@ namespace ExcelScore.Forms
 
                     //Merges
                     wordObj.Apply_Descriptive_periodsNoTest_OuterMerges(table, WordTableRows, WordTableColumns, PeriodCount);
-                    
+
                     ///Stopped here (below is false)
 
-
-
-
                     //Borders
-                    wordObj.ApplyRelation_OuterBorders_Pathology(table, WordTableRows, WordTableColumns);
+                    //wordObj.ApplyRelation_OuterBorders_Pathology(table, WordTableRows, WordTableColumns);
+                    //Apply_Descriptive_OuterBorders_PeriodsNoTest()
 
-                    //Widths
-                    wordObj.ApplyRelation_Widths_Pathology(table, WordTableRows, WordTableColumns);
-
-
-                    //Outer Headers
-                    wordObj.ApplyRelation_OuterHeaders_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+                    ////Widths
+                    //wordObj.ApplyRelation_Widths_Pathology(table, WordTableRows, WordTableColumns);
 
 
-
-                    wordObj.InsertRelation_InnerHeader_Merges_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
-
-                    wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test of Sig.");
+                    ////Outer Headers
+                    //wordObj.ApplyRelation_OuterHeaders_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
 
 
-                    
+
+                    //wordObj.InsertRelation_InnerHeader_Merges_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+                    //wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test of Sig.");
+
+
+
 
 
 
@@ -3968,7 +3967,7 @@ namespace ExcelScore.Forms
 
 
                     wordObj.LeftAndRightCellMarginCustom(table, 0, 0);
-                    wordObj.FormatTableCustom(table, 10.5f, 0, 0);
+                    wordObj.FormatTableCustom(table, 12f, 0, 0);
 
                 }
             }
@@ -4005,6 +4004,8 @@ namespace ExcelScore.Forms
             Relation_Layout_DependentNumber_Pathology();
 
             DrawDescriptiveTable();
+
+            DescriptivePeriodsNoTest();
 
             string filepath = wordObj.SaveWord();
             
@@ -4544,9 +4545,10 @@ namespace ExcelScore.Forms
                         pythonStat.InitPython();
                         comparativeTable.TestsDone.Add("FAnova");
                         AnovaTestResult anovaTestResult = new AnovaTestResult();
+                        
                         anovaTestResult = pythonStat.newANOVAWithTukeyHSDNewDynamic(parameter);
-
                         anovaTestResult = manual.Fanova(parameter);
+
 
                         string[] values = { anovaTestResult.TestValue, anovaTestResult.PValue };
 
@@ -4587,7 +4589,7 @@ namespace ExcelScore.Forms
                         AnovaTestResult anovaTestResult = new AnovaTestResult();
                         anovaTestResult = pythonStat.KruskalWallisWithDunnDynamic(parameter);
 
-                        anovaTestResult = manual.Kruskal_H(parameter);
+                       // anovaTestResult = manual.Kruskal_H(parameter);
                         string[] values = { anovaTestResult.TestValue, anovaTestResult.PValue };
 
 
@@ -6927,6 +6929,18 @@ namespace ExcelScore.Forms
                 lbl_Nominal.Visible = false;
                 pic_ClearNominalList.Visible = false;
             }
+            else if(cmb_ChooseTableFormat.Text == "Descriptive Periods No Test")
+            {
+                lbl_Nominal.Visible = true;
+                list_Nominal.Visible = true;
+                pic_RemoveNominalList.Visible = true;
+                pic_AllParaToNominal.Visible = true;
+                pic_ifyes.Visible = true;
+                pic_ClearNominalList.Visible = true;
+
+                lbl_PeriodsCount.Visible = true;
+                txt_PeriodCount.Visible = true; 
+            }
         }
 
         private void pic_TableFormat_Click(object sender, EventArgs e)
@@ -7470,6 +7484,11 @@ namespace ExcelScore.Forms
 
 
             
+        }
+
+        private void list_AbnormalScale_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
