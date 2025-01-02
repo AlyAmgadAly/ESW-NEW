@@ -356,6 +356,7 @@
             this.list_QuestionsBeforeReverse.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_QuestionsBeforeReverse.Size = new System.Drawing.Size(242, 381);
             this.list_QuestionsBeforeReverse.TabIndex = 6;
+            this.list_QuestionsBeforeReverse.SelectedIndexChanged += new System.EventHandler(this.list_QuestionsBeforeReverse_SelectedIndexChanged);
             // 
             // list_QuestionsReversed
             // 

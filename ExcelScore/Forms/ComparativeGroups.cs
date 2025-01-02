@@ -3973,6 +3973,79 @@ namespace ExcelScore.Forms
             }
         }
 
+        public void DescriptivePeriodsTest()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Descriptive Periods Test")
+                {
+                    IWSection section = wordObj.CreatePortraitSection();
+
+                    bool Tablehasnominal = false;
+
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, 1);
+
+                    int PeriodCount = 0;
+
+                    if (!string.IsNullOrWhiteSpace(txt_PeriodCount.Text) && int.TryParse(txt_PeriodCount.Text, out PeriodCount))
+                    {
+                        PeriodCount = int.Parse(txt_PeriodCount.Text);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please enter a valid period count");
+                    }
+
+                    int Variablerows = Count_Rows_Columns_Descriptive_Periods(ComparativeTables[tableindex], PeriodCount);
+
+
+
+
+                    // 1 for names 2 for tests
+
+                    int WordTableColumns = 1 + (PeriodCount * 2) + 2;
+
+                    int WordTableRows = 2 + Variablerows;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+                    wordObj.GeneralTableFormat(table);
+
+                    //Merges
+                    wordObj.Apply_Descriptive_periodsNoTest_OuterMerges(table, WordTableRows, WordTableColumns, PeriodCount);
+
+                    ///Stopped here (below is false)
+
+                    //Borders
+                    //wordObj.ApplyRelation_OuterBorders_Pathology(table, WordTableRows, WordTableColumns);
+                    //Apply_Descriptive_OuterBorders_PeriodsNoTest()
+
+                    ////Widths
+                    //wordObj.ApplyRelation_Widths_Pathology(table, WordTableRows, WordTableColumns);
+
+
+                    ////Outer Headers
+                    //wordObj.ApplyRelation_OuterHeaders_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+
+                    //wordObj.InsertRelation_InnerHeader_Merges_Pathology(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+                    //wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test of Sig.");
+
+
+
+
+
+
+
+
+
+                    wordObj.LeftAndRightCellMarginCustom(table, 0, 0);
+                    wordObj.FormatTableCustom(table, 12f, 0, 0);
+
+                }
+            }
+        }
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -4006,6 +4079,8 @@ namespace ExcelScore.Forms
             DrawDescriptiveTable();
 
             DescriptivePeriodsNoTest();
+
+            DescriptivePeriodsTest();
 
             string filepath = wordObj.SaveWord();
             

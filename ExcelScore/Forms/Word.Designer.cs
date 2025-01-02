@@ -50,6 +50,7 @@
             this.pic_addOverall = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.periods_check = new System.Windows.Forms.CheckBox();
+            this.pic_clearAllLists = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pic_exit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AddPeriodsList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemovePeriodsList)).BeginInit();
@@ -59,6 +60,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTotalScoreP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeOverall)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addOverall)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_clearAllLists)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -309,12 +311,24 @@
             this.periods_check.Text = "Periods";
             this.periods_check.UseVisualStyleBackColor = true;
             // 
+            // pic_clearAllLists
+            // 
+            this.pic_clearAllLists.Image = ((System.Drawing.Image)(resources.GetObject("pic_clearAllLists.Image")));
+            this.pic_clearAllLists.Location = new System.Drawing.Point(300, 29);
+            this.pic_clearAllLists.Name = "pic_clearAllLists";
+            this.pic_clearAllLists.Size = new System.Drawing.Size(51, 35);
+            this.pic_clearAllLists.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_clearAllLists.TabIndex = 59;
+            this.pic_clearAllLists.TabStop = false;
+            this.pic_clearAllLists.Click += new System.EventHandler(this.pic_clearAllLists_Click);
+            // 
             // Word
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1212, 608);
+            this.Controls.Add(this.pic_clearAllLists);
             this.Controls.Add(this.periods_check);
             this.Controls.Add(this.pic_removeOverall);
             this.Controls.Add(this.pic_addOverall);
@@ -351,6 +365,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTotalScoreP)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_removeOverall)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_addOverall)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_clearAllLists)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -378,5 +393,6 @@
         private System.Windows.Forms.PictureBox pic_addOverall;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox periods_check;
+        private System.Windows.Forms.PictureBox pic_clearAllLists;
     }
 }

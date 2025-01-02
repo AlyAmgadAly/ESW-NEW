@@ -1665,5 +1665,14 @@ namespace ExcelScore.Forms
             else
                 MessageBox.Show("Please Select Item!");
         }
+
+        private void pic_clearAllLists_Click(object sender, EventArgs e)
+        {
+            list_Overall.Items.Clear();
+            list_Periods.Items.Clear();
+            list_descriptive.Items.Clear();
+            list_TotalScorePeriods.Items.Clear();
+
+        }
     }
 }

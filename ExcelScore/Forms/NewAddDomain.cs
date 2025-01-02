@@ -1195,5 +1195,10 @@ namespace ExcelScore.Forms
         {
 
         }
+
+        private void list_QuestionsBeforeReverse_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
