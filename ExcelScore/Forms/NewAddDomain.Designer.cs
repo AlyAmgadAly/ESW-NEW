@@ -76,6 +76,7 @@
             this.panelmove = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.pic_back = new System.Windows.Forms.PictureBox();
+            this.lbl_elementctr = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AddLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AddReverseQuestions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AddQuestions)).BeginInit();
@@ -449,7 +450,7 @@
             this.lbl_Reversed.AutoSize = true;
             this.lbl_Reversed.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Reversed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.lbl_Reversed.Location = new System.Drawing.Point(969, 42);
+            this.lbl_Reversed.Location = new System.Drawing.Point(980, 42);
             this.lbl_Reversed.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_Reversed.Name = "lbl_Reversed";
             this.lbl_Reversed.Size = new System.Drawing.Size(119, 30);
@@ -615,12 +616,25 @@
             this.pic_back.TabStop = false;
             this.pic_back.Click += new System.EventHandler(this.pic_back_Click);
             // 
+            // lbl_elementctr
+            // 
+            this.lbl_elementctr.AutoSize = true;
+            this.lbl_elementctr.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_elementctr.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.lbl_elementctr.Location = new System.Drawing.Point(879, 42);
+            this.lbl_elementctr.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_elementctr.Name = "lbl_elementctr";
+            this.lbl_elementctr.Size = new System.Drawing.Size(70, 30);
+            this.lbl_elementctr.TabIndex = 28;
+            this.lbl_elementctr.Text = "(n = )";
+            // 
             // NewAddDomain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1228, 647);
+            this.Controls.Add(this.lbl_elementctr);
             this.Controls.Add(this.pic_back);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pic_SortQuestionsDown);
@@ -739,5 +753,6 @@
         private System.Windows.Forms.Panel panelmove;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.PictureBox pic_back;
+        private System.Windows.Forms.Label lbl_elementctr;
     }
 }

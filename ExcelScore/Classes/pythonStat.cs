@@ -229,21 +229,6 @@ tukey_result = scikit_posthocs.posthoc_tukey(df , val_col=""Value"" , group_col=
                         dataTable.Rows.Add(dataRow);
                     }
 
-                    //foreach (DataColumn column in dataTable.Columns)
-                    //{
-                    //    MessageBox.Show(column.ColumnName + "\t");
-                    //}
-
-
-                    //// Print each row of the DataTable
-                    //foreach (DataRow row in dataTable.Rows)
-                    //{
-                    //    foreach (var item in row.ItemArray)
-                    //    {
-                    //        MessageBox.Show(item + "\t");
-                    //    }
-
-                    //}
 
 
 
@@ -269,7 +254,7 @@ tukey_result = scikit_posthocs.posthoc_tukey(df , val_col=""Value"" , group_col=
                             // Handle rounding only if the value is not zero
                             double.TryParse(dataTable.Rows[i][j].ToString(), out pvalue);
 
-                            
+                            MessageBox.Show(pvalue.ToString());
 
                             string pAdjString = pvalue < 0.001 ? "<0.001" : pvalue.ToString("0.000");
 
@@ -757,7 +742,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                     parameter.ISFAnovaSig = true;
                 }
 
-                string pValueString = pValueANOVA <= 0.001 ? "<0.001" : pValueANOVA.ToString("0.000");
+                string pValueString = pValueANOVA < 0.001 ? "<0.001" : pValueANOVA.ToString("0.000");
 
 
                 dynamic pValuesTukey = tukeyResult.pvalues; // adjust this based on the actual structure of your result
@@ -866,6 +851,49 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                     if(hasSmallExpectedCell)
                     {
                         return new string[] { "FET", "0"};
+
+                        // Perform Monte Carlo simulation
+                        //int numSimulations = 10000; // Adjust the number of simulations
+                        //double[] simulatedChiSquares = new double[numSimulations];
+                        //int rowSum = 0, colSum = 0;
+                        //foreach (var row in contingencyTable)
+                        //{
+                        //    rowSum += row.Sum();
+                        //}
+                        //for (int i = 0; i < contingencyTable[0].Count; i++)
+                        //{
+                        //    foreach (var row in contingencyTable)
+                        //    {
+                        //        colSum += row[i];
+                        //    }
+                        //}
+
+                        //Random rand = new Random();
+                        //for (int i = 0; i < numSimulations; i++)
+                        //{
+                        //    // Generate a random table based on row and column sums
+                        //    dynamic simulatedTable = new PyList();
+                        //    for (int r = 0; r < contingencyTable.Count; r++)
+                        //    {
+                        //        dynamic simulatedRow = new PyList();
+                        //        for (int c = 0; c < contingencyTable[0].Count; c++)
+                        //        {
+                        //            int simulatedValue = rand.Next(1, 10); // Random number generation logic to fill the table
+                        //            simulatedRow.append(simulatedValue);
+                        //        }
+                        //        simulatedTable.append(simulatedRow);
+                        //    }
+
+                        //    // Compute chi-square statistic for the simulated table
+                        //    dynamic simulatedChiSquare = scipyStats.chi2_contingency(simulatedTable, correction: false);
+                        //    simulatedChiSquares[i] = simulatedChiSquare[0].As<double>();
+                        //}
+
+                        //// Calculate p-value
+                        //double pValueMonteCarlo = simulatedChiSquares.Count(x => x >= chiSquareStatistic) / (double)numSimulations;
+                        //pValue = Math.Round(pValueMonteCarlo, 3);
+
+                        //return new string[] { chiSquareStatistic.ToString("0.000"), pValue.ToString()};
                     }
                     else
                     {

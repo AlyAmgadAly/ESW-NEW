@@ -1,4 +1,5 @@
 ﻿using Aspose.Cells;
+using Aspose.Cells.Drawing;
 using ExcelScore.Classes;
 
 using System;
@@ -377,7 +378,10 @@ namespace ExcelScore.Forms
 
             
         }
-
+        public void UpdateLabelCount()
+        {
+            lbl_elementctr.Text = $"(n =  {list_QuestionsBeforeReverse.Items.Count})";
+        }
         private void pic_AddQuestions_Click(object sender, EventArgs e)
         {
             if (FromToAddUI)
@@ -410,6 +414,12 @@ namespace ExcelScore.Forms
                 }
                
             }
+
+
+            UpdateLabelCount();
+
+
+
         }
 
         List<string> itemsToRemoveBeforeReverse = new List<string>();
@@ -470,11 +480,15 @@ namespace ExcelScore.Forms
             {
                 list_QuestionsBeforeReverse.Items.Remove(s);
             }
+
+            UpdateLabelCount();
         }
 
         private void pic_clearAllQuestionsBeforeReverse_Click(object sender, EventArgs e)
         {
             list_QuestionsBeforeReverse.Items.Clear();
+
+            UpdateLabelCount();
         }
         private void MoveItemUp()
         {

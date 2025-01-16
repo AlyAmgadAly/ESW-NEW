@@ -4582,7 +4582,11 @@ namespace ExcelScore.Forms
                         SplitGroupedParameterValues(parameter, out group1Values, out group2Values);
                         pythonStat.InitPython();
                         //string[] values = pythonStat.MannWhitneyUTest(group1Values, group2Values);
+                        
                         string[] values = manual.UTest(group1Values, group2Values);
+                        
+                        //string[] values = manual.UTestNewManual(group1Values, group2Values);
+                        
 
                         //MessageBox.Show(values[1]);
 
@@ -4621,7 +4625,10 @@ namespace ExcelScore.Forms
                         comparativeTable.TestsDone.Add("FAnova");
                         AnovaTestResult anovaTestResult = new AnovaTestResult();
                         
-                        anovaTestResult = pythonStat.newANOVAWithTukeyHSDNewDynamic(parameter);
+                        //anovaTestResult = pythonStat.newANOVAWithTukeyHSDNewDynamic(parameter);
+
+                        anovaTestResult = pythonStat.ANOVAWithTukeyHSDNewDynamic(parameter);
+                        
                         anovaTestResult = manual.Fanova(parameter);
 
 
@@ -5714,7 +5721,7 @@ namespace ExcelScore.Forms
                         pythonStat.InitPython();
                         comparativeTable.TestsDone.Add("FAnova");
                         AnovaTestResult anovaTestResult = new AnovaTestResult();
-                        anovaTestResult = pythonStat.newANOVAWithTukeyHSDNewDynamic(parameter);
+                        anovaTestResult = pythonStat.ANOVAWithTukeyHSDNewDynamic(parameter);
 
                         anovaTestResult = manual.Fanova(parameter);
 
@@ -5888,7 +5895,7 @@ namespace ExcelScore.Forms
                         pythonStat.InitPython();
                         comparativeTable.TestsDone.Add("FAnova");
                         AnovaTestResult anovaTestResult = new AnovaTestResult();
-                        anovaTestResult = pythonStat.newANOVAWithTukeyHSDNewDynamic(parameter);
+                        anovaTestResult = pythonStat.ANOVAWithTukeyHSDNewDynamic(parameter);
 
                         anovaTestResult = manual.Fanova(parameter);
 

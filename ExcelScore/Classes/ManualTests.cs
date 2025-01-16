@@ -1096,7 +1096,124 @@ namespace ExcelScore.Classes
         }
 
         // Error function approximation (Erf) for normal CDF calculation
-        
+
+
+
+        public string[] UTestNewManual(List<double> AdataGroup1, List<double> AdataGroup2)
+        {
+            try
+            {
+                double[] group1 = AdataGroup1.ToArray();
+                double[] group2 = AdataGroup2.ToArray();
+
+                int n1 = group1.Length;
+                int n2 = group2.Length;
+                int totalcount = n1 + n2;
+
+                // Detect ties in the data
+                bool hasTies = DetectTies(group1.Concat(group2).ToArray());
+
+                // Determine if exact method should be used
+                bool exact = (totalcount <= 40) || (Math.Min(n1, n2) <= 10 && !hasTies);
+
+                // Compute the U statistic
+                double UStat = CalculateUStatistic(group1, group2);
+                double Upvalue;
+
+                if (exact)
+                {
+                    // Calculate exact p-value manually for small datasets
+                    Upvalue = CalculateExactPValue(UStat, n1, n2);
+                }
+                else
+                {
+                    // Calculate p-value using normal approximation for larger datasets
+                    Upvalue = CalculatePValueForLargeSample(UStat, n1, n2);
+                }
+
+                // Round the U statistic and p-value for display
+                UStat = Math.Round(UStat, 3);
+                Upvalue = Math.Round(Upvalue, 3);
+
+                string UtestString = UStat.ToString("0.000");
+                string pValueString = Upvalue < 0.001 ? "<0.001" : Upvalue.ToString("0.000");
+
+                return new string[] { UtestString, pValueString };
+            }
+            catch (Exception)
+            {
+                return new string[] { "0", "0" };
+            }
+        }
+
+        // Function to calculate exact p-value
+        static double CalculateExactPValue(double U, int n1, int n2)
+        {
+            int totalPermutations = Factorial(n1 + n2) / (Factorial(n1) * Factorial(n2));
+            int count = 0;
+
+            // Generate all permutations of ranks
+            var allRanks = Enumerable.Range(1, n1 + n2).ToArray();
+            foreach (var perm in GetPermutations(allRanks, n1))
+            {
+                int[] group1Ranks = perm.ToArray();
+                int[] group2Ranks = allRanks.Except(group1Ranks).ToArray();
+
+                double rankSum1 = group1Ranks.Sum();
+                double rankSum2 = group2Ranks.Sum();
+
+                double u1 = rankSum1 - n1 * (n1 + 1) / 2.0;
+                double u2 = rankSum2 - n2 * (n2 + 1) / 2.0;
+
+                if (Math.Min(u1, u2) <= U)
+                {
+                    count++;
+                }
+            }
+
+            return (double)count / totalPermutations;
+        }
+
+        // Helper function to detect ties
+        static bool DetectTies(double[] data)
+        {
+            // Count the occurrences of each unique value
+            var tieGroups = data.GroupBy(x => x).Where(g => g.Count() > 1);
+
+            // Only consider it "ties" if there are meaningful groups affecting the ranks
+            // Meaningful ties: at least 2 values tied and account for > 1% of data
+            double totalCount = data.Length;
+            foreach (var group in tieGroups)
+            {
+                if (group.Count() > 1 && (group.Count() / totalCount) > 0.01)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        // Factorial calculation
+        static int Factorial(int n)
+        {
+            if (n <= 1) return 1;
+            return n * Factorial(n - 1);
+        }
+
+        // Helper function to generate permutations
+        static IEnumerable<IEnumerable<T>> GetPermutations<T>(T[] list, int length)
+        {
+            if (length == 1) return list.Select(t => new T[] { t });
+            return GetPermutations(list, length - 1)
+                .SelectMany(t => list.Where(e => !t.Contains(e)),
+                            (t1, t2) => t1.Concat(new T[] { t2 }));
+        }
+
+
+
+
 
 
 
