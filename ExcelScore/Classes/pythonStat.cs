@@ -1615,6 +1615,85 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
 
 
+        public AnovaTestResult RepeatedMeasuresAnova(List<Parameter> parameters)
+        {
+            try
+            {
+                using (Py.GIL())
+                {
+                    dynamic np = Py.Import("numpy");
+                    dynamic pandas = Py.Import("pandas");
+                    dynamic statsmodelsAnova = Py.Import("statsmodels.stats.anova");
+
+                    // Step 1: Prepare data for pandas DataFrame
+                    var subjects = Enumerable.Range(1, parameters[0].ParameterValues.Count).ToList(); // Subjects 1, 2, ...
+                    var values = new List<double>();
+                    var periods = new List<string>();
+                    var subjectIds = new List<int>();
+
+                    // Loop through each parameter (Period1, Period2, etc.)
+                    foreach (var parameter in parameters)
+                    {
+                        string periodName = parameter.Name; // Period name (e.g., "Period1")
+                        var parameterValues = parameter.ParameterValues;
+
+                        for (int i = 0; i < parameterValues.Count; i++)
+                        {
+                            values.Add(parameterValues[i]);
+                            periods.Add(periodName);
+                            subjectIds.Add(subjects[i]);
+                        }
+                    }
+
+                    // Step 2: Create pandas DataFrame
+                    dynamic dataDict = new PyDict
+                    {
+                        ["Subject"] = subjectIds.ToPython(),
+                        ["Period"] = periods.ToPython(),
+                        ["Value"] = values.ToPython()
+                    };
+                    dynamic df = pandas.DataFrame(dataDict);
+
+                    // Step 3: Create the PyList for "within"
+                    PyList withinList = new PyList();
+                    withinList.Append("Period".ToPython());
+
+                    // Step 4: Run repeated-measures ANOVA
+                    dynamic anovaModel = statsmodelsAnova.AnovaRM(
+                        data: df,
+                        depvar: "Value",
+                        subject: "Subject",
+                        within: withinList
+                    ).fit();
+
+                    dynamic anovaTable = anovaModel.anova_table;
+
+                    // Step 5: Extract results
+                    double fValue = anovaTable.loc["Period"]["F"].As<double>();
+                    double pValue = anovaTable.loc["Period"]["Pr > F"].As<double>();
+
+                    string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                    // Return results
+                    return new AnovaTestResult
+                    {
+                        TestValue = fValue.ToString("0.000"),
+                        PValue = pValueString,
+                        PairwiseComparisons = new List<string[]>()
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new AnovaTestResult
+                {
+                    TestValue = "0",
+                    PValue = "0",
+                    PairwiseComparisons = new List<string[]>()
+                };
+            }
+        }
+
 
 
     }
