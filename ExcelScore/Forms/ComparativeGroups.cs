@@ -4618,17 +4618,17 @@ namespace ExcelScore.Forms
 
 
 
-                        //List<Parameter> TestParameters = new List<Parameter>();
-                        //foreach (var testparameter in comparativeTable.Parameters)
-                        //{
-                        //    if(testparameter.IsGroup)
-                        //    {
-                        //        continue;
-                        //    }
-                        //    TestParameters.Add(testparameter);
-                        //}
+                        List<Parameter> TestParameters = new List<Parameter>();
+                        foreach (var testparameter in comparativeTable.Parameters)
+                        {
+                            if (testparameter.IsGroup)
+                            {
+                                continue;
+                            }
+                            TestParameters.Add(testparameter);
+                        }
 
-                        //pythonStat.RepeatedMeasuresAnovaGreen(TestParameters);
+                        pythonStat.RepeatedMeasuresAnovaGreen(TestParameters);
 
 
                     }
