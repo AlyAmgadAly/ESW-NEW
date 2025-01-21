@@ -4500,6 +4500,8 @@ namespace ExcelScore.Forms
 
         pythonStat pythonStat = new pythonStat();
         ManualTests manual = new ManualTests();
+
+        
         public void PerformTest( IWTable table, int numberofgroups ,  Parameter parameter , int addrow , int addColumn , int WordTableColumns , bool issame , ComparativeTable comparativeTable)
         {
             bool TableHasSigI;
@@ -4613,6 +4615,22 @@ namespace ExcelScore.Forms
 
 
                         //U test
+
+
+
+                        //List<Parameter> TestParameters = new List<Parameter>();
+                        //foreach (var testparameter in comparativeTable.Parameters)
+                        //{
+                        //    if(testparameter.IsGroup)
+                        //    {
+                        //        continue;
+                        //    }
+                        //    TestParameters.Add(testparameter);
+                        //}
+
+                        //pythonStat.RepeatedMeasuresAnovaGreen(TestParameters);
+
+
                     }
                 }
 
