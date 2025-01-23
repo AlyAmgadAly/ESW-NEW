@@ -4619,16 +4619,22 @@ namespace ExcelScore.Forms
 
 
                         List<Parameter> TestParameters = new List<Parameter>();
+                        List<List<double>> dataParaValues = new List<List<double>>();
+                        List<string> ParameterLabels = new List<string>();
+
                         foreach (var testparameter in comparativeTable.Parameters)
                         {
                             if (testparameter.IsGroup)
                             {
                                 continue;
                             }
-                            TestParameters.Add(testparameter);
+                            dataParaValues.Add(testparameter.ParameterValues);
+                            ParameterLabels.Add(parameter.Name);
+                             //TestParameters.Add(testparameter);
                         }
 
-                        pythonStat.RepeatedMeasuresAnovaGreen(TestParameters);
+                        pythonStat.FriedmanTestWithDunn(dataParaValues, ParameterLabels);
+                         //manual.Zpaired(dataParaValues[0].ToArray() , dataParaValues[1].ToArray());
 
 
                     }

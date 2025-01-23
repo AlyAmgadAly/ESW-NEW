@@ -505,6 +505,23 @@ namespace ExcelScore.Classes
             return sign * y;
         }
 
+        private double Erf_New(double x)
+        {
+            // Approximation of the error function
+            double t = 1.0 / (1.0 + 0.5 * Math.Abs(x));
+            double tau = t * Math.Exp(-x * x - 1.26551223 + t *
+                (1.00002368 + t *
+                (0.37409196 + t *
+                (0.09678418 + t *
+                (-0.18628806 + t *
+                (0.27886807 + t *
+                (-1.13520398 + t *
+                (1.48851587 + t *
+                (-0.82215223 + t * 0.17087277)))))))));
+            return x >= 0 ? 1 - tau : tau - 1;
+        }
+
+
         // Ranking function remains unchanged
         static Dictionary<double, double> RankData(double[] data)
         {
@@ -1022,73 +1039,91 @@ namespace ExcelScore.Classes
         {
             try
             {
-                //var Tpaired = new Accord.Statistics.Testing.PairedTTest(Para1, Para2);
-
+                // Step 1: Calculate the differences between Para1 and Para2
                 var differences = Para1.Zip(Para2, (p1, p2) => p1 - p2).ToArray();
 
                 // Step 2: Remove zero differences
                 var nonZeroDifferences = differences.Where(d => d != 0).ToArray();
 
-
-
                 // Step 3: Rank the absolute values of the differences
                 var absDifferences = nonZeroDifferences.Select(Math.Abs).ToArray();
-                var rankedAbsDifferences = absDifferences.Select((v, i) => new { Value = v, Index = i })
-                    .OrderBy(x => x.Value)
-                    .Select((x, i) => new { x.Index, Rank = i + 1 })
-                    .ToArray();
 
+                // Create a list of indexed absolute differences
+                var indexedAbsDifferences = absDifferences
+                    .Select((value, index) => new { Value = value, Index = index })
+                    .OrderBy(x => x.Value)
+                    .ToList();
+
+                // Step 3.1: Handle ties by calculating the average rank for tied values
                 var ranks = new double[nonZeroDifferences.Length];
-                foreach (var rank in rankedAbsDifferences)
+                int rankCounter = 1; // Start rank from 1
+                int i = 0;
+                while (i < indexedAbsDifferences.Count)
                 {
-                    ranks[rank.Index] = rank.Rank;
+                    // Find a group of tied values
+                    var tieGroup = indexedAbsDifferences
+                        .Where(x => x.Value == indexedAbsDifferences[i].Value)
+                        .ToList();
+
+                    // Calculate the average rank for the tied group
+                    double averageRank = rankCounter + (tieGroup.Count - 1) / 2.0;
+
+                    // Assign the average rank to all tied values
+                    foreach (var item in tieGroup)
+                    {
+                        ranks[item.Index] = averageRank;
+                    }
+
+                    // Increment the rank counter
+                    rankCounter += tieGroup.Count;
+                    i += tieGroup.Count; // Skip ahead by the number of tied values
                 }
 
                 // Step 4: Sum the ranks for negative differences
                 double negativeRankSum = 0;
-                for (int i = 0; i < nonZeroDifferences.Length; i++)
+                for (int j = 0; j < nonZeroDifferences.Length; j++)
                 {
-                    if (nonZeroDifferences[i] < 0)
+                    if (nonZeroDifferences[j] < 0)
                     {
-                        negativeRankSum += ranks[i];
+                        negativeRankSum += ranks[j];
                     }
                 }
 
                 // Step 5: Calculate the Z value
-                // We use a normal approximation for large samples
+                // Use a normal approximation for large samples
                 double n = nonZeroDifferences.Length;
-                double mean = n * (n + 1) / 4;
-                double variance = n * (n + 1) * (2 * n + 1) / 24;
+                double mean = n * (n + 1) / 4.0;
+                double variance = (n * (n + 1) * (2 * n + 1)) / 24.0;
+
+                // Adjust for ties if necessary
+                var tieGroups = absDifferences.GroupBy(x => x).Where(g => g.Count() > 1);
+                double tieCorrection = tieGroups.Sum(g => Math.Pow(g.Count(), 3) - g.Count());
+                variance -= tieCorrection / 48.0;
+
+                // Continuity correction (optional for small samples)
                 double zValue = (negativeRankSum - mean) / Math.Sqrt(variance);
 
-                // Formatting
+                // Step 6: Calculate the p-value
+                double pValue = 2 * (1 - CDFNormal(Math.Abs(zValue))); // Two-tailed test
 
-
-                double pValue = 2 * (1 - CDFNormal(Math.Abs(zValue)));
-
-
-
-                zValue = Math.Round(zValue, 3);
-                pValue = Math.Round(pValue, 3);
-
+                // Round values only for display
                 string TtestString = zValue.ToString("0.000");
-                TtestString = TtestString.Replace("-", "");
-
-                // MessageBox.Show(EqualVariance.ToString());
-                //MessageBox.Show("T test p " + pvalueT.ToString());
-
-                // Format the p-value
                 string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
+                // Display the results
+                MessageBox.Show($"Z-value: {TtestString}");
+                MessageBox.Show($"P-value: {pValueString}");
 
+                // Return the result
                 return new string[] { TtestString, pValueString };
             }
-            catch(Exception)
+            catch (Exception ex)
             {
+                MessageBox.Show($"Error: {ex.Message}");
                 return new string[] { "-", "-" };
             }
-            
         }
+
 
         public static double CDFNormal(double z)
         {

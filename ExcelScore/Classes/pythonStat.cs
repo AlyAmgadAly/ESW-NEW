@@ -1256,7 +1256,10 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
                 // Format the p-value
                 string testStatisticString = testStatistic.ToString("0.000");
-                string pValueString = pValue <= 0.001 ? "<0.001" : pValue.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                MessageBox.Show(testStatisticString);
+                MessageBox.Show(pValueString);
 
                 string[] TestValue = new string[] { testStatisticString, pValueString };
 
@@ -1356,7 +1359,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
             }
 
         }
-        
+
         public string[] WilcoxonTest(List<double> AdataGroup1, List<double> AdataGroup2)
         {
             using (Py.GIL())
@@ -1372,23 +1375,62 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 dynamic data1 = np.array(dataGroup1);
                 dynamic data2 = np.array(dataGroup2);
 
-                // Perform the Wilcoxon signed-rank test
+                // Compute the differences between paired values (d = x - y)
+                dynamic differences = data1 - data2;
+
+                // Get the absolute values of the differences
+                dynamic absDifferences = np.abs(differences);
+
+                // Rank the absolute differences (use scipy.stats.rankdata to handle ties)
+                dynamic ranks = scipyStats.rankdata(absDifferences);
+
+                // Calculate the signed rank sum
+                double signedRankSum = 0;
+                int length = differences.shape[0]; // Get the length of the differences
+                for (int i = 0; i < length; i++)
+                {
+                    double rank = ranks[i].As<double>();  // Convert PyObject to double
+
+                    // If the difference is negative, subtract the rank from the sum (negative ranks)
+                    if (differences[i] < 0)
+                    {
+                        signedRankSum -= rank;
+                    }
+                    // If the difference is positive, add the rank to the sum (positive ranks)
+                    else if (differences[i] > 0)
+                    {
+                        signedRankSum += rank;
+                    }
+                }
+
+                // Perform the Wilcoxon signed-rank test using scipy
                 dynamic result = scipyStats.wilcoxon(data1, data2);
 
-                // Extract the p-value and test statistic from the result
+                // Extract the p-value from the result
                 double pValue = Math.Round(result[1].As<double>(), 3);
-                double wStatistic = Math.Round(result[0].As<double>(), 3);
+
+                // The statistic from the scipy result (wilcoxon result[0]) might be the opposite sign of what you expect.
+                double wStatistic = Math.Round(signedRankSum, 3); // Use the signed rank sum for the test statistic
 
                 string WtestString = wStatistic.ToString("0.000");
-                WtestString = WtestString.Replace("-", "");
 
+                // Format the result string: preserving the negative sign if it exists
                 string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
+                MessageBox.Show(WtestString);
+                MessageBox.Show(pValueString);
+
+                // Return the result as an array
                 string[] TestValue = new string[] { WtestString, pValueString };
 
                 return TestValue;
             }
         }
+
+
+
+
+
 
 
         public string[] CochranQTest(List<List<double>> data)
@@ -1834,6 +1876,174 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 };
             }
         }
+
+        public string[] FriedmanTestNew(List<List<double>> data)
+        {
+            using (Py.GIL())
+            {
+                dynamic np = Py.Import("numpy");
+                dynamic stats = Py.Import("scipy.stats");
+
+                // Convert the List<List<double>> to a Python list of NumPy arrays
+                var pyGroupsData = new PyList();
+                foreach (var groupData in data)
+                {
+                    var pyGroupArray = np.array(groupData.ToArray());
+                    pyGroupsData.Append(pyGroupArray);
+                }
+
+                // Prepare the Python script
+                string pythonScript = @"
+result_friedman = stats.friedmanchisquare(*groups_data)
+";
+
+                // Create Python dictionaries for variables
+                dynamic globals = new PyDict();
+                dynamic locals = new PyDict();
+
+                globals["stats"] = stats;
+                globals["groups_data"] = pyGroupsData;
+
+                // Execute the Python script
+                PythonEngine.Exec(pythonScript, locals, globals);
+
+                // Retrieve the results from the Python script
+                dynamic resultFriedman = globals["result_friedman"];
+                double testStatistic = Math.Round(resultFriedman.statistic.As<double>(), 3);
+                double pValue = Math.Round(resultFriedman.pvalue.As<double>(), 3);
+
+                // Format the output
+                string testStatisticString = testStatistic.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+               
+
+                return new string[] { testStatisticString, pValueString };
+            }
+        }
+
+        public AnovaTestResult FriedmanTestWithDunn(List<List<double>> data, List<string> groupLabels)
+        {
+            using (Py.GIL())
+            {
+                dynamic np = Py.Import("numpy");
+                dynamic stats = Py.Import("scipy.stats");
+                dynamic scikit_posthocs = Py.Import("scikit_posthocs");
+                dynamic pandas = Py.Import("pandas");
+
+                // Convert data into Python-compatible format (list of NumPy arrays)
+                var pyGroupsData = new PyList();
+                foreach (var groupData in data)
+                {
+                    var pyGroupArray = np.array(groupData.ToArray());
+                    pyGroupsData.Append(pyGroupArray);
+                }
+
+                // Flatten the data and create corresponding group labels
+                List<double> allValues = new List<double>();
+                List<string> allGroupLabels = new List<string>();
+                for (int i = 0; i < data.Count; i++)
+                {
+                    allValues.AddRange(data[i]);
+                    allGroupLabels.AddRange(Enumerable.Repeat(groupLabels[i], data[i].Count));
+                }
+
+                // Create a pandas DataFrame for the data
+                var dfData = new List<List<object>>();
+                for (int i = 0; i < allValues.Count; i++)
+                {
+                    dfData.Add(new List<object> { allValues[i], allGroupLabels[i] });
+                }
+
+                dynamic df = pandas.DataFrame(dfData, columns: new List<string> { "Value", "Group" });
+
+                // Prepare the Python script
+                string pythonScript = @"
+result_friedman = stats.friedmanchisquare(*groups_data)
+dunn_result = scikit_posthocs.posthoc_dunn(df , val_col=""Value"" , group_col=""Group"")
+";
+
+                // Set up Python globals and locals
+                dynamic globals = new PyDict();
+                globals["stats"] = stats;
+                globals["scikit_posthocs"] = scikit_posthocs;
+                globals["df"] = df;
+                globals["groups_data"] = pyGroupsData;
+
+                // Execute the Python script
+                PythonEngine.Exec(pythonScript, globals: globals);
+
+                // Retrieve the Friedman test result
+                dynamic resultFriedman = globals["result_friedman"];
+                double testStatistic = Math.Round(resultFriedman.statistic.As<double>(), 3);
+                double pValue = Math.Round(resultFriedman.pvalue.As<double>(), 3);
+
+                // Retrieve the Dunn's test results
+                dynamic dunnResult = globals["dunn_result"];
+
+                // Convert Dunn's test results (p-values) into a DataTable
+                DataTable dataTable = new DataTable();
+
+                dynamic columns = dunnResult.columns;
+                foreach (var column in columns)
+                {
+                    dataTable.Columns.Add(column.ToString());
+                }
+
+                foreach (dynamic row in dunnResult.itertuples(index: false, name: null))
+                {
+                    DataRow dataRow = dataTable.NewRow();
+                    int colIndex = 0;
+                    foreach (var cell in row)
+                    {
+                        dataRow[colIndex] = cell;
+                        colIndex++;
+                    }
+                    dataTable.Rows.Add(dataRow);
+                }
+
+                // Create pairwise comparisons
+                // Create pairwise comparisons
+                List<string[]> pairwiseComparisons = new List<string[]>();
+                for (int i = 0; i < dataTable.Rows.Count; i++)
+                {
+                    for (int j = i + 1; j < dataTable.Columns.Count; j++)
+                    {
+                        string labelA = dataTable.Columns[i].ColumnName;
+                        string labelB = dataTable.Columns[j].ColumnName;
+
+                        if (double.TryParse(dataTable.Rows[i][j].ToString(), out double pValueDunn))
+                        {
+                            string pValueDunnString = pValueDunn < 0.001 ? "<0.001" : pValueDunn.ToString("0.000"); // Renamed to avoid conflicts
+                            string comparison = $"{labelA} vs {labelB}";
+                            pairwiseComparisons.Add(new string[] { comparison, pValueDunnString });
+                        }
+                    }
+                }
+
+                // Format the Friedman test output
+                string testStatisticString = testStatistic.ToString("0.000");
+                string pValueFriedmanString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000"); // Renamed for clarity
+
+                MessageBox.Show(testStatisticString);
+                MessageBox.Show(pValueFriedmanString);
+                foreach (var pairwise in pairwiseComparisons)
+                {
+                    MessageBox.Show(pairwise[1]);
+                }
+
+                // Return the result
+                return new AnovaTestResult
+                {
+                    TestValue = testStatisticString,
+                    PValue = pValueFriedmanString,
+                    PairwiseComparisons = pairwiseComparisons
+                };
+            }
+        }
+
+
+
 
 
 
