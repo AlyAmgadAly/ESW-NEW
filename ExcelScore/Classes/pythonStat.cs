@@ -2060,64 +2060,33 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col='Value' , group_col='Gro
         }
 
 
-        public AnovaTestResult FriedmanTestWithDunnNEW(List<List<double>> data, List<string> periodLabels)
+        public AnovaTestResult FriedmanTestWithDunnNew(List<List<double>> data, List<string> periodLabels)
         {
             using (Py.GIL())
             {
                 dynamic np = Py.Import("numpy");
                 dynamic stats = Py.Import("scipy.stats");
                 dynamic scikit_posthocs = Py.Import("scikit_posthocs");
-                dynamic pandas = Py.Import("pandas");
 
-                // Transpose the data (Periods → Subjects × Periods)
-                var transposedData = data[0].Select((_, colIndex) => data.Select(row => row[colIndex]).ToList()).ToList();
-
-                // Convert transposed data into a pandas DataFrame
-                var dfData = new List<List<object>>();
-                int subjectId = 1;
-                foreach (var row in transposedData)
+                // Convert data (List<List<double>>) into a 2D NumPy array
+                int maxRows = data.Max(period => period.Count); // Handle uneven list lengths
+                var arrayData = new List<List<object>>();
+                for (int i = 0; i < maxRows; i++)
                 {
-                    var rowWithSubjectId = new List<object> { subjectId++ };
-                    rowWithSubjectId.AddRange(row.Cast<object>());
-                    dfData.Add(rowWithSubjectId);
+                    var row = new List<object>();
+                    foreach (var period in data)
+                    {
+                        row.Add(i < period.Count ? (object)period[i] : np.nan); // Add NaN for missing values
+                    }
+                    arrayData.Add(row);
                 }
 
-                // Include "Subject" column to identify each subject
-                List<string> dfColumns = new List<string> { "Subject" };
-                dfColumns.AddRange(periodLabels);
-                dynamic df = pandas.DataFrame(dfData, columns: dfColumns);
+                dynamic numpyArray = np.array(arrayData);
 
-                // Melt the DataFrame for Dunn's test
-                string pythonScript = @"
-melted_df = pandas.melt(
-    df.reset_index(),
-    id_vars=['Subject'],
-    var_name='Period',
-    value_name='Value'
-)
-result_friedman = stats.friedmanchisquare(*[df[col] for col in df.columns if col != 'Subject'])
-dunn_result = scikit_posthocs.posthoc_dunn(melted_df, val_col='Value', group_col='Period', p_adjust='bonferroni')
-";
+                // Perform Dunn's post hoc test
+                dynamic dunnResult = scikit_posthocs.posthoc_dunn(numpyArray, p_adjust: "holm");
 
-                // Set up Python globals
-                dynamic globals = new PyDict();
-                globals["stats"] = stats;
-                globals["scikit_posthocs"] = scikit_posthocs;
-                globals["df"] = df;
-                globals["pandas"] = pandas;
-
-                // Execute the Python script
-                PythonEngine.Exec(pythonScript, globals: globals);
-
-                // Retrieve Friedman test result
-                dynamic resultFriedman = globals["result_friedman"];
-                double testStatistic = Math.Round(resultFriedman.statistic.As<double>(), 3);
-                double pValue = Math.Round(resultFriedman.pvalue.As<double>(), 3);
-
-                // Retrieve Dunn's test result
-                dynamic dunnResult = globals["dunn_result"];
-
-                // Convert Dunn's test result into a DataTable
+                // Convert Dunn's test results (p-values) into a DataTable
                 DataTable dataTable = new DataTable();
                 dynamic columns = dunnResult.columns;
                 foreach (var column in columns)
@@ -2155,19 +2124,16 @@ dunn_result = scikit_posthocs.posthoc_dunn(melted_df, val_col='Value', group_col
                     }
                 }
 
-                // Format Friedman test output
-                string testStatisticString = testStatistic.ToString("0.000");
-                string pValueFriedmanString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
-
                 // Return the result
                 return new AnovaTestResult
                 {
-                    TestValue = testStatisticString,
-                    PValue = pValueFriedmanString,
+                    TestValue = "N/A (No Friedman Test here)", // No Friedman test since this only handles Dunn
+                    PValue = "N/A",
                     PairwiseComparisons = pairwiseComparisons
                 };
             }
         }
+
 
 
 
