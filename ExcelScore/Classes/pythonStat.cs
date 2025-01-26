@@ -1949,10 +1949,27 @@ result_friedman = stats.friedmanchisquare(*groups_data)
                 }
 
                 // Create a pandas DataFrame for the data
+                //var dfData = new List<List<object>>();
+                //for (int i = 0; i < allValues.Count; i++)
+                //{
+                //    dfData.Add(new List<object> { allValues[i], allGroupLabels[i] });
+                //}
+
+                dynamic datafr = np.array(allValues.ToArray());
+                dynamic groupLabelsCombined = np.array(allGroupLabels.ToArray());
+
+
+
                 var dfData = new List<List<object>>();
-                for (int i = 0; i < allValues.Count; i++)
+                int numRows = (int)datafr.shape[0];
+                for (int i = 0; i < numRows; i++)
                 {
-                    dfData.Add(new List<object> { allValues[i], allGroupLabels[i] });
+                    List<object> row = new List<object>
+                    {
+                        datafr[i],                  // Value
+                        groupLabelsCombined[i]    // Group
+                    };
+                    dfData.Add(row);
                 }
 
                 dynamic df = pandas.DataFrame(dfData, columns: new List<string> { "Value", "Group" });
@@ -1960,7 +1977,7 @@ result_friedman = stats.friedmanchisquare(*groups_data)
                 // Prepare the Python script
                 string pythonScript = @"
 result_friedman = stats.friedmanchisquare(*groups_data)
-dunn_result = scikit_posthocs.posthoc_dunn(df , val_col=""Value"" , group_col=""Group"")
+dunn_result = scikit_posthocs.posthoc_dunn(df , val_col='Value' , group_col='Group' )
 ";
 
                 // Set up Python globals and locals
@@ -2041,6 +2058,119 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col=""Value"" , group_col=""
                 };
             }
         }
+
+
+        public AnovaTestResult FriedmanTestWithDunnNEW(List<List<double>> data, List<string> periodLabels)
+        {
+            using (Py.GIL())
+            {
+                dynamic np = Py.Import("numpy");
+                dynamic stats = Py.Import("scipy.stats");
+                dynamic scikit_posthocs = Py.Import("scikit_posthocs");
+                dynamic pandas = Py.Import("pandas");
+
+                // Transpose the data (Periods → Subjects × Periods)
+                var transposedData = data[0].Select((_, colIndex) => data.Select(row => row[colIndex]).ToList()).ToList();
+
+                // Convert transposed data into a pandas DataFrame
+                var dfData = new List<List<object>>();
+                int subjectId = 1;
+                foreach (var row in transposedData)
+                {
+                    var rowWithSubjectId = new List<object> { subjectId++ };
+                    rowWithSubjectId.AddRange(row.Cast<object>());
+                    dfData.Add(rowWithSubjectId);
+                }
+
+                // Include "Subject" column to identify each subject
+                List<string> dfColumns = new List<string> { "Subject" };
+                dfColumns.AddRange(periodLabels);
+                dynamic df = pandas.DataFrame(dfData, columns: dfColumns);
+
+                // Melt the DataFrame for Dunn's test
+                string pythonScript = @"
+melted_df = pandas.melt(
+    df.reset_index(),
+    id_vars=['Subject'],
+    var_name='Period',
+    value_name='Value'
+)
+result_friedman = stats.friedmanchisquare(*[df[col] for col in df.columns if col != 'Subject'])
+dunn_result = scikit_posthocs.posthoc_dunn(melted_df, val_col='Value', group_col='Period', p_adjust='bonferroni')
+";
+
+                // Set up Python globals
+                dynamic globals = new PyDict();
+                globals["stats"] = stats;
+                globals["scikit_posthocs"] = scikit_posthocs;
+                globals["df"] = df;
+                globals["pandas"] = pandas;
+
+                // Execute the Python script
+                PythonEngine.Exec(pythonScript, globals: globals);
+
+                // Retrieve Friedman test result
+                dynamic resultFriedman = globals["result_friedman"];
+                double testStatistic = Math.Round(resultFriedman.statistic.As<double>(), 3);
+                double pValue = Math.Round(resultFriedman.pvalue.As<double>(), 3);
+
+                // Retrieve Dunn's test result
+                dynamic dunnResult = globals["dunn_result"];
+
+                // Convert Dunn's test result into a DataTable
+                DataTable dataTable = new DataTable();
+                dynamic columns = dunnResult.columns;
+                foreach (var column in columns)
+                {
+                    dataTable.Columns.Add(column.ToString());
+                }
+
+                foreach (dynamic row in dunnResult.itertuples(index: false, name: null))
+                {
+                    DataRow dataRow = dataTable.NewRow();
+                    int colIndex = 0;
+                    foreach (var cell in row)
+                    {
+                        dataRow[colIndex] = cell;
+                        colIndex++;
+                    }
+                    dataTable.Rows.Add(dataRow);
+                }
+
+                // Pairwise comparisons
+                List<string[]> pairwiseComparisons = new List<string[]>();
+                for (int i = 0; i < dataTable.Rows.Count; i++)
+                {
+                    for (int j = i + 1; j < dataTable.Columns.Count; j++)
+                    {
+                        string labelA = dataTable.Columns[i].ColumnName;
+                        string labelB = dataTable.Columns[j].ColumnName;
+
+                        if (double.TryParse(dataTable.Rows[i][j].ToString(), out double pValueDunn))
+                        {
+                            string pValueDunnString = pValueDunn < 0.001 ? "<0.001" : pValueDunn.ToString("0.000");
+                            string comparison = $"{labelA} vs {labelB}";
+                            pairwiseComparisons.Add(new string[] { comparison, pValueDunnString });
+                        }
+                    }
+                }
+
+                // Format Friedman test output
+                string testStatisticString = testStatistic.ToString("0.000");
+                string pValueFriedmanString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                // Return the result
+                return new AnovaTestResult
+                {
+                    TestValue = testStatisticString,
+                    PValue = pValueFriedmanString,
+                    PairwiseComparisons = pairwiseComparisons
+                };
+            }
+        }
+
+
+
 
 
 

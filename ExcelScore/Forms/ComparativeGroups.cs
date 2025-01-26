@@ -4629,11 +4629,11 @@ namespace ExcelScore.Forms
                                 continue;
                             }
                             dataParaValues.Add(testparameter.ParameterValues);
-                            ParameterLabels.Add(parameter.Name);
+                            ParameterLabels.Add(testparameter.Name);
                              //TestParameters.Add(testparameter);
                         }
 
-                        pythonStat.FriedmanTestWithDunn(dataParaValues, ParameterLabels);
+                       pythonStat.FriedmanTestWithDunnNEW(dataParaValues, ParameterLabels);
                          //manual.Zpaired(dataParaValues[0].ToArray() , dataParaValues[1].ToArray());
 
 
