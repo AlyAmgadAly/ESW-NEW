@@ -1922,92 +1922,76 @@ result_friedman = stats.friedmanchisquare(*groups_data)
             }
         }
 
-        public AnovaTestResult FriedmanTestWithDunn(List<List<double>> data, List<string> groupLabels)
+        public AnovaTestResult FriedmanTestWithNemenyiPostHoc(List<List<double>> data)
         {
             using (Py.GIL())
             {
                 dynamic np = Py.Import("numpy");
-                dynamic stats = Py.Import("scipy.stats");
+                dynamic pd = Py.Import("pandas");
                 dynamic scikit_posthocs = Py.Import("scikit_posthocs");
-                dynamic pandas = Py.Import("pandas");
 
-                // Convert data into Python-compatible format (list of NumPy arrays)
-                var pyGroupsData = new PyList();
-                foreach (var groupData in data)
+                // Assuming data has 3 periods, each with multiple observations
+                int numObservations = data[0].Count; // Assuming each period has the same number of observations
+                int numPeriods = data.Count; // 3 periods
+
+                // Melt the data into Python lists
+                List<int> observations = new List<int>(); // Observation ids
+                List<int> groups = new List<int>(); // Group ids
+                List<double> values = new List<double>(); // Values
+
+                // Melt the data
+                for (int i = 0; i < numObservations; i++)
                 {
-                    var pyGroupArray = np.array(groupData.ToArray());
-                    pyGroupsData.Append(pyGroupArray);
-                }
-
-                // Flatten the data and create corresponding group labels
-                List<double> allValues = new List<double>();
-                List<string> allGroupLabels = new List<string>();
-                for (int i = 0; i < data.Count; i++)
-                {
-                    allValues.AddRange(data[i]);
-                    allGroupLabels.AddRange(Enumerable.Repeat(groupLabels[i], data[i].Count));
-                }
-
-                // Create a pandas DataFrame for the data
-                //var dfData = new List<List<object>>();
-                //for (int i = 0; i < allValues.Count; i++)
-                //{
-                //    dfData.Add(new List<object> { allValues[i], allGroupLabels[i] });
-                //}
-
-                dynamic datafr = np.array(allValues.ToArray());
-                dynamic groupLabelsCombined = np.array(allGroupLabels.ToArray());
-
-
-
-                var dfData = new List<List<object>>();
-                int numRows = (int)datafr.shape[0];
-                for (int i = 0; i < numRows; i++)
-                {
-                    List<object> row = new List<object>
+                    for (int j = 0; j < numPeriods; j++)
                     {
-                        datafr[i],                  // Value
-                        groupLabelsCombined[i]    // Group
-                    };
-                    dfData.Add(row);
+                        observations.Add(i + 1);  // Observation ID
+                        groups.Add(j + 1);  // Group ID (Period)
+                        values.Add(data[j][i]);  // Value for this observation and period
+                    }
                 }
 
-                dynamic df = pandas.DataFrame(dfData, columns: new List<string> { "Value", "Group" });
+                // Convert lists to Python objects
+                dynamic pyObservations = np.array(observations.ToArray());
+                dynamic pyGroups = np.array(groups.ToArray());
+                dynamic pyValues = np.array(values.ToArray());
 
-                // Prepare the Python script
+                // Prepare Python script to create the DataFrame and run the posthoc test
                 string pythonScript = @"
-result_friedman = stats.friedmanchisquare(*groups_data)
-dunn_result = scikit_posthocs.posthoc_dunn(df , val_col='Value' , group_col='Group' )
+import pandas as pd
+import scikit_posthocs as sp
+
+# Create the DataFrame
+df = pd.DataFrame({
+    'Observation': observations,
+    'Group': groups,
+    'Value': values
+})
+
+# Perform the Nemenyi post hoc test
+result_nemenyi = sp.posthoc_nemenyi_friedman(df, y_col='Value', group_col='Group', block_col='Observation')
 ";
 
-                // Set up Python globals and locals
+                // Create Python dictionaries for variables
                 dynamic globals = new PyDict();
-                globals["stats"] = stats;
-                globals["scikit_posthocs"] = scikit_posthocs;
-                globals["df"] = df;
-                globals["groups_data"] = pyGroupsData;
+                globals["observations"] = pyObservations;
+                globals["groups"] = pyGroups;
+                globals["values"] = pyValues;
 
                 // Execute the Python script
-                PythonEngine.Exec(pythonScript, globals: globals);
+                PythonEngine.Exec(pythonScript, globals);
 
-                // Retrieve the Friedman test result
-                dynamic resultFriedman = globals["result_friedman"];
-                double testStatistic = Math.Round(resultFriedman.statistic.As<double>(), 3);
-                double pValue = Math.Round(resultFriedman.pvalue.As<double>(), 3);
+                // Retrieve the result from the script
+                dynamic nemenyiResult = globals["result_nemenyi"];
 
-                // Retrieve the Dunn's test results
-                dynamic dunnResult = globals["dunn_result"];
-
-                // Convert Dunn's test results (p-values) into a DataTable
+                // Convert the result (p-values) into a DataTable
                 DataTable dataTable = new DataTable();
-
-                dynamic columns = dunnResult.columns;
+                dynamic columns = nemenyiResult.columns;
                 foreach (var column in columns)
                 {
                     dataTable.Columns.Add(column.ToString());
                 }
 
-                foreach (dynamic row in dunnResult.itertuples(index: false, name: null))
+                foreach (dynamic row in nemenyiResult.itertuples(index: false, name: null))
                 {
                     DataRow dataRow = dataTable.NewRow();
                     int colIndex = 0;
@@ -2019,8 +2003,7 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col='Value' , group_col='Gro
                     dataTable.Rows.Add(dataRow);
                 }
 
-                // Create pairwise comparisons
-                // Create pairwise comparisons
+                // Pairwise comparisons and p-values
                 List<string[]> pairwiseComparisons = new List<string[]>();
                 for (int i = 0; i < dataTable.Rows.Count; i++)
                 {
@@ -2029,72 +2012,79 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col='Value' , group_col='Gro
                         string labelA = dataTable.Columns[i].ColumnName;
                         string labelB = dataTable.Columns[j].ColumnName;
 
-                        if (double.TryParse(dataTable.Rows[i][j].ToString(), out double pValueDunn))
+                        if (double.TryParse(dataTable.Rows[i][j].ToString(), out double pValueNemenyi))
                         {
-                            string pValueDunnString = pValueDunn < 0.001 ? "<0.001" : pValueDunn.ToString("0.000"); // Renamed to avoid conflicts
+                            string pValueNemenyiString = pValueNemenyi < 0.001 ? "<0.001" : pValueNemenyi.ToString("0.000");
                             string comparison = $"{labelA} vs {labelB}";
-                            pairwiseComparisons.Add(new string[] { comparison, pValueDunnString });
+                            pairwiseComparisons.Add(new string[] { comparison, pValueNemenyiString });
                         }
                     }
-                }
-
-                // Format the Friedman test output
-                string testStatisticString = testStatistic.ToString("0.000");
-                string pValueFriedmanString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000"); // Renamed for clarity
-
-                MessageBox.Show(testStatisticString);
-                MessageBox.Show(pValueFriedmanString);
-                foreach (var pairwise in pairwiseComparisons)
-                {
-                    MessageBox.Show(pairwise[1]);
                 }
 
                 // Return the result
                 return new AnovaTestResult
                 {
-                    TestValue = testStatisticString,
-                    PValue = pValueFriedmanString,
+                    TestValue = "N/A (No Friedman Test here)", // No Friedman test, just Dunn's test
+                    PValue = "N/A",
                     PairwiseComparisons = pairwiseComparisons
                 };
             }
         }
 
 
-        public AnovaTestResult FriedmanTestWithDunnNew(List<List<double>> data, List<string> periodLabels)
+
+
+
+
+
+
+        public AnovaTestResult FriedmanTestWithDunnNew(List<List<double>> data)
         {
             using (Py.GIL())
             {
                 dynamic np = Py.Import("numpy");
-                dynamic stats = Py.Import("scipy.stats");
+                dynamic pd = Py.Import("pandas");
                 dynamic scikit_posthocs = Py.Import("scikit_posthocs");
 
-                // Convert data (List<List<double>>) into a 2D NumPy array
-                int maxRows = data.Max(period => period.Count); // Handle uneven list lengths
-                var arrayData = new List<List<object>>();
-                for (int i = 0; i < maxRows; i++)
+                // Check if all periods have the same number of observations
+                int numberOfObservations = data[0].Count;
+                if (data.Any(period => period.Count != numberOfObservations))
                 {
-                    var row = new List<object>();
-                    foreach (var period in data)
-                    {
-                        row.Add(i < period.Count ? (object)period[i] : np.nan); // Add NaN for missing values
-                    }
-                    arrayData.Add(row);
+                    throw new ArgumentException("All periods must have the same number of observations.");
                 }
 
-                dynamic numpyArray = np.array(arrayData);
+                // Transpose the data so that each observation is a row, and each period is a column
+                var transposedData = new List<List<double>>();
+
+                // For each observation, create a row with corresponding values from each period
+                for (int i = 0; i < numberOfObservations; i++)
+                {
+                    var row = new List<double>();
+                    foreach (var period in data)
+                    {
+                        row.Add(period[i]); // Collect the i-th observation from each period
+                    }
+                    transposedData.Add(row);
+                }
+
+                // Convert the transposed data into a NumPy array (each period is now a column)
+                dynamic numpyArray = np.array(transposedData.ToArray());
+
+                // Create a pandas DataFrame with period names as columns
+                dynamic df = pd.DataFrame(numpyArray, columns: new[] { "Pre", "Imm", "Post" });
 
                 // Perform Dunn's post hoc test
-                dynamic dunnResult = scikit_posthocs.posthoc_dunn(numpyArray, p_adjust: "holm");
+                dynamic posthocResult = scikit_posthocs.posthoc_dunn(df, p_adjust: "bonferroni");
 
                 // Convert Dunn's test results (p-values) into a DataTable
                 DataTable dataTable = new DataTable();
-                dynamic columns = dunnResult.columns;
+                dynamic columns = posthocResult.columns;
                 foreach (var column in columns)
                 {
                     dataTable.Columns.Add(column.ToString());
                 }
 
-                foreach (dynamic row in dunnResult.itertuples(index: false, name: null))
+                foreach (dynamic row in posthocResult.itertuples(index: false, name: null))
                 {
                     DataRow dataRow = dataTable.NewRow();
                     int colIndex = 0;
@@ -2133,6 +2123,10 @@ dunn_result = scikit_posthocs.posthoc_dunn(df , val_col='Value' , group_col='Gro
                 };
             }
         }
+
+
+
+
 
 
 

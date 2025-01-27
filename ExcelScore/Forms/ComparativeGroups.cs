@@ -4633,7 +4633,7 @@ namespace ExcelScore.Forms
                              //TestParameters.Add(testparameter);
                         }
 
-                       pythonStat.FriedmanTestWithDunnNew(dataParaValues, ParameterLabels);
+                       pythonStat.FriedmanTestWithDunnNew(dataParaValues);
                          //manual.Zpaired(dataParaValues[0].ToArray() , dataParaValues[1].ToArray());
 
 
