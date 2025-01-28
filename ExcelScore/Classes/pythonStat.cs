@@ -1922,207 +1922,121 @@ result_friedman = stats.friedmanchisquare(*groups_data)
             }
         }
 
-        public AnovaTestResult FriedmanTestWithNemenyiPostHoc(List<List<double>> data)
+
+        public AnovaTestResult PerformFriedmanWithDunnTest(List<List<double>> data)
         {
-            using (Py.GIL())
+            try
             {
-                dynamic np = Py.Import("numpy");
-                dynamic pd = Py.Import("pandas");
-                dynamic scikit_posthocs = Py.Import("scikit_posthocs");
-
-                // Assuming data has 3 periods, each with multiple observations
-                int numObservations = data[0].Count; // Assuming each period has the same number of observations
-                int numPeriods = data.Count; // 3 periods
-
-                // Melt the data into Python lists
-                List<int> observations = new List<int>(); // Observation ids
-                List<int> groups = new List<int>(); // Group ids
-                List<double> values = new List<double>(); // Values
-
-                // Melt the data
-                for (int i = 0; i < numObservations; i++)
+                using (Py.GIL())
                 {
-                    for (int j = 0; j < numPeriods; j++)
-                    {
-                        observations.Add(i + 1);  // Observation ID
-                        groups.Add(j + 1);  // Group ID (Period)
-                        values.Add(data[j][i]);  // Value for this observation and period
-                    }
-                }
+                    dynamic np = Py.Import("numpy");
+                    dynamic stats = Py.Import("scipy.stats");
 
-                // Convert lists to Python objects
-                dynamic pyObservations = np.array(observations.ToArray());
-                dynamic pyGroups = np.array(groups.ToArray());
-                dynamic pyValues = np.array(values.ToArray());
+                    // Convert the List<List<double>> to a Python-compatible NumPy array
+                    int nPeriods = data.Count;
+                    int nSubjects = data[0].Count; // Assuming all periods have the same number of subjects
 
-                // Prepare Python script to create the DataFrame and run the posthoc test
-                string pythonScript = @"
-import pandas as pd
-import scikit_posthocs as sp
+                    // Create a 2D NumPy array for periods (rows) and subjects (columns)
+                    dynamic pyData = np.array(data.Select(period => np.array(period.ToArray())).ToArray());
 
-# Create the DataFrame
-df = pd.DataFrame({
-    'Observation': observations,
-    'Group': groups,
-    'Value': values
-})
-
-# Perform the Nemenyi post hoc test
-result_nemenyi = sp.posthoc_nemenyi_friedman(df, y_col='Value', group_col='Group', block_col='Observation')
+                    // Perform the Friedman test
+                    string pythonFriedmanScript = @"
+result_friedman = stats.friedmanchisquare(*groups_data)
 ";
+                    dynamic globals = new PyDict();
+                    dynamic locals = new PyDict();
+                    globals["stats"] = stats;
+                    globals["groups_data"] = pyData;
 
-                // Create Python dictionaries for variables
-                dynamic globals = new PyDict();
-                globals["observations"] = pyObservations;
-                globals["groups"] = pyGroups;
-                globals["values"] = pyValues;
+                    PythonEngine.Exec(pythonFriedmanScript, locals, globals);
 
-                // Execute the Python script
-                PythonEngine.Exec(pythonScript, globals);
+                    // Retrieve Friedman test result
+                    dynamic resultFriedman = globals["result_friedman"];
+                    double testStatistic = Math.Round(resultFriedman.statistic.As<double>(), 3);
+                    double pValue = Math.Round(resultFriedman.pvalue.As<double>(), 3);
 
-                // Retrieve the result from the script
-                dynamic nemenyiResult = globals["result_nemenyi"];
-
-                // Convert the result (p-values) into a DataTable
-                DataTable dataTable = new DataTable();
-                dynamic columns = nemenyiResult.columns;
-                foreach (var column in columns)
-                {
-                    dataTable.Columns.Add(column.ToString());
-                }
-
-                foreach (dynamic row in nemenyiResult.itertuples(index: false, name: null))
-                {
-                    DataRow dataRow = dataTable.NewRow();
-                    int colIndex = 0;
-                    foreach (var cell in row)
+                    // If Friedman test is not significant, return the result
+                    if (pValue >= 0.05)
                     {
-                        dataRow[colIndex] = cell;
-                        colIndex++;
-                    }
-                    dataTable.Rows.Add(dataRow);
-                }
-
-                // Pairwise comparisons and p-values
-                List<string[]> pairwiseComparisons = new List<string[]>();
-                for (int i = 0; i < dataTable.Rows.Count; i++)
-                {
-                    for (int j = i + 1; j < dataTable.Columns.Count; j++)
-                    {
-                        string labelA = dataTable.Columns[i].ColumnName;
-                        string labelB = dataTable.Columns[j].ColumnName;
-
-                        if (double.TryParse(dataTable.Rows[i][j].ToString(), out double pValueNemenyi))
+                        return new AnovaTestResult
                         {
-                            string pValueNemenyiString = pValueNemenyi < 0.001 ? "<0.001" : pValueNemenyi.ToString("0.000");
-                            string comparison = $"{labelA} vs {labelB}";
-                            pairwiseComparisons.Add(new string[] { comparison, pValueNemenyiString });
-                        }
+                            TestValue = testStatistic.ToString("0.000"),
+                            PValue = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000"),
+                            PairwiseComparisons = new List<string[]> { }
+                        };
                     }
+
+                    // Dunn's test for post-hoc analysis
+                    string pythonDunnScript = @"
+from scipy.stats import rankdata, norm
+import numpy as np
+
+# Rank data for each subject (across periods)
+ranks = np.array([rankdata(row) for row in groups_data.T]).T
+
+# Pairwise comparisons between periods
+n = groups_data.shape[1]  # Number of subjects
+k = groups_data.shape[0]  # Number of periods
+comparisons = []
+for i in range(k):
+    for j in range(i + 1, k):
+        # Calculate the difference in mean ranks for the pair
+        mean_rank_i = np.mean(ranks[i])
+        mean_rank_j = np.mean(ranks[j])
+        diff = mean_rank_i - mean_rank_j
+        se = np.sqrt(k * (k + 1) / (6.0 * n))  # Standard error for Dunn's test
+        z = diff / se
+        p_value = 2 * (1 - norm.cdf(abs(z)))  # Two-tailed test
+        comparisons.append((i, j, diff, z, p_value))
+
+comparisons
+";
+                    globals["np"] = np;
+
+                    // Execute the Dunn script
+                    PythonEngine.Exec(pythonDunnScript, locals, globals);
+
+                    // Retrieve the pairwise comparison results
+                    dynamic comparisons = globals["comparisons"];
+
+                    // Format the output
+                    List<string[]> pairwiseResults = new List<string[]>();
+                    foreach (dynamic comparison in comparisons)
+                    {
+                        int i = comparison[0].As<int>();
+                        int j = comparison[1].As<int>();
+                        double diff = Math.Round(comparison[2].As<double>(), 3);
+                        double z = Math.Round(comparison[3].As<double>(), 3);
+                        double p = Math.Round(comparison[4].As<double>(), 5); // P-value to 5 decimal places
+                        pairwiseResults.Add(new string[] { $"Period {i + 1} vs Period {j + 1}" , $"p={p}" });
+                    }
+
+                    return new AnovaTestResult
+                    {
+                        TestValue = testStatistic.ToString("0.000"),
+                        PValue = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000"),
+                        PairwiseComparisons = pairwiseResults
+                    };
                 }
-
-                // Return the result
-                return new AnovaTestResult
-                {
-                    TestValue = "N/A (No Friedman Test here)", // No Friedman test, just Dunn's test
-                    PValue = "N/A",
-                    PairwiseComparisons = pairwiseComparisons
-                };
             }
-        }
-
-
-
-
-
-
-
-
-        public AnovaTestResult FriedmanTestWithDunnNew(List<List<double>> data)
-        {
-            using (Py.GIL())
+            catch (Exception)
             {
-                dynamic np = Py.Import("numpy");
-                dynamic pd = Py.Import("pandas");
-                dynamic scikit_posthocs = Py.Import("scikit_posthocs");
-
-                // Check if all periods have the same number of observations
-                int numberOfObservations = data[0].Count;
-                if (data.Any(period => period.Count != numberOfObservations))
-                {
-                    throw new ArgumentException("All periods must have the same number of observations.");
-                }
-
-                // Transpose the data so that each observation is a row, and each period is a column
-                var transposedData = new List<List<double>>();
-
-                // For each observation, create a row with corresponding values from each period
-                for (int i = 0; i < numberOfObservations; i++)
-                {
-                    var row = new List<double>();
-                    foreach (var period in data)
-                    {
-                        row.Add(period[i]); // Collect the i-th observation from each period
-                    }
-                    transposedData.Add(row);
-                }
-
-                // Convert the transposed data into a NumPy array (each period is now a column)
-                dynamic numpyArray = np.array(transposedData.ToArray());
-
-                // Create a pandas DataFrame with period names as columns
-                dynamic df = pd.DataFrame(numpyArray, columns: new[] { "Pre", "Imm", "Post" });
-
-                // Perform Dunn's post hoc test
-                dynamic posthocResult = scikit_posthocs.posthoc_dunn(df, p_adjust: "bonferroni");
-
-                // Convert Dunn's test results (p-values) into a DataTable
-                DataTable dataTable = new DataTable();
-                dynamic columns = posthocResult.columns;
-                foreach (var column in columns)
-                {
-                    dataTable.Columns.Add(column.ToString());
-                }
-
-                foreach (dynamic row in posthocResult.itertuples(index: false, name: null))
-                {
-                    DataRow dataRow = dataTable.NewRow();
-                    int colIndex = 0;
-                    foreach (var cell in row)
-                    {
-                        dataRow[colIndex] = cell;
-                        colIndex++;
-                    }
-                    dataTable.Rows.Add(dataRow);
-                }
-
-                // Pairwise comparisons
-                List<string[]> pairwiseComparisons = new List<string[]>();
-                for (int i = 0; i < dataTable.Rows.Count; i++)
-                {
-                    for (int j = i + 1; j < dataTable.Columns.Count; j++)
-                    {
-                        string labelA = dataTable.Columns[i].ColumnName;
-                        string labelB = dataTable.Columns[j].ColumnName;
-
-                        if (double.TryParse(dataTable.Rows[i][j].ToString(), out double pValueDunn))
-                        {
-                            string pValueDunnString = pValueDunn < 0.001 ? "<0.001" : pValueDunn.ToString("0.000");
-                            string comparison = $"{labelA} vs {labelB}";
-                            pairwiseComparisons.Add(new string[] { comparison, pValueDunnString });
-                        }
-                    }
-                }
-
-                // Return the result
                 return new AnovaTestResult
                 {
-                    TestValue = "N/A (No Friedman Test here)", // No Friedman test since this only handles Dunn
-                    PValue = "N/A",
-                    PairwiseComparisons = pairwiseComparisons
+                    TestValue = "0",
+                    PValue = "0",
+                    PairwiseComparisons = new List<string[]> { }
                 };
             }
         }
+
+
+
+
+
+
+
+
 
 
 
