@@ -3560,32 +3560,32 @@ namespace ExcelScore.Forms
 
                     InsertData_Descriptive(table, ComparativeTables[tableindex], HasNominal);
 
-                    pythonStat.InitPython();
+                    //pythonStat.InitPython();
 
-                    var contingencyTable = new List<List<int>>();
-                    foreach (var par in ComparativeTables[tableindex].Parameters)
-                    {
-                        if(par.IsGroup)
-                        {
-                            continue;
-                        }
+                    //var contingencyTable = new List<List<int>>();
+                    //foreach (var par in ComparativeTables[tableindex].Parameters)
+                    //{
+                    //    if(par.IsGroup)
+                    //    {
+                    //        continue;
+                    //    }
 
-                        var allValues = par.GroupedParameterValues.Values.SelectMany(x => x).Distinct().ToList();
+                    //    var allValues = par.GroupedParameterValues.Values.SelectMany(x => x).Distinct().ToList();
 
-                        // Prepare contingency table
+                    //    // Prepare contingency table
                         
-                        foreach (var value in allValues)
-                        {
-                            var categoryCounts = new List<int>();
-                            foreach (var groupData in par.GroupedParameterValues.Values)
-                            {
-                                categoryCounts.Add(groupData.Count(x => x == value));
-                            }
-                            contingencyTable.Add(categoryCounts);
-                        }
-                    }
+                    //    foreach (var value in allValues)
+                    //    {
+                    //        var categoryCounts = new List<int>();
+                    //        foreach (var groupData in par.GroupedParameterValues.Values)
+                    //        {
+                    //            categoryCounts.Add(groupData.Count(x => x == value));
+                    //        }
+                    //        contingencyTable.Add(categoryCounts);
+                    //    }
+                    //}
 
-                    pythonStat.McNemarTest(contingencyTable);
+                    //pythonStat.McNemarTest(contingencyTable);
 
                     wordObj.FormatTable(table, 12);
                 }
