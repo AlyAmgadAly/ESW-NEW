@@ -13,6 +13,7 @@ using Accord.Statistics.Distributions.Univariate;
 using MathNet.Numerics.Distributions;
 using CenterSpace.NMath.Core;
 using System.Data;
+using Accord.Collections;
 
 namespace ExcelScore.Classes
 {
@@ -2036,6 +2037,38 @@ comparisons
 
 
 
+        public string[] McNemarTest(List<List<int>> contingencyTable)
+        {
+            using (Py.GIL())
+            {
+                dynamic statsmodels = Py.Import("statsmodels.stats.contingency_tables");
+
+                // Extract the values for b and c
+                int a = contingencyTable[0][0];
+                int b = contingencyTable[2][0]; // b is at [1][0]
+                int c = contingencyTable[1][0]; // c is at [0][1]
+                int d = contingencyTable[3][0];
+
+                // Create the 2x2 contingency table for McNemar's test
+                dynamic np = Py.Import("numpy");
+                dynamic tableArray = np.array(new int[,] { { a, b }, { c, d } });
+
+                // Perform the McNemar's test using statsmodels
+                dynamic result = statsmodels.mcnemar(tableArray, "exact = False", "correction = True");
+
+                // Extract the p-value and test statistic from the result
+                double pValue = Math.Round(result.pvalue.As<double>(), 3);
+                double testStatistic = Math.Round(result.statistic.As<double>(), 3);
+
+                // Format the p-value
+                string testStatisticString = testStatistic.ToString("0.000");
+                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                string[] TestValue = new string[] { testStatisticString, pValueString };
+
+                return TestValue;
+            }
+        }
 
 
 

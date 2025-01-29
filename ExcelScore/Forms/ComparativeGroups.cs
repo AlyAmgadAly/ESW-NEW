@@ -3560,6 +3560,33 @@ namespace ExcelScore.Forms
 
                     InsertData_Descriptive(table, ComparativeTables[tableindex], HasNominal);
 
+                    pythonStat.InitPython();
+
+                    var contingencyTable = new List<List<int>>();
+                    foreach (var par in ComparativeTables[tableindex].Parameters)
+                    {
+                        if(par.IsGroup)
+                        {
+                            continue;
+                        }
+
+                        var allValues = par.GroupedParameterValues.Values.SelectMany(x => x).Distinct().ToList();
+
+                        // Prepare contingency table
+                        
+                        foreach (var value in allValues)
+                        {
+                            var categoryCounts = new List<int>();
+                            foreach (var groupData in par.GroupedParameterValues.Values)
+                            {
+                                categoryCounts.Add(groupData.Count(x => x == value));
+                            }
+                            contingencyTable.Add(categoryCounts);
+                        }
+                    }
+
+                    pythonStat.McNemarTest(contingencyTable);
+
                     wordObj.FormatTable(table, 12);
                 }
 
@@ -4618,22 +4645,22 @@ namespace ExcelScore.Forms
 
 
 
-                        List<Parameter> TestParameters = new List<Parameter>();
-                        List<List<double>> dataParaValues = new List<List<double>>();
-                        List<string> ParameterLabels = new List<string>();
+                       // List<Parameter> TestParameters = new List<Parameter>();
+                       // List<List<double>> dataParaValues = new List<List<double>>();
+                       // List<string> ParameterLabels = new List<string>();
 
-                        foreach (var testparameter in comparativeTable.Parameters)
-                        {
-                            if (testparameter.IsGroup)
-                            {
-                                continue;
-                            }
-                            dataParaValues.Add(testparameter.ParameterValues);
-                            ParameterLabels.Add(testparameter.Name);
-                             //TestParameters.Add(testparameter);
-                        }
+                       // foreach (var testparameter in comparativeTable.Parameters)
+                       // {
+                       //     if (testparameter.IsGroup)
+                       //     {
+                       //         continue;
+                       //     }
+                       //     dataParaValues.Add(testparameter.ParameterValues);
+                       //     ParameterLabels.Add(testparameter.Name);
+                       //      //TestParameters.Add(testparameter);
+                       // }
 
-                       pythonStat.PerformFriedmanWithDunnTest(dataParaValues);
+                       //pythonStat.PerformFriedmanWithDunnTest(dataParaValues);
                          //manual.Zpaired(dataParaValues[0].ToArray() , dataParaValues[1].ToArray());
 
 
@@ -6152,7 +6179,33 @@ namespace ExcelScore.Forms
                                 }
 
                             }
+                            //var contingencyTable = new List<List<int>>();
+                            //foreach (var tparameter in ComparativeTables[tableindex].Parameters)
+                            //{
+                            //    if(tparameter.IsGroup)
+                            //    {
+                            //        continue;
+                            //    }
 
+                            //    var allValues = parameter.ParameterValues.Distinct().ToList();
+
+
+                            //    // Prepare contingency table
+                                
+                            //    var categoryCounts = new List<int>();
+                            //    foreach (var value in allValues)
+                            //    {   
+                            //        int countctr = parameter.ParameterValues.Count(x => x == value);
+                            //        categoryCounts.Add(countctr);
+                            //    }
+                            //    contingencyTable.Add(categoryCounts);
+
+                            //    foreach (var countsd in contingencyTable)
+                            //    {
+                            //       MessageBox.Show(countsd.ToString());
+                            //    }
+                            //}
+                            
 
 
 
