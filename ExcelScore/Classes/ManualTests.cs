@@ -406,8 +406,94 @@ namespace ExcelScore.Classes
 
         }
 
-        // U Test
         public string[] UTest(List<double> AdataGroup1, List<double> AdataGroup2)
+        {
+            using (Py.GIL())
+            {
+                // Import necessary Python libraries
+                dynamic scipyStats = Py.Import("scipy.stats");
+
+                // Define your data groups
+                List<double> dataGroup1 = AdataGroup1;
+                List<double> dataGroup2 = AdataGroup2;
+
+                // Calculate combined sample size
+                int n1 = dataGroup1.Count;
+                int n2 = dataGroup2.Count;
+                int combinedSize = n1 + n2;
+
+
+
+                Dictionary<int, int> ExactPairs = new Dictionary<int, int>()
+                {
+                    { 2 , 200 },
+                    { 3 , 133 },
+                    { 4 , 100 },
+                    { 5 , 80 },
+                    { 6 , 66 },
+                    { 7 , 57 },
+                    { 8 , 50 },
+                    { 9 , 44 },
+                    { 10 , 40 },
+                    { 11 , 36 },
+                    { 12 , 33 },
+                    { 13 , 30 },
+                    { 14 , 28 },
+                    { 15 , 26 },
+                    { 16 , 25 }
+
+                };
+
+
+
+
+                int minGroup = Math.Min(n1, n2);
+                int MaxGroup = Math.Max(n1, n2);
+
+                bool exists = ExactPairs.ContainsKey(minGroup);
+
+                if(exists) 
+                {
+                    if (ExactPairs.TryGetValue(minGroup, out int value))
+                    {
+                        if(MaxGroup > value)
+                        {
+                            exists = false;
+                        }
+                    }
+                }
+
+                dynamic result;
+
+
+                double UStat = CalculateUStatistic(AdataGroup1.ToArray(), AdataGroup2.ToArray());
+                double Upvalue;
+
+                if (combinedSize <= 40 || exists)
+                {
+                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: false, method: "exact", alternative: "two-sided");
+                }
+
+                // Choose the method based on combined sample size
+                else
+                {
+                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: false, method: "asymptotic", alternative: "two-sided");
+                }
+
+                Upvalue = Math.Round(result[1].As<double>(), 3);
+
+                // Format the p-value
+                string UtestString = UStat.ToString("0.000");
+                string pValueString = Upvalue < 0.001 ? "<0.001" : Upvalue.ToString("0.000");
+
+
+                string[] TestValue = new string[] { UtestString, pValueString };
+
+                return TestValue;
+            }
+        }
+        // U Test
+        public string[] UTestold(List<double> AdataGroup1, List<double> AdataGroup2)
         {
             try
             {
@@ -440,6 +526,8 @@ namespace ExcelScore.Classes
 
                 string UtestString = UStat.ToString("0.000");
                 string pValueString = Upvalue < 0.001 ? "<0.001" : Upvalue.ToString("0.000");
+
+
 
                 return new string[] { UtestString, pValueString };
             }

@@ -1287,19 +1287,50 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 int n2 = dataGroup2.Count;
                 int combinedSize = n1 + n2;
 
+
+
+                Dictionary<int, int> ExactPairs = new Dictionary<int, int>()
+                {
+                    { 2 , 200 },
+                    { 3 , 133 },
+                    { 4 , 100 },
+                    { 5 , 80 },
+                    { 6 , 66 },
+                    { 7 , 57 },
+                    { 8 , 50 },
+                    { 9 , 44 },
+                    { 10 , 40 },
+                    { 11 , 36 },
+                    { 12 , 33 },
+                    { 13 , 30 },
+                    { 14 , 28 },
+                    { 15 , 26 },
+                    { 16 , 25 }
+                    
+                };
+
+
+               
+
+                int minGroup = Math.Min(n1, n2);
+
+                bool exists = ExactPairs.ContainsKey(minGroup);
+
                 dynamic result;
 
+
+                if (combinedSize <= 40 || exists)
+                {
+                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: false, method: "exact", alternative: "two-sided");
+                }
+
                 // Choose the method based on combined sample size
-                if (combinedSize > 40)
+                else
                 {
                     // Use the asymptotic method
                     result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: true, method : "asymptotic", alternative: "two-sided");
                 }
-                else
-                {
-                    // Use the exact method
-                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: false, method: "exact", alternative: "two-sided");
-                }
+
 
                 // Extract the p-value and U-statistic from the result
                 double uStatistic = Math.Round(result[0].As<double>(), 3);
@@ -1308,6 +1339,9 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 // Format the p-value
                 string UtestString = uStatistic.ToString("0.000");
                 string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                MessageBox.Show(UtestString);
+                MessageBox.Show(pValueString);
 
                 string[] TestValue = new string[] { UtestString, pValueString };
 

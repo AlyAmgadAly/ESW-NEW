@@ -4610,12 +4610,10 @@ namespace ExcelScore.Forms
 
                         SplitGroupedParameterValues(parameter, out group1Values, out group2Values);
                         pythonStat.InitPython();
-                        //string[] values = pythonStat.MannWhitneyUTest(group1Values, group2Values);
-                        
-                        string[] values = manual.UTest(group1Values, group2Values);
-                        
-                        //string[] values = manual.UTestNewManual(group1Values, group2Values);
-                        
+
+                        string[] values = manual.UTest(group1Values, group2Values); 
+
+
 
                         //MessageBox.Show(values[1]);
 

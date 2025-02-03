@@ -186,5 +186,14 @@ namespace ExcelScore.Forms
             coding_.Show();
             this.Hide();
         }
+
+        private void btn_QuestionnareNew_Click(object sender, EventArgs e)
+        {
+            Waiting waiting = new Waiting();
+            waiting.Dgv = Dgv;
+            waiting.Show();
+            this.Hide();
+            
+        }
     }
 }
