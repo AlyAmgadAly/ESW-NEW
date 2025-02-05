@@ -247,6 +247,7 @@
     <Compile Include="Classes\pythonStat.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Classes\Tool.cs" />
     <Compile Include="Classes\WordClass.cs" />
     <Compile Include="ExcelFunctions.cs" />
     <Compile Include="Forms\ChooseFrm.cs">
@@ -320,6 +321,12 @@
     </Compile>
     <Compile Include="Forms\NominalYesOnly.Designer.cs">
       <DependentUpon>NominalYesOnly.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Nursing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Nursing.Designer.cs">
+      <DependentUpon>Nursing.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Options_Frm.cs">
       <SubType>Form</SubType>
@@ -430,6 +437,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\NominalYesOnly.resx">
       <DependentUpon>NominalYesOnly.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Nursing.resx">
+      <DependentUpon>Nursing.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Options_Frm.resx">
       <DependentUpon>Options_Frm.cs</DependentUpon>

@@ -189,7 +189,7 @@ namespace ExcelScore.Forms
 
         private void btn_QuestionnareNew_Click(object sender, EventArgs e)
         {
-            Waiting waiting = new Waiting();
+            Nursing  waiting = new Nursing();
             waiting.Dgv = Dgv;
             waiting.Show();
             this.Hide();
