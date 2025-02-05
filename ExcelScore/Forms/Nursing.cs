@@ -188,6 +188,7 @@ namespace ExcelScore.Forms
         private void Nursing_Load(object sender, EventArgs e)
         {
             ReadToolsAndSubscales();
+            //push test
             //ReadData();
 
             //ReadToolsAndSubscales();
