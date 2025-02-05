@@ -166,7 +166,7 @@ namespace ExcelScore.Forms
         {
             Worksheet Sheet1 = workbook.Worksheets[0];
 
-            string pattern = @"Q\d+\.[A-Za-z0-9]+\.\d+(\.[A-Za-z0-9]+)?";
+            string pattern = @"Q\d+\.[A-Za-z0-9]+(\.[A-Za-z0-9]+)?\.\d+(\.[A-Za-z0-9]+)?";
 
             List<Tool> tools = new List<Tool>();
 
