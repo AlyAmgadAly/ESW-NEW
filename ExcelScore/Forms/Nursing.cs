@@ -51,9 +51,9 @@ namespace ExcelScore.Forms
             foreach (Tool tool in AllTools)
             {
                 MessageBox.Show(tool.ToolName);
-                foreach (var subscale in tool.Subscales)
+                foreach (var scale in tool.Scales)
                 {
-                    MessageBox.Show(subscale.Subscale_Full_Name);
+                    MessageBox.Show(scale.Scale_Full_Name);
                 }
             }
 
@@ -81,7 +81,7 @@ namespace ExcelScore.Forms
                         {
                             if (secondColumn == tool.ToolName)
                             {
-                                row++;
+                                row = row +2;
 
                                 firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
                                 secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
@@ -97,10 +97,10 @@ namespace ExcelScore.Forms
 
                                         if (firstColumn != "Likert")
                                         {
-                                            Tool.Subscale mysubscale = new Tool.Subscale();
-                                            mysubscale.Subscale_Name = firstColumn;
-                                            mysubscale.Subscale_Full_Name = secondColumn;
-                                            tool.AddSubscale(mysubscale);
+                                            Tool.Scale myScale = new Tool.Scale();
+                                            myScale.Scale_Name = firstColumn;
+                                            myScale.Scale_Full_Name = secondColumn;
+                                            tool.AddScale(myScale);
                                         }
 
 
