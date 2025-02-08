@@ -842,6 +842,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                     //string[] result = manual.getchi(parameter);
                     //chiSquareStatistic = double.Parse(result[0]);
                     //pValue = double.Parse(result[1]);
+                    parameter.Isfisher = true;
 
                     dynamic fisherResult = scipyStats.fisher_exact(tableArray);
                     pValue = fisherResult[1].As<double>();
@@ -852,8 +853,8 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                     if(hasSmallExpectedCell)
                     {
                         return new string[] { "FET", "0"};
-
-                        // Perform Monte Carlo simulation
+                        //parameter.IsMonteCarlo = true;
+                        //// Perform Monte Carlo simulation
                         //int numSimulations = 10000; // Adjust the number of simulations
                         //double[] simulatedChiSquares = new double[numSimulations];
                         //int rowSum = 0, colSum = 0;
@@ -894,7 +895,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                         //double pValueMonteCarlo = simulatedChiSquares.Count(x => x >= chiSquareStatistic) / (double)numSimulations;
                         //pValue = Math.Round(pValueMonteCarlo, 3);
 
-                        //return new string[] { chiSquareStatistic.ToString("0.000"), pValue.ToString()};
+                        //return new string[] { chiSquareStatistic.ToString("0.000"), pValue.ToString() };
                     }
                     else
                     {
