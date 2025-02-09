@@ -13,6 +13,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static ExcelScore.Forms.Waiting;
+using Tool = ExcelScore.Classes.Tool;
 using Worksheet = Aspose.Cells.Worksheet;
 
 namespace ExcelScore.Forms
@@ -54,6 +56,10 @@ namespace ExcelScore.Forms
                 foreach (var scale in tool.Scales)
                 {
                     MessageBox.Show(scale.Scale_Full_Name);
+                    foreach (var subscale in scale.Subscales)
+                    {
+                        MessageBox.Show(subscale.Subscale_Full_Name);
+                    }
                 }
             }
 
@@ -86,7 +92,7 @@ namespace ExcelScore.Forms
                                 firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
                                 secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
 
-                                if (firstColumn == "Subscales" && (secondColumn != "0"))
+                                if (firstColumn == "Scales" && (secondColumn != "0"))
                                 {
                                     //add subscales
                                     while (firstColumn != "Likert")
@@ -95,12 +101,31 @@ namespace ExcelScore.Forms
                                         firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
                                         secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
 
-                                        if (firstColumn != "Likert")
+                                        if (firstColumn != "Likert" && rowHasData)
                                         {
-                                            Tool.Scale myScale = new Tool.Scale();
-                                            myScale.Scale_Name = firstColumn;
-                                            myScale.Scale_Full_Name = secondColumn;
-                                            tool.AddScale(myScale);
+                                            if(!firstColumn.Contains("."))
+                                            {
+                                                Tool.Scale myScale = new Tool.Scale();
+                                                myScale.Scale_Name = firstColumn;
+                                                myScale.Scale_Full_Name = secondColumn;
+                                                tool.AddScale(myScale);
+                                            }
+                                            else if(firstColumn.Contains("."))
+                                            {
+                                                string[] Scale_Subscale = new string[2];
+                                                Scale_Subscale = firstColumn.Split('.');
+                                                string ScaleName = Scale_Subscale[0];
+                                                Tool.Scale CurrntScale = tool.Scales.FirstOrDefault(s => s.Scale_Name == ScaleName);
+
+                                                if (CurrntScale != null) 
+                                                {
+                                                    Tool.Subscale mysubscale = new Tool.Subscale();
+                                                    mysubscale.Subscale_Name = firstColumn;
+                                                    mysubscale.Subscale_Full_Name = secondColumn;
+                                                    CurrntScale.AddSubscale(mysubscale);
+                                                }
+                                            }
+                                            
                                         }
 
 
