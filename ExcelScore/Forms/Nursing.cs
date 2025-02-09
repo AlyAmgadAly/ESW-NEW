@@ -101,7 +101,7 @@ namespace ExcelScore.Forms
                                         firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
                                         secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
 
-                                        if (firstColumn != "Likert" && rowHasData)
+                                        if (firstColumn != "Likert" && (firstColumn != null || secondColumn != null))
                                         {
                                             if(!firstColumn.Contains("."))
                                             {
