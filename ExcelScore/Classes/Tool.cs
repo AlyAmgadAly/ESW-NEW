@@ -14,8 +14,8 @@ namespace ExcelScore.Classes
         public List<Scale> Scales { get; set; } = new List<Scale>();
 
         public Dictionary<int , string> LikertScale = new Dictionary<int , string>();
-        public List<List<LevelRange>> ToolLevels { get; set; }
-        public List<string> LevelDetermination { get; set; }
+        public List<List<LevelRange>> ToolLevels { get; set; } = new List<List<LevelRange>>();
+        public List<string> LevelDetermination { get; set; } = new List<string>();
 
         public List<double> TotalScores { get; set; } = new List<double>();
         public List<double> AverageScores { get; set; } = new List<double>();

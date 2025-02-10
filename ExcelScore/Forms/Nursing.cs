@@ -1,5 +1,6 @@
 ﻿using Accord.Statistics.Kernels;
 using Aspose.Cells;
+using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelScore.Classes;
 using System;
@@ -65,10 +66,13 @@ namespace ExcelScore.Forms
                 //    }
                 //}
 
-                foreach (var likert in tool.LikertScale)
+                foreach (var level in tool.ToolLevels)
                 {
-                    MessageBox.Show(likert.Key.ToString());
-                    MessageBox.Show(likert.Value.ToString());
+                    foreach (var levelrange in level)
+                    {
+                        MessageBox.Show(levelrange.Range);
+                        MessageBox.Show(levelrange.Label);
+                    }
 
                 }
             }
@@ -78,7 +82,98 @@ namespace ExcelScore.Forms
         }
         public void GetEachToolLevel(Worksheet ADetailsSheet)
         {
+            
+                foreach (Tool tool in AllTools)
+                {
+                   
+                    int row = 0;
+                    int maxRow = ADetailsSheet.Cells.MaxDataRow;
 
+                    while (row <= maxRow) // Ensure we process the last row
+                    {
+                        string firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                        string secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+
+                        if ((firstColumn != null) && (secondColumn != null))
+                        {
+                            if (secondColumn == tool.ToolName)
+                            {
+                                while (firstColumn != "Level")
+                                {
+
+
+                                    row++;
+
+                                    firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                    secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+                                }
+
+                                bool toolExists = false;
+
+
+                                while (!toolExists && row <= maxRow)
+                                {
+                                    
+                                    if (firstColumn == "Level")
+                                    {
+
+                                        firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                        secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+                                        tool.LevelDetermination.Add(secondColumn);
+                                        row++;
+
+                                        //Tool.LevelRange ToolLevels = 
+
+                                        List<Tool.LevelRange> levelRanges = new List<Tool.LevelRange>();
+
+                                        while (firstColumn != null && secondColumn != null)
+                                        {
+                                            
+                                            firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                            secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+
+                                            Tool.LevelRange NewLevelRange = new Tool.LevelRange();
+
+                                            NewLevelRange.Range = firstColumn;
+                                            NewLevelRange.Label = secondColumn;
+
+                                            levelRanges.Add(NewLevelRange);
+
+                                            row++;
+                                            firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                            secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+
+                                        }
+
+                                        tool.ToolLevels.Add(levelRanges);
+
+
+
+                                    }
+                                    row++;
+
+                                    firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                    secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+                                    toolExists = AllTools.Any(t => t.ToolName == secondColumn);
+
+                                    
+                                }
+                            }
+                            
+                        }
+
+
+                        row++;
+
+                    }
+                }
+            
+            
         }
 
         public void GetEachToolLikert(Worksheet ADetailsSheet)
