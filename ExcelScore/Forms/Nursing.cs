@@ -46,25 +46,97 @@ namespace ExcelScore.Forms
 
             GetEachToolSubscales(DetailsSheet);
 
+            GetEachToolLikert(DetailsSheet);
 
-            
+            GetEachToolLevel(DetailsSheet);
 
 
             foreach (Tool tool in AllTools)
             {
                 MessageBox.Show(tool.ToolName);
-                foreach (var scale in tool.Scales)
+
+                //foreach (var scale in tool.Scales)
+                //{
+                //    MessageBox.Show(scale.Scale_Full_Name);
+                //    foreach (var subscale in scale.Subscales)
+                //    {
+                //        MessageBox.Show(subscale.Subscale_Full_Name);
+                //        MessageBox.Show(subscale.ParentScale.Scale_Full_Name);
+                //    }
+                //}
+
+                foreach (var likert in tool.LikertScale)
                 {
-                    MessageBox.Show(scale.Scale_Full_Name);
-                    foreach (var subscale in scale.Subscales)
-                    {
-                        MessageBox.Show(subscale.Subscale_Full_Name);
-                    }
+                    MessageBox.Show(likert.Key.ToString());
+                    MessageBox.Show(likert.Value.ToString());
+
                 }
             }
 
             // getToolName();
 
+        }
+        public void GetEachToolLevel(Worksheet ADetailsSheet)
+        {
+
+        }
+
+        public void GetEachToolLikert(Worksheet ADetailsSheet)
+        {
+            try
+            {
+                foreach (Tool tool in AllTools)
+                {
+                    int row = 0;
+                    int maxRow = ADetailsSheet.Cells.MaxDataRow;
+
+                    while (row <= maxRow) // Ensure we process the last row
+                    {
+                        string firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                        string secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+
+                        if ((firstColumn != null) && (secondColumn != null))
+                        {
+                            if (secondColumn == tool.ToolName)
+                            {
+                                while (firstColumn != "Likert")
+                                {
+                                    row++;
+
+                                    firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                    secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+                                }
+
+                                if(firstColumn == "Likert")
+                                {
+                                    row++;
+
+                                    firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                    secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+                                    while (firstColumn != null)
+                                    {
+                                        tool.LikertScale.Add(int.Parse(firstColumn), secondColumn);
+                                        row++;
+                                        firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                        secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+                                    }
+                                }
+
+
+                            }
+                        }
+                        row++;
+
+                    }
+                }
+            }
+            catch (Exception) 
+            {
+                MessageBox.Show("Error at likert at details");
+            }
         }
         public void GetEachToolSubscales(Worksheet ADetailsSheet)
         {
