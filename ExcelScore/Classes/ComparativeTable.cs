@@ -34,6 +34,8 @@ namespace ExcelScore.Classes
 
         public bool Isfisher { get; set; }
 
+        public bool IsMonteCarlo { get; set; }
+
         public string Periods_ParameterName { get; set; }
 
         public bool ParameterNominalSig { get; set; }

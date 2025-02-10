@@ -382,6 +382,7 @@
             "Pathology Relation",
             "Pathology Comparative",
             "Relation",
+            "Relation IQR",
             "Relation Scale Pathology",
             "Descriptive",
             "Descriptive Periods No Test",

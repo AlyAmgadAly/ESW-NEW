@@ -842,6 +842,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                     //string[] result = manual.getchi(parameter);
                     //chiSquareStatistic = double.Parse(result[0]);
                     //pValue = double.Parse(result[1]);
+                    parameter.Isfisher = true;
 
                     dynamic fisherResult = scipyStats.fisher_exact(tableArray);
                     pValue = fisherResult[1].As<double>();
@@ -852,8 +853,8 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                     if(hasSmallExpectedCell)
                     {
                         return new string[] { "FET", "0"};
-
-                        // Perform Monte Carlo simulation
+                        //parameter.IsMonteCarlo = true;
+                        //// Perform Monte Carlo simulation
                         //int numSimulations = 10000; // Adjust the number of simulations
                         //double[] simulatedChiSquares = new double[numSimulations];
                         //int rowSum = 0, colSum = 0;
@@ -894,7 +895,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                         //double pValueMonteCarlo = simulatedChiSquares.Count(x => x >= chiSquareStatistic) / (double)numSimulations;
                         //pValue = Math.Round(pValueMonteCarlo, 3);
 
-                        //return new string[] { chiSquareStatistic.ToString("0.000"), pValue.ToString()};
+                        //return new string[] { chiSquareStatistic.ToString("0.000"), pValue.ToString() };
                     }
                     else
                     {
@@ -2078,17 +2079,17 @@ comparisons
                 dynamic statsmodels = Py.Import("statsmodels.stats.contingency_tables");
 
                 // Extract the values for b and c
-                int a = contingencyTable[0][0];
-                int b = contingencyTable[2][0]; // b is at [1][0]
-                int c = contingencyTable[1][0]; // c is at [0][1]
-                int d = contingencyTable[3][0];
+                int a = 7;
+                int b = 10; 
+                int c = 12; 
+                int d = 5;
 
                 // Create the 2x2 contingency table for McNemar's test
                 dynamic np = Py.Import("numpy");
-                dynamic tableArray = np.array(new int[,] { { a, b }, { c, d } });
+                dynamic tableArray = np.array(new int[,] { { a, c }, { b, d } });
 
                 // Perform the McNemar's test using statsmodels
-                dynamic result = statsmodels.mcnemar(tableArray, "exact = False", "correction = True");
+                dynamic result = statsmodels.mcnemar(tableArray, "exact = False", "correction = false");
 
                 // Extract the p-value and test statistic from the result
                 double pValue = Math.Round(result.pvalue.As<double>(), 3);

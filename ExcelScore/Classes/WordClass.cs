@@ -26,6 +26,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
 using System.Collections;
 using Accord.IO;
+using static Humanizer.On;
 
 namespace ExcelScore.Classes
 {
@@ -580,6 +581,24 @@ namespace ExcelScore.Classes
             
         }
 
+        public void ApplyRelation_IQR_Widths(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            for (int row = 0; row < WordTableRows; row++)
+            {
+                table.Rows[row].Cells[0].Width = SetColumnWidthInCentimeters(3.75f);
+                table.Rows[row].Cells[1].Width = SetColumnWidthInCentimeters(1f);
+
+                table.Rows[row].Cells[2].Width = SetColumnWidthInCentimeters(3f);
+                table.Rows[row].Cells[3].Width = SetColumnWidthInCentimeters(3f);
+
+                table.Rows[row].Cells[4].Width = SetColumnWidthInCentimeters(4f);
+                table.Rows[row].Cells[WordTableColumns-2].Width = SetColumnWidthInCentimeters(1.75f);
+                table.Rows[row].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.75f);
+
+            }
+
+        }
+
         public void ApplyRelation_Widths_Pathology(IWTable table, int WordTableRows, int WordTableColumns)
         {
             for (int row = 0; row < WordTableRows; row++)
@@ -881,6 +900,22 @@ namespace ExcelScore.Classes
 
         }
 
+        public void ApplyRelation_IQR_OuterHeaders(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
+        {
+            AddPara_Center(table, 0, 1, "N");
+
+            AddPara_Center(table, 0, 2, comparativeTable.TableName);
+
+
+            AddPara_Center(table, 1, 2, "Min. – Max."); 
+            AddPara_Center(table, 1, 3, "Mean ± SD.");
+            AddPara_Center(table, 1, 4, "Median (IQR)");
+
+            AddPara_Center(table, 0, WordTableColumns - 1, "p");
+
+
+        }
+
         public void ApplyRelation_OuterHeaders_Pathology(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
         {
             AddPara_Center(table, 0, 2, "N");
@@ -932,6 +967,34 @@ namespace ExcelScore.Classes
 
             table.Rows[0].Cells[3].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
             table.Rows[0].Cells[3].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+        }
+
+        public void ApplyRelation_IQR_OuterBorders(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            for (int j = 0; j < WordTableColumns; j++)
+            {
+                table.Rows[1].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[1].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            }
+
+            for (int k = 0; k < WordTableRows; k++)
+            {
+                table.Rows[k].Cells[1].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[k].Cells[1].CellFormat.Borders.Right.LineWidth = 1.5f;
+
+                table.Rows[k].Cells[WordTableColumns - 2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[k].Cells[WordTableColumns - 2].CellFormat.Borders.Left.LineWidth = 1.5f;
+            }
+
+            table.Rows[0].Cells[2].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+            table.Rows[0].Cells[2].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+            table.Rows[0].Cells[3].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+            table.Rows[0].Cells[3].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+            table.Rows[0].Cells[4].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+            table.Rows[0].Cells[4].CellFormat.Borders.Bottom.LineWidth = 0.5f;
 
         }
 
@@ -1001,6 +1064,18 @@ namespace ExcelScore.Classes
             table.ApplyVerticalMerge(WordTableColumns-1, 0, 1);
 
             table.ApplyHorizontalMerge(0, 2, 3);
+
+
+        }
+
+        public void ApplyRelation_IQR_OuterMerges(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            table.ApplyVerticalMerge(1, 0, 1);
+
+            table.ApplyVerticalMerge(WordTableColumns - 2, 0, 1);
+            table.ApplyVerticalMerge(WordTableColumns - 1, 0, 1);
+
+            table.ApplyHorizontalMerge(0, 2, 4);
 
 
         }

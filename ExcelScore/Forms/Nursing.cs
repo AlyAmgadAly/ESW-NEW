@@ -13,6 +13,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static ExcelScore.Forms.Waiting;
+using Tool = ExcelScore.Classes.Tool;
 using Worksheet = Aspose.Cells.Worksheet;
 
 namespace ExcelScore.Forms
@@ -44,21 +46,97 @@ namespace ExcelScore.Forms
 
             GetEachToolSubscales(DetailsSheet);
 
+            GetEachToolLikert(DetailsSheet);
 
-            
+            GetEachToolLevel(DetailsSheet);
 
 
             foreach (Tool tool in AllTools)
             {
                 MessageBox.Show(tool.ToolName);
-                foreach (var subscale in tool.Subscales)
+
+                //foreach (var scale in tool.Scales)
+                //{
+                //    MessageBox.Show(scale.Scale_Full_Name);
+                //    foreach (var subscale in scale.Subscales)
+                //    {
+                //        MessageBox.Show(subscale.Subscale_Full_Name);
+                //        MessageBox.Show(subscale.ParentScale.Scale_Full_Name);
+                //    }
+                //}
+
+                foreach (var likert in tool.LikertScale)
                 {
-                    MessageBox.Show(subscale.Subscale_Full_Name);
+                    MessageBox.Show(likert.Key.ToString());
+                    MessageBox.Show(likert.Value.ToString());
+
                 }
             }
 
             // getToolName();
 
+        }
+        public void GetEachToolLevel(Worksheet ADetailsSheet)
+        {
+
+        }
+
+        public void GetEachToolLikert(Worksheet ADetailsSheet)
+        {
+            try
+            {
+                foreach (Tool tool in AllTools)
+                {
+                    int row = 0;
+                    int maxRow = ADetailsSheet.Cells.MaxDataRow;
+
+                    while (row <= maxRow) // Ensure we process the last row
+                    {
+                        string firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                        string secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+
+                        if ((firstColumn != null) && (secondColumn != null))
+                        {
+                            if (secondColumn == tool.ToolName)
+                            {
+                                while (firstColumn != "Likert")
+                                {
+                                    row++;
+
+                                    firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                    secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+                                }
+
+                                if(firstColumn == "Likert")
+                                {
+                                    row++;
+
+                                    firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                    secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+                                    while (firstColumn != null)
+                                    {
+                                        tool.LikertScale.Add(int.Parse(firstColumn), secondColumn);
+                                        row++;
+                                        firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
+                                        secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
+
+                                    }
+                                }
+
+
+                            }
+                        }
+                        row++;
+
+                    }
+                }
+            }
+            catch (Exception) 
+            {
+                MessageBox.Show("Error at likert at details");
+            }
         }
         public void GetEachToolSubscales(Worksheet ADetailsSheet)
         {
@@ -81,12 +159,12 @@ namespace ExcelScore.Forms
                         {
                             if (secondColumn == tool.ToolName)
                             {
-                                row++;
+                                row = row +2;
 
                                 firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
                                 secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
 
-                                if (firstColumn == "Subscales" && (secondColumn != "0"))
+                                if (firstColumn == "Scales" && (secondColumn != "0"))
                                 {
                                     //add subscales
                                     while (firstColumn != "Likert")
@@ -95,12 +173,31 @@ namespace ExcelScore.Forms
                                         firstColumn = ADetailsSheet.Cells[row, 0]?.Value?.ToString();
                                         secondColumn = ADetailsSheet.Cells[row, 1]?.Value?.ToString();
 
-                                        if (firstColumn != "Likert")
+                                        if (firstColumn != "Likert" && (firstColumn != null || secondColumn != null))
                                         {
-                                            Tool.Subscale mysubscale = new Tool.Subscale();
-                                            mysubscale.Subscale_Name = firstColumn;
-                                            mysubscale.Subscale_Full_Name = secondColumn;
-                                            tool.AddSubscale(mysubscale);
+                                            if(!firstColumn.Contains("."))
+                                            {
+                                                Tool.Scale myScale = new Tool.Scale();
+                                                myScale.Scale_Name = firstColumn;
+                                                myScale.Scale_Full_Name = secondColumn;
+                                                tool.AddScale(myScale);
+                                            }
+                                            else if(firstColumn.Contains("."))
+                                            {
+                                                string[] Scale_Subscale = new string[2];
+                                                Scale_Subscale = firstColumn.Split('.');
+                                                string ScaleName = Scale_Subscale[0];
+                                                Tool.Scale CurrntScale = tool.Scales.FirstOrDefault(s => s.Scale_Name == ScaleName);
+
+                                                if (CurrntScale != null) 
+                                                {
+                                                    Tool.Subscale mysubscale = new Tool.Subscale();
+                                                    mysubscale.Subscale_Name = firstColumn;
+                                                    mysubscale.Subscale_Full_Name = secondColumn;
+                                                    CurrntScale.AddSubscale(mysubscale);
+                                                }
+                                            }
+                                            
                                         }
 
 
@@ -166,7 +263,7 @@ namespace ExcelScore.Forms
         {
             Worksheet Sheet1 = workbook.Worksheets[0];
 
-            string pattern = @"Q\d+\.[A-Za-z0-9]+\.\d+(\.[A-Za-z0-9]+)?";
+            string pattern = @"Q\d+\.[A-Za-z0-9]+(\.[A-Za-z0-9]+)?\.\d+(\.[A-Za-z0-9]+)?";
 
             List<Tool> tools = new List<Tool>();
 
@@ -188,6 +285,7 @@ namespace ExcelScore.Forms
         private void Nursing_Load(object sender, EventArgs e)
         {
             ReadToolsAndSubscales();
+            //push test
             //ReadData();
 
             //ReadToolsAndSubscales();
