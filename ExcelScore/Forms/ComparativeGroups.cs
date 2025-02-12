@@ -5844,8 +5844,9 @@ namespace ExcelScore.Forms
         }
         public void PerformTest_Pathology(IWTable table, int numberofgroups, Parameter parameter, int addrow, int addColumn, int WordTableColumns, bool issame, ComparativeTable comparativeTable)
         {
+            pythonStat.InitPython();
             bool TableHasSigI;
-
+            
 
             if (parameter.IsGroup)
             {
@@ -6018,6 +6019,7 @@ namespace ExcelScore.Forms
 
         public void PerformTest_Pathology_IQR(IWTable table, int numberofgroups, Parameter parameter, int addrow, int addColumn, int WordTableColumns, bool issame, ComparativeTable comparativeTable)
         {
+            pythonStat.InitPython();
             bool TableHasSigI;
 
 

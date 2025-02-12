@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static ExcelScore.Classes.Tool;
 using static ExcelScore.Forms.Waiting;
 using Tool = ExcelScore.Classes.Tool;
 using Worksheet = Aspose.Cells.Worksheet;
@@ -50,36 +51,11 @@ namespace ExcelScore.Forms
             GetEachToolLikert(DetailsSheet);
 
             GetEachToolLevel(DetailsSheet);
-
-
-            foreach (Tool tool in AllTools)
-            {
-                MessageBox.Show(tool.ToolName);
-
-                //foreach (var scale in tool.Scales)
-                //{
-                //    MessageBox.Show(scale.Scale_Full_Name);
-                //    foreach (var subscale in scale.Subscales)
-                //    {
-                //        MessageBox.Show(subscale.Subscale_Full_Name);
-                //        MessageBox.Show(subscale.ParentScale.Scale_Full_Name);
-                //    }
-                //}
-
-                foreach (var level in tool.ToolLevels)
-                {
-                    foreach (var levelrange in level)
-                    {
-                        MessageBox.Show(levelrange.Range);
-                        MessageBox.Show(levelrange.Label);
-                    }
-
-                }
-            }
-
-            // getToolName();
+            
 
         }
+        
+
         public void GetEachToolLevel(Worksheet ADetailsSheet)
         {
             
@@ -353,25 +329,111 @@ namespace ExcelScore.Forms
             
 
         }
+        public Scale GetScaleByToolNumberAndName(string toolNumber, string scaleName)
+        {
+            return AllTools
+                .FirstOrDefault(t => t.ToolNumber == toolNumber)?
+                .Scales
+                .FirstOrDefault(s => s.Scale_Name == scaleName);
+        }
 
+        public void ReadDataOnlyScale(string[] QuestionParts , string FullItemText , Worksheet DataSheet , int itemcol)
+        {
+            try
+            {
+                Worksheet ReverseSheet = workbook.Worksheets["Reverse"];
+
+                bool isReverse = false;
+
+                for(int reverserow = 0;reverserow <= ReverseSheet.Cells.MaxDataRow; reverserow++)
+                {
+                    string cellvalue = ReverseSheet.Cells[reverserow, 0].Value.ToString();
+
+                    if(cellvalue == FullItemText)
+                    {
+                        isReverse = true;
+                        break;
+                    }
+                }
+
+                
+
+                List<double> itemresponses = new List<double>();
+
+                for (int row = 1; row < DataSheet.Cells.MaxDataRow;row++)
+                {
+                    double response = double.Parse(DataSheet.Cells[row,itemcol].Value.ToString());
+                    itemresponses.Add(response);
+                }
+
+                Tool.Item MyItem = new Tool.Item();
+
+                MyItem.Id = QuestionParts[0];
+                MyItem.Text = FullItemText;
+                MyItem.IsReverse = isReverse;
+                MyItem.ParticipantResponses = itemresponses;
+
+                string scalename = QuestionParts[1];
+                string Toolnumber = QuestionParts[2];
+
+                Scale scaletoadditem = GetScaleByToolNumberAndName(Toolnumber, scalename);
+
+                scaletoadditem.AddItem(MyItem);
+
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error at reading data only Scale");
+            }
+        }
         public void ReadData()
         {
             Worksheet Sheet1 = workbook.Worksheets[0];
 
             string pattern = @"Q\d+\.[A-Za-z0-9]+(\.[A-Za-z0-9]+)?\.\d+(\.[A-Za-z0-9]+)?";
 
-            List<Tool> tools = new List<Tool>();
+            
 
             for (int i = 0;i <= Sheet1.Cells.MaxDataColumn;i++)
             {
                 string ExcelString = Sheet1.Cells[0,i]?.Value?.ToString();
                 if (!string.IsNullOrEmpty(ExcelString) && Regex.IsMatch(ExcelString, pattern))
                 {
-                    var parts = ExcelString.Split('.');
-                    int itemNumber = int.Parse(parts[0].Substring(1)); // Q1 -> item 1
-                    string subscaleName = parts[1]; // A, test, etc.
-                    int toolNumber = int.Parse(parts[2]); // 1 for Q1.A.1 -> Tool 1
+                    string[] parts = ExcelString.Split('.');
 
+                    int partscount = parts.Count();
+
+                    if(partscount > 2)
+                    {
+                        if(partscount  == 3) 
+                        {
+                            ReadDataOnlyScale(parts , ExcelString , Sheet1 ,  i);
+                        }
+                        else if (partscount == 4)
+                        {
+                            //might have periods
+
+                            if (int.TryParse(parts[3], out int result))
+                            {
+                                
+
+                            }
+                            else
+                            {
+                                //periods
+                            }
+
+
+                        }
+
+                        else if (partscount == 5)
+                        {
+                            // Periods
+                        }
+
+
+
+                    }
 
                 }
             }
@@ -381,7 +443,12 @@ namespace ExcelScore.Forms
         {
             ReadToolsAndSubscales();
             //push test
-            //ReadData();
+            ReadData();
+
+            foreach (var tool in AllTools)
+            {
+                MessageBox.Show(tool.ToolName);
+            }
 
             //ReadToolsAndSubscales();
         }
@@ -393,5 +460,10 @@ namespace ExcelScore.Forms
             chooseFrm.Dgv = Dgv;
             chooseFrm.Show();
         }
+
+
+
+
+       
     }
 }
