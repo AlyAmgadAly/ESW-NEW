@@ -1,6 +1,7 @@
 ﻿using Accord.Statistics.Kernels;
 using Aspose.Cells;
 using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Office2016.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelScore.Classes;
 using System;
@@ -360,7 +361,7 @@ namespace ExcelScore.Forms
 
                 List<double> itemresponses = new List<double>();
 
-                for (int row = 1; row < DataSheet.Cells.MaxDataRow;row++)
+                for (int row = 1; row <= DataSheet.Cells.MaxDataRow;row++)
                 {
                     double response = double.Parse(DataSheet.Cells[row,itemcol].Value.ToString());
                     itemresponses.Add(response);
@@ -380,15 +381,21 @@ namespace ExcelScore.Forms
 
                 scaletoadditem.AddItem(MyItem);
 
+                
+
             }
             catch (Exception)
             {
                 MessageBox.Show("Error at reading data only Scale");
             }
         }
-        public void ReadData()
+        public string ReadData()
         {
             Worksheet Sheet1 = workbook.Worksheets[0];
+
+           
+
+            string periodOrDesc = "";
 
             string pattern = @"Q\d+\.[A-Za-z0-9]+(\.[A-Za-z0-9]+)?\.\d+(\.[A-Za-z0-9]+)?";
 
@@ -407,20 +414,25 @@ namespace ExcelScore.Forms
                     {
                         if(partscount  == 3) 
                         {
+                            //Descriptive
                             ReadDataOnlyScale(parts , ExcelString , Sheet1 ,  i);
+                            periodOrDesc = "Descriptive";
                         }
                         else if (partscount == 4)
                         {
                             //might have periods
 
+                            
                             if (int.TryParse(parts[3], out int result))
                             {
-                                
+                                //Descriptive
+                                periodOrDesc = "Descriptive";
 
                             }
                             else
                             {
                                 //periods
+                                periodOrDesc = "Periods";
                             }
 
 
@@ -429,6 +441,7 @@ namespace ExcelScore.Forms
                         else if (partscount == 5)
                         {
                             // Periods
+                            periodOrDesc = "Periods";
                         }
 
 
@@ -437,20 +450,40 @@ namespace ExcelScore.Forms
 
                 }
             }
-            
+
+
+            return periodOrDesc;
+
+
+        }
+        public void CalculateScore(string PeriodOrDes)
+        {
+            if(PeriodOrDes == "Descriptive")
+            {
+                CalculateScoreDescriptive();
+            }
+        }
+        public void CalculateScoreDescriptive()
+        {
+            //NewNursingExcel.EnsureSheetExists(workbook, "Sheet2", 1);
+            //NewNursingExcel.EnsureSheetExists(workbook, "Sheet3", 2);
+
+            Worksheet sheet2 = workbook.Worksheets[1];
+
+            sheet2.Cells[0, 0].Value = 2;
+
+            sheet2.AutoFitColumns();
+            workbook.Save(ExcelFunctions.filepath);
+
         }
         private void Nursing_Load(object sender, EventArgs e)
         {
             ReadToolsAndSubscales();
-            //push test
-            ReadData();
+            
+            string PeriodOrDes = ReadData();
 
-            foreach (var tool in AllTools)
-            {
-                MessageBox.Show(tool.ToolName);
-            }
 
-            //ReadToolsAndSubscales();
+            CalculateScore(PeriodOrDes);
         }
 
         private void pic_back_Click(object sender, EventArgs e)

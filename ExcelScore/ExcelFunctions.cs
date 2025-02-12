@@ -206,10 +206,9 @@ namespace ExcelScore
             
             return level;
 
-            
-
-
         }
+
+
         
         
 

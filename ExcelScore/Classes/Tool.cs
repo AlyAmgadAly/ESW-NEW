@@ -36,7 +36,7 @@ namespace ExcelScore.Classes
             public string Scale_Name { get; set; }
 
             public string Scale_Full_Name { get; set; }
-            public List<Item> Items { get; set; }
+            public List<Item> Items { get; set; } = new List<Item>();
 
             public List<Subscale> Subscales { get; set; } = new List<Subscale>();
             // Lists to store scores for each participant
@@ -64,7 +64,9 @@ namespace ExcelScore.Classes
             public string Subscale_Name { get; set; }
 
             public string Subscale_Full_Name { get; set; }
-            public List<Item> Items { get; set; }
+            public List<Item> Items { get; set; } = new List<Item>();
+
+
 
             // Lists to store scores for each participant
             public List<double> TotalScores { get; set; } = new List<double>();
