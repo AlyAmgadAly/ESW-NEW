@@ -66,5 +66,37 @@ namespace ExcelScore.Classes
             return lighterOrange;
         }
 
+        public static Syncfusion.Drawing.Color LightGreen()
+        {
+            int lightenPercentage = 70;
+
+            int baseRed = 34;   // Example base green (adjust as needed)
+            int baseGreen = 139;
+            int baseBlue = 34;
+
+            int red = baseRed + (255 - baseRed) * lightenPercentage / 100;
+            int green = baseGreen + (255 - baseGreen) * lightenPercentage / 100;
+            int blue = baseBlue + (255 - baseBlue) * lightenPercentage / 100;
+
+            int argbLighter = (255 << 24) | (red << 16) | (green << 8) | blue;
+
+            Syncfusion.Drawing.Color lighterGreen = Syncfusion.Drawing.Color.FromArgb(argbLighter);
+
+            return lighterGreen;
+        }
+
+        public static Syncfusion.Drawing.Color LightOliveGreen()
+        {
+            // RGB values for "Olive Green, Accent 3, Lighter 80%" in Excel
+            int red = 234;
+            int green = 241;
+            int blue = 221;
+
+            return Syncfusion.Drawing.Color.FromArgb(255, red, green, blue);
+        }
+
+
+
+
     }
 }

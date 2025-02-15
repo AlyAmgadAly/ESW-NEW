@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -17,6 +18,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static ExcelScore.Classes.Tool;
 using static ExcelScore.Forms.Waiting;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Cell = Aspose.Cells.Cell;
+using Color = System.Drawing.Color;
 using Tool = ExcelScore.Classes.Tool;
 using Worksheet = Aspose.Cells.Worksheet;
 
@@ -238,6 +242,7 @@ namespace ExcelScore.Forms
 
                                 if (firstColumn == "Scales" && (secondColumn != "0"))
                                 {
+                                    tool.hasscales = true;
                                     //add subscales
                                     while (firstColumn != "Likert")
                                     {
@@ -264,7 +269,7 @@ namespace ExcelScore.Forms
                                                 if (CurrntScale != null) 
                                                 {
                                                     Tool.Subscale mysubscale = new Tool.Subscale();
-                                                    mysubscale.Subscale_Name = firstColumn;
+                                                    mysubscale.Subscale_Name = Scale_Subscale[1];
                                                     mysubscale.Subscale_Full_Name = secondColumn;
                                                     CurrntScale.AddSubscale(mysubscale);
                                                 }
@@ -276,6 +281,10 @@ namespace ExcelScore.Forms
 
                                     }
 
+                                }
+                                else
+                                {
+                                    tool.hasscales = false;
                                 }
                             }
                         }
@@ -338,6 +347,13 @@ namespace ExcelScore.Forms
                 .FirstOrDefault(s => s.Scale_Name == scaleName);
         }
 
+        public Tool GetToolByNumber(string toolNumber)
+        {
+            return AllTools
+                .FirstOrDefault(t => t.ToolNumber == toolNumber);
+
+        }
+
         public void ReadDataOnlyScale(string[] QuestionParts , string FullItemText , Worksheet DataSheet , int itemcol)
         {
             try
@@ -374,12 +390,29 @@ namespace ExcelScore.Forms
                 MyItem.IsReverse = isReverse;
                 MyItem.ParticipantResponses = itemresponses;
 
-                string scalename = QuestionParts[1];
-                string Toolnumber = QuestionParts[2];
 
-                Scale scaletoadditem = GetScaleByToolNumberAndName(Toolnumber, scalename);
+                if(QuestionParts.Count() == 2)
+                {
+                    string Toolnumber = QuestionParts[1];
 
-                scaletoadditem.AddItem(MyItem);
+                    Tool tooltoadditem = GetToolByNumber(Toolnumber);
+
+                    tooltoadditem.ToolItems.Add(MyItem);
+                }
+                else if(QuestionParts.Count() == 3)
+                {
+                    string scalename = QuestionParts[1];
+                    string Toolnumber = QuestionParts[2];
+
+                    Scale scaletoadditem = GetScaleByToolNumberAndName(Toolnumber, scalename);
+
+
+                    Tool tooltoadditem = GetToolByNumber(Toolnumber);
+                    tooltoadditem.ToolItems.Add(MyItem);
+
+                    scaletoadditem.AddItem(MyItem);
+                }
+                
 
                 
 
@@ -393,26 +426,28 @@ namespace ExcelScore.Forms
         {
             Worksheet Sheet1 = workbook.Worksheets[0];
 
-           
+            NewNursingExcel.EnsureSheetExists(workbook, "Sheet2", 1);
+            NewNursingExcel.EnsureSheetExists(workbook, "Sheet3", 2);
 
             string periodOrDesc = "";
 
-            string pattern = @"Q\d+\.[A-Za-z0-9]+(\.[A-Za-z0-9]+)?\.\d+(\.[A-Za-z0-9]+)?";
+            //string pattern = @"Q\d+\.[A-Za-z0-9]+(\.[A-Za-z0-9]+)?\.\d+(\.[A-Za-z0-9]+)?";
 
-            
+            string patternnew = @"Q\d+\.(?:[A-Za-z]+(\.[A-Za-z]+)*\.\d+(\.[A-Za-z]+)?|\d+)";
+
 
             for (int i = 0;i <= Sheet1.Cells.MaxDataColumn;i++)
             {
                 string ExcelString = Sheet1.Cells[0,i]?.Value?.ToString();
-                if (!string.IsNullOrEmpty(ExcelString) && Regex.IsMatch(ExcelString, pattern))
+                if (!string.IsNullOrEmpty(ExcelString) && Regex.IsMatch(ExcelString, patternnew))
                 {
                     string[] parts = ExcelString.Split('.');
 
                     int partscount = parts.Count();
 
-                    if(partscount > 2)
+                    if(partscount > 1)
                     {
-                        if(partscount  == 3) 
+                        if(partscount  == 3 || partscount == 2) 
                         {
                             //Descriptive
                             ReadDataOnlyScale(parts , ExcelString , Sheet1 ,  i);
@@ -460,19 +495,197 @@ namespace ExcelScore.Forms
         {
             if(PeriodOrDes == "Descriptive")
             {
-                CalculateScoreDescriptive();
+                CalculateScore_Descriptive_NoSubscales();
             }
         }
-        public void CalculateScoreDescriptive()
+
+        public int getN()
         {
-            //NewNursingExcel.EnsureSheetExists(workbook, "Sheet2", 1);
-            //NewNursingExcel.EnsureSheetExists(workbook, "Sheet3", 2);
+            int itemcount = AllTools[0].ToolItems[0].ParticipantResponses.Count;
 
-            Worksheet sheet2 = workbook.Worksheets[1];
+            return itemcount; 
+        }
 
-            sheet2.Cells[0, 0].Value = 2;
 
-            sheet2.AutoFitColumns();
+        static Syncfusion.Drawing.Color  LightGreen = ColorClass.LightOliveGreen();
+        System.Drawing.Color LightGreenExcel = System.Drawing.Color.FromArgb(LightGreen.ToArgb());
+
+        public void SetToolNames( Worksheet ScoreSheet, Tool CurrentTool , int TotalN , int current_colctr)
+        {
+            for (int colorrow = 0; colorrow < TotalN + 3; colorrow++)
+            {
+                NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, colorrow, current_colctr, "", LightGreenExcel);
+            }
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, CurrentTool.ToolName, LightGreenExcel);
+        }
+        public void InsertheaderScale(Worksheet ScoreSheet , Scale MyScale , int current_colctr)
+        {
+            int mergecountcol = MyScale.Items.Count;
+            ScoreSheet.Cells.Merge(1, current_colctr, 1, mergecountcol);
+
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, current_colctr, MyScale.Scale_Name, LightGreenExcel);
+        }
+        public void PutItemData(int current_colctr, Scale Myscale , Worksheet ScoreSheet )
+        {
+            int itemcol = current_colctr;
+
+            foreach (var Myscaleitem in Myscale.Items)
+            {
+                NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, itemcol, Myscaleitem.Id, LightGreenExcel);
+
+                int item_partic_data_row = 3;
+                foreach (var participantdata in Myscaleitem.ParticipantResponses)
+                {
+                    NewNursingExcel.SetCellValueAndCenter_int(ScoreSheet, item_partic_data_row, itemcol, participantdata, LightGreenExcel);
+                    item_partic_data_row++;
+                }
+
+
+                itemcol++;
+            }
+        }
+
+        public static void ProcessScoreColumns(Worksheet ScoreSheet, int startRow, int totalRows, ref int current_colctr, Scale Scale, Color fillColor, Tool CurrentTool)
+        {
+            // === TOTAL COLUMN ===
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Total", fillColor);
+
+            for (int row = startRow; row < totalRows + startRow; row++)
+            {
+                string destinationCell = ScoreSheet.Cells[row, current_colctr].Name;
+                string range = ScoreSheet.Cells[row, current_colctr - (Scale.Items.Count + 1)].Name + ":" + ScoreSheet.Cells[row, current_colctr - 2].Name;
+                ScoreSheet.Cells[destinationCell].Formula = $"=SUM({range})";
+
+                Style returnedStyle = NewNursingExcel.ScoreStyle(ScoreSheet, fillColor, row, current_colctr);
+                ScoreSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
+            }
+            current_colctr++;
+
+            // === AVERAGE COLUMN ===
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Avg", fillColor);
+
+            for (int row = startRow; row < totalRows + startRow; row++)
+            {
+                string destinationCell = ScoreSheet.Cells[row, current_colctr].Name;
+                string range = ScoreSheet.Cells[row, current_colctr - (Scale.Items.Count + 2)].Name + ":" + ScoreSheet.Cells[row, current_colctr - 3].Name;
+                ScoreSheet.Cells[destinationCell].Formula = $"=AVERAGE({range})";
+
+                Style returnedStyle = NewNursingExcel.ScoreStyle(ScoreSheet, fillColor, row, current_colctr);
+                ScoreSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
+            }
+            current_colctr++;
+
+            // === PERCENT COLUMN ===
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Percent", fillColor);
+
+            int minLikert = CurrentTool.LikertScale.Keys.Min();
+            int maxLikert = CurrentTool.LikertScale.Keys.Max();
+
+            for (int row = startRow; row < totalRows + startRow; row++)
+            {
+                string destinationCell = ScoreSheet.Cells[row, current_colctr].Name;
+                string avgCell = ScoreSheet.Cells[row, current_colctr - 1].Name;
+
+                ScoreSheet.Cells[destinationCell].Formula = $"=({avgCell} - {minLikert}) / ({maxLikert} - {minLikert}) * 100";
+
+                Style returnedStyle = NewNursingExcel.ScoreStyle(ScoreSheet, fillColor, row, current_colctr);
+                ScoreSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
+            }
+            current_colctr++;
+        }
+        public void insertvlookTable()
+        {
+            Worksheet vloovkupSheet = workbook.Worksheets["Sheet3"];
+
+            int Tablesvlookrow = 0;
+
+            foreach (var ToolVlook in AllTools)
+            {
+
+            }
+        }
+        public void CalculateScore_Descriptive_NoSubscales()
+        {
+
+            int TotalN = getN();
+
+
+            Worksheet ScoreSheet = workbook.Worksheets["Sheet2"];
+            
+
+            int current_colctr = 2;
+
+            foreach (var CurrentTool in AllTools)
+            {
+
+
+                //insert tool names and highlight them
+                SetToolNames(ScoreSheet , CurrentTool , TotalN , current_colctr);
+
+                //leave blank col
+                current_colctr+=2;
+
+                //insert items
+
+                //header Merge
+
+                if (CurrentTool.hasscales)
+                {
+                    foreach (var Scale in CurrentTool.Scales)
+                    {
+                        InsertheaderScale(ScoreSheet , Scale , current_colctr);
+
+                        PutItemData(current_colctr, Scale, ScoreSheet);
+
+                        current_colctr = current_colctr + Scale.Items.Count + 1;
+
+
+
+                        ProcessScoreColumns(ScoreSheet, 3, TotalN, ref current_colctr, Scale, LightGreenExcel, CurrentTool);
+
+
+
+
+                        NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Level", LightGreenExcel);
+
+                        // string formula = "=VLOOKUP(" + Datarange + "," + "Sheet3!"+ TableArrayRange  + ",2"+")";
+
+
+
+
+                        current_colctr += 2;
+
+
+                        
+
+                    }
+
+
+                    
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+                
+
+                
+
+                
+            }
+
+
+
+            ScoreSheet.AutoFitColumns();
             workbook.Save(ExcelFunctions.filepath);
 
         }

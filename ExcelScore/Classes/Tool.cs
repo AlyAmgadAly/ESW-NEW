@@ -13,6 +13,8 @@ namespace ExcelScore.Classes
         public string ToolName { get; set; }
         public List<Scale> Scales { get; set; } = new List<Scale>();
 
+        public List<Item> ToolItems { get; set; } = new List<Item>();
+
         public Dictionary<int , string> LikertScale = new Dictionary<int , string>();
         public List<List<LevelRange>> ToolLevels { get; set; } = new List<List<LevelRange>>();
         public List<string> LevelDetermination { get; set; } = new List<string>();
@@ -22,7 +24,7 @@ namespace ExcelScore.Classes
         public List<double> PercentScores { get; set; } = new List<double>();
         public List<List<int>> ComputedToolLevels { get; set; } = new List<List<int>>();
 
-        
+        public bool hasscales { get; set; }
 
         public void AddScale(Scale scale)
         {
@@ -44,6 +46,8 @@ namespace ExcelScore.Classes
             public List<double> AverageScores { get; set; } = new List<double>();
             public List<double> PercentScores { get; set; } = new List<double>();
             public List<List<int>> ComputedSubLevels { get; set; } = new List<List<int>>();
+
+            
 
             public Tool ParentTool { get; set; }
 
