@@ -39,7 +39,7 @@ namespace ExcelScore.Classes
         public static void SetCellValueAndCenterText(Worksheet worksheet, int firstRow, int firstColumn, string value, Color fillColor)
         {
             Cell Mycell = worksheet.Cells[firstRow, firstColumn];
-            Mycell.PutValue(value);
+            Mycell.PutValue(value, true);
 
             Style style = Mycell.GetStyle();
             style.HorizontalAlignment = TextAlignmentType.Center;
@@ -51,7 +51,7 @@ namespace ExcelScore.Classes
             Mycell.SetStyle(style);
         }
 
-        public static void SetCellValueAndCenter_int(Worksheet worksheet, int firstRow, int firstColumn, double value, Color fillColor)
+        public static void SetCellValueAndCenter_int(Worksheet worksheet, int firstRow, int firstColumn, double value)
         {
             Cell Mycell = worksheet.Cells[firstRow, firstColumn];
             Mycell.PutValue(value);
@@ -59,9 +59,8 @@ namespace ExcelScore.Classes
             Style style = Mycell.GetStyle();
             style.HorizontalAlignment = TextAlignmentType.Center;
             style.VerticalAlignment = TextAlignmentType.Center;
-            style.Pattern = BackgroundType.Solid;  // Ensure the fill color is applied
-           
-            style.ForegroundColor = fillColor;  // This is the actual fill color
+
+            style.IsFillApplied = false;  
 
             Mycell.SetStyle(style);
         }

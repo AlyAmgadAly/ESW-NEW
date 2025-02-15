@@ -1,6 +1,7 @@
 ﻿using Accord.Statistics.Kernels;
 using Aspose.Cells;
 using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Office2016.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelScore.Classes;
@@ -56,8 +57,8 @@ namespace ExcelScore.Forms
             GetEachToolLikert(DetailsSheet);
 
             GetEachToolLevel(DetailsSheet);
-            
 
+            
         }
         
 
@@ -495,6 +496,7 @@ namespace ExcelScore.Forms
         {
             if(PeriodOrDes == "Descriptive")
             {
+                insertvlookTable();
                 CalculateScore_Descriptive_NoSubscales();
             }
         }
@@ -522,8 +524,9 @@ namespace ExcelScore.Forms
         {
             int mergecountcol = MyScale.Items.Count;
             ScoreSheet.Cells.Merge(1, current_colctr, 1, mergecountcol);
-
+            ScoreSheet.Cells.Merge(0, current_colctr, 1, mergecountcol);
             NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, current_colctr, MyScale.Scale_Name, LightGreenExcel);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 0, current_colctr, "", LightGreenExcel);
         }
         public void PutItemData(int current_colctr, Scale Myscale , Worksheet ScoreSheet )
         {
@@ -536,7 +539,7 @@ namespace ExcelScore.Forms
                 int item_partic_data_row = 3;
                 foreach (var participantdata in Myscaleitem.ParticipantResponses)
                 {
-                    NewNursingExcel.SetCellValueAndCenter_int(ScoreSheet, item_partic_data_row, itemcol, participantdata, LightGreenExcel);
+                    NewNursingExcel.SetCellValueAndCenter_int(ScoreSheet, item_partic_data_row, itemcol, participantdata);
                     item_partic_data_row++;
                 }
 
@@ -549,6 +552,8 @@ namespace ExcelScore.Forms
         {
             // === TOTAL COLUMN ===
             NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Total", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 0, current_colctr, "", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, current_colctr, "", fillColor);
 
             for (int row = startRow; row < totalRows + startRow; row++)
             {
@@ -563,6 +568,8 @@ namespace ExcelScore.Forms
 
             // === AVERAGE COLUMN ===
             NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Avg", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 0, current_colctr, "", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, current_colctr, "", fillColor);
 
             for (int row = startRow; row < totalRows + startRow; row++)
             {
@@ -577,6 +584,8 @@ namespace ExcelScore.Forms
 
             // === PERCENT COLUMN ===
             NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Percent", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 0, current_colctr, "", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, current_colctr, "", fillColor);
 
             int minLikert = CurrentTool.LikertScale.Keys.Min();
             int maxLikert = CurrentTool.LikertScale.Keys.Max();
@@ -597,12 +606,105 @@ namespace ExcelScore.Forms
         {
             Worksheet vloovkupSheet = workbook.Worksheets["Sheet3"];
 
+            
+
             int Tablesvlookrow = 0;
 
             foreach (var ToolVlook in AllTools)
             {
+                vloovkupSheet.Cells.Merge(Tablesvlookrow, 0, 1, 2);
+                NewNursingExcel.SetCellValueAndCenterText(vloovkupSheet, Tablesvlookrow, 0, ToolVlook.ToolName, LightGreenExcel);
+
+                Tablesvlookrow++;
+
+                int levelID = 1;
+                foreach (var Level in ToolVlook.ToolLevels)
+                {
+                    NewNursingExcel.SetCellValueAndCenterText(vloovkupSheet, Tablesvlookrow, 0, "Level."+ levelID + "."+ ToolVlook.ToolNumber, LightGreenExcel);
+                    levelID++;
+                    Tablesvlookrow++;
+
+                    int levelvalue = 1;
+                    foreach (var Levelrange in Level)
+                    {
+                        NewNursingExcel.SetCellValueAndCenterText(vloovkupSheet, Tablesvlookrow, 0, Levelrange.Range, LightGreenExcel);
+                        NewNursingExcel.SetCellValueAndCenterText(vloovkupSheet, Tablesvlookrow, 1, levelvalue.ToString(), LightGreenExcel);
+                        levelvalue++;
+                        Tablesvlookrow++;
+
+                    }
+
+
+                }
 
             }
+        }
+
+        public (int, int) getstartEndColumn(Tool CurrentTool , string LevelID)
+        {
+            Worksheet vloovkupSheet = workbook.Worksheets["Sheet3"];
+
+
+            int startrow = 0;
+            int Endrow = 0;
+
+          
+            int vlookuprow = 0;
+
+            while(vlookuprow <= vloovkupSheet.Cells.MaxDataRow)
+            {
+                if (vloovkupSheet.Cells[vlookuprow, 0].Value != null)
+                {
+                    string firstcol = vloovkupSheet.Cells[vlookuprow, 0].Value.ToString();
+                    if (firstcol == LevelID)
+                    {
+                        vlookuprow++;
+                        startrow = vlookuprow;
+                        while (vloovkupSheet.Cells[vlookuprow, 1].Value != null)
+                        {
+                            vlookuprow++;
+                        }
+
+                        Endrow = vlookuprow-1;
+                    }
+                }
+
+                vlookuprow++;
+
+
+
+            }
+
+           
+
+
+
+
+
+
+
+            return (startrow, Endrow);
+        }
+
+        public List<string> getDataRangesforOverall(Worksheet CurrentSheet , Tool CurrentTool , int TotalN , int current_colctr)
+        {
+            List<string> Ranges = new List<string>();
+            int StartCol = 3;
+
+            foreach (var CurrentScale in CurrentTool.Scales)
+            {
+                string range = CurrentSheet.Cells[3, StartCol + 1].Name + ":" + CurrentSheet.Cells[3, StartCol + CurrentScale.Items.Count].Name;
+
+                Ranges.Add(range);
+                StartCol = StartCol + CurrentScale.Items.Count + 1 +3 + CurrentTool.ToolLevels.Count+1;
+
+            }
+
+            return Ranges;
+
+            
+
+
         }
         public void CalculateScore_Descriptive_NoSubscales()
         {
@@ -610,20 +712,25 @@ namespace ExcelScore.Forms
             int TotalN = getN();
 
 
-            Worksheet ScoreSheet = workbook.Worksheets["Sheet2"];
-            
+            //Worksheet ScoreSheet = workbook.Worksheets["Sheet2"];
+            Worksheet VlookupSheet = workbook.Worksheets["Sheet3"];
 
-            int current_colctr = 2;
 
+            int vlookCtrrow = 0;
             foreach (var CurrentTool in AllTools)
             {
 
 
+                int current_colctr = 2;
+
+                NewNursingExcel.EnsureSheetExists(workbook, CurrentTool.ToolName, workbook.Worksheets.Count);
+                Worksheet CurrentScoreSheet = workbook.Worksheets[CurrentTool.ToolName];
+
                 //insert tool names and highlight them
-                SetToolNames(ScoreSheet , CurrentTool , TotalN , current_colctr);
+                SetToolNames(CurrentScoreSheet, CurrentTool, TotalN, current_colctr);
 
                 //leave blank col
-                current_colctr+=2;
+                current_colctr += 2;
 
                 //insert items
 
@@ -631,38 +738,88 @@ namespace ExcelScore.Forms
 
                 if (CurrentTool.hasscales)
                 {
+
                     foreach (var Scale in CurrentTool.Scales)
                     {
-                        InsertheaderScale(ScoreSheet , Scale , current_colctr);
+                        InsertheaderScale(CurrentScoreSheet, Scale, current_colctr);
 
-                        PutItemData(current_colctr, Scale, ScoreSheet);
+                        PutItemData(current_colctr, Scale, CurrentScoreSheet);
 
                         current_colctr = current_colctr + Scale.Items.Count + 1;
 
 
 
-                        ProcessScoreColumns(ScoreSheet, 3, TotalN, ref current_colctr, Scale, LightGreenExcel, CurrentTool);
+                        ProcessScoreColumns(CurrentScoreSheet, 3, TotalN, ref current_colctr, Scale, LightGreenExcel, CurrentTool);
 
 
+                        int levelId = 1;
+                        int leveldeterminectr = 0;
+                        int VlookUpColumn = 0;
+
+                        //datacell of percent or total or average is by level ID
+                       
+                        foreach (var Level in CurrentTool.ToolLevels)
+                        {
+                            NewNursingExcel.SetCellValueAndCenterText(CurrentScoreSheet, 0, current_colctr, "", LightGreenExcel);
+                            NewNursingExcel.SetCellValueAndCenterText(CurrentScoreSheet, 1, current_colctr, "", LightGreenExcel);
+                            string currentLevelID = "Level." + levelId + "." + CurrentTool.ToolNumber;
+                            NewNursingExcel.SetCellValueAndCenterText(CurrentScoreSheet, 2, current_colctr, currentLevelID, LightGreenExcel);
+
+                            int startrow = 0;
+                            int endrow = 0;
+
+                            
+
+                            (startrow, endrow) = getstartEndColumn(CurrentTool, currentLevelID);
+                            startrow++;
+                            endrow++;
+                            string TableArrayRange = "$A$"+startrow + ":" + "$B$"+ endrow;
 
 
-                        NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Level", LightGreenExcel);
+                            if (CurrentTool.LevelDetermination[leveldeterminectr] == "Total")
+                            {
+                                VlookUpColumn = current_colctr - (3 + leveldeterminectr);
+                                
+                            }
+                            else if (CurrentTool.LevelDetermination[leveldeterminectr] == "Avg")
+                            {
+                                VlookUpColumn = current_colctr - (2 + leveldeterminectr);
+                            }
+                            else if (CurrentTool.LevelDetermination[leveldeterminectr] == "Percent")
+                            {
+                                VlookUpColumn = current_colctr - (1 + leveldeterminectr);
+                            }
 
-                        // string formula = "=VLOOKUP(" + Datarange + "," + "Sheet3!"+ TableArrayRange  + ",2"+")";
+                            for (int row = 3; row < TotalN + 3; row++)
+                            {
+                                string ScoreCell = CurrentScoreSheet.Cells[row, VlookUpColumn].Name;
+                                string destinationCell = CurrentScoreSheet.Cells[row, current_colctr].Name;
+                                string formula = "=VLOOKUP(" + ScoreCell + "," + "Sheet3!" + TableArrayRange + ",2" + ")";
 
+                                CurrentScoreSheet.Cells[destinationCell].Formula = formula;
+                                Style returnedStyle = NewNursingExcel.ScoreStyle(CurrentScoreSheet, LightGreenExcel, row, current_colctr);
+                                CurrentScoreSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
+                            }
+                            
+                            leveldeterminectr++;
+                            current_colctr++;
+                            levelId++;
+                        }
 
+                        // 
 
-
-                        current_colctr += 2;
-
-
-                        
+                        current_colctr ++ ;
 
                     }
 
+                    List<string> Ranges = getDataRangesforOverall(CurrentScoreSheet , CurrentTool , TotalN , current_colctr);
 
-                    
+                    foreach (var item in Ranges)
+                    {
+                        MessageBox.Show(item);
+                    }
 
+                   //ProcessScoreColumns(CurrentScoreSheet, 3, TotalN, ref current_colctr, Scale, LightGreenExcel, CurrentTool);
 
                 }
 
@@ -673,22 +830,26 @@ namespace ExcelScore.Forms
 
 
 
+                CurrentScoreSheet.AutoFitColumns();
 
 
-
-                
-
-                
-
-                
             }
 
 
 
-            ScoreSheet.AutoFitColumns();
-            workbook.Save(ExcelFunctions.filepath);
-
+            try
+            {
+                workbook.Save(ExcelFunctions.filepath);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Close Excel");
+            }
         }
+
+
+
+
         private void Nursing_Load(object sender, EventArgs e)
         {
             ReadToolsAndSubscales();
