@@ -776,7 +776,18 @@ namespace ExcelScore.Forms
                 string destinationCellTotal = CurrentSheet.Cells[row, current_colctr].Name;
                 CurrentSheet.Cells[destinationCellTotal].Formula = $"=SUM({CurrentRange})";
                 CurrentSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
-                current_colctr++;
+
+                string destinationCellAvg = CurrentSheet.Cells[row, current_colctr+1].Name;
+                CurrentSheet.Cells[destinationCellAvg].Formula = $"=AVERAGE({CurrentRange})";
+                CurrentSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
+
+                string destinationCellPerc = CurrentSheet.Cells[row, current_colctr + 2].Name;
+                CurrentSheet.Cells[destinationCellAvg].Formula = $"=AVERAGE({CurrentRange})";
+                CurrentSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
+
+
+                
+
                 row++;
 
             }
