@@ -380,7 +380,11 @@ namespace ExcelScore.Forms
 
                 for (int row = 1; row <= DataSheet.Cells.MaxDataRow;row++)
                 {
-                    double response = double.Parse(DataSheet.Cells[row,itemcol].Value.ToString());
+                    if(DataSheet.Cells[row, itemcol].Value == null)
+                    {
+                        MessageBox.Show("Empty value at row " + row + " and column " + itemcol);
+                    }
+                    double response = double.Parse(DataSheet.Cells[row, itemcol].Value.ToString());
                     itemresponses.Add(response);
                 }
 
@@ -498,6 +502,73 @@ namespace ExcelScore.Forms
             {
                 insertvlookTable();
                 CalculateScore_Descriptive_NoSubscales();
+                
+            }
+
+            foreach (var item in AllTools)
+            {
+                MessageBox.Show("");
+            }
+        }
+
+        public void StoreScore(int TotalN)
+        {
+            workbook.CalculateFormula();
+
+            foreach (var CurrentTool in AllTools)
+            {
+                int Current_col = 3;
+                Worksheet CurrenScoreSheet = workbook.Worksheets[CurrentTool.ToolName];
+
+                if(CurrentTool.hasscales)
+                {
+                    foreach (var CurrentScale in CurrentTool.Scales)
+                    {
+                        Current_col = Current_col + CurrentScale.Items.Count + 2;
+
+                        List<double> Total_Score = new List<double>();
+                        List<double> Avg_Score = new List<double>();
+                        List<double> Percent_Score = new List<double>();
+                        List<List<int>> ComputedLevels = new List<List<int>>();
+
+                        for (int i = 0; i < CurrentTool.ToolLevels.Count; i++)
+                        {
+                            ComputedLevels.Add(new List<int>());
+                        }
+                        for (int row = 3;row < TotalN+3;row++)
+                        {
+                            double CellTotalDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col].Value.ToString());
+                            double CellAvgDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col+1].Value.ToString());
+                            double CellPercentDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col+2].Value.ToString());
+
+                            Total_Score.Add(CellTotalDouble);
+                            Avg_Score.Add(CellAvgDouble);
+                            Percent_Score.Add(CellPercentDouble);
+
+
+                            int levelcount = 0;
+                            foreach (var CurrentLevel in CurrentTool.ToolLevels)
+                            {
+                                int mycol = Current_col + 2 + levelcount + 1;
+                                int CellPercentint = int.Parse(CurrenScoreSheet.Cells[row, mycol].Value.ToString());
+                                ComputedLevels[levelcount].Add(CellPercentint);
+                                levelcount++;
+                            }
+
+
+                            
+                        }
+
+                        Current_col = Current_col + 3 + CurrentTool.ToolLevels.Count;
+
+                        CurrentScale.TotalScores = Total_Score;
+                        CurrentScale.AverageScores = Avg_Score;
+                        CurrentScale.PercentScores = Percent_Score;
+                        CurrentScale.ComputedSubLevels = ComputedLevels;
+
+                        
+                    }
+                }
             }
         }
 
@@ -528,18 +599,60 @@ namespace ExcelScore.Forms
             NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, current_colctr, MyScale.Scale_Name, LightGreenExcel);
             NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 0, current_colctr, "", LightGreenExcel);
         }
-        public void PutItemData(int current_colctr, Scale Myscale , Worksheet ScoreSheet )
+        public void PutItemData(int current_colctr, Scale Myscale , Worksheet ScoreSheet ,Tool CurrentTool)
         {
             int itemcol = current_colctr;
+            int minLikert = CurrentTool.LikertScale.Keys.Min();
+            int maxLikert = CurrentTool.LikertScale.Keys.Max();
 
             foreach (var Myscaleitem in Myscale.Items)
             {
+                
+
+
+                bool reverse = Myscaleitem.IsReverse;
                 NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, itemcol, Myscaleitem.Id, LightGreenExcel);
 
                 int item_partic_data_row = 3;
                 foreach (var participantdata in Myscaleitem.ParticipantResponses)
                 {
-                    NewNursingExcel.SetCellValueAndCenter_int(ScoreSheet, item_partic_data_row, itemcol, participantdata);
+                    double InsertData = participantdata;
+                    if (reverse)
+                    {
+                        InsertData = (minLikert + maxLikert) - InsertData;
+                    }
+                    NewNursingExcel.SetCellValueAndCenter_int(ScoreSheet, item_partic_data_row, itemcol, InsertData);
+                    item_partic_data_row++;
+                }
+
+
+                itemcol++;
+            }
+        }
+
+        public void PutItemData_Overall(int current_colctr, Worksheet ScoreSheet, Tool CurrentTool)
+        {
+            int itemcol = current_colctr;
+            int minLikert = CurrentTool.LikertScale.Keys.Min();
+            int maxLikert = CurrentTool.LikertScale.Keys.Max();
+
+            foreach (var MyToolitem in CurrentTool.ToolItems)
+            {
+                NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 0, itemcol, "", LightGreenExcel);
+                NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, itemcol, "", LightGreenExcel);
+
+                bool reverse = MyToolitem.IsReverse;
+                NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, itemcol, MyToolitem.Id, LightGreenExcel);
+
+                int item_partic_data_row = 3;
+                foreach (var participantdata in MyToolitem.ParticipantResponses)
+                {
+                    double InsertData = participantdata;
+                    if (reverse)
+                    {
+                        InsertData = (minLikert + maxLikert) - InsertData;
+                    }
+                    NewNursingExcel.SetCellValueAndCenter_int(ScoreSheet, item_partic_data_row, itemcol, InsertData);
                     item_partic_data_row++;
                 }
 
@@ -706,6 +819,22 @@ namespace ExcelScore.Forms
 
 
         }
+
+        public List<string> getDataRangesforOverall_Noscale(Worksheet CurrentSheet, Tool CurrentTool, int TotalN, int current_colctr)
+        {
+            List<string> Ranges = new List<string>();
+            int StartCol = 3;
+
+            string range = CurrentSheet.Cells[3, StartCol + 1].Name + ":" + CurrentSheet.Cells[3, StartCol + CurrentTool.ToolItems.Count].Name;
+
+            Ranges.Add(range);
+         
+            return Ranges;
+
+
+
+
+        }
         static List<string> GetIncrementedCombinedRanges(string combinedRange, int targetRow)
         {
             List<string> result = new List<string>();
@@ -759,11 +888,14 @@ namespace ExcelScore.Forms
         {
             return string.Join(",", ranges);
         }
-        public void InsertDataOverall(Worksheet CurrentSheet , ref int current_colctr ,Color fillColor , List<string> Ranges , int totalRows)
+        public void InsertDataOverall(Worksheet CurrentSheet , ref int current_colctr ,Color fillColor , List<string> Ranges , int totalRows , Tool CurrentTool)
         {
+            int minLikert = CurrentTool.LikertScale.Keys.Min();
+            int maxLikert = CurrentTool.LikertScale.Keys.Max();
+
             NewNursingExcel.SetCellValueAndCenterText(CurrentSheet, 2, current_colctr, "Total", fillColor);
             NewNursingExcel.SetCellValueAndCenterText(CurrentSheet, 0, current_colctr, "", fillColor);
-            NewNursingExcel.SetCellValueAndCenterText(CurrentSheet, 1, current_colctr, "", fillColor);
+            
 
             string Allranges = CombineRanges(Ranges);
             List<string> Myranges = GetIncrementedCombinedRanges(Allranges, totalRows + 3);
@@ -779,20 +911,29 @@ namespace ExcelScore.Forms
 
                 string destinationCellAvg = CurrentSheet.Cells[row, current_colctr+1].Name;
                 CurrentSheet.Cells[destinationCellAvg].Formula = $"=AVERAGE({CurrentRange})";
-                CurrentSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
+                CurrentSheet.Cells[row, current_colctr+1].SetStyle(returnedStyle);
 
                 string destinationCellPerc = CurrentSheet.Cells[row, current_colctr + 2].Name;
-                CurrentSheet.Cells[destinationCellAvg].Formula = $"=AVERAGE({CurrentRange})";
-                CurrentSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
-
-
-                
+                string avgCell = CurrentSheet.Cells[row, current_colctr +1].Name;
+                CurrentSheet.Cells[destinationCellPerc].Formula = $"=({avgCell} - {minLikert}) / ({maxLikert} - {minLikert}) * 100";
+                CurrentSheet.Cells[row, current_colctr+2].SetStyle(returnedStyle);
 
                 row++;
 
             }
 
+            current_colctr++;
+            NewNursingExcel.SetCellValueAndCenterText(CurrentSheet, 2, current_colctr, "Avg", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(CurrentSheet, 0, current_colctr, "", fillColor);
             
+
+
+            current_colctr++;
+            NewNursingExcel.SetCellValueAndCenterText(CurrentSheet, 2, current_colctr, "Percent", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(CurrentSheet, 0, current_colctr, "", fillColor);
+            
+
+
 
         }
 
@@ -852,6 +993,8 @@ namespace ExcelScore.Forms
                 levelId++;
             }
         }
+
+
         public void CalculateScore_Descriptive_NoSubscales()
         {
 
@@ -889,7 +1032,7 @@ namespace ExcelScore.Forms
                     {
                         InsertheaderScale(CurrentScoreSheet, Scale, current_colctr);
 
-                        PutItemData(current_colctr, Scale, CurrentScoreSheet);
+                        PutItemData(current_colctr, Scale, CurrentScoreSheet , CurrentTool);
 
                         current_colctr = current_colctr + Scale.Items.Count + 1;
 
@@ -903,26 +1046,50 @@ namespace ExcelScore.Forms
 
                     }
 
-                     List<string> Ranges = getDataRangesforOverall(CurrentScoreSheet , CurrentTool , TotalN , current_colctr);
+                    //start inserting overall
 
-                    InsertDataOverall(CurrentScoreSheet, ref current_colctr, LightGreenExcel , Ranges , TotalN);
+                    CurrentScoreSheet.Cells.Merge(1, current_colctr, 1, 3+ CurrentTool.ToolLevels.Count);
+                    NewNursingExcel.SetCellValueAndCenterText(CurrentScoreSheet, 1, current_colctr, "Overall", LightGreenExcel);
+
+                    List<string> Ranges = getDataRangesforOverall(CurrentScoreSheet , CurrentTool , TotalN , current_colctr);
+
+                    InsertDataOverall(CurrentScoreSheet, ref current_colctr, LightGreenExcel , Ranges , TotalN , CurrentTool);
+
+                    current_colctr++;
+
+                    InsertLevel(CurrentScoreSheet, ref current_colctr, CurrentTool, TotalN);
 
 
 
 
                 }
+                else if(!(CurrentTool.hasscales))
+                {
+                    
+
+                    PutItemData_Overall(current_colctr, CurrentScoreSheet, CurrentTool);
+
+                    current_colctr = current_colctr + CurrentTool.ToolItems.Count + 1;
 
 
+                    CurrentScoreSheet.Cells.Merge(1, current_colctr, 1, 3 + CurrentTool.ToolLevels.Count);
+                    NewNursingExcel.SetCellValueAndCenterText(CurrentScoreSheet, 1, current_colctr, "Overall", LightGreenExcel);
 
+                    List<string> Ranges = getDataRangesforOverall_Noscale(CurrentScoreSheet, CurrentTool, TotalN, current_colctr);
 
+                    InsertDataOverall(CurrentScoreSheet, ref current_colctr, LightGreenExcel, Ranges, TotalN, CurrentTool);
 
+                   current_colctr++;
 
-
+                   InsertLevel(CurrentScoreSheet, ref current_colctr, CurrentTool, TotalN);
+                }
 
                 CurrentScoreSheet.AutoFitColumns();
-
+                CurrentScoreSheet.AutoFitRows();
 
             }
+
+            StoreScore(TotalN);
 
 
 
@@ -947,6 +1114,7 @@ namespace ExcelScore.Forms
 
 
             CalculateScore(PeriodOrDes);
+
         }
 
         private void pic_back_Click(object sender, EventArgs e)
