@@ -520,7 +520,12 @@ namespace ExcelScore.Forms
                 int Current_col = 3;
                 Worksheet CurrenScoreSheet = workbook.Worksheets[CurrentTool.ToolName];
 
-                if(CurrentTool.hasscales)
+                List<double> Total_Score_Tool = new List<double>();
+                List<double> Avg_Score_Tool = new List<double>();
+                List<double> Percent_Score_Tool = new List<double>();
+                List<List<int>> ComputedLevels_Tool = new List<List<int>>();
+
+                if (CurrentTool.hasscales)
                 {
                     foreach (var CurrentScale in CurrentTool.Scales)
                     {
@@ -568,6 +573,83 @@ namespace ExcelScore.Forms
 
                         
                     }
+
+                    Current_col++;
+                    for (int i = 0; i < CurrentTool.ToolLevels.Count; i++)
+                    {
+                        ComputedLevels_Tool.Add(new List<int>());
+                    }
+
+                    for (int row = 3; row < TotalN + 3; row++)
+                    {
+                        double CellTotalDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col].Value.ToString());
+                        double CellAvgDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col + 1].Value.ToString());
+                        double CellPercentDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col + 2].Value.ToString());
+
+                        Total_Score_Tool.Add(CellTotalDouble);
+                        Avg_Score_Tool.Add(CellAvgDouble);
+                        Percent_Score_Tool.Add(CellPercentDouble);
+
+
+                        int levelcount = 0;
+                        foreach (var CurrentLevel in CurrentTool.ToolLevels)
+                        {
+                            int mycol = Current_col + 2 + levelcount + 1;
+                            int CellPercentint = int.Parse(CurrenScoreSheet.Cells[row, mycol].Value.ToString());
+                            ComputedLevels_Tool[levelcount].Add(CellPercentint);
+                            levelcount++;
+                        }
+
+
+
+                    }
+
+                    CurrentTool.TotalScores = Total_Score_Tool;
+                    CurrentTool.AverageScores = Avg_Score_Tool;
+                    CurrentTool.PercentScores = Percent_Score_Tool;
+                    CurrentTool.ComputedToolLevels = ComputedLevels_Tool;
+
+
+                }
+
+                else if(!(CurrentTool.hasscales))
+                {
+                    Current_col = Current_col + CurrentTool.ToolItems.Count + 2;
+
+
+                    for (int i = 0; i < CurrentTool.ToolLevels.Count; i++)
+                    {
+                        ComputedLevels_Tool.Add(new List<int>());
+                    }
+
+                    for (int row = 3; row < TotalN + 3; row++)
+                    {
+                        double CellTotalDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col].Value.ToString());
+                        double CellAvgDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col + 1].Value.ToString());
+                        double CellPercentDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col + 2].Value.ToString());
+
+                        Total_Score_Tool.Add(CellTotalDouble);
+                        Avg_Score_Tool.Add(CellAvgDouble);
+                        Percent_Score_Tool.Add(CellPercentDouble);
+
+
+                        int levelcount = 0;
+                        foreach (var CurrentLevel in CurrentTool.ToolLevels)
+                        {
+                            int mycol = Current_col + 2 + levelcount + 1;
+                            int CellPercentint = int.Parse(CurrenScoreSheet.Cells[row, mycol].Value.ToString());
+                            ComputedLevels_Tool[levelcount].Add(CellPercentint);
+                            levelcount++;
+                        }
+
+
+
+                    }
+
+                    CurrentTool.TotalScores = Total_Score_Tool;
+                    CurrentTool.AverageScores = Avg_Score_Tool;
+                    CurrentTool.PercentScores = Percent_Score_Tool;
+                    CurrentTool.ComputedToolLevels = ComputedLevels_Tool;
                 }
             }
         }
@@ -1073,6 +1155,7 @@ namespace ExcelScore.Forms
 
 
                     CurrentScoreSheet.Cells.Merge(1, current_colctr, 1, 3 + CurrentTool.ToolLevels.Count);
+
                     NewNursingExcel.SetCellValueAndCenterText(CurrentScoreSheet, 1, current_colctr, "Overall", LightGreenExcel);
 
                     List<string> Ranges = getDataRangesforOverall_Noscale(CurrentScoreSheet, CurrentTool, TotalN, current_colctr);
@@ -1125,9 +1208,12 @@ namespace ExcelScore.Forms
             chooseFrm.Show();
         }
 
-
-
-
-       
+        private void button1_Click(object sender, EventArgs e)
+        {
+            NursingWordNew nursingWordNew = new NursingWordNew();
+            nursingWordNew.Alltools_Tables = AllTools;
+            nursingWordNew.Show();
+            this.Hide();
+        }
     }
 }

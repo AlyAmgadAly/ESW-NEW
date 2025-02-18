@@ -2698,6 +2698,32 @@ namespace ExcelScore.Classes
          
             
         }
+
+        public void Add_Header_Items_Nusring(IWTable table, int LikertScore , string ScaleName , Tool CurrentTool)
+        {
+            
+            
+
+
+            AddPara_Center(table, 0, 0, "Q");
+            AddPara_Center(table, 0, 1, ScaleName);
+
+
+            int Dictionatryctr = 0;
+            var likertKeys = CurrentTool.LikertScale.Keys.ToList();
+            for (int i = 2; i <= LikertScore * 2; i = i + 2)
+            {
+
+                string headerlisttext = CurrentTool.LikertScale[likertKeys[Dictionatryctr]];
+
+                AddPara_Center(table, 0, i, headerlisttext);
+
+                Dictionatryctr++;
+            }
+
+
+
+        }
         public void Add_GeneralHeaders_Descriptive(IWTable table, bool hasnominal)
         {
             if(hasnominal)

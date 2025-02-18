@@ -248,6 +248,7 @@
     <Compile Include="Classes\pythonStat.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Classes\TableClasses.cs" />
     <Compile Include="Classes\Tool.cs" />
     <Compile Include="Classes\WordClass.cs" />
     <Compile Include="ExcelFunctions.cs" />
@@ -328,6 +329,12 @@
     </Compile>
     <Compile Include="Forms\Nursing.Designer.cs">
       <DependentUpon>Nursing.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\NursingWordNew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NursingWordNew.Designer.cs">
+      <DependentUpon>NursingWordNew.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Options_Frm.cs">
       <SubType>Form</SubType>
@@ -441,6 +448,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Nursing.resx">
       <DependentUpon>Nursing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NursingWordNew.resx">
+      <DependentUpon>NursingWordNew.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Options_Frm.resx">
       <DependentUpon>Options_Frm.cs</DependentUpon>
