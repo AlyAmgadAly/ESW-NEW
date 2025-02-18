@@ -29,7 +29,7 @@ namespace ExcelScore.Forms
 
         }
 
-        public void Items(Tool CurrentTool)
+        public void Items(Tool CurrentTool , int ToolN)
         {
             int likertScaleCount = CurrentTool.LikertScale.Keys.Count; 
 
@@ -56,13 +56,40 @@ namespace ExcelScore.Forms
 
                     wordObj.SetWidths(table, WordTableRows, likertScaleCount);
 
-                    wordObj.Add_Header_Items_Nusring(table, likertScaleCount , CurrentScale.Scale_Full_Name, CurrentTool);
+                    wordObj.Add_Header_Items_Nusring(table, likertScaleCount, CurrentScale.Scale_Full_Name, CurrentTool);
 
 
                     wordObj.AddNo_perc_Center(table, WordTableColumns);
 
                     wordObj.AddQuestionNo(table, CurrentScale.Items.Count);
 
+                    int Insertrow = 2;
+
+                    foreach (var CurrentItem in CurrentScale.Items)
+                    {
+                        int InsertColumn = 2;
+
+                        foreach (var CurrentLikertScore in CurrentTool.LikertScale.Keys)
+                        {
+                            int totalLikertFreq = 0;
+                            foreach (var ParticpantResponse in CurrentItem.ParticipantResponses)
+                            {
+                                if(ParticpantResponse == CurrentLikertScore)
+                                {
+                                    totalLikertFreq++;
+                                }
+                            }
+                            double totalLikertPerc = ((double)totalLikertFreq / ToolN)*100;
+
+
+                            wordObj.Addpara_CenterNoBOLD(table, Insertrow, InsertColumn, totalLikertFreq.ToString());
+                            InsertColumn++;
+                            wordObj.Addpara_CenterNoBOLD(table, Insertrow, InsertColumn, totalLikertPerc.ToString("0.0"));
+                            InsertColumn++;
+                        }
+
+                        Insertrow++;
+                    }
 
 
 
@@ -81,9 +108,10 @@ namespace ExcelScore.Forms
         {
             document = wordObj.InitWord();
 
-            foreach (var CurrenTool in Alltools_Tables)
+            foreach (var CurrentTool in Alltools_Tables)
             {
-                Items(CurrenTool);
+                int toolN = CurrentTool.ToolItems[0].ParticipantResponses.Count;
+                Items(CurrentTool , toolN);
 
 
 
