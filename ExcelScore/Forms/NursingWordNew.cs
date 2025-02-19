@@ -440,8 +440,6 @@ namespace ExcelScore.Forms
                 int toolN = CurrentTool.ToolItems[0].ParticipantResponses.Count;
                 Items(CurrentTool , toolN);
                 Score_Scales_Overall(CurrentTool);
-
-
             }
 
             string filepath = wordObj.SaveWord();
