@@ -240,6 +240,7 @@
     <Compile Include="Classes\ColorClass.cs" />
     <Compile Include="Classes\ComparativeClass.cs" />
     <Compile Include="Classes\ComparativeTable.cs" />
+    <Compile Include="Classes\CustomMathClass.cs" />
     <Compile Include="Classes\DefinitionUnderTable.cs" />
     <Compile Include="Classes\GeneralFunctions.cs" />
     <Compile Include="Classes\ManualTests.cs" />

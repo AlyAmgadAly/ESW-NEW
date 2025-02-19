@@ -1323,7 +1323,7 @@ namespace ExcelScore.Forms
 
                 wordObj.AddPara_Center(table, 1, 4, "Median");
 
-                wordObj.AddPara_Center(table, 0, 5, "Average Score\r\n("+ AvgScorefrom+ " – "+ AvgScoreTo+ ")");
+                wordObj.AddPara_Center(table, 0, 5, "Average Score\r\n("+ AvgScorefrom+ " – " + AvgScoreTo+ ")");
                 wordObj.AddPara_Center(table, 1, 5, "Mean ± SD.");
 
                 int insertScoreRangectr = 2;

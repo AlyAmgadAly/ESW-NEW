@@ -1809,7 +1809,133 @@ namespace ExcelScore.Classes
 
         }
 
+        public void Apply_Score_Scale_overall_merge(IWTable table , bool TS_Minmax , bool TS_MeanSD ,bool TS_Median , bool Rank , int WordTableColumns)
+        {
+            table.ApplyVerticalMerge(0, 0, 1);
+            table.ApplyVerticalMerge(1, 0, 1);
 
+            int TS_Count = new[] { TS_Minmax, TS_MeanSD, TS_Median }.Count(b => b);
+
+            if (TS_Count > 1)
+            {
+                table.ApplyHorizontalMerge(0, 2, 1 + TS_Count);
+            }
+
+
+            if (Rank)
+            {
+                table.ApplyVerticalMerge(WordTableColumns-1, 0, 1);
+            }
+
+        }
+        public void InsertGeneral_Score_Scale_overall_header_new(
+    IWTable table,
+    bool TS_Minmax, bool TS_MeanSD, bool TS_Median,
+    bool Avg_meanSD, bool Percent_meanSD, bool Rank,
+    int WordTableColumns, int minLikert, int Maxlikert)
+        {
+            AddPara_Center(table, 0, 1, "Score Range"); // Always at column 1
+
+            int col = 2; // Start from column 2
+
+            // Total Score Header (if any TS_ option is true)
+            if (TS_Minmax || TS_MeanSD || TS_Median)
+            {
+                AddPara_Center(table, 0, col, "Total Score");
+
+                // Row 1 details
+                if (TS_Minmax)
+                {
+                    AddPara_Center(table, 1, col, "Min. – Max.");
+                    col++;
+                }
+                if (TS_MeanSD)
+                {
+                    AddPara_Center(table, 1, col, "Mean ± SD");
+                    col++;
+                }
+                if (TS_Median)
+                {
+                    AddPara_Center(table, 1, col, "Median");
+                    col++;
+                }
+            }
+
+            // Avg Score Header (if enabled)
+            if (Avg_meanSD)
+            {
+                string AvgScore = $"Average Score{Convert.ToChar(11)}({minLikert} – {Maxlikert})";
+                AddPara_Center(table, 0, col, AvgScore);
+                AddPara_Center(table, 1, col, "Mean ± SD");
+                col++;
+            }
+
+            // Percent Score Header (if enabled)
+            if (Percent_meanSD)
+            {
+                AddPara_Center(table, 0, col, "Percent Score");
+                AddPara_Center(table, 1, col, "Mean ± SD");
+                col++;
+            }
+
+            // Rank Header (if enabled)
+            if (Rank)
+            {
+                AddPara_Center(table, 0, col, "Rank");
+                col++;
+            }
+        }
+
+        public void InsertGeneral_Score_Scale_overall_header(IWTable table, bool TS_Minmax, bool TS_MeanSD, bool TS_Median,bool Avg_meanSD,bool Percent_meanSD ,bool Rank, int WordTableColumns , int minLikert , int Maxlikert)
+        {
+            AddPara_Center(table, 0, 1, "Score Range");
+
+            bool TS = false;
+            string AvgScore = "Average Score" + Convert.ToChar(11)+"("+minLikert+" - "+Maxlikert+")";
+
+            if((TS_Minmax || TS_MeanSD || TS_Median))
+            {
+                TS = true;
+                AddPara_Center(table, 0, 2, "Total score");
+            }
+
+            if(Avg_meanSD)
+            {
+                if(TS)
+                {
+                    if((TS_Minmax && TS_MeanSD && TS_Median))
+                    {
+                        AddPara_Center(table, 0, 5, AvgScore);
+                        if(Percent_meanSD)
+                        {
+                            AddPara_Center(table, 0, 6, "Percent Score");
+
+                        }
+                    }
+                    else if ((TS_Minmax && TS_MeanSD))
+                    {
+                        AddPara_Center(table, 0, 4, AvgScore);
+                    }
+                    else if ((TS_Minmax && TS_Median))
+                    {
+                        AddPara_Center(table, 0, 4, AvgScore);
+                    }
+                    else if ((TS_MeanSD && TS_Median))
+                    {
+                        AddPara_Center(table, 0, 4, AvgScore);
+                    }
+                    else
+                    {
+                        AddPara_Center(table, 0, 3, AvgScore);
+                    }
+                }
+                else if(!TS)
+                {
+                    AddPara_Center(table, 0, 2, AvgScore);
+                }
+            }
+
+        }
         public void ApplyMergesTotalScoreNoPer(IWTable table)
         {
 
@@ -2517,6 +2643,39 @@ namespace ExcelScore.Classes
 
             }
         }
+        public void Score_Overall_Widths(IWTable table, int WordTableRows, int WordTableColumns , bool Rank)
+        {
+            
+            
+            for (int a = 0; a < WordTableRows; a++)
+            {
+                table.Rows[a].Cells[0].Width = SetColumnWidthInCentimeters(4f);
+                table.Rows[a].Cells[1].Width = SetColumnWidthInCentimeters(2f);
+                if(Rank)
+                {
+                    table.Rows[a].Cells[WordTableColumns-1].Width = SetColumnWidthInCentimeters(1.4f);
+                }
+
+            }
+
+            for (int i = 0; i < WordTableRows; i++)
+            {
+                for (int columnctr = 2; columnctr < WordTableColumns - 1; columnctr++)
+                {
+                    if(WordTableColumns < 8)
+                    {
+                        table.Rows[i].Cells[columnctr].Width = SetColumnWidthInCentimeters(2.75f);
+                    }
+                    else
+                    {
+                        table.Rows[i].Cells[columnctr].Width = SetColumnWidthInCentimeters(2.5f);
+                    }
+                    
+                }
+            }
+           
+        }
+
         public void SetTotalScorePerWidths(IWTable table, int WordTableRows, int WordTableColumns)
         {
             int columns = WordTableColumns;

@@ -153,7 +153,7 @@
             this.btn_switch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
             this.btn_switch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_switch.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_switch.Location = new System.Drawing.Point(85, 12);
+            this.btn_switch.Location = new System.Drawing.Point(84, 12);
             this.btn_switch.Name = "btn_switch";
             this.btn_switch.Size = new System.Drawing.Size(168, 44);
             this.btn_switch.TabIndex = 5;
