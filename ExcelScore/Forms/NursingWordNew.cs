@@ -232,7 +232,11 @@ namespace ExcelScore.Forms
             
 
         }
-        
+        public void GetRank_Scales()
+        {
+            
+        }
+
         CustomMathClass customMathClass = new CustomMathClass();    
         public void InsertGeneral_Score_Scale_overall_Scores_new(
     IWTable table,
