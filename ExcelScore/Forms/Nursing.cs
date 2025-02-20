@@ -83,7 +83,7 @@ namespace ExcelScore.Forms
                             {
                                 while (firstColumn != "Level")
                                 {
-
+                                    
 
                                     row++;
 
@@ -505,10 +505,7 @@ namespace ExcelScore.Forms
                 
             }
 
-            foreach (var item in AllTools)
-            {
-                MessageBox.Show("");
-            }
+            
         }
 
         public void StoreScore(int TotalN)

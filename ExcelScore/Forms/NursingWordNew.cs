@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
+﻿using BitMiracle.LibTiff.Classic;
+using DocumentFormat.OpenXml.Wordprocessing;
 using ExcelScore.Classes;
 using Syncfusion.DocIO.DLS;
 using System;
@@ -10,6 +11,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static alglib;
+using static ExcelScore.Classes.Tool;
 
 namespace ExcelScore.Forms
 {
@@ -28,9 +31,13 @@ namespace ExcelScore.Forms
         {
 
         }
-        public IWTable DesignItemsTable(int ItemsCount , int LikertCount ,  string TableHeader , Tool CurrentTool)
+        public IWTable DesignItemsTable(int ItemsCount , int LikertCount ,  string TableHeader , Tool CurrentTool , int tableorder ,int ToolN)
         {
             IWSection section = wordObj.CreatePortraitSection();
+
+            string title = "Distribution of the studied Nursing students according to " + CurrentTool.ToolName + " items (n = "+ ToolN + ")";
+
+            wordObj.AddTitle_Dynamic(section , title , ref tableorder);
 
             int WordTableRows = 2 + ItemsCount;
 
@@ -66,11 +73,12 @@ namespace ExcelScore.Forms
 
             if (CurrentTool.hasscales)
             {
-
+                
                 foreach (var CurrentScale in CurrentTool.Scales)
                 {
+                    int tableorder = 1;
 
-                    IWTable table = DesignItemsTable(CurrentScale.Items.Count , likertScaleCount , CurrentScale.Scale_Full_Name , CurrentTool);
+                    IWTable table = DesignItemsTable(CurrentScale.Items.Count , likertScaleCount , CurrentScale.Scale_Full_Name , CurrentTool , tableorder, ToolN);
 
                     int Insertrow = 2;
 
@@ -110,8 +118,8 @@ namespace ExcelScore.Forms
             }
             else if(!(CurrentTool.hasscales))
             {
-
-                IWTable table = DesignItemsTable(CurrentTool.ToolItems.Count, likertScaleCount, CurrentTool.ToolName, CurrentTool);
+                int tableorder = 1;
+                IWTable table = DesignItemsTable(CurrentTool.ToolItems.Count, likertScaleCount, CurrentTool.ToolName, CurrentTool , tableorder , ToolN);
 
                 int Insertrow = 2;
 
@@ -182,7 +190,132 @@ namespace ExcelScore.Forms
 
 
         }
-        public void Score_Scales_Overall(Tool CurrentTool)
+
+        public void InsertLevel_Scale_Overall_Data(IWTable table , int LevelID , Tool CurrenTool , int ToolN , List<LevelRange> CurrentLevel)
+        {
+            int row = 3;
+            int Count = CurrentLevel.Count;
+
+            foreach (var CurrentScale in CurrenTool.Scales)
+            {
+                // Get the computed counts and percentages
+                var computedCounts = CurrentScale.ComputedSubLevels[LevelID]
+                    .GroupBy(n => n)
+                    .ToDictionary(g => g.Key, g => (g.Count(), (g.Count() / (double)ToolN) * 100));
+
+                // Ensure all levels (1 to Count) are included
+                Dictionary<int, (int Count, double Percentage)> sortedCounts = Enumerable.Range(1, Count)
+                    .ToDictionary(level => level, level =>
+                        computedCounts.ContainsKey(level)
+                            ? computedCounts[level]
+                            : (0, 0.0) // Default to 0 if the level is missing
+                    );
+
+                // Sort by level (ascending)
+                sortedCounts = sortedCounts.OrderBy(kvp => kvp.Key).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+
+                int Currentcol = 1;
+
+                foreach (var CurrentCount in sortedCounts)
+                {
+                    double value = CurrentCount.Key;          
+                    int count = CurrentCount.Value.Count;      
+                    double percentage = CurrentCount.Value.Percentage;
+
+                    wordObj.Addpara_CenterNoBOLD(table, row, Currentcol, count.ToString());
+                    wordObj.Addpara_CenterNoBOLD(table, row, Currentcol+1, percentage.ToString("0.0"));
+
+                    Currentcol = Currentcol + 2;
+                }
+                row++;
+
+            }
+
+            var computedCounts_Tool = CurrenTool.ComputedToolLevels[LevelID]
+                    .GroupBy(n => n)
+                    .ToDictionary(g => g.Key, g => (g.Count(), (g.Count() / (double)ToolN) * 100));
+
+            // Ensure all levels (1 to Count) are included
+            Dictionary<int, (int Count, double Percentage)> sortedCounts_Tool = Enumerable.Range(1, Count)
+                .ToDictionary(level => level, level =>
+                    computedCounts_Tool.ContainsKey(level)
+                        ? computedCounts_Tool[level]
+                        : (0, 0.0) // Default to 0 if the level is missing
+                );
+
+            // Sort by level (ascending)
+            sortedCounts_Tool = sortedCounts_Tool.OrderBy(kvp => kvp.Key).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            int Currentcol_Tool = 1;
+
+            foreach (var CurrentCount in sortedCounts_Tool)
+            {
+                double value = CurrentCount.Key;
+                int count = CurrentCount.Value.Count;
+                double percentage = CurrentCount.Value.Percentage;
+
+                wordObj.AddPara_Center(table, row, Currentcol_Tool, count.ToString());
+                wordObj.AddPara_Center(table, row, Currentcol_Tool + 1, percentage.ToString("0.0"));
+
+                Currentcol_Tool = Currentcol_Tool + 2;
+            }
+           
+        }
+        public void Level_Scales_Overall(Tool CurrentTool, int ToolN)
+        {
+            if(CurrentTool.hasscales)
+            {
+                int LevelID = 0;
+                foreach (var CurrentLevel in CurrentTool.ToolLevels)
+                {
+                    IWSection section = wordObj.CreatePortraitSection();
+
+                    int WordTableRows = 3 + CurrentTool.Scales.Count + 1;
+
+                    int WordTableColumns = get_Level_Scale_Columns(CurrentLevel);
+
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+                    wordObj.GeneralTableFormat(table);
+
+
+                    wordObj.Apply_Level_Scale_overall_merge(table, WordTableColumns);
+
+                    wordObj.ApplyLevel_Scale_Borders(table, WordTableRows, WordTableColumns);
+
+                    wordObj.Level_Overall_Widths(table, WordTableRows, WordTableColumns);
+
+
+                    wordObj.InsertHeaders_Scale_Overall(table, CurrentTool, CurrentLevel, WordTableColumns);
+
+                    
+                    InsertLevel_Scale_Overall_Data(table, LevelID, CurrentTool, ToolN , CurrentLevel);
+                    LevelID++;
+
+                    wordObj.FormatTableCustom(table, 12, 4, 2);
+
+                }
+                
+            }
+
+            
+        }
+
+        private int get_Level_Scale_Columns(List<LevelRange> Currentlevel)
+        {
+            int col = 0;
+
+            col = 1 + (Currentlevel.Count * 2);
+
+
+            return col;
+
+
+        }
+
+        public void Score_Scales_Overall(Tool CurrentTool, int ToolN)
         {
             if(CurrentTool.hasscales)
             {
@@ -200,8 +333,12 @@ namespace ExcelScore.Forms
                 {
             TotalScore_MinMax, TotalScore_MeanSD, TotalScore_Median,Avg_MeanSD, Percent_MeanSD, Rank
             };
-
+                int tableorder = 1;
                 IWSection section = wordObj.CreatePortraitSection();
+
+                string title = "Distribution of the studied Nursing students according to " + CurrentTool.ToolName + " score (n = " + ToolN + ")";
+
+                wordObj.AddTitle_Dynamic(section, title, ref tableorder);
 
                 int WordTableRows = 2 + CurrentTool.Scales.Count + 1;
 
@@ -360,64 +497,84 @@ namespace ExcelScore.Forms
 
 
         }
+       
         public void InsertGeneral_Score_Scale_overall_Scores_new2(
     IWTable table,
     bool TS_Minmax, bool TS_MeanSD, bool TS_Median,
     bool Avg_meanSD, bool Percent_meanSD, bool Rank,
     Tool CurrentTool)
         {
+            if (Rank)
+            {
+                CurrentTool.RankScales();
+            }
+
             int currentRow = 2;
 
             // Insert scores for each scale
             foreach (var CurrentScale in CurrentTool.Scales)
             {
-                InsertScoreData(table, CurrentScale, currentRow, TS_Minmax, TS_MeanSD, TS_Median, Avg_meanSD, Percent_meanSD, Rank);
+                InsertScoreData(table, CurrentScale, currentRow, TS_Minmax, TS_MeanSD, TS_Median, Avg_meanSD, Percent_meanSD, Rank, isTool: false);
                 currentRow++;
             }
 
-            // Insert scores for the entire tool
-            InsertScoreData(table, CurrentTool, currentRow, TS_Minmax, TS_MeanSD, TS_Median, Avg_meanSD, Percent_meanSD, Rank);
+            // Insert scores for the entire tool (without rank)
+            InsertScoreData(table, CurrentTool, currentRow, TS_Minmax, TS_MeanSD, TS_Median, Avg_meanSD, Percent_meanSD, Rank, isTool: true);
         }
 
-        /// <summary>
-        /// Inserts score data into the table for either a single scale or the entire tool.
-        /// </summary>
         private void InsertScoreData(
             IWTable table,
             dynamic DataSource, // Accepts both CurrentScale and CurrentTool
             int row,
             bool TS_Minmax, bool TS_MeanSD, bool TS_Median,
-            bool Avg_meanSD, bool Percent_meanSD, bool Rank)
+            bool Avg_meanSD, bool Percent_meanSD, bool Rank,
+            bool isTool) // New flag to indicate if it's a tool
         {
             Dictionary<string, string> TotalScore = customMathClass.Basic_Calculations(DataSource.TotalScores);
             Dictionary<string, string> AvgScore = customMathClass.Basic_Calculations(DataSource.AverageScores);
             Dictionary<string, string> PercentScore = customMathClass.Basic_Calculations(DataSource.PercentScores);
 
             int col = 2; // Start at column 2
+            
+            // Determine which wordObj function to use
+            Action<IWTable, int, int, string> AddParaFunc = isTool
+                ? wordObj.AddPara_Center
+                : wordObj.Addpara_CenterNoBOLD;
 
             // Insert Total Score Data (if enabled)
             if (TS_Minmax || TS_MeanSD || TS_Median)
             {
                 if (TS_Minmax)
-                    wordObj.Addpara_CenterNoBOLD(table, row, col++, TotalScore["Min-Max"]);
+                    AddParaFunc(table, row, col++, TotalScore["Min-Max"]);
                 if (TS_MeanSD)
-                    wordObj.Addpara_CenterNoBOLD(table, row, col++, TotalScore["Mean ± StdDev"]);
+                    AddParaFunc(table, row, col++, TotalScore["Mean ± StdDev"]);
                 if (TS_Median)
-                    wordObj.Addpara_CenterNoBOLD(table, row, col++, TotalScore["Median"]);
+                    AddParaFunc(table, row, col++, TotalScore["Median"]);
             }
 
             // Insert Average Score (if enabled)
             if (Avg_meanSD)
-                wordObj.Addpara_CenterNoBOLD(table, row, col++, AvgScore["Mean ± StdDev"]);
+                AddParaFunc(table, row, col++, AvgScore["Mean ± StdDev"]);
 
             // Insert Percent Score (if enabled)
             if (Percent_meanSD)
-                wordObj.Addpara_CenterNoBOLD(table, row, col++, PercentScore["Mean ± StdDev"]);
+                AddParaFunc(table, row, col++, PercentScore["Mean ± StdDev"]);
 
-            // Insert Rank (if enabled)
-            if (Rank)
-                wordObj.Addpara_CenterNoBOLD(table, row, col++, "Rank"); // Assuming Rank is available
+            // Insert Rank (if enabled) - Only for Scales, NOT for the Tool
+            if (Rank && !isTool)
+                wordObj.AddPara_Center(table, row, col++, DataSource.Rank.ToString());
+
+            if (Rank && isTool)
+            {
+                
+                wordObj.AddPara_Center(table, row, col, "");
+                table.Rows[row].Cells[col].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
+            }
+                
+
+            
         }
+
 
         public int get_Score_Scale_Columns(bool[] flags)
         {
@@ -443,7 +600,9 @@ namespace ExcelScore.Forms
             {
                 int toolN = CurrentTool.ToolItems[0].ParticipantResponses.Count;
                 Items(CurrentTool , toolN);
-                Score_Scales_Overall(CurrentTool);
+                Score_Scales_Overall(CurrentTool , toolN);
+                Level_Scales_Overall(CurrentTool, toolN);
+
             }
 
             string filepath = wordObj.SaveWord();

@@ -278,6 +278,39 @@ namespace ExcelScore.Classes
             }
         }
 
+
+        public void AddTitle_Dynamic(IWSection section, string Title , ref int tableorder)
+        {
+            IWParagraph firstParagraph = section.AddParagraph();
+            WParagraphFormat paragraphFormat = firstParagraph.ParagraphFormat;
+
+            
+
+
+            //Title
+            IWTextRange firstTextRange = firstParagraph.AppendText("Table ("+ tableorder + "):\t"+ Title);
+            paragraphFormat.AfterSpacing = 10;
+            paragraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Justify;
+            //-70.56f
+            paragraphFormat.FirstLineIndent = SetColumnWidthInCentimeters(-2.5f);
+            paragraphFormat.LeftIndent = SetColumnWidthInCentimeters(2.5f);
+            //Line Spacing Multiple - 1.25
+            paragraphFormat.LineSpacingRule = LineSpacingRule.Multiple;
+            paragraphFormat.LineSpacing = 15f;
+
+
+
+            foreach (ParagraphItem item in firstParagraph.ChildEntities)
+            {
+                if (item is WTextRange)
+                {
+                    WTextRange text = item as WTextRange;
+                    //Modifies the character format of the text
+                    text.CharacterFormat.Bold = true;
+                    break;
+                }
+            }
+        }
         public void AddRgressionTitle(IWSection section, string TableName ,string RegressionType)
         {
             IWParagraph firstParagraph = section.AddParagraph();
@@ -1828,6 +1861,45 @@ namespace ExcelScore.Classes
             }
 
         }
+
+        public void Apply_Level_Scale_overall_merge(IWTable table, int WordTableColumns)
+        {
+            table.ApplyVerticalMerge(0, 0, 2);
+
+            table.ApplyHorizontalMerge(0, 1, WordTableColumns - 1);
+
+            for (int CurrentCol = 1 ; CurrentCol < WordTableColumns; CurrentCol = CurrentCol+2)
+            {
+                table.ApplyHorizontalMerge(1, CurrentCol, CurrentCol+1);
+            }
+
+        }
+
+        public void InsertHeaders_Scale_Overall(IWTable table, Tool CurrentTool, List<Tool.LevelRange> Level, int WordTableColumns)
+        {
+            int row = 3;
+
+            foreach (var CurrentScale in CurrentTool.Scales)
+            {
+                AddPara_NoCenter(table, row, 0, CurrentScale.Scale_Full_Name);
+                row++;
+            }
+
+            AddPara_Center(table, row, 0, "Overall");
+
+            int levelctr = 0;
+            for (int i = 1; i < WordTableColumns; i = i + 2)
+            {
+                AddPara_Center(table,1, i, Level[levelctr].Label);
+                AddPara_Center(table, 2, i, "No.");
+                AddPara_Center(table, 2, i+1, "%");
+                levelctr++;
+            }
+
+
+            AddPara_Center(table, 0, 1, "Levels of " + CurrentTool.ToolName);
+        }
+
         public void InsertGeneral_Score_Scale_overall_header_new(
     IWTable table,
     bool TS_Minmax, bool TS_MeanSD, bool TS_Median,
@@ -2147,6 +2219,39 @@ namespace ExcelScore.Classes
                 table.Rows[l].Cells[1].CellFormat.Borders.Left.LineWidth = 1.5f;
 
                 
+
+            }
+
+        }
+
+        public void ApplyLevel_Scale_Borders(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            for (int i = 2; i < WordTableRows; i++)
+            {
+                for (int j = 0; j < WordTableColumns; j++)
+                {
+                    table.Rows[i].Cells[j].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[i].Cells[j].CellFormat.Borders.Top.LineWidth = 0.5f;
+
+                }
+
+            }
+
+            for (int l = 0; l < WordTableColumns; l++)
+            {
+                table.Rows[1].Cells[l].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[1].Cells[l].CellFormat.Borders.Top.LineWidth = 0.5f;
+
+                table.Rows[2].Cells[l].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[2].Cells[l].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+
+            }
+            for (int l = 0; l < WordTableRows; l++)
+            {
+                table.Rows[l].Cells[1].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[l].Cells[1].CellFormat.Borders.Left.LineWidth = 1.5f;
+
+
 
             }
 
@@ -2674,6 +2779,29 @@ namespace ExcelScore.Classes
                 }
             }
            
+        }
+
+        public void Level_Overall_Widths(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+
+
+            for (int a = 0; a < WordTableRows; a++)
+            {
+                table.Rows[a].Cells[0].Width = SetColumnWidthInCentimeters(5f);
+                
+                
+
+            }
+
+            for (int i = 0; i < WordTableRows; i++)
+            {
+                for (int columnctr = 1; columnctr < WordTableColumns; columnctr++)
+                {
+                    table.Rows[i].Cells[columnctr].Width = SetColumnWidthInCentimeters(1.5f);
+
+                }
+            }
+
         }
 
         public void SetTotalScorePerWidths(IWTable table, int WordTableRows, int WordTableColumns)
