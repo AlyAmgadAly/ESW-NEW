@@ -31,7 +31,41 @@ namespace ExcelScore.Classes
             scale.ParentTool = this;
             Scales.Add(scale);
         }
-        
+
+        public void RankScales()
+        {
+            if (Scales.Count == 0) return;
+
+            // Compute the mean of PercentScores for each scale
+            var scaleRanks = Scales
+                .Where(scale => scale.PercentScores.Count > 0) // Ignore scales without scores
+                .Select(scale => new
+                {
+                    Scale = scale,
+                    MeanPercent = scale.PercentScores.Average()
+                })
+                .OrderByDescending(x => x.MeanPercent) // Rank from highest to lowest
+                .ToList();
+
+            // Assign ranks with proper handling for ties
+            int rank = 1;  // The rank to assign
+            for (int i = 0; i < scaleRanks.Count; i++)
+            {
+                if (i > 0 && Math.Abs(scaleRanks[i].MeanPercent - scaleRanks[i - 1].MeanPercent) > 0.0001)
+                {
+                    // If current MeanPercent is different, update rank to the correct position
+                    rank = i + 1;
+                }
+
+                scaleRanks[i].Scale.Rank = rank; // Assign rank
+
+                // Debugging output
+                //Console.WriteLine($"Scale: {scaleRanks[i].Scale.Scale_Name}, Mean: {scaleRanks[i].MeanPercent}, Rank: {scaleRanks[i].Scale.Rank}");
+            }
+        }
+
+
+
 
         public class Scale
         {
@@ -47,7 +81,7 @@ namespace ExcelScore.Classes
             public List<double> PercentScores { get; set; } = new List<double>();
             public List<List<int>> ComputedSubLevels { get; set; } = new List<List<int>>();
 
-            
+            public int Rank { get; set; } = 0;
 
             public Tool ParentTool { get; set; }
 
