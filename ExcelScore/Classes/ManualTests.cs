@@ -118,7 +118,7 @@ namespace ExcelScore.Classes
                 return Result;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new List<double> { 0, 0, 0, 0 };
             }

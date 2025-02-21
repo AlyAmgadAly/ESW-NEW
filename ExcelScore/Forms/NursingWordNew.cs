@@ -1,4 +1,5 @@
 ﻿using BitMiracle.LibTiff.Classic;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Wordprocessing;
 using ExcelScore.Classes;
 using Syncfusion.DocIO.DLS;
@@ -6,8 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,6 +21,11 @@ namespace ExcelScore.Forms
 {
     public partial class NursingWordNew : Form
     {
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private extern static void ReleaseCapture();
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+
         public NursingWordNew()
         {
             InitializeComponent();
@@ -267,9 +275,17 @@ namespace ExcelScore.Forms
             if(CurrentTool.hasscales)
             {
                 int LevelID = 0;
+
+                int tableorder = 1; 
                 foreach (var CurrentLevel in CurrentTool.ToolLevels)
                 {
                     IWSection section = wordObj.CreatePortraitSection();
+
+                    
+
+                    string title = "Distribution of the studied Nursing students according to levels of " + CurrentTool.ToolName + " (n = " + ToolN + ")";
+
+                    wordObj.AddTitle_Dynamic(section, title, ref tableorder);
 
                     int WordTableRows = 3 + CurrentTool.Scales.Count + 1;
 
@@ -369,10 +385,7 @@ namespace ExcelScore.Forms
             
 
         }
-        public void GetRank_Scales()
-        {
-            
-        }
+     
 
         CustomMathClass customMathClass = new CustomMathClass();    
         public void InsertGeneral_Score_Scale_overall_Scores_new(
@@ -591,7 +604,22 @@ namespace ExcelScore.Forms
 
 
         }
+        public void Correlation_Nursing_Desgin()
+        {
+            IWSection section = wordObj.CreatePortraitSection();
 
+            int ComparisonRows = ((Alltools_Tables.Count) * (Alltools_Tables.Count - 1)) / 2;
+
+            int WordTableRows =  1 + ComparisonRows;
+
+            int WordTableColumns = 3;
+
+            IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+
+
+
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             document = wordObj.InitWord();
@@ -603,7 +631,10 @@ namespace ExcelScore.Forms
                 Score_Scales_Overall(CurrentTool , toolN);
                 Level_Scales_Overall(CurrentTool, toolN);
 
+
             }
+
+
 
             string filepath = wordObj.SaveWord();
 
@@ -612,6 +643,168 @@ namespace ExcelScore.Forms
 
 
 
+        }
+
+        private void panelmove_MouseDown(object sender, MouseEventArgs e)
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
+        }
+
+        public void InsertSpssScore_Descr()
+        {
+#nullable enable
+            Dictionary<string, (List<double?> Values, string MeasurementLevel, Dictionary<double, string>? ValueLabels)> data =
+                new Dictionary<string, (List<double?>, string, Dictionary<double, string>?)>();
+
+            int toolN = Alltools_Tables[0].ToolItems[0].ParticipantResponses.Count;
+
+
+
+
+
+            // Scale Data (No Value Labels)
+            var SerialData = SPSS_Class.ConvertToSPSSFormat(
+                SPSS_Class.CreateSerial(toolN).Select(x => (double?)x).ToList(),  // Convert to List<double?>
+                "Scale"
+            );
+
+            data.Add("Serial", SerialData);
+
+
+            var GXData = SPSS_Class.ConvertToSPSSFormat(
+                SPSS_Class.CreateGX(toolN).Select(x => (double?)x).ToList(),  // Convert to List<double?>
+                "Scale"
+            );
+
+            data.Add("GX", GXData);
+
+
+            int emptycount = 1;
+            string empty = "VAR0000" + emptycount;
+            List<double?> emptyVariable = Enumerable.Repeat<double?>(null, toolN).ToList();
+
+            data.Add(empty, (emptyVariable, "Scale", null));
+
+            emptycount++;
+
+
+
+
+            foreach (var CurrentTool in Alltools_Tables)
+            {
+
+                if (CurrentTool.hasscales)
+                {
+
+                    foreach (var CurrentScale in CurrentTool.Scales)
+                    {
+                        int levelId = 0;
+
+                        string total = "Total." + CurrentScale.Scale_Name + "." + CurrentTool.ToolNumber;
+                        var TotalScaleData = SPSS_Class.ConvertToSPSSFormat(SPSS_Class.ConvertToNullable(CurrentScale.TotalScores), "Scale");
+                        data.Add(total, TotalScaleData);
+
+
+                        string Avg = "Avg." + CurrentScale.Scale_Name + "." + CurrentTool.ToolNumber;
+                        var AvgScaleData = SPSS_Class.ConvertToSPSSFormat(SPSS_Class.ConvertToNullable(CurrentScale.AverageScores), "Scale");
+                        data.Add(Avg, AvgScaleData);
+
+                        string Percent = "Perc." + CurrentScale.Scale_Name + "." + CurrentTool.ToolNumber;
+                        var PercScaleData = SPSS_Class.ConvertToSPSSFormat(SPSS_Class.ConvertToNullable(CurrentScale.PercentScores), "Scale");
+                        data.Add(Percent, PercScaleData);
+
+
+
+
+
+                        foreach (var level in CurrentTool.ToolLevels)
+                        {
+                            string Level = "Level." + CurrentScale.Scale_Name + "." + (levelId + 1) + "." + CurrentTool.ToolNumber;
+
+                            int currentlevelcount = level.Count;
+                            List<double> Levelnum = SPSS_Class.CreateSerial(currentlevelcount);
+                            List<string> levellabel = new List<string>();
+
+                            foreach (var Currentlevel in level)
+                            {
+                                levellabel.Add(Currentlevel.Label);
+                            }
+
+                            Dictionary<double, string> LevelValueLabel = Levelnum.Zip(levellabel, (key, value) => new { key, value })
+                                            .ToDictionary(x => x.key, x => x.value);
+
+                            var LevelNominalData = SPSS_Class.ConvertToSPSSFormat(SPSS_Class.ConvertToNullable(CurrentScale.ComputedSubLevels[levelId].Select(x => (double)x).ToList()), "Nominal", LevelValueLabel);
+                            data.Add(Level, LevelNominalData);
+
+                            levelId++;
+
+                        }
+
+                        empty = "VAR0000" + emptycount;
+                        data.Add(empty, (emptyVariable, "Scale", null));
+
+                        emptycount++;
+
+                    }
+
+                    int levelId_tool = 0;
+
+                    string total_tool = "Overall.Total." + CurrentTool.ToolNumber;
+                    var TotalData_tool = SPSS_Class.ConvertToSPSSFormat(SPSS_Class.ConvertToNullable(CurrentTool.TotalScores), "Scale");
+                    data.Add(total_tool, TotalData_tool);
+
+
+                    string Avg_tool = "Overall.Avg." + CurrentTool.ToolNumber;
+                    var AvgData_Tool = SPSS_Class.ConvertToSPSSFormat(SPSS_Class.ConvertToNullable(CurrentTool.AverageScores), "Scale");
+                    data.Add(Avg_tool, AvgData_Tool);
+
+                    string Percent_tool = "Overall.Perc." + CurrentTool.ToolNumber;
+                    var PercData_tool = SPSS_Class.ConvertToSPSSFormat(SPSS_Class.ConvertToNullable(CurrentTool.PercentScores), "Scale");
+                    data.Add(Percent_tool, PercData_tool);
+
+
+                    foreach (var level in CurrentTool.ToolLevels)
+                    {
+
+                        string Level = "Overall.Level." + (levelId_tool + 1) + "." + CurrentTool.ToolNumber;
+
+                        int currentlevelcount = level.Count;
+                        List<double> Levelnum = SPSS_Class.CreateSerial(currentlevelcount);
+                        List<string> levellabel = new List<string>();
+
+                        foreach (var Currentlevel in level)
+                        {
+                            levellabel.Add(Currentlevel.Label);
+                        }
+
+                        Dictionary<double, string> LevelValueLabel = Levelnum.Zip(levellabel, (key, value) => new { key, value })
+                        .ToDictionary(x => x.key, x => x.value);
+
+                        var LevelNominalData = SPSS_Class.ConvertToSPSSFormat(SPSS_Class.ConvertToNullable(CurrentTool.ComputedToolLevels[levelId_tool].Select(x => (double)x).ToList()), "Nominal", LevelValueLabel);
+                        data.Add(Level, LevelNominalData);
+
+                        levelId_tool++;
+
+                    }
+
+                    empty = "VAR0000" + emptycount;
+                    data.Add(empty, (emptyVariable, "Scale", null));
+
+                    emptycount++;
+
+
+                }
+            }
+
+
+            SPSS_Class.InsertMultipleVariablesnew(data);
+
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+            InsertSpssScore_Descr();
         }
     }
 }
