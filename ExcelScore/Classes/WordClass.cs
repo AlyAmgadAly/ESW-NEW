@@ -278,7 +278,39 @@ namespace ExcelScore.Classes
             }
         }
 
+        public void AddToolTitle_Dynamic(IWSection section, string Title)
+        {
+            IWParagraph firstParagraph = section.AddParagraph();
+            WParagraphFormat paragraphFormat = firstParagraph.ParagraphFormat;
 
+
+
+
+            //Title
+            IWTextRange firstTextRange = firstParagraph.AppendText(Title);
+            paragraphFormat.AfterSpacing = 10;
+            paragraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+
+            //Line Spacing Multiple - 1.25
+            paragraphFormat.LineSpacingRule = LineSpacingRule.Multiple;
+            paragraphFormat.LineSpacing = 15f;
+
+
+
+            foreach (ParagraphItem item in firstParagraph.ChildEntities)
+            {
+                if (item is WTextRange)
+                {
+                    WTextRange text = item as WTextRange;
+                    //Modifies the character format of the text
+                    text.CharacterFormat.Bold = true;
+                    text.CharacterFormat.FontSize = 16;
+                    text.CharacterFormat.UnderlineStyle = UnderlineStyle.Single;
+                    text.CharacterFormat.TextBackgroundColor = Syncfusion.Drawing.Color.LightBlue;
+                    break;
+                }
+            }
+        }
         public void AddTitle_Dynamic(IWSection section, string Title , ref int tableorder)
         {
             IWParagraph firstParagraph = section.AddParagraph();

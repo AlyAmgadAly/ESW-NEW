@@ -1,4 +1,5 @@
-﻿using SpssLib.DataReader;
+﻿using DocumentFormat.OpenXml.Vml.Office;
+using SpssLib.DataReader;
 using SpssLib.SpssDataset;
 using System;
 using System.Collections.Generic;
@@ -79,11 +80,13 @@ namespace ExcelScore.Classes
 
             // Convert input data into SPSS-compatible variables
             var variables = new List<Variable>();
+            
+
             foreach (var entry in adjustedData)
             {
 
                 var (values, measurementLevel, valueLabels) = entry.Value;
-                var variable = new Variable
+                variables.Add(new Variable
                 {
                     Name = entry.Key,
                     Type = DataType.Numeric,
@@ -91,20 +94,19 @@ namespace ExcelScore.Classes
                     PrintFormat = new OutputFormat(FormatType.F, 8, 2),
                     WriteFormat = new OutputFormat(FormatType.F, 8, 2),
                     MissingValueType = MissingValueType.NoMissingValues,
-                    Alignment = Alignment.Centre
-                };
+                    Alignment = Alignment.Centre,
 
-                if (measurementLevel.ToLower() == "nominal" && valueLabels != null)
+                });
+
+                foreach (var variable in variables)
                 {
-                    variable.ValueLabels = valueLabels;
-                    variable.MeasurementType = MeasurementType.Nominal;
-                }
-                else
-                {
-                    variable.MeasurementType = MeasurementType.Scale; // Ensure Scale variables remain Scale
+                    if (measurementLevel.ToLower() == "nominal" && valueLabels != null)
+                    {
+                        variable.ValueLabels = valueLabels;
+                        variable.MeasurementType = MeasurementType.Nominal;
+                    }
                 }
 
-                variables.Add(variable);
 
             }
 
@@ -134,7 +136,7 @@ namespace ExcelScore.Classes
                 }
             }
 
-           
+
         }
 
 
@@ -214,7 +216,7 @@ namespace ExcelScore.Classes
         //        }
         //    }
 
-            
+
         //}
 
 

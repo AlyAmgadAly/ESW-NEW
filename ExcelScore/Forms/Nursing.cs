@@ -46,9 +46,86 @@ namespace ExcelScore.Forms
                 AllTools.Add(newTool);
             }
         }
+
+        public void UpdatePeriodsTools()
+        {
+
+            foreach (var CurrentTool in AllTools)
+            {
+                foreach (var PeriodTool in CurrentTool.PeriodsTools)
+                {
+                    CurrentTool.UpdatePeriodTool(CurrentTool.ToolNumber, PeriodTool.ToolName);
+                }
+            }
+        }
+        public void GetEachToolPeriod(Worksheet PeriodsSheet)
+        {
+            try
+            {
+                if (PeriodsSheet == null)
+                {
+                    return; // Exit function if the sheet does not exist
+                }
+
+                int row = 0;
+                int maxRow = PeriodsSheet.Cells.MaxDataRow;
+
+                while (row <= maxRow) // Ensure we process the last row
+                {
+                    string firstColumn = PeriodsSheet.Cells[row, 0]?.Value?.ToString();
+
+                    foreach (var CurrentTool in AllTools)
+                    {
+                        if (firstColumn != null)
+                        {
+                            firstColumn = PeriodsSheet.Cells[row, 0]?.Value?.ToString();
+                            if (firstColumn == CurrentTool.ToolName)
+                            {
+
+                                //MessageBox.Show(firstColumn);
+                                row++;
+                                List<Tool> PeriodsTools = new List<Tool>();
+                                while(firstColumn != null)
+                                {
+                                    
+                                    firstColumn = PeriodsSheet.Cells[row, 0]?.Value?.ToString();
+                                    //MessageBox.Show(firstColumn);
+
+                                    Tool newtool = new Tool();
+                                    newtool.ToolNumber = CurrentTool.ToolNumber;
+                                    newtool.ToolName = firstColumn;
+
+                                    PeriodsTools.Add(newtool);
+
+                                   
+
+                                    row++;
+                                    firstColumn = PeriodsSheet.Cells[row, 0]?.Value?.ToString();
+                                   
+                                }
+
+                                CurrentTool.PeriodsTools = PeriodsTools;
+
+                            }
+                        }
+
+                    }
+                    row++;
+
+
+                }
+
+                UpdatePeriodsTools();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error at Tool periods sheet");
+            }
+        }
         public void ReadToolsAndSubscales()
         {
             Worksheet DetailsSheet = workbook.Worksheets["Details"];
+            Worksheet PeriodsSheet = workbook.Worksheets["Periods"];
 
             GetToolsNumberandName(DetailsSheet);
 
@@ -58,7 +135,7 @@ namespace ExcelScore.Forms
 
             GetEachToolLevel(DetailsSheet);
 
-            
+            GetEachToolPeriod(PeriodsSheet);
         }
         
 
@@ -348,6 +425,8 @@ namespace ExcelScore.Forms
                 .FirstOrDefault(s => s.Scale_Name == scaleName);
         }
 
+
+
         public Tool GetToolByNumber(string toolNumber)
         {
             return AllTools
@@ -355,6 +434,82 @@ namespace ExcelScore.Forms
 
         }
 
+        public Tool GetToolByName(string toolName)
+        {
+            return AllTools
+                .FirstOrDefault(t => t.ToolName == toolName);
+
+        }
+        public void ReadDataOnlyPeriods(string[] QuestionParts, string FullItemText, Worksheet DataSheet, int itemcol)
+        {
+            Worksheet ReverseSheet = workbook.Worksheets["Reverse"];
+
+            bool isReverse = false;
+
+            for (int reverserow = 0; reverserow <= ReverseSheet.Cells.MaxDataRow; reverserow++)
+            {
+                string cellvalue = ReverseSheet.Cells[reverserow, 0].Value.ToString();
+
+                if (cellvalue == FullItemText)
+                {
+                    isReverse = true;
+                    break;
+                }
+            }
+
+            List<double> itemresponses = new List<double>();
+
+            for (int row = 1; row <= DataSheet.Cells.MaxDataRow; row++)
+            {
+                if (DataSheet.Cells[row, itemcol].Value == null)
+                {
+                    MessageBox.Show("Empty value at row " + row + " and column " + itemcol);
+                }
+                double response = double.Parse(DataSheet.Cells[row, itemcol].Value.ToString());
+                itemresponses.Add(response);
+            }
+
+            Tool.Item MyItem = new Tool.Item();
+
+            MyItem.Id = QuestionParts[0];
+            MyItem.Text = FullItemText;
+            MyItem.IsReverse = isReverse;
+            MyItem.ParticipantResponses = itemresponses;
+
+            if (QuestionParts.Count() == 3)
+            {
+                //Q1.1.Pre
+                string Toolnumber = QuestionParts[1];
+
+                Tool tooltoadditem = GetToolByNumber(Toolnumber);
+
+                Tool PeriodTool = tooltoadditem.GetPeriodTool(Toolnumber, QuestionParts[2]);
+
+                PeriodTool.ToolItems.Add(MyItem);
+            }
+            else if (QuestionParts.Count() == 4)
+            {
+                //Q1.A.1.Pre
+                string scalename = QuestionParts[1];
+                string Toolnumber = QuestionParts[2];
+                string PeriodToolName = QuestionParts[3];
+
+                Tool tooltoadditem = GetToolByNumber(Toolnumber);
+
+                Tool PeriodTool = tooltoadditem.GetPeriodTool(Toolnumber, PeriodToolName);
+
+                Scale scaletoadditem = PeriodTool.GetScaleFromPeriodsTool(Toolnumber, PeriodToolName, scalename);
+
+
+                PeriodTool.ToolItems.Add(MyItem);
+                scaletoadditem.Items.Add(MyItem);
+
+            }
+
+
+        }
+
+        
         public void ReadDataOnlyScale(string[] QuestionParts , string FullItemText , Worksheet DataSheet , int itemcol)
         {
             try
@@ -427,6 +582,8 @@ namespace ExcelScore.Forms
                 MessageBox.Show("Error at reading data only Scale");
             }
         }
+        
+
         public string ReadData()
         {
             Worksheet Sheet1 = workbook.Worksheets[0];
@@ -452,18 +609,18 @@ namespace ExcelScore.Forms
 
                     if(partscount > 1)
                     {
-                        if(partscount  == 3 || partscount == 2) 
+                        if((partscount  == 3 && int.TryParse(parts[2], out int result2)) || partscount == 2) 
                         {
                             //Descriptive
                             ReadDataOnlyScale(parts , ExcelString , Sheet1 ,  i);
                             periodOrDesc = "Descriptive";
                         }
-                        else if (partscount == 4)
+                        else if (partscount == 4 || partscount == 3)
                         {
                             //might have periods
 
                             
-                            if (int.TryParse(parts[3], out int result))
+                            if (partscount == 4 && int.TryParse(parts[3], out int result))
                             {
                                 //Descriptive
                                 periodOrDesc = "Descriptive";
@@ -472,6 +629,7 @@ namespace ExcelScore.Forms
                             else
                             {
                                 //periods
+                                ReadDataOnlyPeriods(parts, ExcelString, Sheet1, i);
                                 periodOrDesc = "Periods";
                             }
 
@@ -1114,7 +1272,6 @@ namespace ExcelScore.Forms
                         PutItemData(current_colctr, Scale, CurrentScoreSheet , CurrentTool);
 
                         current_colctr = current_colctr + Scale.Items.Count + 1;
-
 
 
                         ProcessScoreColumns(CurrentScoreSheet, 3, TotalN, ref current_colctr, Scale, LightGreenExcel, CurrentTool);

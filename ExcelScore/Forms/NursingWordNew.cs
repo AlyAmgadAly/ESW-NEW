@@ -39,9 +39,16 @@ namespace ExcelScore.Forms
         {
 
         }
-        public IWTable DesignItemsTable(int ItemsCount , int LikertCount ,  string TableHeader , Tool CurrentTool , int tableorder ,int ToolN)
+        public IWTable DesignItemsTable(int ItemsCount , int LikertCount ,  string TableHeader , Tool CurrentTool , int tableorder ,int ToolN , ref bool hastoolTittle)
         {
             IWSection section = wordObj.CreatePortraitSection();
+
+            
+            if (!hastoolTittle)
+            {
+                wordObj.AddToolTitle_Dynamic(section,CurrentTool.ToolName);
+                hastoolTittle = true; 
+            }
 
             string title = "Distribution of the studied Nursing students according to " + CurrentTool.ToolName + " items (n = "+ ToolN + ")";
 
@@ -77,8 +84,8 @@ namespace ExcelScore.Forms
         {
             int likertScaleCount = CurrentTool.LikertScale.Keys.Count;
 
-            
 
+            bool hastitle = false;
             if (CurrentTool.hasscales)
             {
                 
@@ -86,7 +93,9 @@ namespace ExcelScore.Forms
                 {
                     int tableorder = 1;
 
-                    IWTable table = DesignItemsTable(CurrentScale.Items.Count , likertScaleCount , CurrentScale.Scale_Full_Name , CurrentTool , tableorder, ToolN);
+                    IWTable table = DesignItemsTable(CurrentScale.Items.Count , likertScaleCount , CurrentScale.Scale_Full_Name , CurrentTool , tableorder, ToolN ,ref  hastitle);
+
+
 
                     int Insertrow = 2;
 
@@ -127,7 +136,7 @@ namespace ExcelScore.Forms
             else if(!(CurrentTool.hasscales))
             {
                 int tableorder = 1;
-                IWTable table = DesignItemsTable(CurrentTool.ToolItems.Count, likertScaleCount, CurrentTool.ToolName, CurrentTool , tableorder , ToolN);
+                IWTable table = DesignItemsTable(CurrentTool.ToolItems.Count, likertScaleCount, CurrentTool.ToolName, CurrentTool , tableorder , ToolN , ref hastitle);
 
                 int Insertrow = 2;
 
@@ -620,6 +629,10 @@ namespace ExcelScore.Forms
 
 
         }
+        public void InsertToolName()
+        {
+
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             document = wordObj.InitWord();
@@ -627,6 +640,8 @@ namespace ExcelScore.Forms
             foreach (var CurrentTool in Alltools_Tables)
             {
                 int toolN = CurrentTool.ToolItems[0].ParticipantResponses.Count;
+
+
                 Items(CurrentTool , toolN);
                 Score_Scales_Overall(CurrentTool , toolN);
                 Level_Scales_Overall(CurrentTool, toolN);

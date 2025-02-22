@@ -26,10 +26,42 @@ namespace ExcelScore.Classes
 
         public bool hasscales { get; set; }
 
+        public List<Tool> PeriodsTools { get; set; } = new List<Tool>();
+
         public void AddScale(Scale scale)
         {
             scale.ParentTool = this;
             Scales.Add(scale);
+        }
+
+        public Scale GetScaleFromPeriodsTool(string toolNumber, string toolName, string scaleName)
+        {
+
+            Tool periodTool = PeriodsTools.FirstOrDefault(t => t.ToolNumber == toolNumber && t.ToolName == toolName);
+
+
+            return periodTool?.Scales.FirstOrDefault(s => s.Scale_Name == scaleName);
+        }
+
+        public Tool GetPeriodTool(string toolNumber, string toolName)
+        {
+            return PeriodsTools.FirstOrDefault(pt => pt.ToolNumber == toolNumber && pt.ToolName == toolName);
+        }
+
+        public void UpdatePeriodTool(string toolNumber, string toolName)
+        {
+            Tool periodTool = GetPeriodTool(toolNumber, toolName);
+
+            if (periodTool != null)
+            {
+                // Copy relevant properties from the main tool (this) to the found tool
+                periodTool.Scales = new List<Scale>(this.Scales);
+                periodTool.LikertScale = new Dictionary<int, string>(this.LikertScale);
+                periodTool.ToolLevels = new List<List<LevelRange>>(this.ToolLevels);
+                periodTool.LevelDetermination = new List<string>(this.LevelDetermination);
+
+                periodTool.hasscales = this.hasscales;
+            }
         }
 
         public void RankScales()
