@@ -919,7 +919,69 @@ namespace ExcelScore.Forms
                 itemcol++;
             }
         }
+        public static void ProcessScoreColumns_Periods(Worksheet ScoreSheet, int startRow, int totalRows, ref int current_colctr, Scale Scale, Color fillColor, Tool CurrentPeriodTool)
+        {
+            int itemscount = 0;
+            foreach (var item in Scale.Items)
+            {
+                if(item.Text.Contains(CurrentPeriodTool.ToolName))
+                {
+                    itemscount++;
+                }
+            }
 
+            // === TOTAL COLUMN ===
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Total", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 0, current_colctr, "", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, current_colctr, "", fillColor);
+
+            for (int row = startRow; row < totalRows + startRow; row++)
+            {
+                string destinationCell = ScoreSheet.Cells[row, current_colctr].Name;
+                string range = ScoreSheet.Cells[row, current_colctr - (itemscount + 1)].Name + ":" + ScoreSheet.Cells[row, current_colctr - 2].Name;
+                ScoreSheet.Cells[destinationCell].Formula = $"=SUM({range})";
+
+                Style returnedStyle = NewNursingExcel.ScoreStyle(ScoreSheet, fillColor, row, current_colctr);
+                ScoreSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
+            }
+            current_colctr++;
+
+            // === AVERAGE COLUMN ===
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Avg", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 0, current_colctr, "", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, current_colctr, "", fillColor);
+
+            for (int row = startRow; row < totalRows + startRow; row++)
+            {
+                string destinationCell = ScoreSheet.Cells[row, current_colctr].Name;
+                string range = ScoreSheet.Cells[row, current_colctr - (itemscount + 2)].Name + ":" + ScoreSheet.Cells[row, current_colctr - 3].Name;
+                ScoreSheet.Cells[destinationCell].Formula = $"=AVERAGE({range})";
+
+                Style returnedStyle = NewNursingExcel.ScoreStyle(ScoreSheet, fillColor, row, current_colctr);
+                ScoreSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
+            }
+            current_colctr++;
+
+            // === PERCENT COLUMN ===
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, "Percent", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 0, current_colctr, "", fillColor);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, current_colctr, "", fillColor);
+
+            int minLikert = CurrentPeriodTool.LikertScale.Keys.Min();
+            int maxLikert = CurrentPeriodTool.LikertScale.Keys.Max();
+
+            for (int row = startRow; row < totalRows + startRow; row++)
+            {
+                string destinationCell = ScoreSheet.Cells[row, current_colctr].Name;
+                string avgCell = ScoreSheet.Cells[row, current_colctr - 1].Name;
+
+                ScoreSheet.Cells[destinationCell].Formula = $"=({avgCell} - {minLikert}) / ({maxLikert} - {minLikert}) * 100";
+
+                Style returnedStyle = NewNursingExcel.ScoreStyle(ScoreSheet, fillColor, row, current_colctr);
+                ScoreSheet.Cells[row, current_colctr].SetStyle(returnedStyle);
+            }
+            current_colctr++;
+        }
         public static void ProcessScoreColumns(Worksheet ScoreSheet, int startRow, int totalRows, ref int current_colctr, Scale Scale, Color fillColor, Tool CurrentTool)
         {
             // === TOTAL COLUMN ===
@@ -1058,6 +1120,46 @@ namespace ExcelScore.Forms
             return (startrow, Endrow);
         }
 
+        public int GetItemCount_Periods(Scale myscale , Tool CurrentToolPeriod)
+        {
+            int itemcount = 0;
+
+            foreach (var item in myscale.Items)
+            {
+                if(item.Text.Contains(CurrentToolPeriod.ToolName))
+                {
+                    itemcount++;
+                }
+            }
+
+
+            return itemcount;
+        }
+        public List<string> getDataRangesforOverall_Periods(Worksheet CurrentSheet, Tool CurrentPeriodTool, int TotalN, int current_colctr)
+        {
+            List<string> Ranges = new List<string>();
+            int StartCol = 5;
+
+
+            
+
+            foreach (var CurrentScale in CurrentPeriodTool.Scales)
+            {
+                int itemcount = GetItemCount_Periods(CurrentScale, CurrentPeriodTool);
+
+                string range = CurrentSheet.Cells[3, StartCol + 1].Name + ":" + CurrentSheet.Cells[3, StartCol + itemcount].Name;
+
+                Ranges.Add(range);
+                StartCol = StartCol + itemcount + 1 + 3 + CurrentPeriodTool.ToolLevels.Count + 1;
+
+            }
+
+            return Ranges;
+
+
+
+
+        }
         public List<string> getDataRangesforOverall(Worksheet CurrentSheet , Tool CurrentTool , int TotalN , int current_colctr)
         {
             List<string> Ranges = new List<string>();
@@ -1325,7 +1427,7 @@ namespace ExcelScore.Forms
                 SetToolNames(CurrentScoreSheet, CurrentTool, TotalN, current_colctr);
 
                 current_colctr += 2;
-
+                int Overallctr = 5;
                 foreach (var CurrentToolPeriod in CurrentTool.PeriodsTools)
                 {
                     SetPeriodsToolNames(CurrentScoreSheet, CurrentToolPeriod, TotalN, current_colctr);
@@ -1340,11 +1442,27 @@ namespace ExcelScore.Forms
 
                             PutItemData_Periods(ref current_colctr, CurrentPeriodScale, CurrentScoreSheet, CurrentToolPeriod);
 
-                            //current_colctr = current_colctr + CurrentPeriodScale.Items.Count + 1;
+                            ProcessScoreColumns_Periods(CurrentScoreSheet , 3 , TotalN , ref current_colctr , CurrentPeriodScale , LightGreenExcel , CurrentToolPeriod);
 
-                            //current_colctr++;
+                            InsertLevel(CurrentScoreSheet, ref current_colctr, CurrentToolPeriod, TotalN);
+
+                            current_colctr++;
+
                         }
 
+                        CurrentScoreSheet.Cells.Merge(1, current_colctr, 1, 3 + CurrentToolPeriod.ToolLevels.Count);
+                        NewNursingExcel.SetCellValueAndCenterText(CurrentScoreSheet, 1, current_colctr, "Overall", LightGreenExcel);
+
+
+                        List<string> Ranges = getDataRangesforOverall_Periods(CurrentScoreSheet, CurrentToolPeriod, TotalN, current_colctr);
+
+                        InsertDataOverall(CurrentScoreSheet, ref current_colctr, LightGreenExcel, Ranges, TotalN, CurrentToolPeriod);
+
+                        current_colctr++;
+
+                        InsertLevel(CurrentScoreSheet, ref current_colctr, CurrentToolPeriod, TotalN);
+
+                        current_colctr++;
                     }
 
 
@@ -1532,9 +1650,6 @@ namespace ExcelScore.Forms
             
             string PeriodOrDes = ReadData();
 
-            //Removeperiod_Scale_UnesccaryItem(PeriodOrDes);
-
-            //PrintCorrectPeriod();
             CalculateScore(PeriodOrDes);
 
         }
