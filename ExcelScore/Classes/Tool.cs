@@ -34,12 +34,10 @@ namespace ExcelScore.Classes
             Scales.Add(scale);
         }
 
-        public Scale GetScaleFromPeriodsTool(string toolNumber, string toolName, string scaleName)
+
+        public Scale GetScaleFromPeriodTool(string periodToolName, string scaleName)
         {
-
-            Tool periodTool = PeriodsTools.FirstOrDefault(t => t.ToolNumber == toolNumber && t.ToolName == toolName);
-
-
+            Tool periodTool = PeriodsTools.FirstOrDefault(pt => pt.ToolName == periodToolName);
             return periodTool?.Scales.FirstOrDefault(s => s.Scale_Name == scaleName);
         }
 
@@ -48,21 +46,36 @@ namespace ExcelScore.Classes
             return PeriodsTools.FirstOrDefault(pt => pt.ToolNumber == toolNumber && pt.ToolName == toolName);
         }
 
-        public void UpdatePeriodTool(string toolNumber, string toolName)
+        public void UpdateAllPeriodTools()
         {
-            Tool periodTool = GetPeriodTool(toolNumber, toolName);
-
-            if (periodTool != null)
+            foreach (var periodTool in PeriodsTools)
             {
-                // Copy relevant properties from the main tool (this) to the found tool
-                periodTool.Scales = new List<Scale>(this.Scales);
+                if (periodTool != null)
+                {
+                    // Set each scale's ParentTool to the periodTool before transferring
+                    foreach (var scale in this.Scales)
+                    {
+                        scale.ParentTool = periodTool;
+                    }
+
+                    // Transfer scales to periodTool and clear from main tool
+                    periodTool.Scales = new List<Scale>(this.Scales);
+                }
+
+                // Copy other properties
                 periodTool.LikertScale = new Dictionary<int, string>(this.LikertScale);
                 periodTool.ToolLevels = new List<List<LevelRange>>(this.ToolLevels);
                 periodTool.LevelDetermination = new List<string>(this.LevelDetermination);
-
                 periodTool.hasscales = this.hasscales;
             }
+
+            // Clear scales from the main tool after transferring to all PeriodTools
+            this.Scales.Clear();
         }
+
+
+
+
 
         public void RankScales()
         {

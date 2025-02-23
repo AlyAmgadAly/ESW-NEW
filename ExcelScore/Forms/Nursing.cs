@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Office2016.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelScore.Classes;
+using Humanizer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -47,17 +48,7 @@ namespace ExcelScore.Forms
             }
         }
 
-        public void UpdatePeriodsTools()
-        {
-
-            foreach (var CurrentTool in AllTools)
-            {
-                foreach (var PeriodTool in CurrentTool.PeriodsTools)
-                {
-                    CurrentTool.UpdatePeriodTool(CurrentTool.ToolNumber, PeriodTool.ToolName);
-                }
-            }
-        }
+        
         public void GetEachToolPeriod(Worksheet PeriodsSheet)
         {
             try
@@ -115,7 +106,7 @@ namespace ExcelScore.Forms
 
                 }
 
-                UpdatePeriodsTools();
+                
             }
             catch (Exception)
             {
@@ -136,8 +127,22 @@ namespace ExcelScore.Forms
             GetEachToolLevel(DetailsSheet);
 
             GetEachToolPeriod(PeriodsSheet);
+
+            UpdatePeriods_Frm_Fn(PeriodsSheet);
         }
         
+        public void UpdatePeriods_Frm_Fn(Worksheet PeriodSheet)
+        {
+            if(PeriodSheet == null)
+            {
+                return;
+            }
+
+            foreach (var CurrentTool in AllTools)
+            {
+                CurrentTool.UpdateAllPeriodTools();
+            }
+        }
 
         public void GetEachToolLevel(Worksheet ADetailsSheet)
         {
@@ -498,11 +503,16 @@ namespace ExcelScore.Forms
 
                 Tool PeriodTool = tooltoadditem.GetPeriodTool(Toolnumber, PeriodToolName);
 
-                Scale scaletoadditem = PeriodTool.GetScaleFromPeriodsTool(Toolnumber, PeriodToolName, scalename);
+                Scale scaletoadditem = PeriodTool.Scales.FirstOrDefault(s => s.Scale_Name == scalename);
 
 
+                
                 PeriodTool.ToolItems.Add(MyItem);
-                scaletoadditem.Items.Add(MyItem);
+                if (PeriodToolName == PeriodTool.ToolName)
+                {
+                    scaletoadditem.Items.Add(MyItem);
+                }
+                   
 
             }
 
@@ -662,10 +672,15 @@ namespace ExcelScore.Forms
                 CalculateScore_Descriptive_NoSubscales();
                 
             }
+            else if(PeriodOrDes == "Periods")
+            {
+                insertvlookTable();
+                CalculateScore_Periods_NoSubscales();
+            }
 
             
         }
-
+        
         public void StoreScore(int TotalN)
         {
             workbook.CalculateFormula();
@@ -814,6 +829,13 @@ namespace ExcelScore.Forms
             int itemcount = AllTools[0].ToolItems[0].ParticipantResponses.Count;
 
             return itemcount; 
+        }
+
+        public int getNPeriods()
+        {
+            int itemcount = AllTools[0].PeriodsTools[0].ToolItems[0].ParticipantResponses.Count;
+
+            return itemcount;
         }
 
 
@@ -1230,7 +1252,125 @@ namespace ExcelScore.Forms
                 levelId++;
             }
         }
+        public void SetPeriodsToolNames(Worksheet ScoreSheet, Tool CurrentTool, int TotalN, int current_colctr)
+        {
+            for (int colorrow = 0; colorrow < TotalN + 3; colorrow++)
+            {
+                NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, colorrow, current_colctr, "", LightGreenExcel);
+            }
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, CurrentTool.ToolName, LightGreenExcel);
+        }
+        public void Insertheader_PeriodScale(Worksheet ScoreSheet, Scale MyScale, int current_colctr ,Tool CurrentPeriodTool)
+        {
+            int itemscount = 0;
+            foreach (var CurrentItem in MyScale.Items)
+            {
+                if(CurrentItem.Text.Contains(CurrentPeriodTool.ToolName))
+                {
+                    itemscount++;
+                }
+            }
 
+            int mergecountcol = itemscount;
+            ScoreSheet.Cells.Merge(1, current_colctr, 1, mergecountcol);
+            ScoreSheet.Cells.Merge(0, current_colctr, 1, mergecountcol);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 1, current_colctr, MyScale.Scale_Name, LightGreenExcel);
+            NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 0, current_colctr, "", LightGreenExcel);
+        }
+        public void PutItemData_Periods(ref int current_colctr, Scale Myscale, Worksheet ScoreSheet, Tool CurrentPeriodTool)
+        {
+            int itemcount = 0;
+            int minLikert = CurrentPeriodTool.LikertScale.Keys.Min();
+            int maxLikert = CurrentPeriodTool.LikertScale.Keys.Max();
+
+            foreach (var Myscaleitem in Myscale.Items)
+            {
+
+                if(Myscaleitem.Text.Contains(CurrentPeriodTool.ToolName))
+                {
+                    bool reverse = Myscaleitem.IsReverse;
+                    NewNursingExcel.SetCellValueAndCenterText(ScoreSheet, 2, current_colctr, Myscaleitem.Id, LightGreenExcel);
+
+                    int item_partic_data_row = 3;
+                    foreach (var participantdata in Myscaleitem.ParticipantResponses)
+                    {
+                        double InsertData = participantdata;
+                        if (reverse)
+                        {
+                            InsertData = (minLikert + maxLikert) - InsertData;
+                        }
+                        NewNursingExcel.SetCellValueAndCenter_int(ScoreSheet, item_partic_data_row, current_colctr, InsertData);
+                        item_partic_data_row++;
+                    }
+
+
+                    current_colctr++;
+                    itemcount++;
+                }
+            }
+            current_colctr++;
+            //current_colctr = current_colctr + itemcount + 1;
+
+        }
+        public void CalculateScore_Periods_NoSubscales()
+        {
+            int TotalN = getNPeriods();
+            foreach (var CurrentTool in AllTools)
+            {
+                int current_colctr = 2;
+
+                NewNursingExcel.EnsureSheetExists(workbook, CurrentTool.ToolName, workbook.Worksheets.Count);
+                Worksheet CurrentScoreSheet = workbook.Worksheets[CurrentTool.ToolName];
+
+                SetToolNames(CurrentScoreSheet, CurrentTool, TotalN, current_colctr);
+
+                current_colctr += 2;
+
+                foreach (var CurrentToolPeriod in CurrentTool.PeriodsTools)
+                {
+                    SetPeriodsToolNames(CurrentScoreSheet, CurrentToolPeriod, TotalN, current_colctr);
+                    current_colctr += 2;
+
+                    if(CurrentToolPeriod.hasscales)
+                    {
+
+                        foreach (var CurrentPeriodScale in CurrentToolPeriod.Scales)
+                        {
+                            Insertheader_PeriodScale(CurrentScoreSheet, CurrentPeriodScale, current_colctr , CurrentToolPeriod);
+
+                            PutItemData_Periods(ref current_colctr, CurrentPeriodScale, CurrentScoreSheet, CurrentToolPeriod);
+
+                            //current_colctr = current_colctr + CurrentPeriodScale.Items.Count + 1;
+
+                            //current_colctr++;
+                        }
+
+                    }
+
+
+
+
+
+                    
+                }
+
+
+
+                CurrentScoreSheet.AutoFitColumns();
+                CurrentScoreSheet.AutoFitRows();
+
+            }
+
+            try
+            {
+                workbook.Save(ExcelFunctions.filepath);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Close Excel");
+            }
+
+        }
 
         public void CalculateScore_Descriptive_NoSubscales()
         {
@@ -1239,10 +1379,7 @@ namespace ExcelScore.Forms
 
 
             //Worksheet ScoreSheet = workbook.Worksheets["Sheet2"];
-            Worksheet VlookupSheet = workbook.Worksheets["Sheet3"];
-
-
-            int vlookCtrrow = 0;
+            
             foreach (var CurrentTool in AllTools)
             {
 
@@ -1342,14 +1479,62 @@ namespace ExcelScore.Forms
 
 
 
+        public void Removeperiod_Scale_UnesccaryItem(string PeriodOrDes)
+        {
+            if(PeriodOrDes == "Periods")
+            {
+                foreach (var CurrenTool in AllTools)
+                {
+                    foreach (var CurrentPeriodTool in CurrenTool.PeriodsTools)
+                    {
+                        foreach (var CurrentScale in CurrentPeriodTool.Scales)
+                        {
+                            var itemsToRemove = CurrentScale.Items
+                        .Where(item => !item.Text.Contains(CurrentPeriodTool.ToolName))
+                        .ToList();
 
+                            foreach (var item in itemsToRemove)
+                            {
+                                CurrentScale.Items.Remove(item);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void PrintCorrectPeriod()
+        {
+            foreach (var CurrenTool in AllTools)
+            {
+                foreach (var Currentperiodtool in CurrenTool.PeriodsTools)
+                {
+                    MessageBox.Show(Currentperiodtool.ToolName);
+                    foreach (var CurrentScale in Currentperiodtool.Scales)
+                    {
+                        MessageBox.Show(CurrentScale.Scale_Name);
+                        foreach (var item in CurrentScale.Items)
+                        {
+                            string itemtext = item.Text;
+                            if(itemtext.Contains(Currentperiodtool.ToolName))
+                            {
+                                MessageBox.Show(item.Text);
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
         private void Nursing_Load(object sender, EventArgs e)
         {
             ReadToolsAndSubscales();
             
             string PeriodOrDes = ReadData();
 
+            //Removeperiod_Scale_UnesccaryItem(PeriodOrDes);
 
+            //PrintCorrectPeriod();
             CalculateScore(PeriodOrDes);
 
         }
