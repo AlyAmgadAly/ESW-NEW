@@ -633,21 +633,33 @@ namespace ExcelScore.Forms
         {
 
         }
+        public int  ToolN { get; set; }
+
+        public string TableType { get; set; }
+
         private void button1_Click(object sender, EventArgs e)
         {
             document = wordObj.InitWord();
 
-            foreach (var CurrentTool in Alltools_Tables)
+            if (TableType == "Descriptive")
             {
-                int toolN = CurrentTool.ToolItems[0].ParticipantResponses.Count;
+                foreach (var CurrentTool in Alltools_Tables)
+                {
+                    //int toolN = CurrentTool.ToolItems[0].ParticipantResponses.Count;
 
 
-                Items(CurrentTool , toolN);
-                Score_Scales_Overall(CurrentTool , toolN);
-                Level_Scales_Overall(CurrentTool, toolN);
+                    Items(CurrentTool, ToolN);
+                    Score_Scales_Overall(CurrentTool, ToolN);
+                    Level_Scales_Overall(CurrentTool, ToolN);
 
 
+                }
             }
+            else if(TableType == "Periods")
+            {
+                
+            }
+            
 
 
 

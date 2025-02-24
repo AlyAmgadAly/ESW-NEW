@@ -36,6 +36,8 @@ namespace ExcelScore.Forms
         }
         public DataGridView Dgv { get; set; }
 
+        public int TotalN_Frm { get; set; }
+
         Aspose.Cells.Workbook workbook = new Aspose.Cells.Workbook(ExcelFunctions.filepath);
         
         public List<Tool> AllTools = new List<Tool>();
@@ -592,7 +594,7 @@ namespace ExcelScore.Forms
                 MessageBox.Show("Error at reading data only Scale");
             }
         }
-        
+        public string TableType = "";
 
         public string ReadData()
         {
@@ -624,6 +626,7 @@ namespace ExcelScore.Forms
                             //Descriptive
                             ReadDataOnlyScale(parts , ExcelString , Sheet1 ,  i);
                             periodOrDesc = "Descriptive";
+                            TableType = "Descriptive";
                         }
                         else if (partscount == 4 || partscount == 3)
                         {
@@ -634,13 +637,14 @@ namespace ExcelScore.Forms
                             {
                                 //Descriptive
                                 periodOrDesc = "Descriptive";
-
+                                TableType = "Descriptive";
                             }
                             else
                             {
                                 //periods
                                 ReadDataOnlyPeriods(parts, ExcelString, Sheet1, i);
                                 periodOrDesc = "Periods";
+                                TableType = "Periods";
                             }
 
 
@@ -680,7 +684,115 @@ namespace ExcelScore.Forms
 
             
         }
-        
+        public void StoreScore_Periods(int TotalN)
+        {
+            workbook.CalculateFormula();
+
+
+            foreach (var CurrentTool in AllTools)
+            {
+                int Current_col = 5;
+                Worksheet CurrenScoreSheet = workbook.Worksheets[CurrentTool.ToolName];
+                foreach (var CurrentToolPeriod in CurrentTool.PeriodsTools)
+                {
+                    List<double> Total_Score_Tool = new List<double>();
+                    List<double> Avg_Score_Tool = new List<double>();
+                    List<double> Percent_Score_Tool = new List<double>();
+                    List<List<int>> ComputedLevels_Tool = new List<List<int>>();
+
+                    if (CurrentToolPeriod.hasscales)
+                    {
+                        foreach (var CurrentScale in CurrentToolPeriod.Scales)
+                        {
+                            int itemscount = GetItemCount_Periods(CurrentScale, CurrentToolPeriod);
+                            Current_col = Current_col + itemscount + 2;
+
+                            List<double> Total_Score = new List<double>();
+                            List<double> Avg_Score = new List<double>();
+                            List<double> Percent_Score = new List<double>();
+                            List<List<int>> ComputedLevels = new List<List<int>>();
+
+                            for (int i = 0; i < CurrentToolPeriod.ToolLevels.Count; i++)
+                            {
+                                ComputedLevels.Add(new List<int>());
+                            }
+
+                            for (int row = 3; row < TotalN + 3; row++)
+                            {
+                                double CellTotalDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col].Value.ToString());
+                                double CellAvgDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col + 1].Value.ToString());
+                                double CellPercentDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col + 2].Value.ToString());
+
+                                Total_Score.Add(CellTotalDouble);
+                                Avg_Score.Add(CellAvgDouble);
+                                Percent_Score.Add(CellPercentDouble);
+
+
+                                int levelcount = 0;
+                                foreach (var CurrentLevel in CurrentToolPeriod.ToolLevels)
+                                {
+                                    int mycol = Current_col + 2 + levelcount + 1;
+                                    int CellPercentint = int.Parse(CurrenScoreSheet.Cells[row, mycol].Value.ToString());
+                                    ComputedLevels[levelcount].Add(CellPercentint);
+                                    levelcount++;
+                                }
+                            }
+
+                            Current_col = Current_col + 3 + CurrentToolPeriod.ToolLevels.Count;
+
+                            CurrentScale.TotalScores = Total_Score;
+                            CurrentScale.AverageScores = Avg_Score;
+                            CurrentScale.PercentScores = Percent_Score;
+                            CurrentScale.ComputedSubLevels = ComputedLevels;
+                        }
+
+                        Current_col++;
+                        for (int i = 0; i < CurrentToolPeriod.ToolLevels.Count; i++)
+                        {
+                            ComputedLevels_Tool.Add(new List<int>());
+                        }
+
+                        for (int row = 3; row < TotalN + 3; row++)
+                        {
+                            double CellTotalDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col].Value.ToString());
+                            double CellAvgDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col + 1].Value.ToString());
+                            double CellPercentDouble = double.Parse(CurrenScoreSheet.Cells[row, Current_col + 2].Value.ToString());
+
+                            Total_Score_Tool.Add(CellTotalDouble);
+                            Avg_Score_Tool.Add(CellAvgDouble);
+                            Percent_Score_Tool.Add(CellPercentDouble);
+
+
+                            int levelcount = 0;
+                            foreach (var CurrentLevel in CurrentToolPeriod.ToolLevels)
+                            {
+                                int mycol = Current_col + 2 + levelcount + 1;
+                                int CellPercentint = int.Parse(CurrenScoreSheet.Cells[row, mycol].Value.ToString());
+                                ComputedLevels_Tool[levelcount].Add(CellPercentint);
+                                levelcount++;
+                            }
+
+
+
+                        }
+
+
+                        Current_col = Current_col + 3 + CurrentToolPeriod.ToolLevels.Count +2;
+
+                        CurrentToolPeriod.TotalScores = Total_Score_Tool;
+                        CurrentToolPeriod.AverageScores = Avg_Score_Tool;
+                        CurrentToolPeriod.PercentScores = Percent_Score_Tool;
+                        CurrentToolPeriod.ComputedToolLevels = ComputedLevels_Tool;
+
+
+
+                    }
+
+                }
+
+
+            }
+        }
         public void StoreScore(int TotalN)
         {
             workbook.CalculateFormula();
@@ -1135,10 +1247,10 @@ namespace ExcelScore.Forms
 
             return itemcount;
         }
-        public List<string> getDataRangesforOverall_Periods(Worksheet CurrentSheet, Tool CurrentPeriodTool, int TotalN, int current_colctr)
+        public List<string> getDataRangesforOverall_Periods(Worksheet CurrentSheet, Tool CurrentPeriodTool, int TotalN, int current_colctr , ref int StartCol)
         {
             List<string> Ranges = new List<string>();
-            int StartCol = 5;
+            //int StartCol = 5;
 
 
             
@@ -1154,6 +1266,29 @@ namespace ExcelScore.Forms
 
             }
 
+            StartCol = StartCol + CurrentPeriodTool.ToolLevels.Count + 3 + 3;
+
+            return Ranges;
+
+
+
+
+        }
+
+        public List<string> getDataRangesforOverall_No_Scale_Periods(Worksheet CurrentSheet, Tool CurrentPeriodTool, int TotalN, int current_colctr, ref int StartCol)
+        {
+            List<string> Ranges = new List<string>();
+            //int StartCol = 5;
+
+
+
+            string range = CurrentSheet.Cells[3, StartCol + 1].Name + ":" + CurrentSheet.Cells[3, StartCol + CurrentPeriodTool.ToolItems.Count].Name;
+
+            Ranges.Add(range);
+            
+            StartCol = StartCol + CurrentPeriodTool.ToolItems.Count + 1 + 3 + CurrentPeriodTool.ToolLevels.Count + 1 +2;
+
+            
             return Ranges;
 
 
@@ -1417,6 +1552,8 @@ namespace ExcelScore.Forms
         public void CalculateScore_Periods_NoSubscales()
         {
             int TotalN = getNPeriods();
+            TotalN_Frm = TotalN;
+
             foreach (var CurrentTool in AllTools)
             {
                 int current_colctr = 2;
@@ -1428,8 +1565,10 @@ namespace ExcelScore.Forms
 
                 current_colctr += 2;
                 int Overallctr = 5;
+
                 foreach (var CurrentToolPeriod in CurrentTool.PeriodsTools)
                 {
+                    
                     SetPeriodsToolNames(CurrentScoreSheet, CurrentToolPeriod, TotalN, current_colctr);
                     current_colctr += 2;
 
@@ -1454,8 +1593,9 @@ namespace ExcelScore.Forms
                         NewNursingExcel.SetCellValueAndCenterText(CurrentScoreSheet, 1, current_colctr, "Overall", LightGreenExcel);
 
 
-                        List<string> Ranges = getDataRangesforOverall_Periods(CurrentScoreSheet, CurrentToolPeriod, TotalN, current_colctr);
+                        List<string> Ranges = getDataRangesforOverall_Periods(CurrentScoreSheet, CurrentToolPeriod, TotalN, current_colctr , ref Overallctr);
 
+                        
                         InsertDataOverall(CurrentScoreSheet, ref current_colctr, LightGreenExcel, Ranges, TotalN, CurrentToolPeriod);
 
                         current_colctr++;
@@ -1465,19 +1605,39 @@ namespace ExcelScore.Forms
                         current_colctr++;
                     }
 
+                    else if(!(CurrentToolPeriod.hasscales))
+                    {
+
+                        PutItemData_Overall(current_colctr, CurrentScoreSheet, CurrentToolPeriod);
+
+                        current_colctr = current_colctr + CurrentToolPeriod.ToolItems.Count + 1;
 
 
+                        CurrentScoreSheet.Cells.Merge(1, current_colctr, 1, 3 + CurrentToolPeriod.ToolLevels.Count);
+
+                        NewNursingExcel.SetCellValueAndCenterText(CurrentScoreSheet, 1, current_colctr, "Overall", LightGreenExcel);
+
+                        List<string> Ranges = getDataRangesforOverall_No_Scale_Periods(CurrentScoreSheet, CurrentToolPeriod, TotalN, current_colctr, ref Overallctr);
 
 
+                        InsertDataOverall(CurrentScoreSheet, ref current_colctr, LightGreenExcel, Ranges, TotalN, CurrentToolPeriod);
+
+                        current_colctr++;
+
+                        InsertLevel(CurrentScoreSheet, ref current_colctr, CurrentToolPeriod, TotalN);
+
+                        current_colctr++;
+
+                    }
                     
                 }
-
-
 
                 CurrentScoreSheet.AutoFitColumns();
                 CurrentScoreSheet.AutoFitRows();
 
             }
+
+            StoreScore_Periods(TotalN);
 
             try
             {
@@ -1489,15 +1649,15 @@ namespace ExcelScore.Forms
             }
 
         }
-
+        
         public void CalculateScore_Descriptive_NoSubscales()
         {
 
             int TotalN = getN();
-
+            TotalN_Frm = TotalN;
 
             //Worksheet ScoreSheet = workbook.Worksheets["Sheet2"];
-            
+
             foreach (var CurrentTool in AllTools)
             {
 
@@ -1666,6 +1826,8 @@ namespace ExcelScore.Forms
         {
             NursingWordNew nursingWordNew = new NursingWordNew();
             nursingWordNew.Alltools_Tables = AllTools;
+            nursingWordNew.ToolN = TotalN_Frm;
+            nursingWordNew.TableType = TableType;
             nursingWordNew.Show();
             this.Hide();
         }
