@@ -629,10 +629,7 @@ namespace ExcelScore.Forms
 
 
         }
-        public void InsertToolName()
-        {
-
-        }
+        
         public int  ToolN { get; set; }
 
         public string TableType { get; set; }
@@ -657,7 +654,15 @@ namespace ExcelScore.Forms
             }
             else if(TableType == "Periods")
             {
-                
+                foreach (var CurrentTool in Alltools_Tables)
+                {
+
+                    
+
+
+                }
+
+
             }
             
 
