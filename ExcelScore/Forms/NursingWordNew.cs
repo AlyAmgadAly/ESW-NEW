@@ -397,128 +397,7 @@ namespace ExcelScore.Forms
      
 
         CustomMathClass customMathClass = new CustomMathClass();    
-        public void InsertGeneral_Score_Scale_overall_Scores_new(
-    IWTable table,
-    bool TS_Minmax, bool TS_MeanSD, bool TS_Median,
-    bool Avg_meanSD, bool Percent_meanSD, bool Rank
-     , Tool CurrentTool)
-        {
-
-            int currentRow = 2;
-            
-
-            foreach (var CurrentScale in CurrentTool.Scales)
-            {
-
-                Dictionary<string, string> TotalScore = customMathClass.Basic_Calculations(CurrentScale.TotalScores);
-                Dictionary<string, string> Avg_score = customMathClass.Basic_Calculations(CurrentScale.AverageScores);
-                Dictionary<string, string> Percent_score = customMathClass.Basic_Calculations(CurrentScale.PercentScores);
-
-                int col = 2;
-
-                
-                if (TS_Minmax || TS_MeanSD || TS_Median)
-                {
-
-                    if (TS_Minmax)
-                    {
-                        wordObj.Addpara_CenterNoBOLD(table, currentRow, col, TotalScore["Min-Max"]);
-                        col++;
-                    }
-                    if (TS_MeanSD)
-                    {
-                        wordObj.Addpara_CenterNoBOLD(table, currentRow, col, TotalScore["Mean ± StdDev"]);
-                        col++;
-                    }
-                    if (TS_Median)
-                    {
-                        wordObj.Addpara_CenterNoBOLD(table, currentRow, col, TotalScore["Median"]);
-                        col++;
-                    }
-                }
-
-                // Avg Score Header (if enabled)
-                if (Avg_meanSD)
-                {
-                    wordObj.Addpara_CenterNoBOLD(table, currentRow, col, Avg_score["Mean ± StdDev"]);
-
-                    col++;
-                }
-
-                // Percent Score Header (if enabled)
-                if (Percent_meanSD)
-                {
-                    wordObj.Addpara_CenterNoBOLD(table, currentRow, col, Percent_score["Mean ± StdDev"]);
-                    col++;
-                }
-
-                // Rank Header (if enabled)
-                if (Rank)
-                {
-                    wordObj.Addpara_CenterNoBOLD(table, 0, col, "Rank");
-                    col++;
-                }
-
-                currentRow++;
-
-            }
-
-            Dictionary<string, string> TotalScore_Tool = customMathClass.Basic_Calculations(CurrentTool.TotalScores);
-            Dictionary<string, string> Avg_score_Tool = customMathClass.Basic_Calculations(CurrentTool.AverageScores);
-            Dictionary<string, string> Percent_score_Tool = customMathClass.Basic_Calculations(CurrentTool.PercentScores);
-
-            int colTool = 2;
-
-
-            if (TS_Minmax || TS_MeanSD || TS_Median)
-            {
-
-                if (TS_Minmax)
-                {
-                    wordObj.Addpara_CenterNoBOLD(table, currentRow, colTool, TotalScore_Tool["Min-Max"]);
-                    colTool++;
-                }
-                if (TS_MeanSD)
-                {
-                    wordObj.Addpara_CenterNoBOLD(table, currentRow, colTool, TotalScore_Tool["Mean ± StdDev"]);
-                    colTool++;
-                }
-                if (TS_Median)
-                {
-                    wordObj.Addpara_CenterNoBOLD(table, currentRow, colTool, TotalScore_Tool["Median"]);
-                    colTool++;
-                }
-            }
-
-            // Avg Score Header (if enabled)
-            if (Avg_meanSD)
-            {
-                wordObj.Addpara_CenterNoBOLD(table, currentRow, colTool, Avg_score_Tool["Mean ± StdDev"]);
-
-                colTool++;
-            }
-
-            // Percent Score Header (if enabled)
-            if (Percent_meanSD)
-            {
-                wordObj.Addpara_CenterNoBOLD(table, currentRow, colTool, Percent_score_Tool["Mean ± StdDev"]);
-                colTool++;
-            }
-
-            // Rank Header (if enabled)
-            if (Rank)
-            {
-                wordObj.Addpara_CenterNoBOLD(table, 0, colTool, "Rank");
-                colTool++;
-            }
-
-            
-
-
-
-
-
-        }
+       
        
         public void InsertGeneral_Score_Scale_overall_Scores_new2(
     IWTable table,
@@ -552,9 +431,16 @@ namespace ExcelScore.Forms
             bool Avg_meanSD, bool Percent_meanSD, bool Rank,
             bool isTool) // New flag to indicate if it's a tool
         {
-            Dictionary<string, string> TotalScore = customMathClass.Basic_Calculations(DataSource.TotalScores);
-            Dictionary<string, string> AvgScore = customMathClass.Basic_Calculations(DataSource.AverageScores);
-            Dictionary<string, string> PercentScore = customMathClass.Basic_Calculations(DataSource.PercentScores);
+
+            List<double> TotalSorted = new List<double>(DataSource.TotalScores);
+            List<double> AverageSorted = new List<double>(DataSource.AverageScores);
+            List<double> PercentSorted = new List<double>(DataSource.PercentScores);
+
+
+
+            Dictionary<string, string> TotalScore = customMathClass.Basic_Calculations(TotalSorted);
+            Dictionary<string, string> AvgScore = customMathClass.Basic_Calculations(AverageSorted);
+            Dictionary<string, string> PercentScore = customMathClass.Basic_Calculations(PercentSorted);
 
             int col = 2; // Start at column 2
             
@@ -674,6 +560,11 @@ namespace ExcelScore.Forms
 
 
 
+
+        }
+
+        public void ItemsPeriods()
+        {
 
         }
 
@@ -830,13 +721,20 @@ namespace ExcelScore.Forms
             }
 
 
-            SPSS_Class.InsertMultipleVariablesnew(data);
+            SPSS_Class.InsertMultipleVariablesnewa(data);
 
         }
         private void button2_Click(object sender, EventArgs e)
         {
 
             InsertSpssScore_Descr();
+        }
+        pythonStat pythonStata = new pythonStat();   
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //pythonStata.InitPython();
+            //pythonStata.RunSpssSyntaxWithPythonNet();
+            SPSS_Class.RunSpssSyntax();
         }
     }
 }

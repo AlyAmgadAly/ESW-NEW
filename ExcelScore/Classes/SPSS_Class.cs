@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SppComApiLib;
+using System.Diagnostics;
+using spsswin;
 
 namespace ExcelScore.Classes
 {
@@ -139,85 +142,132 @@ namespace ExcelScore.Classes
 
         }
 
+        public static void InsertMultipleVariablesnewa(Dictionary<string, (List<double?>, string, Dictionary<double, string>?)> variablesData)
+        {
+            // Open Save File Dialog
+            string outputFile = GetSaveFilePath();
+            if (string.IsNullOrEmpty(outputFile)) return; // Exit if no file selected
+
+            // Find the maximum row count across all variables
+            int maxRows = variablesData.Max(entry => entry.Value.Item1.Count);  // Corrected access to Values
+
+            // Normalize all lists to match maxRows by padding with null
+            var adjustedData = variablesData.ToDictionary(
+                entry => entry.Key,
+                entry => (
+                    entry.Value.Item1.Concat(Enumerable.Repeat<double?>(null, maxRows - entry.Value.Item1.Count)).ToList(),
+                    entry.Value.Item2,
+                    entry.Value.Item3
+                )
+            );
+
+            // Convert input data into SPSS-compatible variables
+            var variables = new List<Variable>();
 
 
-        //public static void InsertMultipleVariables(Dictionary<string, (List<double?> Values, string MeasurementLevel, Dictionary<double, string>? ValueLabels)> variablesData)
-        //{
-        //    // Open Save File Dialog
-        //    string outputFile = GetSaveFilePath();
-        //    if (string.IsNullOrEmpty(outputFile)) return; // Exit if no file selected
+            foreach (var entry in adjustedData)
+            {
+                var (values, measurementLevel, valueLabels) = entry.Value;
 
-        //    // Convert input data into SPSS-compatible variables
-        //    var variables = new List<Variable>();
+                // Create a new variable for this entry
+                var newVariable = new Variable
+                {
+                    Name = entry.Key,
+                    Type = DataType.Numeric,
+                    Width = 10,
+                    PrintFormat = new OutputFormat(FormatType.F, 8, 2),
+                    WriteFormat = new OutputFormat(FormatType.F, 8, 2),
+                    MissingValueType = MissingValueType.NoMissingValues,
+                    Alignment = Alignment.Centre,
+                };
 
-        //    foreach (var entry in variablesData)
-        //    {
-        //        var (values, measurementLevel, valueLabels) = entry.Value;
+                // Set measurement level and value labels correctly
+                if (measurementLevel.ToLower() == "nominal" && valueLabels != null)
+                {
+                    newVariable.ValueLabels = valueLabels;
+                    newVariable.MeasurementType = MeasurementType.Nominal;
+                }
+                else if (measurementLevel.ToLower() == "scale")
+                {
+                    newVariable.MeasurementType = MeasurementType.Scale;
+                }
 
-        //        var variable = new Variable
-        //        {
-        //            Name = entry.Key, // Variable name from dictionary key
-        //            Type = DataType.Numeric,
-        //            Width = 10,
-        //            PrintFormat = new OutputFormat(FormatType.F, 8, 2),
-        //            WriteFormat = new OutputFormat(FormatType.F, 8, 2),
-        //            MissingValueType = MissingValueType.NoMissingValues, 
-        //            Alignment = Alignment.Centre
-        //        };
+                variables.Add(newVariable); // Add variable to list
+            }
 
-        //        // Set measurement level (Nominal or Scale)
-        //        if (measurementLevel.ToLower() == "nominal" && valueLabels != null)
-        //        {
-        //            variable.ValueLabels = valueLabels;
-        //        }
+            // Prepare SPSS file options
+            var options = new SpssOptions();
 
-        //        variables.Add(variable);
-        //    }
+            using (FileStream fileStream = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
+            {
+                using (var writer = new SpssWriter(fileStream, variables, options))
+                {
+                    for (int i = 0; i < maxRows; i++)
+                    {
+                        var newRecord = writer.CreateRecord();
 
-        //    // Prepare SPSS file options
-        //    var options = new SpssOptions();
+                        int col = 0;
+                        foreach (var entry in adjustedData)
+                        {
+                            List<double?> values = entry.Value.Item1; // Corrected access
+                            newRecord[col] = i < values.Count ? values[i] : null;
+                            col++;
+                        }
 
-        //    using (FileStream fileStream = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
-        //    {
-        //        using (var writer = new SpssWriter(fileStream, variables, options))
-        //        {
-        //            // Find the max row count to avoid index out of bounds
-        //            int maxRows = variablesData.Max(entry => entry.Value.Values.Count);
+                        writer.WriteRecord(newRecord);
+                    }
 
-        //            // Write records row by row
-        //            for (int i = 0; i < maxRows; i++)
-        //            {
-        //                var newRecord = writer.CreateRecord();
-        //                bool rowHasNull = false;
-
-        //                // First pass: Check if any column in this row has null
-        //                foreach (var entry in variablesData)
-        //                {
-        //                    if (i >= entry.Value.Values.Count || entry.Value.Values[i] == null)
-        //                    {
-        //                        rowHasNull = true;
-        //                        break;
-        //                    }
-        //                }
-
-        //                // Second pass: Assign null to all columns if any column is null
-        //                int col = 0;
-        //                foreach (var entry in variablesData)
-        //                {
-        //                    List<double?> values = entry.Value.Values;
-        //                    newRecord[col] = rowHasNull ? null : (i < values.Count ? values[i] : null);
-        //                    col++;
-        //                }
-
-        //                writer.WriteRecord(newRecord);
-        //            }
-
-        //            writer.EndFile();
-        //        }
-        //    }
+                    writer.EndFile();
+                }
+            }
 
 
-        //}
+        }
+
+        public static string GetSpssFilePath()
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "SPSS Data Files (*.sav)|*.sav";
+                openFileDialog.Title = "Select SPSS Data File";
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    return openFileDialog.FileName;
+                }
+            }
+            return "";
+        }
+
+        public static string GetOutputFilePath()
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "SPSS Output Files (*.spo)|*.spo";
+                saveFileDialog.Title = "Save SPSS Output File";
+                saveFileDialog.DefaultExt = "spo";
+                saveFileDialog.AddExtension = true;
+                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    return saveFileDialog.FileName;
+                }
+            }
+            return "";
+        }
+
+        public static void RunSpssSyntax()
+        {
+            
+        }
+
+
+
+
+
+
 
 
     }

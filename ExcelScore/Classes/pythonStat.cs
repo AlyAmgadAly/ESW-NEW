@@ -81,11 +81,46 @@ namespace ExcelScore.Classes
 
 
         }
+        public void RunSpssSyntaxWithPythonNet()
+        {
+            InitPython(); // Ensure Python is initialized
 
-        
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "SPSS Files (*.sav)|*.sav";
+                openFileDialog.Title = "Select an SPSS Data File";
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                string spssDataFilePath = openFileDialog.FileName;
+                string outputSpoPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "output.spo");
+
+                using (Py.GIL())  // Acquire Python Global Interpreter Lock
+                {
+                    dynamic spss = Py.Import("spss");      // Import SPSS Python module
+                    dynamic spssaux = Py.Import("spssaux"); // Import SPSS auxiliary module
+
+                    // Define SPSS syntax to execute
+                    string syntax = $@"
+GET FILE='{spssDataFilePath}'.
+FREQUENCIES VARIABLES=ALL.
+EXECUTE.
+";
+
+                    // Run SPSS syntax
+                    spss.Submit(syntax);
+
+                    // Save the output as a .spo file
+                    spssaux.CreateOutputDoc(outputSpoPath, visible: false);
+                }
+
+                MessageBox.Show("SPSS syntax executed successfully! Output saved at: " + outputSpoPath);
+            }
+        }
 
 
-        
+
+
         public AnovaTestResult newANOVAWithTukeyHSDNewDynamic(Parameter parameter)
         {
             try

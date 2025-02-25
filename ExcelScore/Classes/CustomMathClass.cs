@@ -14,28 +14,29 @@ namespace ExcelScore.Classes
         public Dictionary<string , string> Basic_Calculations(List<double> values)
         {
             Dictionary<string, string> ValuesFormatted = new Dictionary<string, string>();
+            List<double> NewValues = values;
 
-            double minValue = values.Min();
-            double maxValue = values.Max();
-            double meanValue = values.Average();
-            double stdDevValue = Math.Sqrt(values.Select(x => Math.Pow(x - meanValue, 2)).Sum() / (values.Count - 1));
+            double minValue = NewValues.Min();
+            double maxValue = NewValues.Max();
+            double meanValue = NewValues.Average();
+            double stdDevValue = Math.Sqrt(NewValues.Select(x => Math.Pow(x - meanValue, 2)).Sum() / (NewValues.Count - 1));
             double medianValue;
-            int middleIndex = values.Count / 2;
-            if (values.Count % 2 == 0)
+            int middleIndex = NewValues.Count / 2;
+            if (NewValues.Count % 2 == 0)
             {
                 // For even count of elements, take the average of the two middle values
-                double middleValue1 = values.OrderBy(x => x).ElementAt(middleIndex - 1);
-                double middleValue2 = values.OrderBy(x => x).ElementAt(middleIndex);
+                double middleValue1 = NewValues.OrderBy(x => x).ElementAt(middleIndex - 1);
+                double middleValue2 = NewValues.OrderBy(x => x).ElementAt(middleIndex);
                 medianValue = (middleValue1 + middleValue2) / 2.0;
             }
             else
             {
                 // For odd count of elements, directly take the middle value
-                medianValue = values.OrderBy(x => x).ElementAt(middleIndex);
+                medianValue = NewValues.OrderBy(x => x).ElementAt(middleIndex);
             }
 
-            double perc25th = CalculateLowerMedian(values);
-            double perc75th = CalculateUpperMedian(values);
+            double perc25th = CalculateLowerMedian(NewValues);
+            double perc75th = CalculateUpperMedian(NewValues);
 
 
             string formattedMinMax = FormatMinMaxValue(minValue, maxValue);
