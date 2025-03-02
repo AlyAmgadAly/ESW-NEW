@@ -2117,6 +2117,29 @@ namespace ExcelScore.Classes
             
         }
 
+        public void Merges_Periods_Items(IWTable table , int WordTableColumns , int likertscalecount,int TestExist)
+        {
+            table.ApplyVerticalMerge(0, 0, 2);
+            table.ApplyVerticalMerge(1, 0, 2);
+
+            table.ApplyVerticalMerge(WordTableColumns-2, 0, 2);
+            table.ApplyVerticalMerge(WordTableColumns-1, 0, 2);
+
+            
+
+            for(int col = 2; col < WordTableColumns-2; col = col + (likertscalecount * 2))
+            {
+                table.ApplyHorizontalMerge(0, col, col+ (likertscalecount*2) - 1);
+            }
+
+            for (int col = 2; col < WordTableColumns - 2; col = col + 2)
+            {
+                table.ApplyHorizontalMerge(1, col, col+1);
+            }
+
+
+        }
+
         public void ApplyTwoPeriodsMerges(IWTable table, int LikertScore , int numberofperiods)
         {
 
@@ -2190,6 +2213,44 @@ namespace ExcelScore.Classes
                 table.Rows[l].Cells[1].CellFormat.Borders.Right.LineWidth = 1.5f;
 
             }
+        }
+
+        public void Borders_Periods_Items(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            //firstrow
+            for (int j = 2; j < WordTableColumns; j++)
+            {
+                table.Rows[0].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[0].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+            }
+
+            //secondrow
+            for (int j = 2; j < WordTableColumns; j++)
+            {
+                table.Rows[1].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[1].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+            }
+
+            //thirdrow
+            for (int j = 0; j < WordTableColumns; j++)
+            {
+                table.Rows[2].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[2].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            }
+
+            //SecondCol
+            for (int l = 0; l < WordTableRows; l++)
+            {
+                table.Rows[l].Cells[1].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[l].Cells[1].CellFormat.Borders.Right.LineWidth = 1.5f;
+            }
+
+            for (int l = 0; l < WordTableRows; l++)
+            {
+                table.Rows[l].Cells[WordTableColumns-2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[l].Cells[WordTableColumns-2].CellFormat.Borders.Left.LineWidth = 1.5f;
+            }
+
         }
 
         public void ApplyTwoPeriodsBorders(IWTable table, int WordTableRows, int WordTableColumns)

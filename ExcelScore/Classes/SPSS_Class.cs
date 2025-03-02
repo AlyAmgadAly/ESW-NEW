@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using SppComApiLib;
 using System.Diagnostics;
 using spsswin;
+using Python.Runtime;
 
 namespace ExcelScore.Classes
 {
@@ -260,7 +261,48 @@ namespace ExcelScore.Classes
 
         public static void RunSpssSyntax()
         {
-            
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "SPSS Files (*.sav)|*.sav";
+                openFileDialog.Title = "Select an SPSS Data File";
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                string spssDataFilePath = openFileDialog.FileName;
+                string spssExePath = @"C:\Program Files (x86)\IBM\SPSS\Statistics\23\stats.exe";  // Adjust path if needed
+                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string outputSpoPath = Path.Combine(desktopPath, "SPSS_Output.spo");
+                string syntaxFilePath = Path.Combine(Path.GetTempPath(), "temp_syntax.sps");
+
+                // Step 2: Create SPSS syntax to run on the file
+                string syntax = $@"
+GET FILE='{spssDataFilePath}'.
+FREQUENCIES VARIABLES=ALL.
+SAVE OUTFILE='{spssDataFilePath}'.
+EXECUTE.
+";
+
+                File.WriteAllText(syntaxFilePath, syntax); // Save syntax to file
+
+                // Step 3: Run SPSS in hidden batch mode
+                Process process = new Process();
+                process.StartInfo.FileName = spssExePath;
+                process.StartInfo.Arguments = $"/run /syntax=\"{syntaxFilePath}\" /output=\"{outputSpoPath}\"";
+                process.StartInfo.Verb = "runas";  // Requests admin permission
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                process.Start();
+                process.WaitForExit(); // Wait for SPSS to finish execution
+
+                // Step 4: Confirm output saved
+                MessageBox.Show("SPSS syntax executed successfully!\nOutput saved at: " + outputSpoPath);
+            }
+
+
         }
 
 
@@ -269,6 +311,6 @@ namespace ExcelScore.Classes
 
 
 
-
     }
+
 }

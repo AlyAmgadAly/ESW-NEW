@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Wordprocessing;
 using ExcelScore.Classes;
+using Python.Runtime;
 using Syncfusion.DocIO.DLS;
 using System;
 using System.Collections.Generic;
@@ -520,6 +521,74 @@ namespace ExcelScore.Forms
 
         public string TableType { get; set; }
 
+        public int GetItemCount_Periods(Scale myscale, Tool CurrentToolPeriod)
+        {
+            int itemcount = 0;
+
+            foreach (var item in myscale.Items)
+            {
+                if (item.Text.Contains(CurrentToolPeriod.ToolName))
+                {
+                    itemcount++;
+                }
+            }
+
+
+            return itemcount;
+        }
+        public void Items_Periods_portrait(Tool CurrentTool , int ToolN)
+        {
+            int likertScaleCount = CurrentTool.LikertScale.Keys.Count;
+
+            bool hastitle = false;
+
+            int TestExist = 2;
+
+            int WordTableColumns = 2 + (CurrentTool.PeriodsTools.Count * likertScaleCount * 2) + TestExist;
+
+            foreach (var CurrentToolPeriod in CurrentTool.PeriodsTools)
+            {
+                if(CurrentToolPeriod.hasscales)
+                {
+                    foreach (var CurrentScale in CurrentToolPeriod.Scales)
+                    {
+                        int itemcount = GetItemCount_Periods(CurrentScale, CurrentToolPeriod);
+                        int WordTableRows = 3 + itemcount;
+
+                        IWSection section = wordObj.CreatePortraitSection();
+                        IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+                        wordObj.GeneralTableFormat(table);
+
+                        wordObj.Merges_Periods_Items(table, WordTableColumns , likertScaleCount , TestExist);
+
+
+                        wordObj.Borders_Periods_Items(table, WordTableRows, WordTableColumns);
+
+                        //wordObj.SetWidths(table, WordTableRows, LikertCount);
+
+                        //wordObj.Add_Header_Items_Nusring(table, LikertCount, TableHeader, CurrentTool);
+
+
+                        //wordObj.AddNo_perc_Center(table, WordTableColumns);
+
+                        //wordObj.AddQuestionNo(table, ItemsCount);
+                        
+
+                        wordObj.FormatTableCustom(table, 10, 4, 2);
+
+                        table.ResetCells(WordTableRows, WordTableColumns);
+
+
+                        
+
+                    }
+                    
+
+                }
+            }
+
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             document = wordObj.InitWord();
@@ -542,8 +611,24 @@ namespace ExcelScore.Forms
             {
                 foreach (var CurrentTool in Alltools_Tables)
                 {
+                    if(CurrentTool.PeriodsTools.Count == 2)
+                    {
+                        Items_Periods_portrait(CurrentTool, ToolN);
+                    }
+                    else if (CurrentTool.PeriodsTools.Count > 2)
+                    {
+                        if (CurrentTool.LikertScale.Count <= 3)
+                        {
+                            Items_Periods_portrait(CurrentTool, ToolN);
+                        }
+                        else if (CurrentTool.LikertScale.Count > 3)
+                        {
 
-                    
+                        }
+
+                       
+                    }
+
 
 
                 }
@@ -732,9 +817,42 @@ namespace ExcelScore.Forms
         pythonStat pythonStata = new pythonStat();   
         private void button3_Click(object sender, EventArgs e)
         {
-            //pythonStata.InitPython();
-            //pythonStata.RunSpssSyntaxWithPythonNet();
-            SPSS_Class.RunSpssSyntax();
+            //SPSS_Class.RunSpssSyntax();
+
+            string pythonHome = @"C:\Program Files (x86)\IBM\SPSS\Statistics\23\Python\python27.dll";
+            Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonHome);
+            PythonEngine.Initialize();
+
+            using (Py.GIL()) // Acquire the Global Interpreter Lock
+            {
+                try
+                {
+                    // Import the SPSS module
+                    dynamic spss = Py.Import("spss");
+
+                    // Load the SPSS data file
+                    string filePath = @"C:\Users\win\Desktop\aaaa.sav";
+                    spss.Submit($"GET FILE='{filePath}'.");
+
+                    // Run DISPLAY DICTIONARY to show variable details
+                   
+
+                    // Run DESCRIPTIVES to get basic statistics
+                    spss.Submit("DESCRIPTIVES VARIABLES=ALL.");
+
+                    string outputFile = @"C:\Users\win\Desktop\spss_output.spo";
+                    spss.Submit($"OUTPUT SAVE OUTFILE='{outputFile}'.");
+
+                    Console.WriteLine("SPSS commands executed successfully!");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+            }
+
+            // Shutdown Python.NET
+            PythonEngine.Shutdown();
         }
     }
 }
