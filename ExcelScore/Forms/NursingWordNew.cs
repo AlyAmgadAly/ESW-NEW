@@ -69,7 +69,7 @@ namespace ExcelScore.Forms
 
             wordObj.ApplyBorders(table, WordTableRows, WordTableColumns);
 
-            wordObj.SetWidths(table, WordTableRows, LikertCount);
+            wordObj.Widths_Descriptive_Items(table, WordTableRows, LikertCount);
 
             wordObj.Add_Header_Items_Nusring(table, LikertCount, TableHeader, CurrentTool);
 
@@ -128,8 +128,16 @@ namespace ExcelScore.Forms
 
 
 
+                    if(likertScaleCount > 3)
+                    {
+                        wordObj.FormatTableCustom(table, 11, 4, 2);
+                        wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+                    }
+                    else
+                    {
+                        wordObj.FormatTableCustom(table, 12, 4, 2);
+                    }
 
-                    wordObj.FormatTableCustom(table, 12, 4, 2);
 
 
                 }
@@ -542,7 +550,7 @@ namespace ExcelScore.Forms
 
             bool hastitle = false;
 
-            int TestExist = 2;
+            int TestExist = 0;
 
             int WordTableColumns = 2 + (CurrentTool.PeriodsTools.Count * likertScaleCount * 2) + TestExist;
 
@@ -565,7 +573,7 @@ namespace ExcelScore.Forms
 
                         wordObj.Borders_Periods_Items(table, WordTableRows, WordTableColumns);
 
-                        //wordObj.SetWidths(table, WordTableRows, LikertCount);
+                        //wordObj.SetWidths(table, WordTableRows, likertScaleCount);
 
                         //wordObj.Add_Header_Items_Nusring(table, LikertCount, TableHeader, CurrentTool);
 
@@ -573,17 +581,26 @@ namespace ExcelScore.Forms
                         //wordObj.AddNo_perc_Center(table, WordTableColumns);
 
                         //wordObj.AddQuestionNo(table, ItemsCount);
-                        
+
+
+
+
+                       
+                        List<int> columnsToRemove = new List<int> { WordTableColumns - 1, WordTableColumns - 2 }; 
+
+
+                        if(!(TestExist > 0))
+                        {
+                            wordObj.DeleteColumn(columnsToRemove, table);
+                        }
+
 
                         wordObj.FormatTableCustom(table, 10, 4, 2);
 
-                        table.ResetCells(WordTableRows, WordTableColumns);
 
-
-                        
 
                     }
-                    
+
 
                 }
             }

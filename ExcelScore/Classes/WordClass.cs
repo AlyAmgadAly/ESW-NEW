@@ -27,6 +27,7 @@ using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
 using System.Collections;
 using Accord.IO;
 using static Humanizer.On;
+using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 
 namespace ExcelScore.Classes
 {
@@ -2116,7 +2117,25 @@ namespace ExcelScore.Classes
 
             
         }
+        public void DeleteColumn(List<int> columnsToRemove , IWTable table)
+        {
+             
 
+            // Sort in descending order to prevent index shifting issues
+            columnsToRemove.Sort();
+            columnsToRemove.Reverse();
+
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                foreach (int colIndex in columnsToRemove)
+                {
+                    if (table.Rows[i].Cells.Count > colIndex)
+                    {
+                        table.Rows[i].Cells.RemoveAt(colIndex);
+                    }
+                }
+            }
+        }
         public void Merges_Periods_Items(IWTable table , int WordTableColumns , int likertscalecount,int TestExist)
         {
             table.ApplyVerticalMerge(0, 0, 2);
@@ -2450,7 +2469,59 @@ namespace ExcelScore.Classes
 
             }
         }
-        
+
+        public void Widths_Periods_Items(IWTable table, int WordTableRows, int LikertScore)
+        {
+            for (int a = 0; a < WordTableRows; a++)
+            {
+                table.Rows[a].Cells[0].Width = SetColumnWidthInCentimeters(1f);
+                table.Rows[a].Cells[1].Width = SetColumnWidthInCentimeters(5f);
+                
+
+
+            }
+        }
+
+        public void Widths_Descriptive_Items(IWTable table, int WordTableRows, int LikertScore)
+        {
+
+            int columns = (LikertScore * 2) + 2;
+
+            if(LikertScore > 3)
+            {
+                for (int a = 0; a < WordTableRows; a++)
+                {
+                    table.Rows[a].Cells[0].Width = SetColumnWidthInCentimeters(1f);
+                    table.Rows[a].Cells[1].Width = SetColumnWidthInCentimeters(5f);
+                    for (int i = 2; i < columns; i++)
+                    {
+
+                        table.Rows[a].Cells[i].Width = SetColumnWidthInCentimeters(1.05f);
+
+                    }
+
+
+                }
+            }
+            else
+            {
+                for (int a = 0; a < WordTableRows; a++)
+                {
+                    table.Rows[a].Cells[0].Width = SetColumnWidthInCentimeters(1f);
+                    table.Rows[a].Cells[1].Width = SetColumnWidthInCentimeters(5f);
+                    for (int i = 2; i < columns; i++)
+                    {
+
+                        table.Rows[a].Cells[i].Width = SetColumnWidthInCentimeters(1.25f);
+
+                    }
+
+
+                }
+            }
+            
+        }
+
         public void SetThreePeriodsWidths(IWTable table, int WordTableRows, int LikertScore, int numberofperiods)
         {
             int columns = (numberofperiods * LikertScore * 2) + 2;
