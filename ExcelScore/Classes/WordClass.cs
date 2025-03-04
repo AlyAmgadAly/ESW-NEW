@@ -2470,15 +2470,65 @@ namespace ExcelScore.Classes
             }
         }
 
-        public void Widths_Periods_Items(IWTable table, int WordTableRows, int LikertScore)
+        public void Widths_Periods_Items(IWTable table, int WordTableRows, int WordTableColumns, int likertscalecount, int TestExist , int PeriodsCount)
         {
+            
+
             for (int a = 0; a < WordTableRows; a++)
             {
                 table.Rows[a].Cells[0].Width = SetColumnWidthInCentimeters(1f);
                 table.Rows[a].Cells[1].Width = SetColumnWidthInCentimeters(5f);
-                
 
+                if(PeriodsCount == 2)
+                {
+                    for (int col = 2; col < WordTableColumns - 2; col++)
+                    {
+                        if(TestExist > 0)
+                        {
+                            if(likertscalecount == 2)
+                            {
+                                table.Rows[a].Cells[col].Width = SetColumnWidthInCentimeters(1f);
+                                table.Rows[a].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.5f);
+                                table.Rows[a].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.5f);
+                            }
+                            else if (likertscalecount == 3)
+                            {
+                                table.Rows[a].Cells[col].Width = SetColumnWidthInCentimeters(0.8f);
+                                table.Rows[a].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.4f);
+                                table.Rows[a].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.4f);
+                            }
+                        }
+                        else
+                        {
+                            if (likertscalecount == 2)
+                            {
+                                table.Rows[a].Cells[col].Width = SetColumnWidthInCentimeters(1.15f);
+                            }
+                            else if (likertscalecount == 3)
+                            {
+                                table.Rows[a].Cells[col].Width = SetColumnWidthInCentimeters(0.95f);
+                            }
+                            
+                        }
+                    }
 
+                }
+                else
+                {
+                    for (int col = 2; col < WordTableColumns - 2; col++)
+                    {
+                        if (TestExist > 0)
+                        {
+                            table.Rows[a].Cells[col].Width = SetColumnWidthInCentimeters(0.8f);
+                            table.Rows[a].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.5f);
+                            table.Rows[a].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.5f);
+                        }
+                        else
+                        {
+                            table.Rows[a].Cells[col].Width = SetColumnWidthInCentimeters(0.85f);
+                        }
+                    }
+                }
             }
         }
 
@@ -3175,6 +3225,62 @@ namespace ExcelScore.Classes
 
 
         }
+
+        public void Header_Periods_Items(IWTable table, int LikertScore, Tool.Scale CurrentScale, Tool CurrentTool , int WordTableColumns , int itemcount)
+        {
+            AddPara_Center(table, 0, 0, "Q");
+            AddPara_Center(table, 0, 1, CurrentScale.Scale_Full_Name);
+
+
+            //Period Titles
+            List<string> PeriodNames = new List<string>();
+
+            foreach (var CurrentToolPeriod in CurrentTool.PeriodsTools)
+            {
+                PeriodNames.Add(CurrentToolPeriod.ToolName);
+            }
+
+            int periodnamectr = 0;
+            for(int col = 2; col < WordTableColumns-2; col = col + (LikertScore*2))
+            {
+                AddPara_Center(table, 0, col, PeriodNames[periodnamectr]);
+                periodnamectr++;
+            }
+
+
+
+            //Likert Names
+            List<string> likertValues = CurrentTool.LikertScale.Values.ToList(); // Store dictionary values in a list
+            int likertCount = likertValues.Count; // Get count for cycling
+
+            List<string> resultList = new List<string>();
+
+            for (int i = 2, j = 0; i < WordTableColumns - 2; i += 2, j++)
+            {
+                //mod resets the list
+                AddPara_Center(table, 1, i, likertValues[j % likertCount]);
+            }
+
+
+            //Add No %
+            for (int col = 2; col < WordTableColumns - 2; col++)
+            {
+                AddPara_Center(table, 2, col, "No.");
+                col++;
+                AddPara_Center(table, 2, col, "%");
+            }
+
+            // Add Question count
+            int rowQcount = 3;
+            int QuestionCount = 1;
+            for(int currentitem = 0;currentitem < itemcount; currentitem++)
+            {
+                AddPara_Center(table, rowQcount, 0, QuestionCount.ToString());
+                rowQcount++;
+                QuestionCount++;
+            }
+
+        }
         public void Add_GeneralHeaders_Descriptive(IWTable table, bool hasnominal)
         {
             if(hasnominal)
@@ -3372,7 +3478,58 @@ namespace ExcelScore.Classes
             }
         }
 
+        public void FormatTable_Periods_Items(IWTable table,int PeriodsCount, int likertscalecount,int TestExist)
+        {
+            if (PeriodsCount == 2)
+            {
+                if (TestExist > 0)
+                {
+                    if (likertscalecount == 2)
+                    {
+                        FormatTableCustom(table, 11, 4, 2);
+                        LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+                    }
+                    else if (likertscalecount == 3)
+                    {
+                        FormatTableCustom(table, 10.5f, 4, 2);
+                        LeftAndRightCellMarginCustom(table, 0f, 0f);
 
+                    }
+                }
+                else
+                {
+                    if (likertscalecount == 2)
+                    {
+                        FormatTableCustom(table, 11, 4, 2);
+                        LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+                    }
+                    else if (likertscalecount == 3)
+                    {
+                        FormatTableCustom(table, 11, 4, 2);
+                        LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+                    }
+
+                }
+
+            }
+            else
+            {
+                if (TestExist > 0)
+                {
+                    FormatTableCustom(table, 10, 4, 2);
+                    LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+
+                }
+                else
+                {
+                    FormatTableCustom(table, 10.5f, 4, 2);
+                    LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+                }
+            }
+
+
+            
+        }
         public void FormatTableCustom(IWTable table, float fontSize , int beforeSpacing , int AfterSpacing)
         {
             foreach (WTableRow row in table.Rows)
