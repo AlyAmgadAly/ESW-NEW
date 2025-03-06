@@ -2109,36 +2109,48 @@ comparisons
 
         public string[] McNemarTest(List<List<int>> contingencyTable)
         {
-            using (Py.GIL())
+            try
             {
-                dynamic statsmodels = Py.Import("statsmodels.stats.contingency_tables");
+                using (Py.GIL())
+                {
+                    dynamic statsmodels = Py.Import("statsmodels.stats.contingency_tables");
+                    dynamic np = Py.Import("numpy");
 
-                // Extract the values for b and c
-                int a = 7;
-                int b = 10; 
-                int c = 12; 
-                int d = 5;
+                    // Ensure the contingency table is 2x2
+                    if (contingencyTable.Count != 2 || contingencyTable[0].Count != 2 || contingencyTable[1].Count != 2)
+                    {
+                        return new string[] { "Invalid table", "0" };
+                    }
 
-                // Create the 2x2 contingency table for McNemar's test
-                dynamic np = Py.Import("numpy");
-                dynamic tableArray = np.array(new int[,] { { a, c }, { b, d } });
+                    // Extract values from the provided contingency table
+                    int a = contingencyTable[0][0];
+                    int b = contingencyTable[0][1];
+                    int c = contingencyTable[1][0];
+                    int d = contingencyTable[1][1];
 
-                // Perform the McNemar's test using statsmodels
-                dynamic result = statsmodels.mcnemar(tableArray, "exact = False", "correction = false");
+                    // Create a NumPy 2x2 array in the correct format: { { a, b }, { c, d } }
+                    dynamic tableArray = np.array(new int[,] { { a, b }, { c, d } });
 
-                // Extract the p-value and test statistic from the result
-                double pValue = Math.Round(result.pvalue.As<double>(), 3);
-                double testStatistic = Math.Round(result.statistic.As<double>(), 3);
+                    // Perform McNemar's test
+                    dynamic result = statsmodels.mcnemar(tableArray, exact: false, correction: false);
 
-                // Format the p-value
-                string testStatisticString = testStatistic.ToString("0.000");
-                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+                    // Extract and round the p-value and test statistic
+                    double pValue = Math.Round(result.pvalue.As<double>(), 3);
+                    double testStatistic = Math.Round(result.statistic.As<double>(), 3);
 
-                string[] TestValue = new string[] { testStatisticString, pValueString };
+                    // Format the p-value
+                    string testStatisticString = testStatistic.ToString("0.000");
+                    string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
-                return TestValue;
+                    return new string[] { testStatisticString, pValueString };
+                }
+            }
+            catch (Exception)
+            {
+                return new string[] { "NA", "0" };
             }
         }
+
 
 
 

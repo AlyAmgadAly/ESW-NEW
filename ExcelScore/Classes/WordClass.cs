@@ -3231,6 +3231,8 @@ namespace ExcelScore.Classes
             AddPara_Center(table, 0, 0, "Q");
             AddPara_Center(table, 0, 1, CurrentScale.Scale_Full_Name);
 
+            AddPara_Center(table, 0, WordTableColumns-1, "p");
+
 
             //Period Titles
             List<string> PeriodNames = new List<string>();

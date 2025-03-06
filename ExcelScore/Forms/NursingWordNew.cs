@@ -544,18 +544,72 @@ namespace ExcelScore.Forms
 
             return itemcount;
         }
-        public void Items_Periods_InsertData_Portrait(Tool CurrentTool , int likertScaleCount , ref int insertcolumn , Tool.Scale CurrentScale)
+        public void Items_Periods_InsertData_Portrait(IWTable table,Tool CurrentTool , int likertScaleCount , Tool.Scale CurrentScale)
         {
-            int ToolPeriodsCount = CurrentTool.PeriodsTools.Count;
+            
 
+            int coltrack = 0;
+            
             foreach (var CurrentToolPeriod in CurrentTool.PeriodsTools)
             {
-                
+                int Insertrow = 3;
+                foreach (var CurrentPeriodScale in CurrentToolPeriod.Scales)
+                {
+                    if(CurrentPeriodScale.Scale_Name == CurrentScale.Scale_Name)
+                    {
+                        foreach (var CurrentItem in CurrentPeriodScale.Items)
+                        {
+                            
+                            if (CurrentItem.Text.Contains(CurrentToolPeriod.ToolName))
+                            {
+                                int insertcolumn = 2;
+                                foreach (var CurrentLikertScore in CurrentTool.LikertScale.Keys)
+                                {
+                                    int totalLikertFreq = 0;
+                                    foreach (var ParticpantResponse in CurrentItem.ParticipantResponses)
+                                    {
+                                        if (ParticpantResponse == CurrentLikertScore)
+                                        {
+                                            totalLikertFreq++;
+                                        }
+                                    }
+                                    double totalLikertPerc = ((double)totalLikertFreq / ToolN) * 100;
+
+
+                                    wordObj.Addpara_CenterNoBOLD(table, Insertrow, insertcolumn+coltrack, totalLikertFreq.ToString());
+                                    insertcolumn++;
+                                    wordObj.Addpara_CenterNoBOLD(table, Insertrow, insertcolumn+coltrack, totalLikertPerc.ToString("0.0"));
+                                    insertcolumn++;
+
+
+                                    
+                                }          
+                                Insertrow++;
+                            }
+                            
+                        }
+                        coltrack = coltrack + (likertScaleCount * 2);
+                    }
+
+                }
 
 
             }
             
 
+        }
+        public void GetTest_Items_Periods(IWTable table , Tool CurrenTool)
+        {
+            if(CurrenTool.PeriodsTools.Count == 2)
+            {
+                if(CurrenTool.LikertScale.Keys.Count == 2)
+                {
+
+                    //MC nemar
+                    
+                }
+
+            }
         }
         public void Items_Periods_portrait(Tool CurrentTool , int ToolN)
         {
@@ -563,7 +617,7 @@ namespace ExcelScore.Forms
 
             bool hastitle = false;
 
-            int TestExist = 0;
+            int TestExist = 2;
 
             int WordTableColumns = 2 + (CurrentTool.PeriodsTools.Count * likertScaleCount * 2) + 2;
 
@@ -594,34 +648,10 @@ namespace ExcelScore.Forms
 
                     wordObj.Header_Periods_Items(table, likertScaleCount, CurrentScale, CurrentTool , WordTableColumns ,  itemcount);
 
-                    int insertcolumn = 2;
-                    Items_Periods_InsertData_Portrait(CurrentTool, likertScaleCount, ref insertcolumn , CurrentScale);
+                    
+                    Items_Periods_InsertData_Portrait(table,CurrentTool, likertScaleCount, CurrentScale);
 
-                    //foreach (var CurrentItem in CurrentScale.Items)
-                    //{
-                    //    int InsertColumn = 2;
-
-                    //    foreach (var CurrentLikertScore in CurrentTool.LikertScale.Keys)
-                    //    {
-                    //        int totalLikertFreq = 0;
-                    //        foreach (var ParticpantResponse in CurrentItem.ParticipantResponses)
-                    //        {
-                    //            if (ParticpantResponse == CurrentLikertScore)
-                    //            {
-                    //                totalLikertFreq++;
-                    //            }
-                    //        }
-                    //        double totalLikertPerc = ((double)totalLikertFreq / ToolN) * 100;
-
-
-                    //        wordObj.Addpara_CenterNoBOLD(table, Insertrow, InsertColumn, totalLikertFreq.ToString());
-                    //        InsertColumn++;
-                    //        wordObj.Addpara_CenterNoBOLD(table, Insertrow, InsertColumn, totalLikertPerc.ToString("0.0"));
-                    //        InsertColumn++;
-                    //    }
-
-                    //    Insertrow++;
-                    //}
+                   
 
 
 
