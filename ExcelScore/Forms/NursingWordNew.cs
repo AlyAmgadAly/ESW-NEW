@@ -606,7 +606,18 @@ namespace ExcelScore.Forms
                 {
 
                     //MC nemar
-                    
+                    Tool CurrentToolPeriod = CurrenTool.PeriodsTools[0];
+
+                    foreach (var CurrentScale in CurrentToolPeriod.Scales)
+                    {
+                        foreach (var CurrentItem in CurrentScale.Items)
+                        {
+                            if(CurrentItem.Text.Contains(CurrentToolPeriod.ToolName))
+                            {
+
+                            }
+                        }
+                    }
                 }
 
             }
