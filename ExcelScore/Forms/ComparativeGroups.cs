@@ -4412,9 +4412,89 @@ namespace ExcelScore.Forms
                 }
             }
         }
-        public void Groups_Side_Periods_Up()
+        public int Groups_Side_Periods_Up_Rows(ComparativeTable comparativeTable)
         {
+            int rows = 0;
 
+            foreach (var CurrentParameter in comparativeTable.Parameters)
+            {
+                if(CurrentParameter.IsGroup)
+                {
+                    continue;
+                }
+
+                foreach (var GroupKeyValue in CurrentParameter.GroupedParameterValues)
+                {
+                    rows += 5;
+                }
+                rows++;
+            }
+
+
+
+
+            return rows;
+        }
+        public void Groups_Side_Periods_Up_threePeriods()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Groups Side Periods Up")
+                {
+                    bool TableHasSigI = false;
+
+
+                    IWSection section = wordObj.CreatePortraitSection();
+
+                    int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
+
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName , numberofgroups);
+
+                    int Variablerows = Groups_Side_Periods_Up_Rows(ComparativeTables[tableindex]);
+
+                    int WordTableRows = 1 + Variablerows;
+
+                    int WordTableColumns = 8;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+                    wordObj.GeneralTableFormat(table);
+
+                    wordObj.Groups_Side_Periods_Up_threePeriods_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , numberofgroups);
+
+                }
+            }
+           
+
+
+            //        
+
+            //        
+
+            //        
+            //        
+
+
+            //        //Merges
+            //        
+
+            //        //Borders
+            //        wordObj.ApplyRelation_IQR_OuterBorders(table, WordTableRows, WordTableColumns);
+
+            //        //Widths
+            //        wordObj.ApplyRelation_IQR_Widths(table, WordTableRows, WordTableColumns);
+
+
+            //        //Outer Headers
+            //        wordObj.ApplyRelation_IQR_OuterHeaders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+            //        //
+            //        wordObj.InsertRelation_InnerHeader_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+
+            //        wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test of Sig.");
         }
         private void btn_Done_Click(object sender, EventArgs e)
         {

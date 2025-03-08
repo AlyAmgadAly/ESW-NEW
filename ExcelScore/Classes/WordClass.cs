@@ -1161,6 +1161,49 @@ namespace ExcelScore.Classes
 
         }
 
+        public void Groups_Side_Periods_Up_threePeriods_Merges(IWTable table , ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns , int groupcount)
+        {
+            int row = 1;
+
+            foreach (var CurrentParameter in comparativeTable.Parameters)
+            {
+                if (CurrentParameter.IsGroup)
+                    continue;
+
+                //Parameter vertical Name Merge
+                table.ApplyVerticalMerge(0, row, row + (5* groupcount) + 1);
+
+                
+
+                
+                foreach (var kvp in CurrentParameter.GroupedParameterValues)
+                {
+                    //Group names merge
+                    table.ApplyVerticalMerge(0, row, row + 4);
+
+                    //Sig bet periods
+                    table.ApplyHorizontalMerge(row + 4, 3, 5);
+
+
+                    //Merge tests
+                    table.ApplyVerticalMerge(WordTableColumns-2, row+1, row + 3);
+                    table.ApplyVerticalMerge(WordTableColumns-1, row+1, row + 3);
+
+                    row = row + 5;
+                }
+
+                //test merge
+                table.ApplyHorizontalMerge(row, 1, 2);
+
+
+
+                row++;
+            }
+
+
+
+        }
+
         public void ApplyRelation_OuterMerges_Pathology(IWTable table, int WordTableRows, int WordTableColumns)
         {
             table.ApplyVerticalMerge(0, 0, 1);
