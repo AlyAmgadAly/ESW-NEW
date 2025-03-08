@@ -981,6 +981,21 @@ namespace ExcelScore.Classes
 
 
         }
+        public void ApplyRelation_Median_no_IQR_OuterHeaders(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
+        {
+            AddPara_Center(table, 0, 1, "N");
+
+            AddPara_Center(table, 0, 2, comparativeTable.TableName);
+
+
+            AddPara_Center(table, 1, 2, "Min. – Max.");
+            AddPara_Center(table, 1, 3, "Mean ± SD.");
+            AddPara_Center(table, 1, 4, "Median");
+
+            AddPara_Center(table, 0, WordTableColumns - 1, "p");
+
+
+        }
 
         public void ApplyRelation_OuterHeaders_Pathology(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
         {

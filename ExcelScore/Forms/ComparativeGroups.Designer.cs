@@ -383,6 +383,7 @@
             "Pathology Comparative",
             "Relation",
             "Relation IQR",
+            "Relation Median No IQR",
             "Relation Scale Pathology",
             "Descriptive",
             "Descriptive Periods No Test",

@@ -956,7 +956,7 @@ namespace ExcelScore.Forms
 
             
 
-            if(cmb_ChooseTableFormat.Text == "Relation" || cmb_ChooseTableFormat.Text == "Relation Scale Pathology" || cmb_ChooseTableFormat.Text == "Relation IQR")
+            if(cmb_ChooseTableFormat.Text == "Relation" || cmb_ChooseTableFormat.Text == "Relation Scale Pathology" || cmb_ChooseTableFormat.Text == "Relation IQR" || cmb_ChooseTableFormat.Text == "Relation Median No IQR")
             {
                 ComparativeBasic_Relation(TableName);
             }
@@ -3310,6 +3310,175 @@ namespace ExcelScore.Forms
                 }
             }
         }
+        public void Relation_Layout_DependentNumber_Median_NoIQR()
+        {
+
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Relation Median No IQR")
+                {
+                    bool TableHasSigI = false;
+
+                    IWSection section = wordObj.CreatePortraitSection();
+
+
+
+                    wordObj.AddRelationTitle(section, ComparativeTables[tableindex].TableName);
+
+
+
+                    int Variablerows = Relation_DependentNumber_Rows(ComparativeTables[tableindex]);
+
+
+                    int WordTableColumns = 7;
+
+                    int WordTableRows = 2 + Variablerows;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+                    wordObj.GeneralTableFormat(table);
+
+
+                    //Merges
+                    wordObj.ApplyRelation_IQR_OuterMerges(table, WordTableRows, WordTableColumns);
+
+                    //Borders
+                    wordObj.ApplyRelation_IQR_OuterBorders(table, WordTableRows, WordTableColumns);
+
+                    //Widths
+                    wordObj.ApplyRelation_IQR_Widths(table, WordTableRows, WordTableColumns);
+
+
+                    //Outer Headers
+                    wordObj.ApplyRelation_Median_no_IQR_OuterHeaders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+                    //
+                    wordObj.InsertRelation_InnerHeader_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+
+                    wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test of Sig.");
+
+
+                    foreach (var parameter in ComparativeTables[tableindex].Parameters)
+                    {
+
+                        if (parameter.IsGroup || parameter.GroupedParameterValues_Relation.Count == 0)
+                        {
+                            continue;
+                        }
+                        int StartingRow = 2;
+                        foreach (var GroupNameKvp in parameter.FormattedValues_Relation)
+                        {
+                            StartingRow++;
+                            string GroupName = GroupNameKvp.Key;
+                            Parameter groupParameter = ComparativeTables[tableindex].Parameters.SingleOrDefault(p => p.Name == GroupName);
+                            PerformTest_Relation(ComparativeTables[tableindex], table, StartingRow, WordTableColumns - 2, parameter, groupParameter);
+
+
+                            var sortedGroups = parameter.FormattedValues_Relation[GroupName].Keys.OrderBy(key => key).ToList();
+
+                            var SortedGroupDIC = groupParameter.DIC_LablesIfNomainal.Keys.OrderBy(key => key).ToList();
+
+                            foreach (var GroupValue in SortedGroupDIC)
+                            {
+                                if (sortedGroups.Contains((int)GroupValue))
+                                {
+                                    if (parameter.GroupedParameterValues_Relation[GroupName][GroupValue].Count > 1)
+                                    {
+                                        Dictionary<string, string> formattedValues = parameter.FormattedValues_Relation[GroupName][GroupValue];
+
+                                        //string MinMax
+
+                                        string MeanSD = "";
+                                        string MedianIQR = "";
+                                        string MinMax = "";
+                                        //string FormattedMedianMinMax = "";
+
+                                        foreach (var stat in formattedValues)
+                                        {
+                                            if (stat.Key == "Mean ± StdDev")
+                                            {
+                                                MeanSD = stat.Value;
+                                            }
+                                            if (stat.Key == "Median")
+                                            {
+                                                string[] parts = stat.Value.Split(' ');
+                                                MedianIQR = parts[0];
+                                            }
+                                            if (stat.Key == "Min-Max")
+                                            {
+                                                MinMax = stat.Value;
+                                            }
+
+                                        }
+
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, MinMax);
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 3, MeanSD);
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 4, MedianIQR);
+
+                                        StartingRow++;
+                                    }
+
+
+
+                                    else if (parameter.GroupedParameterValues_Relation[GroupName][GroupValue].Count == 1)
+                                    {
+                                        Dictionary<string, string> formattedValues = parameter.FormattedValues_Relation[GroupName][GroupValue];
+                                        string MinMax = "";
+                                        string OnlyValue = "";
+                                        foreach (var stat in formattedValues)
+                                        {
+
+                                            if (stat.Key == "Min-Max")
+                                            {
+                                                MinMax = stat.Value;
+                                                string[] values = MinMax.Split(' ');
+                                                OnlyValue = values[0];
+                                            }
+
+                                        }
+                                        table.ApplyHorizontalMerge(StartingRow, 2, 4);
+                                        wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, OnlyValue);
+                                        wordObj.SubSuperScriptText(table, StartingRow, 2, Syncfusion.Drawing.Color.White, "#", "Super");
+                                        StartingRow++;
+
+                                    }
+
+                                }
+
+                                else
+                                {
+                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 2, "–");
+                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 3, "–");
+                                    wordObj.Addpara_CenterNoBOLD(table, StartingRow, 4, "–");
+                                    StartingRow++;
+                                }
+
+                            }
+
+
+
+
+                        }
+
+
+
+
+                    }
+
+
+
+
+
+
+
+                    //wordObj.FormatTableCustom(table, 11, 0, 0);
+                    wordObj.LeftAndRightCellMarginCustom(table, wordObj.SetColumnWidthInCentimeters(0.09f), wordObj.SetColumnWidthInCentimeters(0.09f));
+
+                }
+            }
+        }
         public void Relation_Layout_DependentNumber()
         {
             
@@ -4243,6 +4412,10 @@ namespace ExcelScore.Forms
                 }
             }
         }
+        public void Groups_Side_Periods_Up()
+        {
+
+        }
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -4269,6 +4442,8 @@ namespace ExcelScore.Forms
 
 
             Relation_Layout_DependentNumber_IQR();
+
+            Relation_Layout_DependentNumber_Median_NoIQR();
 
             Relation_Layout_DependentNumber();
 
