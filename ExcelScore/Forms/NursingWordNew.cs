@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Wordprocessing;
 using ExcelScore.Classes;
+using Python.Runtime;
 using Syncfusion.DocIO.DLS;
 using System;
 using System.Collections.Generic;
@@ -68,7 +69,7 @@ namespace ExcelScore.Forms
 
             wordObj.ApplyBorders(table, WordTableRows, WordTableColumns);
 
-            wordObj.SetWidths(table, WordTableRows, LikertCount);
+            wordObj.Widths_Descriptive_Items(table, WordTableRows, LikertCount);
 
             wordObj.Add_Header_Items_Nusring(table, LikertCount, TableHeader, CurrentTool);
 
@@ -127,8 +128,16 @@ namespace ExcelScore.Forms
 
 
 
+                    if(likertScaleCount > 3)
+                    {
+                        wordObj.FormatTableCustom(table, 11, 4, 2);
+                        wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
+                    }
+                    else
+                    {
+                        wordObj.FormatTableCustom(table, 12, 4, 2);
+                    }
 
-                    wordObj.FormatTableCustom(table, 12, 4, 2);
 
 
                 }
@@ -520,6 +529,164 @@ namespace ExcelScore.Forms
 
         public string TableType { get; set; }
 
+        public int GetItemCount_Periods(Scale myscale, Tool CurrentToolPeriod)
+        {
+            int itemcount = 0;
+
+            foreach (var item in myscale.Items)
+            {
+                if (item.Text.Contains(CurrentToolPeriod.ToolName))
+                {
+                    itemcount++;
+                }
+            }
+
+
+            return itemcount;
+        }
+        public void Items_Periods_InsertData_Portrait(IWTable table,Tool CurrentTool , int likertScaleCount , Tool.Scale CurrentScale)
+        {
+            
+
+            int coltrack = 0;
+            
+            foreach (var CurrentToolPeriod in CurrentTool.PeriodsTools)
+            {
+                int Insertrow = 3;
+                foreach (var CurrentPeriodScale in CurrentToolPeriod.Scales)
+                {
+                    if(CurrentPeriodScale.Scale_Name == CurrentScale.Scale_Name)
+                    {
+                        foreach (var CurrentItem in CurrentPeriodScale.Items)
+                        {
+                            
+                            if (CurrentItem.Text.Contains(CurrentToolPeriod.ToolName))
+                            {
+                                int insertcolumn = 2;
+                                foreach (var CurrentLikertScore in CurrentTool.LikertScale.Keys)
+                                {
+                                    int totalLikertFreq = 0;
+                                    foreach (var ParticpantResponse in CurrentItem.ParticipantResponses)
+                                    {
+                                        if (ParticpantResponse == CurrentLikertScore)
+                                        {
+                                            totalLikertFreq++;
+                                        }
+                                    }
+                                    double totalLikertPerc = ((double)totalLikertFreq / ToolN) * 100;
+
+
+                                    wordObj.Addpara_CenterNoBOLD(table, Insertrow, insertcolumn+coltrack, totalLikertFreq.ToString());
+                                    insertcolumn++;
+                                    wordObj.Addpara_CenterNoBOLD(table, Insertrow, insertcolumn+coltrack, totalLikertPerc.ToString("0.0"));
+                                    insertcolumn++;
+
+
+                                    
+                                }          
+                                Insertrow++;
+                            }
+                            
+                        }
+                        coltrack = coltrack + (likertScaleCount * 2);
+                    }
+
+                }
+
+
+            }
+            
+
+        }
+        public void GetTest_Items_Periods(IWTable table , Tool CurrenTool)
+        {
+            if(CurrenTool.PeriodsTools.Count == 2)
+            {
+                if(CurrenTool.LikertScale.Keys.Count == 2)
+                {
+
+                    //MC nemar
+                    Tool CurrentToolPeriod = CurrenTool.PeriodsTools[0];
+
+                    foreach (var CurrentScale in CurrentToolPeriod.Scales)
+                    {
+                        foreach (var CurrentItem in CurrentScale.Items)
+                        {
+                            if(CurrentItem.Text.Contains(CurrentToolPeriod.ToolName))
+                            {
+
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        public void Items_Periods_portrait(Tool CurrentTool , int ToolN)
+        {
+            int likertScaleCount = CurrentTool.LikertScale.Keys.Count;
+
+            bool hastitle = false;
+
+            int TestExist = 2;
+
+            int WordTableColumns = 2 + (CurrentTool.PeriodsTools.Count * likertScaleCount * 2) + 2;
+
+            int periodsCount = CurrentTool.PeriodsTools.Count;
+
+            Tool CurrentToolPeriod = CurrentTool.PeriodsTools[0];
+
+            if (CurrentToolPeriod.hasscales)
+            {
+                foreach (var CurrentScale in CurrentToolPeriod.Scales)
+                {
+                    int itemcount = GetItemCount_Periods(CurrentScale, CurrentToolPeriod);
+                    int WordTableRows = 3 + itemcount;
+
+                    IWSection section = wordObj.CreatePortraitSection();
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+                    wordObj.GeneralTableFormat(table);
+
+                    wordObj.Merges_Periods_Items(table, WordTableColumns, likertScaleCount, TestExist);
+
+
+                    wordObj.Borders_Periods_Items(table, WordTableRows, WordTableColumns);
+
+                    wordObj.Widths_Periods_Items(table, WordTableRows, WordTableColumns, likertScaleCount, TestExist, periodsCount);
+
+
+                    wordObj.Header_Periods_Items(table, likertScaleCount, CurrentScale, CurrentTool , WordTableColumns ,  itemcount);
+
+                    
+                    Items_Periods_InsertData_Portrait(table,CurrentTool, likertScaleCount, CurrentScale);
+
+                   
+
+
+
+
+
+                    List<int> columnsToRemove = new List<int> { WordTableColumns - 1, WordTableColumns - 2 };
+                    if (!(TestExist > 0))
+                    {
+                        wordObj.DeleteColumn(columnsToRemove, table);
+                    }
+
+
+                    wordObj.FormatTable_Periods_Items(table, periodsCount, likertScaleCount, TestExist);
+
+
+
+                }
+
+
+            }
+
+
+
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             document = wordObj.InitWord();
@@ -542,8 +709,29 @@ namespace ExcelScore.Forms
             {
                 foreach (var CurrentTool in Alltools_Tables)
                 {
+                    if(CurrentTool.PeriodsTools.Count == 2)
+                    {
+                        //any likert not above 3
+                        if(CurrentTool.LikertScale.Count <= 3)
+                        {
+                            Items_Periods_portrait(CurrentTool, ToolN);
+                        }
+                        //else gonna be the vertical table which starts from 4 likert
+                    }
+                    else if (CurrentTool.PeriodsTools.Count > 2)
+                    {
+                        if (CurrentTool.LikertScale.Count < 3)
+                        {
+                            Items_Periods_portrait(CurrentTool, ToolN);
+                        }
+                        else if (CurrentTool.LikertScale.Count >= 3)
+                        {
 
-                    
+                        }
+
+                       
+                    }
+
 
 
                 }
@@ -732,9 +920,42 @@ namespace ExcelScore.Forms
         pythonStat pythonStata = new pythonStat();   
         private void button3_Click(object sender, EventArgs e)
         {
-            //pythonStata.InitPython();
-            //pythonStata.RunSpssSyntaxWithPythonNet();
-            SPSS_Class.RunSpssSyntax();
+            //SPSS_Class.RunSpssSyntax();
+
+            string pythonHome = @"C:\Program Files (x86)\IBM\SPSS\Statistics\23\Python\python27.dll";
+            Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", pythonHome);
+            PythonEngine.Initialize();
+
+            using (Py.GIL()) // Acquire the Global Interpreter Lock
+            {
+                try
+                {
+                    // Import the SPSS module
+                    dynamic spss = Py.Import("spss");
+
+                    // Load the SPSS data file
+                    string filePath = @"C:\Users\win\Desktop\aaaa.sav";
+                    spss.Submit($"GET FILE='{filePath}'.");
+
+                    // Run DISPLAY DICTIONARY to show variable details
+                   
+
+                    // Run DESCRIPTIVES to get basic statistics
+                    spss.Submit("DESCRIPTIVES VARIABLES=ALL.");
+
+                    string outputFile = @"C:\Users\win\Desktop\spss_output.spo";
+                    spss.Submit($"OUTPUT SAVE OUTFILE='{outputFile}'.");
+
+                    Console.WriteLine("SPSS commands executed successfully!");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+            }
+
+            // Shutdown Python.NET
+            PythonEngine.Shutdown();
         }
     }
 }
