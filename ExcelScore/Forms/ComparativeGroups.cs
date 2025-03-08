@@ -4462,6 +4462,7 @@ namespace ExcelScore.Forms
 
                     wordObj.Groups_Side_Periods_Up_threePeriods_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , numberofgroups);
 
+                    wordObj.Groups_Side_Periods_Up_threePeriods_Borders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns, numberofgroups);
                 }
             }
            
@@ -4479,7 +4480,7 @@ namespace ExcelScore.Forms
             //        
 
             //        //Borders
-            //        wordObj.ApplyRelation_IQR_OuterBorders(table, WordTableRows, WordTableColumns);
+            //        
 
             //        //Widths
             //        wordObj.ApplyRelation_IQR_Widths(table, WordTableRows, WordTableColumns);

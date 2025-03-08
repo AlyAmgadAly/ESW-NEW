@@ -1050,7 +1050,10 @@ namespace ExcelScore.Classes
             table.Rows[0].Cells[3].CellFormat.Borders.Bottom.LineWidth = 0.5f;
 
         }
-
+        public void Groups_Side_Periods_Up_threePeriods_Borders(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns, int groupcount)
+        {
+            
+        }
         public void ApplyRelation_IQR_OuterBorders(IWTable table, int WordTableRows, int WordTableColumns)
         {
             for (int j = 0; j < WordTableColumns; j++)
