@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SppComApiLib;
 using System.Diagnostics;
-using spsswin;
 
 namespace ExcelScore.Classes
 {
