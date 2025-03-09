@@ -965,7 +965,10 @@ namespace ExcelScore.Classes
 
 
         }
+        public void Groups_Side_Periods_Up_threePeriods_Headers(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
+        {
 
+        }
         public void ApplyRelation_IQR_OuterHeaders(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
         {
             AddPara_Center(table, 0, 1, "N");

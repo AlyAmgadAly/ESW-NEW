@@ -4492,7 +4492,7 @@ namespace ExcelScore.Forms
                     wordObj.Groups_Side_Periods_Up_threePeriods_Widths(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns, numberofgroups);
 
 
-
+                    wordObj.Groups_Side_Periods_Up_threePeriods_Headers(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
 
 
 
@@ -4507,26 +4507,10 @@ namespace ExcelScore.Forms
            
 
 
-            //        
-
-            //        
-
-            //        
-            //        
-
-
-            //        //Merges
-            //        
-
-            //        //Borders
-            //        
-
-            //        //Widths
-            //        
 
 
             //        //Outer Headers
-            //        wordObj.ApplyRelation_IQR_OuterHeaders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+            //        
 
 
             //        //
