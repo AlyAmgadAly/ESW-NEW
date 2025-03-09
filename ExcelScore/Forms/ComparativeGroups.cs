@@ -4492,7 +4492,7 @@ namespace ExcelScore.Forms
                     wordObj.Groups_Side_Periods_Up_threePeriods_Widths(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns, numberofgroups);
 
 
-                    wordObj.Groups_Side_Periods_Up_threePeriods_Headers(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+                    wordObj.Groups_Side_Periods_Up_threePeriods_Headers(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , ParameterCount);
 
 
 
@@ -4501,7 +4501,7 @@ namespace ExcelScore.Forms
 
 
 
-                    wordObj.FormatTableCustom(table, 10, 4, 2);
+                    wordObj.FormatTableCustom(table, 10, 0, 0);
                 }
             }
            

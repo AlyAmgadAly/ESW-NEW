@@ -28,6 +28,7 @@ using System.Collections;
 using Accord.IO;
 using static Humanizer.On;
 using DocumentFormat.OpenXml.Drawing.Spreadsheet;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace ExcelScore.Classes
 {
@@ -965,9 +966,62 @@ namespace ExcelScore.Classes
 
 
         }
-        public void Groups_Side_Periods_Up_threePeriods_Headers(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
+        public void Groups_Side_Periods_Up_threePeriods_Headers(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns , int parametercount)
         {
+            AddPara_Center(table, 0, WordTableColumns - 1, "p");
 
+            SubSuperScriptText(table, 0, WordTableColumns - 1, Color.Empty, "0", "Sub");
+
+            AddPara_Center(table, 0, 3, "Day 1");
+            AddPara_Center(table, 0, 4, "Day 2");
+            AddPara_Center(table, 0, 5, "Day 3");
+
+
+            //Test Header Name
+            bool AllNormal = comparativeTable.AllNormal();
+
+            bool AllAbnormal = comparativeTable.AllAbnormal();
+
+            if(AllNormal)
+            {
+                AddParaCombined(table, 0, WordTableColumns - 2, "F", true, true, Color.Yellow, Color.Black);
+            }
+            else if(AllAbnormal)
+            {
+                AddParaCombined(table, 0, WordTableColumns - 2, "Fr", true, true, Color.Yellow, Color.Black);
+            }
+            else
+            {
+                AddParaCombined(table, 0, WordTableColumns - 2, "Test of Sig.", true, true, Color.Yellow, Color.Black);
+            }
+
+
+
+            //this code is being built according to group is always the first and the table based on 3 periods only
+
+            int row = 1;
+            for(int paratr = 1;paratr < parametercount; paratr = paratr + 3)
+            {
+                Parameter CurrentParameter = comparativeTable.Parameters[paratr];
+
+                //ParameterName
+                AddPara_Center(table, row, 0, CurrentParameter.Name);
+
+
+                foreach (var item in CurrentParameter.GroupedParameterValues)
+                {
+
+
+
+                    row = row + 5;
+                }
+
+                row = row + 11;
+
+
+            }
+
+            
         }
         public void ApplyRelation_IQR_OuterHeaders(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
         {
@@ -1109,19 +1163,23 @@ namespace ExcelScore.Classes
 
                     table.Rows[row + 9].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                     table.Rows[row + 9].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
-
-                    if(row+10 < WordTableRows-1)
-                    {
-                        table.Rows[row + 10].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-                        table.Rows[row + 10].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
-                    }
-
                     
 
                 }
 
+                for (int i = 0; i < WordTableColumns; i++)
+                {
+                    if (row + 10 < WordTableRows - 1)
+                    {
+                        table.Rows[row + 10].Cells[i].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[row + 10].Cells[i].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                    }
+                }
 
-                row = row + 10;
+                
+
+
+                row = row + 11;
 
 
 
@@ -4315,9 +4373,11 @@ namespace ExcelScore.Classes
             WParagraph paragraph = table[WordTableRows, WordTableColumns].Paragraphs[0];
             paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
             table[WordTableRows, WordTableColumns].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+
+
         }
 
-        
+
 
         public void AddPara_NoCenter(IWTable table, int WordTableRows, int WordTableColumns, string Text)
         {

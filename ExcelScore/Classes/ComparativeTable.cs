@@ -73,6 +73,20 @@ namespace ExcelScore.Classes
             GroupColumnIndex = -1; // Initialize to an invalid value
         }
 
+        public bool AllNormal()
+        {
+            return Parameters != null && Parameters
+                .Where(p => !p.IsGroup) // Exclude groups
+                .All(p => p.NormalOrAbnormal == "Normal");
+        }
+
+        public bool AllAbnormal()
+        {
+            return Parameters != null && Parameters
+                .Where(p => !p.IsGroup) // Exclude groups
+                .All(p => p.NormalOrAbnormal == "Abnormal");
+        }
+
         public bool hasSig { get; set; }
 
 
