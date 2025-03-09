@@ -1050,9 +1050,79 @@ namespace ExcelScore.Classes
             table.Rows[0].Cells[3].CellFormat.Borders.Bottom.LineWidth = 0.5f;
 
         }
-        public void Groups_Side_Periods_Up_threePeriods_Borders(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns, int groupcount)
+        public void Groups_Side_Periods_Up_threePeriods_Widths(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns, int groupcount)
         {
-            
+            //table.Rows[row].Cells[0].Width = SetColumnWidthInCentimeters(3f);
+
+
+            for (int row = 0; row < WordTableRows; row++)
+            {
+                table.Rows[row].Cells[0].Width = SetColumnWidthInCentimeters(1f);
+                table.Rows[row].Cells[1].Width = SetColumnWidthInCentimeters(2f);
+                table.Rows[row].Cells[2].Width = SetColumnWidthInCentimeters(3f);
+
+
+                table.Rows[row].Cells[3].Width = SetColumnWidthInCentimeters(3f);
+                table.Rows[row].Cells[4].Width = SetColumnWidthInCentimeters(3f);
+                table.Rows[row].Cells[5].Width = SetColumnWidthInCentimeters(3f);
+
+
+                table.Rows[row].Cells[WordTableColumns-2].Width = SetColumnWidthInCentimeters(1.7f);
+                table.Rows[row].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.7f);
+            }
+        }
+        public void Groups_Side_Periods_Up_threePeriods_Borders(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            for (int j = 0; j < WordTableColumns; j++)
+            {
+                table.Rows[0].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[0].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            }
+
+            for (int k = 0; k < WordTableRows; k++)
+            {
+                table.Rows[k].Cells[2].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[k].Cells[2].CellFormat.Borders.Right.LineWidth = 1.5f;
+
+                table.Rows[k].Cells[WordTableColumns - 2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[k].Cells[WordTableColumns - 2].CellFormat.Borders.Left.LineWidth = 1.5f;
+            }
+
+            int row = 1;
+            while(row < WordTableRows-1)
+            {
+
+                for (int j = 1; j < WordTableColumns; j++)
+                {
+                    table.Rows[row+3].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[row+3].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+                    table.Rows[row + 4].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[row + 4].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+
+                    table.Rows[row + 8].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[row + 8].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+                    table.Rows[row + 9].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[row + 9].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+                    if(row+10 < WordTableRows-1)
+                    {
+                        table.Rows[row + 10].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[row + 10].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+                    }
+
+                    
+
+                }
+
+
+                row = row + 10;
+
+
+
+            }
         }
         public void ApplyRelation_IQR_OuterBorders(IWTable table, int WordTableRows, int WordTableColumns)
         {
@@ -1164,33 +1234,45 @@ namespace ExcelScore.Classes
 
         }
 
-        public void Groups_Side_Periods_Up_threePeriods_Merges(IWTable table , ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns , int groupcount)
+        public void Groups_Side_Periods_Up_threePeriods_Merges(IWTable table , ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns , int groupcount ,int parametercount)
         {
             int row = 1;
+
+            Parameter CurrentParameterNotGroup = null;
 
             foreach (var CurrentParameter in comparativeTable.Parameters)
             {
                 if (CurrentParameter.IsGroup)
                     continue;
 
+                CurrentParameterNotGroup = CurrentParameter;
+            }
+
+
+
+
+            for (int i = 0; i < parametercount/3; i++)
+            {
+                
+
                 //Parameter vertical Name Merge
-                table.ApplyVerticalMerge(0, row, row + (5* groupcount) + 1);
+                table.ApplyVerticalMerge(0, row, row + (5 * groupcount));
 
-                
 
-                
-                foreach (var kvp in CurrentParameter.GroupedParameterValues)
+
+
+                foreach (var kvp in CurrentParameterNotGroup.GroupedParameterValues)
                 {
                     //Group names merge
-                    table.ApplyVerticalMerge(0, row, row + 4);
+                    table.ApplyVerticalMerge(1, row, row + 4);
 
                     //Sig bet periods
                     table.ApplyHorizontalMerge(row + 4, 3, 5);
 
 
                     //Merge tests
-                    table.ApplyVerticalMerge(WordTableColumns-2, row+1, row + 3);
-                    table.ApplyVerticalMerge(WordTableColumns-1, row+1, row + 3);
+                    table.ApplyVerticalMerge(WordTableColumns - 2, row + 1, row + 3);
+                    table.ApplyVerticalMerge(WordTableColumns - 1, row + 1, row + 3);
 
                     row = row + 5;
                 }
@@ -1202,6 +1284,10 @@ namespace ExcelScore.Classes
 
                 row++;
             }
+            
+                
+
+            
 
 
 

@@ -4412,18 +4412,25 @@ namespace ExcelScore.Forms
                 }
             }
         }
-        public int Groups_Side_Periods_Up_Rows(ComparativeTable comparativeTable)
+        public int Groups_Side_Periods_Up_Rows(ComparativeTable comparativeTable , int parametercount)
         {
             int rows = 0;
 
+            Parameter CurrentParameterNotGroup = null;
+
             foreach (var CurrentParameter in comparativeTable.Parameters)
             {
-                if(CurrentParameter.IsGroup)
-                {
+                if (CurrentParameter.IsGroup)
                     continue;
-                }
 
-                foreach (var GroupKeyValue in CurrentParameter.GroupedParameterValues)
+                CurrentParameterNotGroup = CurrentParameter;
+            }
+
+
+
+            for (int i = 0; i < parametercount / 3; i++)
+            {
+                foreach (var GroupKeyValue in CurrentParameterNotGroup.GroupedParameterValues)
                 {
                     rows += 5;
                 }
@@ -4435,6 +4442,21 @@ namespace ExcelScore.Forms
 
             return rows;
         }
+        public int Groups_Side_Periods_Up_threePeriods_ParameterCount(ComparativeTable comparativeTable)
+        {
+            int ParaCount = 0;
+
+            foreach (var CurrentParameter in comparativeTable.Parameters)
+            {
+                if (CurrentParameter.IsGroup)
+                    continue;
+
+                ParaCount++;
+            }
+
+            return ParaCount;
+
+        }
         public void Groups_Side_Periods_Up_threePeriods()
         {
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
@@ -4443,6 +4465,8 @@ namespace ExcelScore.Forms
                 {
                     bool TableHasSigI = false;
 
+                    int ParameterCount = Groups_Side_Periods_Up_threePeriods_ParameterCount(ComparativeTables[tableindex]);
+
 
                     IWSection section = wordObj.CreatePortraitSection();
 
@@ -4450,7 +4474,7 @@ namespace ExcelScore.Forms
 
                     wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName , numberofgroups);
 
-                    int Variablerows = Groups_Side_Periods_Up_Rows(ComparativeTables[tableindex]);
+                    int Variablerows = Groups_Side_Periods_Up_Rows(ComparativeTables[tableindex] , ParameterCount);
 
                     int WordTableRows = 1 + Variablerows;
 
@@ -4460,9 +4484,24 @@ namespace ExcelScore.Forms
 
                     wordObj.GeneralTableFormat(table);
 
-                    wordObj.Groups_Side_Periods_Up_threePeriods_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , numberofgroups);
 
-                    wordObj.Groups_Side_Periods_Up_threePeriods_Borders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns, numberofgroups);
+                    wordObj.Groups_Side_Periods_Up_threePeriods_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , numberofgroups , ParameterCount);
+
+                    wordObj.Groups_Side_Periods_Up_threePeriods_Borders(table, WordTableRows, WordTableColumns);
+
+                    wordObj.Groups_Side_Periods_Up_threePeriods_Widths(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns, numberofgroups);
+
+
+
+
+
+
+
+
+
+
+
+                    wordObj.FormatTableCustom(table, 10, 4, 2);
                 }
             }
            
@@ -4483,7 +4522,7 @@ namespace ExcelScore.Forms
             //        
 
             //        //Widths
-            //        wordObj.ApplyRelation_IQR_Widths(table, WordTableRows, WordTableColumns);
+            //        
 
 
             //        //Outer Headers
@@ -4512,6 +4551,8 @@ namespace ExcelScore.Forms
             ComparativeTableGroups_Layout();
 
             ComparativeTablePeriodsUp_Groups_Layout();
+
+            Groups_Side_Periods_Up_threePeriods();
 
             PaperComparative_Layout();
 

@@ -378,6 +378,7 @@
             this.cmb_ChooseTableFormat.Items.AddRange(new object[] {
             "Default",
             "Groups 2 periods",
+            "Groups Side Periods Up",
             "Paper",
             "Pathology Relation",
             "Pathology Comparative",
