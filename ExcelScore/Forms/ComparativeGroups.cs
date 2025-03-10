@@ -4485,7 +4485,7 @@ namespace ExcelScore.Forms
                     wordObj.GeneralTableFormat(table);
 
 
-                    wordObj.Groups_Side_Periods_Up_threePeriods_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , numberofgroups , ParameterCount);
+                    wordObj.Groups_Side_Periods_Up_threePeriods_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns, numberofgroups, ParameterCount);
 
                     wordObj.Groups_Side_Periods_Up_threePeriods_Borders(table, WordTableRows, WordTableColumns);
 
@@ -4495,13 +4495,35 @@ namespace ExcelScore.Forms
                     wordObj.Groups_Side_Periods_Up_threePeriods_Headers(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , ParameterCount);
 
 
+                    //the code applies data when group parameter is first and 3 periods (Note)***
+
+                    //Insert Data
+                    int parameterCounter = 1;
+                    int row = 1;
+                    int tempctr = 0;
+                    for (int paractr = 0;paractr < ParameterCount/3;paractr++)
+                    {          
+                        for(int SubParactr = 0;SubParactr < 3; SubParactr++)
+                        {
+                            foreach (var GroupPairValue in ComparativeTables[tableindex].Parameters[parameterCounter].GroupedParameterValues)
+                            {
+
+                            }
 
 
 
 
 
+                            row = row + tempctr;
+                            parameterCounter++;
+                        }
 
-                    wordObj.FormatTableCustom(table, 10, 0, 0);
+                        tempctr = tempctr + 11;
+                    }
+
+
+
+                    wordObj.FormatTableCustom(table, 10 , 0 , 0);
                 }
             }
            

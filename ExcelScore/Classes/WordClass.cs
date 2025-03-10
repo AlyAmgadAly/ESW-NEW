@@ -70,7 +70,7 @@ namespace ExcelScore.Classes
 
                     //removing text 1 & 2
                     // Loop through all paragraphs in the document body
-                    foreach (var paragraph in mainPart.Document.Body.Elements<Paragraph>())
+                    foreach (var paragraph in mainPart.Document.Body.Elements<DocumentFormat.OpenXml.Wordprocessing.Paragraph>())
                     {
                         // Loop through each run in the paragraph
                         foreach (var run in paragraph.Elements<Run>())
@@ -968,6 +968,8 @@ namespace ExcelScore.Classes
         }
         public void Groups_Side_Periods_Up_threePeriods_Headers(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns , int parametercount)
         {
+            Parameter GroupParameter = ComparativeTable.GetGroupParamter(comparativeTable);
+
             AddPara_Center(table, 0, WordTableColumns - 1, "p");
 
             SubSuperScriptText(table, 0, WordTableColumns - 1, Color.Empty, "0", "Sub");
@@ -1007,16 +1009,63 @@ namespace ExcelScore.Classes
                 //ParameterName
                 AddPara_Center(table, row, 0, CurrentParameter.Name);
 
+                table[row, 0].CellFormat.TextDirection = Syncfusion.DocIO.DLS.TextDirection.VerticalBottomToTop;
 
-                foreach (var item in CurrentParameter.GroupedParameterValues)
+                foreach (var KVP in GroupParameter.DIC_LablesIfNomainal)
                 {
+                    AddPara_Center(table, row, 1, KVP.Value);
+
+                    Addpara_NoCenterNoBOLD(table, row , 2, "N");
+                    LeftIntendBeforeText(table, row, 2, SetColumnWidthInCentimeters(0.5f));
+
+                    Addpara_NoCenterNoBOLD(table, row + 1, 2, "Min. – Max.");
+                    LeftIntendBeforeText(table, row+1, 2, SetColumnWidthInCentimeters(0.5f));
 
 
+
+                    if (CurrentParameter.NormalOrAbnormal == "Normal")
+                    {
+                        Addpara_NoCenterNoBOLD(table, row + 2, 2, "Mean ± SD.");
+                        LeftIntendBeforeText(table, row + 2, 2, SetColumnWidthInCentimeters(0.5f));
+
+                        AddParaCombined(table, row + 3, 2, "Median (IQR)" , false , false , Color.Yellow , Color.Black);
+                        LeftIntendBeforeText(table, row + 3, 2, SetColumnWidthInCentimeters(0.5f));
+                    }
+                    else if (CurrentParameter.NormalOrAbnormal == "Abnormal")
+                    {
+                        AddParaCombined(table, row + 2, 2, "Mean ± SD.", false, false, Color.Yellow, Color.Black);
+                        LeftIntendBeforeText(table, row + 2, 2, SetColumnWidthInCentimeters(0.5f));
+
+                        Addpara_NoCenterNoBOLD(table, row + 3, 2, "Median (IQR)");
+                        LeftIntendBeforeText(table, row + 3, 2, SetColumnWidthInCentimeters(0.5f));
+                    }
+
+
+                    AddPara_Center(table, row + 4, 2, "Sig. bet. periods");
 
                     row = row + 5;
                 }
 
-                row = row + 11;
+                if(CurrentParameter.NormalOrAbnormal == "Normal")
+                {
+                    InsertHighlightTestName(table, row, 1, "t");
+                    
+                }
+                else if(CurrentParameter.NormalOrAbnormal == "Abnormal")
+                {
+                    InsertHighlightTestName(table, row, 1, "U");
+                }
+
+                WParagraph testparaHighlightname = (WParagraph)table[row, 1].Paragraphs[0];
+                WTextRange PTextname = new WTextRange(testparaHighlightname.Document);
+                PTextname.CharacterFormat.Bold = true;
+                PTextname.Text = " (p)";
+                testparaHighlightname.ChildEntities.Insert(1, PTextname);
+
+
+
+                row++;
+
 
 
             }
@@ -4373,7 +4422,7 @@ namespace ExcelScore.Classes
             WParagraph paragraph = table[WordTableRows, WordTableColumns].Paragraphs[0];
             paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
             table[WordTableRows, WordTableColumns].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
-
+            
 
         }
 

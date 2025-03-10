@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Numerics.Statistics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -85,6 +86,23 @@ namespace ExcelScore.Classes
             return Parameters != null && Parameters
                 .Where(p => !p.IsGroup) // Exclude groups
                 .All(p => p.NormalOrAbnormal == "Abnormal");
+        }
+        public static Parameter GetGroupParamter(ComparativeTable comparativeTable)
+        {
+            Parameter GroupParameter = null;
+
+            foreach (var Parameter in comparativeTable.Parameters)
+            {
+                if(Parameter.IsGroup)
+                {
+                    GroupParameter = Parameter;
+                    break;
+                }
+
+            }
+
+
+            return GroupParameter;
         }
 
         public bool hasSig { get; set; }
