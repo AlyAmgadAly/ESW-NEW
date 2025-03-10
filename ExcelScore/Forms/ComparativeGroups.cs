@@ -4509,6 +4509,7 @@ namespace ExcelScore.Forms
                         //small parameters DAY 1 , etc
                         for(int SubParactr = 0;SubParactr < 3; SubParactr++)
                         {
+                            row = 1 + tempctr;
                             foreach (var GroupPairValue in ComparativeTables[tableindex].Parameters[parameterCounter].GroupedParameterValues)
                             {
                                 wordObj.Addpara_CenterNoBOLD(table, row, col, "(n = )");
@@ -4520,20 +4521,13 @@ namespace ExcelScore.Forms
 
                             }
 
-
-                            row = 1;
                             col++;
-
-
-
-                            row = row + tempctr;
                             parameterCounter++;
                         }
 
+
                         tempctr = tempctr + 11;
                     }
-
-
 
                     wordObj.FormatTableCustom(table, 10 , 0 , 0);
                 }
