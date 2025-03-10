@@ -4501,16 +4501,28 @@ namespace ExcelScore.Forms
                     int parameterCounter = 1;
                     int row = 1;
                     int tempctr = 0;
+
+                    //BIG parameter (3 parameters)
                     for (int paractr = 0;paractr < ParameterCount/3;paractr++)
-                    {          
+                    {
+                        int col = 3;
+                        //small parameters DAY 1 , etc
                         for(int SubParactr = 0;SubParactr < 3; SubParactr++)
                         {
                             foreach (var GroupPairValue in ComparativeTables[tableindex].Parameters[parameterCounter].GroupedParameterValues)
                             {
+                                wordObj.Addpara_CenterNoBOLD(table, row, col, "(n = )");
+                                wordObj.Addpara_CenterNoBOLD(table, row+1, col, "(n = )");
+                                wordObj.Addpara_CenterNoBOLD(table, row + 2, col, "(n = )");
+                                wordObj.Addpara_CenterNoBOLD(table, row + 3, col, "(n = )");
+
+                                row = row + 5;
 
                             }
 
 
+                            row = 1;
+                            col++;
 
 
 
