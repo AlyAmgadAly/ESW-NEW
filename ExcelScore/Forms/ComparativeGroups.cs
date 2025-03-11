@@ -50,6 +50,8 @@ using Worksheet = Aspose.Cells.Worksheet;
 using System.IO;
 using Accord.Statistics.Testing;
 using DocumentFormat.OpenXml.Vml.Office;
+using DocumentFormat.OpenXml.Drawing.Spreadsheet;
+using Syncfusion.Pdf.Tables;
 
 namespace ExcelScore.Forms
 {
@@ -4418,11 +4420,15 @@ namespace ExcelScore.Forms
 
             Parameter CurrentParameterNotGroup = null;
 
+            Parameter GroupParameter = null;
+
             foreach (var CurrentParameter in comparativeTable.Parameters)
             {
                 if (CurrentParameter.IsGroup)
+                {
+                    GroupParameter = CurrentParameter;
                     continue;
-
+                }
                 CurrentParameterNotGroup = CurrentParameter;
             }
 
@@ -4430,7 +4436,7 @@ namespace ExcelScore.Forms
 
             for (int i = 0; i < parametercount / 3; i++)
             {
-                foreach (var GroupKeyValue in CurrentParameterNotGroup.GroupedParameterValues)
+                foreach (var GroupKeyValue in GroupParameter.DIC_LablesIfNomainal.Keys)
                 {
                     rows += 5;
                 }
@@ -4457,8 +4463,27 @@ namespace ExcelScore.Forms
             return ParaCount;
 
         }
+
+        public void Groups_Side_Periods_Up_threePeriods_periodstest(ComparativeTable comparativeTable , List<Parameter> CurrentParameters)
+        {
+            List<List<double>> CorrectDataParameters = new List<List<double>>();
+
+            foreach (var CurrentParameter in CurrentParameters)
+            {
+                List<double> CorrectData = ExcelFunctions.GetDataWithMissingValues(worksheet, CurrentParameter.Name);
+                CorrectDataParameters.Add(CorrectData);
+            }
+
+
+            
+        }
         public void Groups_Side_Periods_Up_threePeriods()
         {
+            pythonStat.InitPython();
+            string filepath = ExcelFunctions.filepath;
+            Aspose.Cells.Workbook workbook = new Aspose.Cells.Workbook(filepath);
+
+            worksheet = workbook.Worksheets[0];
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
             {
                 if (ComparativeTables[tableindex].FormatType == "Groups Side Periods Up")
@@ -4502,51 +4527,158 @@ namespace ExcelScore.Forms
                     int row = 1;
                     int tempctr = 0;
 
+
+                    Parameter GroupPara = ComparativeTable.GetGroupParamter(ComparativeTables[tableindex]);
+                    var SortedGroupKeysAll = GroupPara.ParameterValues.Distinct().OrderBy(key => key).ToList();
+
                     //BIG parameter (3 parameters)
                     for (int paractr = 0;paractr < ParameterCount/3;paractr++)
                     {
                         int col = 3;
                         //small parameters DAY 1 , etc
-                        for(int SubParactr = 0;SubParactr < 3; SubParactr++)
+                        List<Parameter> periodsparameter = new List<Parameter>();
+                        for (int SubParactr = 0;SubParactr < 3; SubParactr++)
                         {
+                            periodsparameter.Add(ComparativeTables[tableindex].Parameters[parameterCounter]);
                             row = 1 + tempctr;
-                            foreach (var GroupPairValue in ComparativeTables[tableindex].Parameters[parameterCounter].GroupedParameterValues)
+                            var sortedKeys = ComparativeTables[tableindex].Parameters[parameterCounter].FormattedValues.Keys.OrderBy(key => key).ToList();
+                            
+                            foreach (int groupValue in SortedGroupKeysAll)
                             {
-                                wordObj.Addpara_CenterNoBOLD(table, row, col, "(n = )");
-                                wordObj.Addpara_CenterNoBOLD(table, row+1, col, "(n = )");
-                                wordObj.Addpara_CenterNoBOLD(table, row + 2, col, "(n = )");
-                                wordObj.Addpara_CenterNoBOLD(table, row + 3, col, "(n = )");
+                                if (sortedKeys.Contains(groupValue))
+                                {
+                                    
+                                    //Add n
+                                    int n = ComparativeTables[tableindex].Parameters[parameterCounter].GroupedParameterValues[groupValue].Count;
+                                    wordObj.AddPara_Center(table, row, col, "(n = "+ n + ")");
 
+                                    Dictionary<string, string> formattedValues = ComparativeTables[tableindex].Parameters[parameterCounter].FormattedValues[groupValue];
+
+                                    int currentRow = row+1; 
+
+                                    foreach (var stat in formattedValues)
+                                    {
+                                        if(stat.Key == "Mean ± StdDev")
+                                        {
+                                            if (ComparativeTables[tableindex].Parameters[parameterCounter].NormalOrAbnormal == "Abnormal")
+                                            {
+                                                wordObj.AddParaCombined(table, currentRow, col, stat.Value, false, true,Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                                            }
+                                            else
+                                            {
+                                                wordObj.Addpara_CenterNoBOLD(table, currentRow, col, stat.Value);
+                                            }
+                                        }
+                                        else if(stat.Key == "Median")
+                                        {
+                                            if (ComparativeTables[tableindex].Parameters[parameterCounter].NormalOrAbnormal == "Normal")
+                                            {
+                                                wordObj.AddParaCombined(table, currentRow, col, stat.Value, false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                                            }
+                                            else
+                                            {
+                                                wordObj.Addpara_CenterNoBOLD(table, currentRow, col, stat.Value);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            wordObj.Addpara_CenterNoBOLD(table, currentRow, col, stat.Value);
+                                        }
+                                        
+                                        currentRow++;
+                                    }
+
+
+                                }
+                                else
+                                {
+                                    wordObj.AddPara_Center(table, row, col, "(n = " + 0 + ")");
+                                    
+                                    wordObj.Addpara_CenterNoBOLD(table, row + 1, col, "–");
+                                    wordObj.Addpara_CenterNoBOLD(table, row + 2, col, "–");
+                                    wordObj.Addpara_CenterNoBOLD(table, row + 3, col, "–");
+                                }
                                 row = row + 5;
 
+                                
                             }
+
+                            PerformTest_Groups_Side(table , ComparativeTables[tableindex] , ComparativeTables[tableindex].Parameters[parameterCounter] , row , col);
+                            
 
                             col++;
                             parameterCounter++;
                         }
 
+                        Groups_Side_Periods_Up_threePeriods_periodstest(ComparativeTables[tableindex], periodsparameter);
+
 
                         tempctr = tempctr + 11;
                     }
 
+
+                    wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
                     wordObj.FormatTableCustom(table, 10 , 0 , 0);
                 }
             }
            
+        }
+
+        public void PerformTest_Groups_Side(IWTable table,ComparativeTable comparativeTable , Parameter CurrenParameter , int InsertRow , int InsertColumn)
+        {
+            //int GroupsCountPara = CurrenParameter.GroupedParameterValues.Keys.Count;
+
+            int numberofgroupsTrue = CurrenParameter.FormattedValues.Keys.Count;
+            var SortedGroupsValues = CurrenParameter.GroupedParameterValues.Keys;
+
+            int ValueOne = 0;
+            foreach (var key in SortedGroupsValues)
+            {
+                if (CurrenParameter.GroupedParameterValues[key].Count == 1)
+                {
+                    ValueOne++;
+                }
+            }
+
+            if (numberofgroupsTrue - ValueOne <= 2)
+            {
+                if (CurrenParameter.NormalOrAbnormal == "Normal")
+                {
+                    List<double> group1Values = new List<double>();
+                    List<double> group2Values = new List<double>();
+
+                    SplitGroupedParameterValues(CurrenParameter, out group1Values, out group2Values);
+
+                    string[] values = manual.StudentT_Unpaired(group1Values, group2Values);
+
+                    wordObj.AddParaCombined(table, InsertRow, InsertColumn, values[0], false, true,Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+
+                    WParagraph testparaHighlightname = (WParagraph)table[InsertRow, InsertColumn].Paragraphs[0];
+                    WTextRange PTextname = new WTextRange(testparaHighlightname.Document);
+                    PTextname.CharacterFormat.Bold = false;
+                    PTextname.Text = " (" + values[1] +")";
+                    testparaHighlightname.ChildEntities.Insert(1, PTextname);
+                }
+                else if(CurrenParameter.NormalOrAbnormal == "Abnormal")
+                {
+                    List<double> group1Values = new List<double>();
+                    List<double> group2Values = new List<double>();
+
+                    SplitGroupedParameterValues(CurrenParameter, out group1Values, out group2Values);
+
+                    string[] values = manual.UTest(group1Values, group2Values);
+
+                    wordObj.AddParaCombined(table, InsertRow, InsertColumn, values[0], false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+
+                    WParagraph testparaHighlightname = (WParagraph)table[InsertRow, InsertColumn].Paragraphs[0];
+                    WTextRange PTextname = new WTextRange(testparaHighlightname.Document);
+                    PTextname.CharacterFormat.Bold = false;
+                    PTextname.Text = " (" + values[1] + ")";
+                    testparaHighlightname.ChildEntities.Insert(1, PTextname);
+                }
+            }
 
 
-
-
-            //        //Outer Headers
-            //        
-
-
-            //        //
-            //        wordObj.InsertRelation_InnerHeader_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
-
-
-
-            //        wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test of Sig.");
         }
         private void btn_Done_Click(object sender, EventArgs e)
         {

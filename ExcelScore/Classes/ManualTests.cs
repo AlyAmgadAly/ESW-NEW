@@ -408,23 +408,25 @@ namespace ExcelScore.Classes
 
         public string[] UTest(List<double> AdataGroup1, List<double> AdataGroup2)
         {
-            using (Py.GIL())
+            try
             {
-                // Import necessary Python libraries
-                dynamic scipyStats = Py.Import("scipy.stats");
+                using (Py.GIL())
+                {
+                    // Import necessary Python libraries
+                    dynamic scipyStats = Py.Import("scipy.stats");
 
-                // Define your data groups
-                List<double> dataGroup1 = AdataGroup1;
-                List<double> dataGroup2 = AdataGroup2;
+                    // Define your data groups
+                    List<double> dataGroup1 = AdataGroup1;
+                    List<double> dataGroup2 = AdataGroup2;
 
-                // Calculate combined sample size
-                int n1 = dataGroup1.Count;
-                int n2 = dataGroup2.Count;
-                int combinedSize = n1 + n2;
+                    // Calculate combined sample size
+                    int n1 = dataGroup1.Count;
+                    int n2 = dataGroup2.Count;
+                    int combinedSize = n1 + n2;
 
 
 
-                Dictionary<int, int> ExactPairs = new Dictionary<int, int>()
+                    Dictionary<int, int> ExactPairs = new Dictionary<int, int>()
                 {
                     { 2 , 200 },
                     { 3 , 133 },
@@ -447,50 +449,56 @@ namespace ExcelScore.Classes
 
 
 
-                int minGroup = Math.Min(n1, n2);
-                int MaxGroup = Math.Max(n1, n2);
+                    int minGroup = Math.Min(n1, n2);
+                    int MaxGroup = Math.Max(n1, n2);
 
-                bool exists = ExactPairs.ContainsKey(minGroup);
+                    bool exists = ExactPairs.ContainsKey(minGroup);
 
-                if(exists) 
-                {
-                    if (ExactPairs.TryGetValue(minGroup, out int value))
+                    if (exists)
                     {
-                        if(MaxGroup > value)
+                        if (ExactPairs.TryGetValue(minGroup, out int value))
                         {
-                            exists = false;
+                            if (MaxGroup > value)
+                            {
+                                exists = false;
+                            }
                         }
                     }
+
+                    dynamic result;
+
+
+                    double UStat = CalculateUStatistic(AdataGroup1.ToArray(), AdataGroup2.ToArray());
+                    double Upvalue;
+
+                    if (combinedSize <= 40 || exists)
+                    {
+                        result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: false, method: "exact", alternative: "two-sided");
+                    }
+
+                    // Choose the method based on combined sample size
+                    else
+                    {
+                        result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: false, method: "asymptotic", alternative: "two-sided");
+                    }
+
+                    Upvalue = Math.Round(result[1].As<double>(), 3);
+
+                    // Format the p-value
+                    string UtestString = UStat.ToString("0.000");
+                    string pValueString = Upvalue < 0.001 ? "<0.001" : Upvalue.ToString("0.000");
+
+
+                    string[] TestValue = new string[] { UtestString, pValueString };
+
+                    return TestValue;
                 }
-
-                dynamic result;
-
-
-                double UStat = CalculateUStatistic(AdataGroup1.ToArray(), AdataGroup2.ToArray());
-                double Upvalue;
-
-                if (combinedSize <= 40 || exists)
-                {
-                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: false, method: "exact", alternative: "two-sided");
-                }
-
-                // Choose the method based on combined sample size
-                else
-                {
-                    result = scipyStats.mannwhitneyu(dataGroup1, dataGroup2, use_continuity: false, method: "asymptotic", alternative: "two-sided");
-                }
-
-                Upvalue = Math.Round(result[1].As<double>(), 3);
-
-                // Format the p-value
-                string UtestString = UStat.ToString("0.000");
-                string pValueString = Upvalue < 0.001 ? "<0.001" : Upvalue.ToString("0.000");
-
-
-                string[] TestValue = new string[] { UtestString, pValueString };
-
-                return TestValue;
             }
+            catch(Exception)
+            {
+                return new string[] { "–", "–" };
+            }
+            
         }
         // U Test
         public string[] UTestold(List<double> AdataGroup1, List<double> AdataGroup2)
@@ -540,19 +548,27 @@ namespace ExcelScore.Classes
         // Calculate U statistic as before
         static double CalculateUStatistic(double[] sample1, double[] sample2)
         {
-            var allData = sample1.Concat(sample2).ToArray();
-            var sample1Count = sample1.Length;
-            var sample2Count = sample2.Length;
+            try
+            {
+                var allData = sample1.Concat(sample2).ToArray();
+                var sample1Count = sample1.Length;
+                var sample2Count = sample2.Length;
 
-            var ranks = RankData(allData);
+                var ranks = RankData(allData);
 
-            double rankSum1 = sample1.Sum(x => ranks[x]);
-            double rankSum2 = sample2.Sum(x => ranks[x]);
+                double rankSum1 = sample1.Sum(x => ranks[x]);
+                double rankSum2 = sample2.Sum(x => ranks[x]);
 
-            double u1 = rankSum1 - sample1Count * (sample1Count + 1) / 2.0;
-            double u2 = rankSum2 - sample2Count * (sample2Count + 1) / 2.0;
+                double u1 = rankSum1 - sample1Count * (sample1Count + 1) / 2.0;
+                double u2 = rankSum2 - sample2Count * (sample2Count + 1) / 2.0;
 
-            return Math.Min(u1, u2);
+                return Math.Min(u1, u2);
+            }
+            catch(Exception)
+            {
+                return 0;
+            }
+            
         }
 
         // Function to calculate p-value for large samples using normal approximation

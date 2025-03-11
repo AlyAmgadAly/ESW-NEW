@@ -1933,10 +1933,10 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 }
 
                 // Display pairwise comparison results
-                foreach (var comp in pairwiseComparisons)
-                {
-                    MessageBox.Show(comp[2]); // Display each pairwise comparison result
-                }
+                //foreach (var comp in pairwiseComparisons)
+                //{
+                //    MessageBox.Show(comp[2]); // Display each pairwise comparison result
+                //}
 
                 // Return results
                 return new AnovaTestResult
@@ -1948,50 +1948,50 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
             }
         }
 
-        public string[] FriedmanTestNew(List<List<double>> data)
-        {
-            using (Py.GIL())
-            {
-                dynamic np = Py.Import("numpy");
-                dynamic stats = Py.Import("scipy.stats");
+//        public string[] FriedmanTestNew(List<List<double>> data)
+//        {
+//            using (Py.GIL())
+//            {
+//                dynamic np = Py.Import("numpy");
+//                dynamic stats = Py.Import("scipy.stats");
 
-                // Convert the List<List<double>> to a Python list of NumPy arrays
-                var pyGroupsData = new PyList();
-                foreach (var groupData in data)
-                {
-                    var pyGroupArray = np.array(groupData.ToArray());
-                    pyGroupsData.Append(pyGroupArray);
-                }
+//                // Convert the List<List<double>> to a Python list of NumPy arrays
+//                var pyGroupsData = new PyList();
+//                foreach (var groupData in data)
+//                {
+//                    var pyGroupArray = np.array(groupData.ToArray());
+//                    pyGroupsData.Append(pyGroupArray);
+//                }
 
-                // Prepare the Python script
-                string pythonScript = @"
-result_friedman = stats.friedmanchisquare(*groups_data)
-";
+//                // Prepare the Python script
+//                string pythonScript = @"
+//result_friedman = stats.friedmanchisquare(*groups_data)
+//";
 
-                // Create Python dictionaries for variables
-                dynamic globals = new PyDict();
-                dynamic locals = new PyDict();
+//                // Create Python dictionaries for variables
+//                dynamic globals = new PyDict();
+//                dynamic locals = new PyDict();
 
-                globals["stats"] = stats;
-                globals["groups_data"] = pyGroupsData;
+//                globals["stats"] = stats;
+//                globals["groups_data"] = pyGroupsData;
 
-                // Execute the Python script
-                PythonEngine.Exec(pythonScript, locals, globals);
+//                // Execute the Python script
+//                PythonEngine.Exec(pythonScript, locals, globals);
 
-                // Retrieve the results from the Python script
-                dynamic resultFriedman = globals["result_friedman"];
-                double testStatistic = Math.Round(resultFriedman.statistic.As<double>(), 3);
-                double pValue = Math.Round(resultFriedman.pvalue.As<double>(), 3);
+//                // Retrieve the results from the Python script
+//                dynamic resultFriedman = globals["result_friedman"];
+//                double testStatistic = Math.Round(resultFriedman.statistic.As<double>(), 3);
+//                double pValue = Math.Round(resultFriedman.pvalue.As<double>(), 3);
 
-                // Format the output
-                string testStatisticString = testStatistic.ToString("0.000");
-                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+//                // Format the output
+//                string testStatisticString = testStatistic.ToString("0.000");
+//                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
                
 
-                return new string[] { testStatisticString, pValueString };
-            }
-        }
+//                return new string[] { testStatisticString, pValueString };
+//            }
+//        }
 
 
         public AnovaTestResult PerformFriedmanWithDunnTest(List<List<double>> data)

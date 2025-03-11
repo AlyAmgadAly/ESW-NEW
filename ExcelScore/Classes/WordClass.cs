@@ -1168,9 +1168,9 @@ namespace ExcelScore.Classes
                 table.Rows[row].Cells[2].Width = SetColumnWidthInCentimeters(3f);
 
 
-                table.Rows[row].Cells[3].Width = SetColumnWidthInCentimeters(3f);
-                table.Rows[row].Cells[4].Width = SetColumnWidthInCentimeters(3f);
-                table.Rows[row].Cells[5].Width = SetColumnWidthInCentimeters(3f);
+                table.Rows[row].Cells[3].Width = SetColumnWidthInCentimeters(3.15f);
+                table.Rows[row].Cells[4].Width = SetColumnWidthInCentimeters(3.15f);
+                table.Rows[row].Cells[5].Width = SetColumnWidthInCentimeters(3.15f);
 
 
                 table.Rows[row].Cells[WordTableColumns-2].Width = SetColumnWidthInCentimeters(1.7f);
@@ -1371,7 +1371,7 @@ namespace ExcelScore.Classes
 
 
 
-                foreach (var kvp in CurrentParameterNotGroup.GroupedParameterValues)
+                for(int groupctr = 0; groupctr < groupcount; groupctr++)
                 {
                     //Group names merge
                     table.ApplyVerticalMerge(1, row, row + 4);

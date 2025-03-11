@@ -208,7 +208,51 @@ namespace ExcelScore
 
         }
 
+        public static List<double> GetDataWithMissingValues(Worksheet Sheet , string parameterName)
+        {
+            List<double> Values = new List<double>();
 
+
+            for(int col = 0;col <= Sheet.Cells.MaxDataColumn;col++)
+            {
+                if (Sheet.Cells[0, col].Value != null)
+                {
+                    string CurrenCellname = Sheet.Cells[0, col].Value.ToString();
+                    if(CurrenCellname == parameterName)
+                    {
+                        for(int row =1; row <= Sheet.Cells.MaxDataRow;row++)
+                        {
+                            string cellData = Sheet.Cells[row, col].Value.ToString();
+                            if (cellData.ToString() == ".")
+                            {
+                                Values.Add(-999);
+                            }
+                            else
+                            {
+                                double CellDataDouble = double.Parse(cellData);
+                                Values.Add(CellDataDouble);
+                            }
+
+                        }
+
+
+                        break;
+                    }
+                    
+
+                }
+
+
+
+            }
+
+
+
+            return Values;
+
+
+
+        }
         
         
 
