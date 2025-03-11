@@ -4474,8 +4474,25 @@ namespace ExcelScore.Forms
                 CorrectDataParameters.Add(CorrectData);
             }
 
+            List<Parameter> CorrectParametersData = new List<Parameter>();
+            for (int i = 0; i < CurrentParameters.Count; i++)
+            {
+                Parameter newParameter = new Parameter
+                {
+                    Name = CurrentParameters[i].Name,  // Copy the name from the original list
+                    ParameterValues = CorrectDataParameters[i] // Assign the corresponding corrected data
+                };
+
+                CorrectParametersData.Add(newParameter);
+
+                string valuesString = string.Join(", ", newParameter.ParameterValues);
+                MessageBox.Show($"Parameter: {newParameter.Name}\nValues: {valuesString}", "Parameter Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
 
             
+
+
         }
         public void Groups_Side_Periods_Up_threePeriods()
         {
