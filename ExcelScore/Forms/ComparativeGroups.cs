@@ -4526,11 +4526,7 @@ namespace ExcelScore.Forms
                     }
                 }
 
-                foreach (var param in parametersForGroup)
-                {
-                    string message = $"Group {groupKey} - {param.Name}:\n{string.Join(", ", param.ParameterValues)}";
-                    MessageBox.Show(message, $"Values for {param.Name}");
-                }
+                
 
                 if (NormalOrAbnormal == "Normal")
                 {
