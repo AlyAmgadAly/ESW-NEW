@@ -4464,9 +4464,8 @@ namespace ExcelScore.Forms
 
         }
 
-        public void Groups_Side_Periods_Up_threePeriods_periodstest(IWTable table,ComparativeTable comparativeTable , List<Parameter> CurrentParameters , int insertrow , Parameter GroupParameter , int GroupColIndex , int WordTableColumns)
+        public void Groups_Side_Periods_Up_threePeriods_periodstest(IWTable table,ComparativeTable comparativeTable , List<Parameter> CurrentParameters , int insertrow , Parameter GroupParameter , int GroupColIndex , int WordTableColumns , ref List<int> RowsToremoveSigPeriods)
         {
-            List<int> RowsToremoveSigPeriods = new List<int>();
             List<Dictionary<int, List<double>>> CorrectDataParameters = new List<Dictionary<int, List<double>>>();
 
             string NormalOrAbnormal = CurrentParameters[0].NormalOrAbnormal;
@@ -4493,29 +4492,47 @@ namespace ExcelScore.Forms
 
             foreach (int groupKey in uniqueGroupKeys)
             {
-                List<Parameter> parametersForGroup = new List<Parameter>();
+                List<List<double>> valuesLists = new List<List<double>>();
+
+
 
                 for (int i = 0; i < CurrentParameters.Count; i++)
                 {
                     if (CorrectDataParameters[i].TryGetValue(groupKey, out List<double> values))
                     {
+                        valuesLists.Add(new List<double>(values)); // Clone the list before cleaning
+                    }
+                    else
+                    {
+                        valuesLists.Add(new List<double>()); // Maintain list count alignment
+                    }
+                }
+
+                GeneralFunctions.RemoveInvalidEntries(ref valuesLists);
+
+                List<Parameter> parametersForGroup = new List<Parameter>();
+
+                for (int i = 0; i < CurrentParameters.Count; i++)
+                {
+                    if (valuesLists[i].Count > 0) // Ensure there's still valid data
+                    {
                         Parameter newParameter = new Parameter
                         {
-                            Name = CurrentParameters[i].Name, // Copy the name from the original list
-                            ParameterValues = values         // Assign the corresponding list for this group
+                            Name = CurrentParameters[i].Name, // Copy name from original list
+                            ParameterValues = valuesLists[i]  // Assign cleaned values
                         };
 
                         parametersForGroup.Add(newParameter);
                     }
                 }
 
-                //string message = $"Group {groupKey}:\n";
-                //foreach (var param in parametersForGroup)
-                //{
-                //    message += $"{param.Name}: {string.Join(", ", param.ParameterValues)}\n";
-                //}
-                //MessageBox.Show(message, $"Data for Group {groupKey}");
-                if(NormalOrAbnormal == "Normal")
+                foreach (var param in parametersForGroup)
+                {
+                    string message = $"Group {groupKey} - {param.Name}:\n{string.Join(", ", param.ParameterValues)}";
+                    MessageBox.Show(message, $"Values for {param.Name}");
+                }
+
+                if (NormalOrAbnormal == "Normal")
                 {
                     AnovaTestResult testresult = pythonStat.RepeatedMeasuresAnovaBoth(parametersForGroup);
 
@@ -4558,6 +4575,8 @@ namespace ExcelScore.Forms
                             {
                                 string pvalueString = Values[2];
 
+                                bool psig = generalFunctions.PvalueHasSig(pvalueString);
+
                                 // Try parsing the p-value; if it's a valid number, format it
                                 string formattedPValue;
                                 if (double.TryParse(pvalueString, out double parsedValue))
@@ -4576,13 +4595,17 @@ namespace ExcelScore.Forms
                                 wordObj.SubSuperScriptText(table, rowNumber_Sig_Periods, 3, Syncfusion.Drawing.Color.Transparent, pnumber.ToString(), "Sub");
 
                                 // **Now insert the p-value after the subscript**
-                                string finalText = (formattedPValue == "<0.001") ? " <0.001" : $" = {formattedPValue}";
+                                string finalText = (formattedPValue == "<0.001") ? "<0.001" : $"={formattedPValue}";
                                 wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, finalText, false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
 
+                                if(psig)
+                                {
+                                    wordObj.SubSuperScriptText(table, rowNumber_Sig_Periods, 3, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                                }
                                 // Add comma if it's NOT the last value
                                 if (pnumber < totalComparisons)
                                 {
-                                    wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, " , ", false, true, Syncfusion.Drawing.Color.Transparent, Syncfusion.Drawing.Color.Black);
+                                    wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, ",", false, true, Syncfusion.Drawing.Color.Transparent, Syncfusion.Drawing.Color.Black);
                                 }
 
                                 pnumber++;
@@ -4602,12 +4625,118 @@ namespace ExcelScore.Forms
                     //wordObj.Addpara_CenterNoBOLD(table , )
 
                 }
-                
+                else if (NormalOrAbnormal == "Abnormal")
+                {
+                    List<List<double>> Datalist = new List<List<double>>();
+
+                   
+
+                    foreach (var parameter in parametersForGroup)
+                    {
+                        Datalist.Add(parameter.ParameterValues);
+                    }
+
+                    GeneralFunctions.RemoveInvalidEntries(ref Datalist);
+
+                    
+
+                    AnovaTestResult testresult = pythonStat.PerformFriedmanWithDunnTest(Datalist);
+
+                    bool pvalueSig = generalFunctions.PvalueHasSig(testresult.PValue);
+
+
+
+                    int rowNumber = (loopCounter % 2 == 0) ? (insertrow - 9) : (insertrow - 4);
+                    int rowNumber_Sig_Periods = (loopCounter % 2 == 0) ? (insertrow - 6) : (insertrow - 1);
+
+                    if (comparativeTable.AllAbnormal())
+                    {
+                        wordObj.AddParaCombined(table, rowNumber, WordTableColumns - 2, testresult.TestValue, false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                    }
+                    else
+                    {
+                        wordObj.AddParaCombined(table, rowNumber, WordTableColumns - 2, "Fr=" + Convert.ToChar(11) + testresult.TestValue, false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                    }
+
+
+                    wordObj.Addpara_CenterNoBOLD(table, rowNumber, WordTableColumns - 1, testresult.PValue);
+
+
+                    if (!pvalueSig)
+                    {
+                        RowsToremoveSigPeriods.Add(rowNumber_Sig_Periods);
+                    }
+                    else
+                    {
+                        wordObj.SubSuperScriptText(table, rowNumber, WordTableColumns - 2, Syncfusion.Drawing.Color.Yellow, "*", "Super");
+                        wordObj.SubSuperScriptText(table, rowNumber, WordTableColumns - 1, Syncfusion.Drawing.Color.Empty, "*", "Super");
+
+                        int pnumber = 1;
+                        int totalComparisons = testresult.PairwiseComparisons.Count;
+                        StringBuilder pValuesText = new StringBuilder();
+
+                        foreach (var Values in testresult.PairwiseComparisons)
+                        {
+                            if (Values.Length > 1) // Ensure index 2 exists
+                            {
+                                string pvalueString = Values[1];
+
+                                bool psig = generalFunctions.PvalueHasSig(pvalueString);
+
+                                // Try parsing the p-value; if it's a valid number, format it
+                                string formattedPValue;
+                                if (double.TryParse(pvalueString, out double parsedValue))
+                                {
+                                    formattedPValue = parsedValue.ToString("0.000"); // Format to 3 decimal places
+                                }
+                                else
+                                {
+                                    formattedPValue = pvalueString; // Keep "<0.001" as is
+                                }
+
+                                // **Insert "p" first**
+                                wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, "p", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+
+                                // **Now insert subscripted number**
+                                wordObj.SubSuperScriptText(table, rowNumber_Sig_Periods, 3, Syncfusion.Drawing.Color.Transparent, pnumber.ToString(), "Sub");
+
+                                // **Now insert the p-value after the subscript**
+                                string finalText = (formattedPValue == "<0.001") ? "<0.001" : $"={formattedPValue}";
+                                wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, finalText, false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+
+                                if (psig)
+                                {
+                                    wordObj.SubSuperScriptText(table, rowNumber_Sig_Periods, 3, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                                }
+                                // Add comma if it's NOT the last value
+                                if (pnumber < totalComparisons)
+                                {
+                                    wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, ",", false, true, Syncfusion.Drawing.Color.Transparent, Syncfusion.Drawing.Color.Black);
+                                }
+
+                                pnumber++;
+                            }
+                        }
+
+
+
+
+
+                    }
+
+
+
+
+
+
+
+                    loopCounter++;
+                }
+
+
 
 
             }
-
-
 
         }
         public void Groups_Side_Periods_Up_threePeriods()
@@ -4621,6 +4750,8 @@ namespace ExcelScore.Forms
             {
                 if (ComparativeTables[tableindex].FormatType == "Groups Side Periods Up")
                 {
+                    List<int> RowsToremoveSigPeriods = new List<int>();
+
                     bool TableHasSigI = false;
 
                     int ParameterCount = Groups_Side_Periods_Up_threePeriods_ParameterCount(ComparativeTables[tableindex]);
@@ -4746,7 +4877,7 @@ namespace ExcelScore.Forms
 
 
 
-                        Groups_Side_Periods_Up_threePeriods_periodstest(table,ComparativeTables[tableindex], periodsparameter, row , GroupPara , GroupColIndex , WordTableColumns);
+                        Groups_Side_Periods_Up_threePeriods_periodstest(table,ComparativeTables[tableindex], periodsparameter, row , GroupPara , GroupColIndex , WordTableColumns , ref RowsToremoveSigPeriods);
                         tempctr = tempctr + 11;
                     }
 
@@ -4787,14 +4918,24 @@ namespace ExcelScore.Forms
                     SplitGroupedParameterValues(CurrenParameter, out group1Values, out group2Values);
 
                     string[] values = manual.StudentT_Unpaired(group1Values, group2Values);
+                    bool pvalueSig = generalFunctions.PvalueHasSig(values[1]);
 
-                    wordObj.AddParaCombined(table, InsertRow, InsertColumn, values[0], false, true,Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                    wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, values[0], false, true,Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
 
-                    WParagraph testparaHighlightname = (WParagraph)table[InsertRow, InsertColumn].Paragraphs[0];
-                    WTextRange PTextname = new WTextRange(testparaHighlightname.Document);
-                    PTextname.CharacterFormat.Bold = false;
-                    PTextname.Text = " (" + values[1] +")";
-                    testparaHighlightname.ChildEntities.Insert(1, PTextname);
+                    if(pvalueSig)
+                    {
+                        wordObj.SubSuperScriptText(table, InsertRow, InsertColumn, Syncfusion.Drawing.Color.Yellow, "*", "Super");
+                    }
+
+                    wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, " (" + values[1], false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+
+                    if(pvalueSig)
+                    {
+                        wordObj.SubSuperScriptText(table, InsertRow, InsertColumn, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                    }
+
+                    wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, ")", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+
                 }
                 else if(CurrenParameter.NormalOrAbnormal == "Abnormal")
                 {
@@ -4805,13 +4946,23 @@ namespace ExcelScore.Forms
 
                     string[] values = manual.UTest(group1Values, group2Values);
 
-                    wordObj.AddParaCombined(table, InsertRow, InsertColumn, values[0], false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                    bool pvalueSig = generalFunctions.PvalueHasSig(values[1]);
 
-                    WParagraph testparaHighlightname = (WParagraph)table[InsertRow, InsertColumn].Paragraphs[0];
-                    WTextRange PTextname = new WTextRange(testparaHighlightname.Document);
-                    PTextname.CharacterFormat.Bold = false;
-                    PTextname.Text = " (" + values[1] + ")";
-                    testparaHighlightname.ChildEntities.Insert(1, PTextname);
+                    wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, values[0], false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+
+                    if (pvalueSig)
+                    {
+                        wordObj.SubSuperScriptText(table, InsertRow, InsertColumn, Syncfusion.Drawing.Color.Yellow, "*", "Super");
+                    }
+
+                    wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, " (" + values[1], false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+
+                    if (pvalueSig)
+                    {
+                        wordObj.SubSuperScriptText(table, InsertRow, InsertColumn, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                    }
+
+                    wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, ")", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
                 }
             }
 

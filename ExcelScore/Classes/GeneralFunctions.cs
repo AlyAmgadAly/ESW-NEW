@@ -36,5 +36,37 @@ namespace ExcelScore.Classes
 
 
         }
+
+        public static void RemoveInvalidEntries(ref List<List<double>> dataLists)
+        {
+            if (dataLists == null || dataLists.Count == 0)
+                return;
+
+            int minCount = dataLists.Min(list => list.Count);
+            HashSet<int> indicesToRemove = new HashSet<int>();
+
+            // Identify indices where any list has -999
+            for (int i = 0; i < minCount; i++)
+            {
+                if (dataLists.Any(list => list[i] == -999))
+                {
+                    indicesToRemove.Add(i);
+                }
+            }
+
+            // Remove values at marked indices (iterate backwards to avoid shifting issues)
+            foreach (var list in dataLists)
+            {
+                for (int i = indicesToRemove.Count - 1; i >= 0; i--)
+                {
+                    int indexToRemove = indicesToRemove.ElementAt(i);
+                    if (indexToRemove < list.Count) // Safety check
+                    {
+                        list.RemoveAt(indexToRemove);
+                    }
+                }
+            }
+        }
+
     }
 }

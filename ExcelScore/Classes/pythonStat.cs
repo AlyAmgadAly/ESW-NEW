@@ -2105,7 +2105,7 @@ comparisons
                         double diff = Math.Round(comparison[2].As<double>(), 3);
                         double z = Math.Round(comparison[3].As<double>(), 3);
                         double p = Math.Round(comparison[4].As<double>(), 5); // P-value to 5 decimal places
-                        pairwiseResults.Add(new string[] { $"Period {i + 1} vs Period {j + 1}" , $"p={p}" });
+                        pairwiseResults.Add(new string[] { $"Period {i + 1} vs Period {j + 1}" , $"{p}" });
                     }
 
                     return new AnovaTestResult
