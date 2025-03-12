@@ -1754,112 +1754,126 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
         public AnovaTestResult RepeatedMeasuresAnovaBoth(List<Parameter> parameters)
         {
-            using (Py.GIL())
+            try
             {
-                dynamic np = Py.Import("numpy");
-                dynamic pandas = Py.Import("pandas");
-                dynamic pingouin = Py.Import("pingouin");
-
-                // Step 1: Prepare data for pandas DataFrame
-                var subjects = Enumerable.Range(1, parameters[0].ParameterValues.Count).ToList(); // Subjects 1, 2, ...
-                var values = new List<double>();
-                var periods = new List<string>();
-                var subjectIds = new List<int>();
-
-                // Loop through each parameter (Period1, Period2, etc.)
-                foreach (var parameter in parameters)
+                using (Py.GIL())
                 {
-                    string periodName = parameter.Name; // Period name (e.g., "Period1")
-                    var parameterValues = parameter.ParameterValues;
+                    dynamic np = Py.Import("numpy");
+                    dynamic pandas = Py.Import("pandas");
+                    dynamic pingouin = Py.Import("pingouin");
 
-                    for (int i = 0; i < parameterValues.Count; i++)
+                    // Step 1: Prepare data for pandas DataFrame
+                    var subjects = Enumerable.Range(1, parameters[0].ParameterValues.Count).ToList(); // Subjects 1, 2, ...
+                    var values = new List<double>();
+                    var periods = new List<string>();
+                    var subjectIds = new List<int>();
+
+                    // Loop through each parameter (Period1, Period2, etc.)
+                    foreach (var parameter in parameters)
                     {
-                        values.Add(parameterValues[i]);
-                        periods.Add(periodName);
-                        subjectIds.Add(subjects[i]);
+                        string periodName = parameter.Name; // Period name (e.g., "Period1")
+                        var parameterValues = parameter.ParameterValues;
+
+                        for (int i = 0; i < parameterValues.Count; i++)
+                        {
+                            values.Add(parameterValues[i]);
+                            periods.Add(periodName);
+                            subjectIds.Add(subjects[i]);
+                        }
                     }
+
+                    // Step 2: Create pandas DataFrame
+                    dynamic dataDict = new PyDict
+                    {
+                        ["Subject"] = subjectIds.ToPython(),
+                        ["Period"] = periods.ToPython(),
+                        ["Value"] = values.ToPython()
+                    };
+                    dynamic df = pandas.DataFrame(dataDict);
+
+                    // Step 3: Perform Mauchly's Test of Sphericity
+                    dynamic mauchlyResult = pingouin.sphericity(data: df, dv: "Value", within: "Period", subject: "Subject");
+
+                    double wValue = mauchlyResult[1].As<double>(); // Extract Mauchly's W
+                    double pValueMauchly = mauchlyResult[0].As<double>(); // Extract p-value of Mauchly's Test
+                    bool isSphericityViolated = pValueMauchly < 0.05; // Check if sphericity is violated
+
+                    // Decide correction method based on Mauchly's test
+                    string correction = isSphericityViolated ? "auto" : null; // Use Greenhouse-Geisser if violated
+
+                    // Output Mauchly's Test Results
+                    //MessageBox.Show($"Mauchly's W: {wValue:0.000}");
+                    //MessageBox.Show($"Mauchly's p-value: {pValueMauchly:0.000}");
+                    //MessageBox.Show(isSphericityViolated
+                    //    ? "Sphericity violated, Greenhouse-Geisser correction applied."
+                    //    : "Sphericity assumed, no correction applied.");
+
+                    // Step 4: Perform Repeated Measures ANOVA
+                    dynamic anovaResults = pingouin.rm_anova(
+                        data: df,
+                        dv: "Value",            // Dependent variable
+                        within: "Period",       // Within-subject variable
+                        subject: "Subject",     // Subject identifier
+                        correction: correction, // Conditional correction based on Mauchly's test
+                        detailed: true          // Include detailed results
+                    );
+
+                    // Extract ANOVA results
+                    dynamic periodRow = anovaResults.loc[anovaResults["Source"].eq("Period")];
+                    double fValue = periodRow["F"].iloc[0].As<double>();
+                    double pValue = isSphericityViolated
+                        ? periodRow["p-GG-corr"].iloc[0].As<double>() // Greenhouse-Geisser corrected p-value
+                        : periodRow["p-unc"].iloc[0].As<double>();    // Sphericity assumed p-value
+
+                    string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
+
+                    // Return results
+                    //MessageBox.Show($"F Value: {fValue:0.000}");
+                    //MessageBox.Show($"p Value: {pValueString}");
+
+
+                    // Step 5: Perform Pairwise Comparisons (Bonferroni adjustment)
+                    dynamic pairwiseResults = pingouin.pairwise_ttests(
+         data: df,
+         dv: "Value",         // Dependent variable
+         within: "Period",    // Within-subject variable
+         subject: "Subject",  // Subject identifier
+         padjust: "bonf"      // Bonferroni correction for confidence intervals
+     );
+
+                    // Extract pairwise comparison results
+                    var pairwiseComparisons = new List<string[]>();
+                    foreach (var row in pairwiseResults.itertuples())
+                    {
+                        string group1 = row[2].As<string>(); // Group A
+                        string group2 = row[3].As<string>(); // Group B
+                        double pCorr = row[10].As<double>();  // Corrected p-value ('p-corr')
+                                                              //double pCorr = row._p_corr.As<double>();
+                        string comparison = pCorr < 0.001 ? "<0.001" : pCorr.ToString("0.000");
+                        pairwiseComparisons.Add(new[] { group1, group2, comparison });
+                    }
+
+                    //Display pairwise comparison results
+                    //foreach (var comp in pairwiseComparisons)
+                    //{
+                    //    MessageBox.Show(comp[2]); // Display each pairwise comparison result
+                    //}
+                    return new AnovaTestResult
+                    {
+                        TestValue = fValue.ToString("0.000"),
+                        PValue = pValueString,
+                        PairwiseComparisons = pairwiseComparisons
+                    };
                 }
-
-                // Step 2: Create pandas DataFrame
-                dynamic dataDict = new PyDict
-                {
-                    ["Subject"] = subjectIds.ToPython(),
-                    ["Period"] = periods.ToPython(),
-                    ["Value"] = values.ToPython()
-                };
-                dynamic df = pandas.DataFrame(dataDict);
-
-                // Step 3: Perform Mauchly's Test of Sphericity
-                dynamic mauchlyResult = pingouin.sphericity(data: df, dv: "Value", within: "Period", subject: "Subject");
-
-                double wValue = mauchlyResult[1].As<double>(); // Extract Mauchly's W
-                double pValueMauchly = mauchlyResult[0].As<double>(); // Extract p-value of Mauchly's Test
-                bool isSphericityViolated = pValueMauchly < 0.05; // Check if sphericity is violated
-
-                // Decide correction method based on Mauchly's test
-                string correction = isSphericityViolated ? "auto" : null; // Use Greenhouse-Geisser if violated
-
-                // Output Mauchly's Test Results
-                //MessageBox.Show($"Mauchly's W: {wValue:0.000}");
-                //MessageBox.Show($"Mauchly's p-value: {pValueMauchly:0.000}");
-                //MessageBox.Show(isSphericityViolated
-                //    ? "Sphericity violated, Greenhouse-Geisser correction applied."
-                //    : "Sphericity assumed, no correction applied.");
-
-                // Step 4: Perform Repeated Measures ANOVA
-                dynamic anovaResults = pingouin.rm_anova(
-                    data: df,
-                    dv: "Value",            // Dependent variable
-                    within: "Period",       // Within-subject variable
-                    subject: "Subject",     // Subject identifier
-                    correction: correction, // Conditional correction based on Mauchly's test
-                    detailed: true          // Include detailed results
-                );
-
-                // Extract ANOVA results
-                dynamic periodRow = anovaResults.loc[anovaResults["Source"].eq("Period")];
-                double fValue = periodRow["F"].iloc[0].As<double>();
-                double pValue = isSphericityViolated
-                    ? periodRow["p-GG-corr"].iloc[0].As<double>() // Greenhouse-Geisser corrected p-value
-                    : periodRow["p-unc"].iloc[0].As<double>();    // Sphericity assumed p-value
-
-                string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
-
-                // Return results
-                //MessageBox.Show($"F Value: {fValue:0.000}");
-                //MessageBox.Show($"p Value: {pValueString}");
-
-
-                // Step 5: Perform Pairwise Comparisons (Bonferroni adjustment)
-                dynamic pairwiseResults = pingouin.pairwise_ttests(
-     data: df,
-     dv: "Value",         // Dependent variable
-     within: "Period",    // Within-subject variable
-     subject: "Subject",  // Subject identifier
-     padjust: "bonf"      // Bonferroni correction for confidence intervals
- );
-
-                // Extract pairwise comparison results
-                var pairwiseComparisons = new List<string[]>();
-                foreach (var row in pairwiseResults.itertuples())
-                {
-                    string group1 = row[2].As<string>(); // Group A
-                    string group2 = row[3].As<string>(); // Group B
-                    double pCorr = row[9].As<double>();  // Corrected p-value ('p-corr')
-                    string comparison = pCorr < 0.001 ? "<0.001" : pCorr.ToString("0.000");
-                    pairwiseComparisons.Add(new[] { group1, group2, comparison });
-                }
-
-                //Display pairwise comparison results
-                //foreach (var comp in pairwiseComparisons)
-                //{
-                //    MessageBox.Show(comp[2]); // Display each pairwise comparison result
-                //}
+            }
+            
+            catch (Exception)
+            {
                 return new AnovaTestResult
                 {
-                    TestValue = fValue.ToString("0.000"),
-                    PValue = pValueString,
-                    PairwiseComparisons = pairwiseComparisons
+                    TestValue = "0",
+                    PValue = "0",
+                    PairwiseComparisons = new List<string[]> { }
                 };
             }
         }
@@ -1867,6 +1881,7 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
 
         public AnovaTestResult RepeatedMeasuresAnovaGreen(List<Parameter> parameters)
         {
+            
             using (Py.GIL())
             {
                 dynamic np = Py.Import("numpy");
@@ -2105,7 +2120,8 @@ comparisons
                         double diff = Math.Round(comparison[2].As<double>(), 3);
                         double z = Math.Round(comparison[3].As<double>(), 3);
                         double p = Math.Round(comparison[4].As<double>(), 5); // P-value to 5 decimal places
-                        pairwiseResults.Add(new string[] { $"Period {i + 1} vs Period {j + 1}" , $"{p}" });
+                        string pairwisep = p < 0.001 ? "<0.001" : p.ToString("0.000");
+                        pairwiseResults.Add(new string[] { $"Period {i + 1} vs Period {j + 1}" , pairwisep });
                     }
 
                     return new AnovaTestResult

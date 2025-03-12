@@ -45,6 +45,11 @@ namespace ExcelScore.Classes
         public Dictionary<(int, int), string> LabelPairwise { get; set; } = new Dictionary<(int, int), string>();
 
         public Dictionary<double, Dictionary<string, string>> FormattedValues { get; set; } = new Dictionary<double, Dictionary<string, string>>();
+
+        public int GetValueCount(double number)
+        {
+            return ParameterValues.Count(val => val == number);
+        }
         public Parameter()
         {
             GroupedParameterValues_Relation = new Dictionary<string, Dictionary<double, List<double>>>();

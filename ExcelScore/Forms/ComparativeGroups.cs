@@ -4603,12 +4603,17 @@ namespace ExcelScore.Forms
                                 {
                                     wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, ",", false, true, Syncfusion.Drawing.Color.Transparent, Syncfusion.Drawing.Color.Black);
                                 }
+                                
 
                                 pnumber++;
                             }
                         }
 
+                        //wordObj.AddPara_Center(table, rowNumber_Sig_Periods, WordTableColumns-2, "");
+                        table.Rows[rowNumber_Sig_Periods].Cells[WordTableColumns-2].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
 
+                        //wordObj.AddPara_Center(table, rowNumber_Sig_Periods, WordTableColumns - 1, "");
+                        table.Rows[rowNumber_Sig_Periods].Cells[WordTableColumns-1].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
 
 
 
@@ -4699,6 +4704,7 @@ namespace ExcelScore.Forms
                                 // **Now insert the p-value after the subscript**
                                 string finalText = (formattedPValue == "<0.001") ? "<0.001" : $"={formattedPValue}";
                                 wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, finalText, false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+                               
 
                                 if (psig)
                                 {
@@ -4709,13 +4715,17 @@ namespace ExcelScore.Forms
                                 {
                                     wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, ",", false, true, Syncfusion.Drawing.Color.Transparent, Syncfusion.Drawing.Color.Black);
                                 }
+                               
 
                                 pnumber++;
                             }
                         }
 
+                        wordObj.AddPara_Center(table, rowNumber_Sig_Periods, WordTableColumns - 2, "");
+                        table.Rows[rowNumber_Sig_Periods].Cells[WordTableColumns - 2].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
 
-
+                        wordObj.AddPara_Center(table, rowNumber_Sig_Periods, WordTableColumns - 1, "");
+                        table.Rows[rowNumber_Sig_Periods].Cells[WordTableColumns - 1].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
 
 
                     }
@@ -4811,7 +4821,20 @@ namespace ExcelScore.Forms
                                     
                                     //Add n
                                     int n = ComparativeTables[tableindex].Parameters[parameterCounter].GroupedParameterValues[groupValue].Count;
-                                    wordObj.AddPara_Center(table, row, col, "(n = "+ n + ")");
+
+                                    int groupn = GroupPara.GetValueCount(groupValue);
+
+                                    if(n == groupn)
+                                    {
+                                        wordObj.AddPara_Center(table, row, col, "(n = " + n + ")");
+                                    }
+                                    else
+                                    {
+                                        wordObj.AddParaCombined_New(table, row, col, "(n = " + n + ")", true, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Red); ;
+                                    }
+
+
+                                    
 
                                     Dictionary<string, string> formattedValues = ComparativeTables[tableindex].Parameters[parameterCounter].FormattedValues[groupValue];
 
@@ -4853,7 +4876,7 @@ namespace ExcelScore.Forms
                                 }
                                 else
                                 {
-                                    wordObj.AddPara_Center(table, row, col, "(n = " + 0 + ")");
+                                    wordObj.AddParaCombined_New(table, row, col, "(n = " + 0 + ")" , true , true , Syncfusion.Drawing.Color.Empty , Syncfusion.Drawing.Color.Red);
                                     
                                     wordObj.Addpara_CenterNoBOLD(table, row + 1, col, "–");
                                     wordObj.Addpara_CenterNoBOLD(table, row + 2, col, "–");
@@ -4864,7 +4887,7 @@ namespace ExcelScore.Forms
                                 
                             }
 
-                            PerformTest_Groups_Side(table , ComparativeTables[tableindex] , ComparativeTables[tableindex].Parameters[parameterCounter] , row , col);
+                            PerformTest_Groups_Side(table , ComparativeTables[tableindex] , ComparativeTables[tableindex].Parameters[parameterCounter] , row , col , WordTableColumns);
                             
 
                             col++;
@@ -4877,18 +4900,26 @@ namespace ExcelScore.Forms
                         tempctr = tempctr + 11;
                     }
 
+                    //table.Rows.RemoveAt(5);
+                    //table.Rows.RemoveAt(10);
 
-                    
 
 
                     wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
                     wordObj.FormatTableCustom(table, 10 , 0 , 0);
+
+                    int rowindexSubtract = 0;
+                    foreach (var rowindex in RowsToremoveSigPeriods)
+                    {
+                        table.Rows.RemoveAt(rowindex - rowindexSubtract);
+                        rowindexSubtract++;
+                    }
                 }
             }
            
         }
         GeneralFunctions generalFunctions = new GeneralFunctions();
-        public void PerformTest_Groups_Side(IWTable table,ComparativeTable comparativeTable , Parameter CurrenParameter , int InsertRow , int InsertColumn)
+        public void PerformTest_Groups_Side(IWTable table,ComparativeTable comparativeTable , Parameter CurrenParameter , int InsertRow , int InsertColumn , int WordTableColumns)
         {
             //int GroupsCountPara = CurrenParameter.GroupedParameterValues.Keys.Count;
 
@@ -4932,6 +4963,11 @@ namespace ExcelScore.Forms
 
                     wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, ")", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
 
+                   // wordObj.AddPara_Center(table, InsertRow, WordTableColumns - 2, "");
+                    table.Rows[InsertRow].Cells[WordTableColumns - 2].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
+
+                    //wordObj.AddPara_Center(table, InsertRow, WordTableColumns - 1, "");
+                    table.Rows[InsertRow].Cells[WordTableColumns - 1].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
                 }
                 else if(CurrenParameter.NormalOrAbnormal == "Abnormal")
                 {
@@ -4959,6 +4995,12 @@ namespace ExcelScore.Forms
                     }
 
                     wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, ")", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+
+                    //wordObj.AddParaCombined(table, InsertRow, WordTableColumns - 2, "", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+                    table.Rows[InsertRow].Cells[WordTableColumns - 2].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
+
+                    //ordObj.AddParaCombined(table, InsertRow, WordTableColumns - 1, "" , false , true , Syncfusion.Drawing.Color.Empty , Syncfusion.Drawing.Color.Black);
+                    table.Rows[InsertRow].Cells[WordTableColumns - 1].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
                 }
             }
 
