@@ -4535,7 +4535,9 @@ namespace ExcelScore.Forms
                         wordObj.AddParaCombined(table, rowNumber, WordTableColumns - 2, "F=" + Convert.ToChar(11) + testresult.TestValue, false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
                     }
 
+                    
                     wordObj.Addpara_CenterNoBOLD(table, rowNumber, WordTableColumns - 1, testresult.PValue);
+                    
 
                     if (!pvalueSig)
                     {
@@ -4543,6 +4545,9 @@ namespace ExcelScore.Forms
                     }
                     else
                     {
+                        wordObj.SubSuperScriptText(table, rowNumber, WordTableColumns - 2, Syncfusion.Drawing.Color.Yellow, "*", "Super");
+                        wordObj.SubSuperScriptText(table, rowNumber, WordTableColumns - 1, Syncfusion.Drawing.Color.Empty, "*", "Super");
+
                         int pnumber = 1;
                         int totalComparisons = testresult.PairwiseComparisons.Count;
                         StringBuilder pValuesText = new StringBuilder();
@@ -4565,19 +4570,19 @@ namespace ExcelScore.Forms
                                 }
 
                                 // **Insert "p" first**
-                               wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, "p", false, false, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+                               wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, "p", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
 
                                 // **Now insert subscripted number**
                                 wordObj.SubSuperScriptText(table, rowNumber_Sig_Periods, 3, Syncfusion.Drawing.Color.Transparent, pnumber.ToString(), "Sub");
 
                                 // **Now insert the p-value after the subscript**
                                 string finalText = (formattedPValue == "<0.001") ? " <0.001" : $" = {formattedPValue}";
-                                wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, finalText, false, false, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+                                wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, finalText, false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
 
                                 // Add comma if it's NOT the last value
                                 if (pnumber < totalComparisons)
                                 {
-                                    wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, " , ", false, false, Syncfusion.Drawing.Color.Transparent, Syncfusion.Drawing.Color.Black);
+                                    wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, " , ", false, true, Syncfusion.Drawing.Color.Transparent, Syncfusion.Drawing.Color.Black);
                                 }
 
                                 pnumber++;
