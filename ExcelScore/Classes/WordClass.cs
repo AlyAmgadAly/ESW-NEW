@@ -4416,6 +4416,33 @@ namespace ExcelScore.Classes
             }
             
         }
+
+        public void AddParaCombined_New(IWTable table, int WordTableRows, int WordTableColumns, string Text,
+                            bool Isbold, bool Iscenter, Color HighlightColor, Color TextColor)
+        {
+            // Get the first paragraph in the cell (or create one if none exists)
+            WParagraph paragraph = table[WordTableRows, WordTableColumns].Paragraphs.Count > 0
+                ? (WParagraph)table[WordTableRows, WordTableColumns].Paragraphs[0]
+                : (WParagraph)table[WordTableRows, WordTableColumns].AddParagraph();
+
+            // Append the text to the existing paragraph
+            WTextRange textRange = (WTextRange)paragraph.AppendText(Text);
+
+            // Apply formatting
+            textRange.CharacterFormat.HighlightColor = HighlightColor;
+            textRange.CharacterFormat.Bold = Isbold;
+            textRange.CharacterFormat.TextColor = TextColor;
+
+            // Set alignment if needed
+            if (Iscenter)
+            {
+                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+            }
+
+            // Always set vertical alignment
+            table[WordTableRows, WordTableColumns].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+        }
+
         public void AddPara_Center(IWTable table , int WordTableRows , int WordTableColumns , string Text)
         {
             table[WordTableRows, WordTableColumns].AddParagraph().AppendText(Text).CharacterFormat.Bold = true;

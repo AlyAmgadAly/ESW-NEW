@@ -253,8 +253,66 @@ namespace ExcelScore
 
 
         }
-        
-        
+        public static Dictionary<int, List<double>> GetDataWithMissingValues_withGroup(Worksheet Sheet, string parameterName, string GroupName, int GroupColIndex)
+        {
+            Dictionary<int, List<double>> GroupedValues = new Dictionary<int, List<double>>();
+
+            for (int col = 0; col <= Sheet.Cells.MaxDataColumn; col++)
+            {
+                if (Sheet.Cells[0, col].Value != null)
+                {
+                    string CurrenCellname = Sheet.Cells[0, col].Value.ToString();
+                    if (CurrenCellname == parameterName)
+                    {
+                        for (int row = 1; row <= Sheet.Cells.MaxDataRow; row++)
+                        {
+                            // Ensure the group column is not empty
+                            if (Sheet.Cells[row, GroupColIndex].Value != null && Sheet.Cells[row, col].Value != null)
+                            {
+                                string groupCellData = Sheet.Cells[row, GroupColIndex].Value.ToString();
+                                string cellData = Sheet.Cells[row, col].Value.ToString();
+
+                                // Skip missing group values (".")
+                                if (groupCellData == ".")
+                                    continue;
+
+                                int groupKey;
+                                if (!int.TryParse(groupCellData, out groupKey))
+                                    continue; // Skip if the group value is not a valid integer
+
+                                // Check if the group exists in dictionary, if not, initialize it
+                                if (!GroupedValues.ContainsKey(groupKey))
+                                {
+                                    GroupedValues[groupKey] = new List<double>();
+                                }
+
+                                // Handle missing numeric values
+                                if (cellData == ".")
+                                {
+                                    GroupedValues[groupKey].Add(-999);
+                                }
+                                else
+                                {
+                                    if (double.TryParse(cellData, out double cellDataDouble))
+                                    {
+                                        GroupedValues[groupKey].Add(cellDataDouble);
+                                    }
+                                    else
+                                    {
+                                        // Skip invalid numeric values
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                        break; // Stop looping once we find the correct column
+                    }
+                }
+            }
+            return GroupedValues;
+        }
+
+
 
 
 

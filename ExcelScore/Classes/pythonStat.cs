@@ -1800,11 +1800,11 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 string correction = isSphericityViolated ? "auto" : null; // Use Greenhouse-Geisser if violated
 
                 // Output Mauchly's Test Results
-                MessageBox.Show($"Mauchly's W: {wValue:0.000}");
-                MessageBox.Show($"Mauchly's p-value: {pValueMauchly:0.000}");
-                MessageBox.Show(isSphericityViolated
-                    ? "Sphericity violated, Greenhouse-Geisser correction applied."
-                    : "Sphericity assumed, no correction applied.");
+                //MessageBox.Show($"Mauchly's W: {wValue:0.000}");
+                //MessageBox.Show($"Mauchly's p-value: {pValueMauchly:0.000}");
+                //MessageBox.Show(isSphericityViolated
+                //    ? "Sphericity violated, Greenhouse-Geisser correction applied."
+                //    : "Sphericity assumed, no correction applied.");
 
                 // Step 4: Perform Repeated Measures ANOVA
                 dynamic anovaResults = pingouin.rm_anova(
@@ -1826,14 +1826,40 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
                 // Return results
-                MessageBox.Show($"F Value: {fValue:0.000}");
-                MessageBox.Show($"p Value: {pValueString}");
+                //MessageBox.Show($"F Value: {fValue:0.000}");
+                //MessageBox.Show($"p Value: {pValueString}");
 
+
+                // Step 5: Perform Pairwise Comparisons (Bonferroni adjustment)
+                dynamic pairwiseResults = pingouin.pairwise_ttests(
+     data: df,
+     dv: "Value",         // Dependent variable
+     within: "Period",    // Within-subject variable
+     subject: "Subject",  // Subject identifier
+     padjust: "bonf"      // Bonferroni correction for confidence intervals
+ );
+
+                // Extract pairwise comparison results
+                var pairwiseComparisons = new List<string[]>();
+                foreach (var row in pairwiseResults.itertuples())
+                {
+                    string group1 = row[2].As<string>(); // Group A
+                    string group2 = row[3].As<string>(); // Group B
+                    double pCorr = row[9].As<double>();  // Corrected p-value ('p-corr')
+                    string comparison = pCorr < 0.001 ? "<0.001" : pCorr.ToString("0.000");
+                    pairwiseComparisons.Add(new[] { group1, group2, comparison });
+                }
+
+                //Display pairwise comparison results
+                //foreach (var comp in pairwiseComparisons)
+                //{
+                //    MessageBox.Show(comp[2]); // Display each pairwise comparison result
+                //}
                 return new AnovaTestResult
                 {
                     TestValue = fValue.ToString("0.000"),
                     PValue = pValueString,
-                    PairwiseComparisons = new List<string[]>()
+                    PairwiseComparisons = pairwiseComparisons
                 };
             }
         }

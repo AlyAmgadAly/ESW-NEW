@@ -4464,33 +4464,144 @@ namespace ExcelScore.Forms
 
         }
 
-        public void Groups_Side_Periods_Up_threePeriods_periodstest(ComparativeTable comparativeTable , List<Parameter> CurrentParameters)
+        public void Groups_Side_Periods_Up_threePeriods_periodstest(IWTable table,ComparativeTable comparativeTable , List<Parameter> CurrentParameters , int insertrow , Parameter GroupParameter , int GroupColIndex , int WordTableColumns)
         {
-            List<List<double>> CorrectDataParameters = new List<List<double>>();
+            List<int> RowsToremoveSigPeriods = new List<int>();
+            List<Dictionary<int, List<double>>> CorrectDataParameters = new List<Dictionary<int, List<double>>>();
+
+            string NormalOrAbnormal = CurrentParameters[0].NormalOrAbnormal;
 
             foreach (var CurrentParameter in CurrentParameters)
             {
-                List<double> CorrectData = ExcelFunctions.GetDataWithMissingValues(worksheet, CurrentParameter.Name);
-                CorrectDataParameters.Add(CorrectData);
+                Dictionary<int, List<double>> GroupedCorrectData = ExcelFunctions.GetDataWithMissingValues_withGroup(worksheet, CurrentParameter.Name , GroupParameter.Name  , GroupColIndex);
+                CorrectDataParameters.Add(GroupedCorrectData);
             }
 
-            List<Parameter> CorrectParametersData = new List<Parameter>();
-            for (int i = 0; i < CurrentParameters.Count; i++)
+            HashSet<int> uniqueGroupKeys = new HashSet<int>();
+            foreach (var dict in CorrectDataParameters)
             {
-                Parameter newParameter = new Parameter
+                foreach (var key in dict.Keys)
                 {
-                    Name = CurrentParameters[i].Name,  // Copy the name from the original list
-                    ParameterValues = CorrectDataParameters[i] // Assign the corresponding corrected data
-                };
-
-                CorrectParametersData.Add(newParameter);
-
-                string valuesString = string.Join(", ", newParameter.ParameterValues);
-                MessageBox.Show($"Parameter: {newParameter.Name}\nValues: {valuesString}", "Parameter Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    uniqueGroupKeys.Add(key);
+                }
             }
 
 
-            
+
+
+            int loopCounter = 0;
+
+            foreach (int groupKey in uniqueGroupKeys)
+            {
+                List<Parameter> parametersForGroup = new List<Parameter>();
+
+                for (int i = 0; i < CurrentParameters.Count; i++)
+                {
+                    if (CorrectDataParameters[i].TryGetValue(groupKey, out List<double> values))
+                    {
+                        Parameter newParameter = new Parameter
+                        {
+                            Name = CurrentParameters[i].Name, // Copy the name from the original list
+                            ParameterValues = values         // Assign the corresponding list for this group
+                        };
+
+                        parametersForGroup.Add(newParameter);
+                    }
+                }
+
+                //string message = $"Group {groupKey}:\n";
+                //foreach (var param in parametersForGroup)
+                //{
+                //    message += $"{param.Name}: {string.Join(", ", param.ParameterValues)}\n";
+                //}
+                //MessageBox.Show(message, $"Data for Group {groupKey}");
+                if(NormalOrAbnormal == "Normal")
+                {
+                    AnovaTestResult testresult = pythonStat.RepeatedMeasuresAnovaBoth(parametersForGroup);
+
+                    bool pvalueSig = generalFunctions.PvalueHasSig(testresult.PValue);
+
+                    
+
+                    int rowNumber = (loopCounter % 2 == 0) ? (insertrow - 9) : (insertrow - 4);
+                    int rowNumber_Sig_Periods = (loopCounter % 2 == 0) ? (insertrow - 6) : (insertrow - 1);
+
+                    if (comparativeTable.AllNormal())
+                    {
+                        wordObj.AddParaCombined(table, rowNumber, WordTableColumns - 2, testresult.TestValue, false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                    }
+                    else
+                    {
+                        wordObj.AddParaCombined(table, rowNumber, WordTableColumns - 2, "F=" + Convert.ToChar(11) + testresult.TestValue, false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                    }
+
+                    wordObj.Addpara_CenterNoBOLD(table, rowNumber, WordTableColumns - 1, testresult.PValue);
+
+                    if (!pvalueSig)
+                    {
+                        RowsToremoveSigPeriods.Add(rowNumber_Sig_Periods);
+                    }
+                    else
+                    {
+                        int pnumber = 1;
+                        int totalComparisons = testresult.PairwiseComparisons.Count;
+                        StringBuilder pValuesText = new StringBuilder();
+
+                        foreach (var Values in testresult.PairwiseComparisons)
+                        {
+                            if (Values.Length > 2) // Ensure index 2 exists
+                            {
+                                string pvalueString = Values[2];
+
+                                // Try parsing the p-value; if it's a valid number, format it
+                                string formattedPValue;
+                                if (double.TryParse(pvalueString, out double parsedValue))
+                                {
+                                    formattedPValue = parsedValue.ToString("0.000"); // Format to 3 decimal places
+                                }
+                                else
+                                {
+                                    formattedPValue = pvalueString; // Keep "<0.001" as is
+                                }
+
+                                // **Insert "p" first**
+                               wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, "p", false, false, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+
+                                // **Now insert subscripted number**
+                                wordObj.SubSuperScriptText(table, rowNumber_Sig_Periods, 3, Syncfusion.Drawing.Color.Transparent, pnumber.ToString(), "Sub");
+
+                                // **Now insert the p-value after the subscript**
+                                string finalText = (formattedPValue == "<0.001") ? " <0.001" : $" = {formattedPValue}";
+                                wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, finalText, false, false, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+
+                                // Add comma if it's NOT the last value
+                                if (pnumber < totalComparisons)
+                                {
+                                    wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, " , ", false, false, Syncfusion.Drawing.Color.Transparent, Syncfusion.Drawing.Color.Black);
+                                }
+
+                                pnumber++;
+                            }
+                        }
+
+
+
+
+
+                    }
+
+
+
+                    loopCounter++;
+
+                    //wordObj.Addpara_CenterNoBOLD(table , )
+
+                }
+                
+
+
+            }
+
 
 
         }
@@ -4509,6 +4620,7 @@ namespace ExcelScore.Forms
 
                     int ParameterCount = Groups_Side_Periods_Up_threePeriods_ParameterCount(ComparativeTables[tableindex]);
 
+                    int GroupColIndex = newFindGroupColumnIndex(ComparativeTables[tableindex]);
 
                     IWSection section = wordObj.CreatePortraitSection();
 
@@ -4627,11 +4739,14 @@ namespace ExcelScore.Forms
                             parameterCounter++;
                         }
 
-                        Groups_Side_Periods_Up_threePeriods_periodstest(ComparativeTables[tableindex], periodsparameter);
 
 
+                        Groups_Side_Periods_Up_threePeriods_periodstest(table,ComparativeTables[tableindex], periodsparameter, row , GroupPara , GroupColIndex , WordTableColumns);
                         tempctr = tempctr + 11;
                     }
+
+
+                    
 
 
                     wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
@@ -4640,7 +4755,7 @@ namespace ExcelScore.Forms
             }
            
         }
-
+        GeneralFunctions generalFunctions = new GeneralFunctions();
         public void PerformTest_Groups_Side(IWTable table,ComparativeTable comparativeTable , Parameter CurrenParameter , int InsertRow , int InsertColumn)
         {
             //int GroupsCountPara = CurrenParameter.GroupedParameterValues.Keys.Count;
