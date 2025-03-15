@@ -5060,9 +5060,66 @@ namespace ExcelScore.Forms
 
 
         }
-        WordClass wordObj = new WordClass();
-        
 
+        WordClass wordObj = new WordClass();
+
+        //anesthesia
+
+        public void Anesthesia_Periods()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Relation IQR")
+                {
+                    bool TableHasSigI = false;
+
+                    IWSection section = wordObj.CreatePortraitSection();
+
+
+
+                    wordObj.AddRelationTitle(section, ComparativeTables[tableindex].TableName);
+
+
+
+                    int Variablerows = Relation_DependentNumber_Rows(ComparativeTables[tableindex]);
+
+
+                    int WordTableColumns = 7;
+
+                    int WordTableRows = 2 + Variablerows;
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+                    wordObj.GeneralTableFormat(table);
+
+
+                    //Merges
+                    wordObj.ApplyRelation_IQR_OuterMerges(table, WordTableRows, WordTableColumns);
+
+                    //Borders
+                    wordObj.ApplyRelation_IQR_OuterBorders(table, WordTableRows, WordTableColumns);
+
+                    //Widths
+                    wordObj.ApplyRelation_IQR_Widths(table, WordTableRows, WordTableColumns);
+
+
+                    //Outer Headers
+                    wordObj.ApplyRelation_IQR_OuterHeaders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+                    //
+                    wordObj.InsertRelation_InnerHeader_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+
+
+
+
+
+
+
+                }
+            }
+        }
         public void ClearTable(ComparativeTable comparativeTable)
         {
             foreach (var parameter in comparativeTable.Parameters)
