@@ -64,7 +64,7 @@ namespace ExcelScore.Forms
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
         public DataGridView Dgv { get; set; }
 
-        public List<ComparativeTable> ComparativeTables  = new List<ComparativeTable>();
+        public List<ComparativeTable> ComparativeTables = new List<ComparativeTable>();
 
         static ExcelFunctions excelFunctionsobj = new ExcelFunctions();
 
@@ -193,23 +193,23 @@ namespace ExcelScore.Forms
 
         public void InsertPicture_Type()
         {
-            
+
             for (int column = 0; column <= Sheet2.Cells.MaxDataColumn; column++)
             {
                 string Type = "";
                 string ParaName = "";
                 foreach (string columnName in ColumnExcelheaders)
                 {
-                    
+
                     ParaName = columnName;
                     if (columnName == Sheet2.Cells[0, column].Value.ToString())
                     {
-                        
+
                         if (Sheet2.Cells[1, column].Value != null)
                         {
-                            
+
                             Type = Sheet2.Cells[1, column].Value.ToString();
-                            
+
                         }
                     }
 
@@ -234,7 +234,7 @@ namespace ExcelScore.Forms
 
                 }
 
-                
+
 
 
 
@@ -262,7 +262,7 @@ namespace ExcelScore.Forms
             //footer 2
             AddHeadersToParameter();
 
-            
+
 
 
         }
@@ -273,7 +273,7 @@ namespace ExcelScore.Forms
             chooseFrmInstance.Dgv = Dgv;
             chooseFrmInstance.NormalityParaNameList_ChooseFrm = NormalityParaNameList_ComparaGroups;
             chooseFrmInstance.ReturnToChooseFrm();
-            
+
 
             //this.Close();
             //ChooseFrm chooseFrm = new ChooseFrm();
@@ -283,7 +283,7 @@ namespace ExcelScore.Forms
 
         private void pic_AllParaToNominal_Click(object sender, EventArgs e)
         {
-            
+
             for (int i = data_allPara.SelectedRows.Count - 1; i >= 0; i--)
             {
                 DataGridViewRow row = data_allPara.SelectedRows[i];
@@ -313,7 +313,7 @@ namespace ExcelScore.Forms
                     selectedItems.Add(selectedItem);
                 }
 
-                
+
                 foreach (var selectedItem in selectedItems)
                 {
                     list_Nominal.Items.Remove(selectedItem);
@@ -451,11 +451,11 @@ namespace ExcelScore.Forms
         public void AddTableClass(string tableName)
         {
             bool totalcolumn = Total_Column_Comparative;
-            
+
             var comparativeTable = new ComparativeTable
             {
                 TableName = tableName,
-                Parameters = new List<Parameter>() , 
+                Parameters = new List<Parameter>(),
 
 
                 HasTotalColumn = totalcolumn
@@ -469,7 +469,7 @@ namespace ExcelScore.Forms
                 {
                     Name = item.ToString(),
                     IsGroup = true,
-                    GroupedParameterValues = new Dictionary<double, List<double>>() ,
+                    GroupedParameterValues = new Dictionary<double, List<double>>(),
                     FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
                 };
                 comparativeTable.Parameters.Add(parameter);
@@ -500,7 +500,7 @@ namespace ExcelScore.Forms
                         }
                     }
                 }
-                
+
             }
 
 
@@ -509,7 +509,7 @@ namespace ExcelScore.Forms
             {
                 var parameter = new Parameter
                 {
-                    
+
                     Name = item.ToString(),
                     NominalOrScale = "Scale",
                     NormalOrAbnormal = "Normal",
@@ -517,7 +517,7 @@ namespace ExcelScore.Forms
                     FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
                 };
 
-                
+
                 comparativeTable.Parameters.Add(parameter);
             }
 
@@ -543,7 +543,7 @@ namespace ExcelScore.Forms
 
 
 
-            
+
         }
 
         public string AddTableUI()
@@ -638,7 +638,7 @@ namespace ExcelScore.Forms
                 {
                     foreach (var parameter in table.Parameters)
                     {
-                        if(parameter.ParameterValues.Count == 0)
+                        if (parameter.ParameterValues.Count == 0)
                         {
                             MessageBox.Show("Parameter : " + parameter.Name + " is Empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
@@ -653,7 +653,7 @@ namespace ExcelScore.Forms
             List<int> Group_Indexes = new List<int>();
             foreach (var parameter in comparativeTable.Parameters)
             {
-                if(parameter.IsGroup)
+                if (parameter.IsGroup)
                 {
                     for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
                     {
@@ -673,7 +673,7 @@ namespace ExcelScore.Forms
             }
 
             return Group_Indexes;
-           
+
         }
         public void ComparativeBasic_Relation(string TableName)
         {
@@ -684,7 +684,7 @@ namespace ExcelScore.Forms
                 if (TableName == table.TableName)
                 {
                     excelFunctionsobj.ReadLablesIfNominal(table);
-                    List<int>GroupColumn_Indexes = newFindGroups_ColumnIndexes_Relation(table);
+                    List<int> GroupColumn_Indexes = newFindGroups_ColumnIndexes_Relation(table);
                     foreach (Parameter parameter in table.Parameters)
                     {
 
@@ -743,7 +743,7 @@ namespace ExcelScore.Forms
                                             {
                                                 // Add the parameter value to the corresponding group
 
-                                                if(!parameter.GroupedParameterValues_Relation.ContainsKey(GroupName))
+                                                if (!parameter.GroupedParameterValues_Relation.ContainsKey(GroupName))
                                                 {
                                                     parameter.GroupedParameterValues_Relation[GroupName] = new Dictionary<double, List<double>>();
                                                 }
@@ -814,7 +814,7 @@ namespace ExcelScore.Forms
 
             FormatParameters_Relation(TableName);
 
-            
+
         }
 
         public void FormatParameters_Relation(string TableName)
@@ -833,8 +833,8 @@ namespace ExcelScore.Forms
                         foreach (var kvp in parameter.GroupedParameterValues_Relation)
                         {
                             string GroupName = kvp.Key;
-                            Dictionary<double , List<double>> Value = kvp.Value;
-                            
+                            Dictionary<double, List<double>> Value = kvp.Value;
+
 
                             if (!parameter.FormattedValues_Relation.ContainsKey(GroupName))
                             {
@@ -843,7 +843,7 @@ namespace ExcelScore.Forms
 
                             foreach (var kvp1 in parameter.GroupedParameterValues_Relation[GroupName])
                             {
-                                
+
                                 double groupvalue = kvp1.Key;
                                 List<double> values = kvp1.Value;
                                 int totalCount = values.Count;
@@ -935,7 +935,7 @@ namespace ExcelScore.Forms
 
 
                             }
-                           
+
                         }
                     }
                 }
@@ -949,16 +949,16 @@ namespace ExcelScore.Forms
         public static bool Total_Column_Comparative { get; set; }
         private void pic_addTable_Click(object sender, EventArgs e)
         {
-            
+
             string TableName = AddTableUI();
 
 
             ///check_TotalColumn.Checked = false;
 
 
-            
 
-            if(cmb_ChooseTableFormat.Text == "Relation" || cmb_ChooseTableFormat.Text == "Relation Scale Pathology" || cmb_ChooseTableFormat.Text == "Relation IQR" || cmb_ChooseTableFormat.Text == "Relation Median No IQR")
+
+            if (cmb_ChooseTableFormat.Text == "Relation" || cmb_ChooseTableFormat.Text == "Relation Scale Pathology" || cmb_ChooseTableFormat.Text == "Relation IQR" || cmb_ChooseTableFormat.Text == "Relation Median No IQR")
             {
                 ComparativeBasic_Relation(TableName);
             }
@@ -966,7 +966,7 @@ namespace ExcelScore.Forms
             {
                 ComparativeBasic(TableName);
             }
-            
+
 
 
             CheckFullEmptyParameters(TableName);
@@ -1006,7 +1006,7 @@ namespace ExcelScore.Forms
 
 
 
-                                    if(cellData == null)
+                                    if (cellData == null)
                                     {
                                         MessageBox.Show("Data is empty at Parameter : " + parameter.Name);
                                         break;
@@ -1022,10 +1022,10 @@ namespace ExcelScore.Forms
                                     // Parse the cell data as double
                                     object SelectData = worksheet.Cells[row, SelectParameterColIndex].Value;
                                     //MessageBox.Show(SelectParameterColIndex.ToString());
-                                    
+
                                     double SelectDataDouble;
 
-                                    
+
                                     if (list_Select.Items.Count == 0)
                                     {
                                         if (cellData != null && double.TryParse(cellData.ToString(), out cellValueDouble))
@@ -1048,7 +1048,7 @@ namespace ExcelScore.Forms
                                                     // Add the cell value to the parameter's values list
                                                     //MessageBox.Show("Select value " +SelectData.ToString());
                                                     //MessageBox.Show("Cell value "+cellValueDouble.ToString());
-                                                    
+
                                                     parameter.ParameterValues.Add(cellValueDouble);
                                                     //MessageBox.Show(cellValueDouble.ToString());
                                                 }
@@ -1064,55 +1064,55 @@ namespace ExcelScore.Forms
                     }
                 }
                 // Iterate over each parameter in the table
-                
+
             }
         }
 
         public int newFindGroupColumnIndex(ComparativeTable comparativeTable)
         {
-            
-                for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
+
+            for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
+            {
+                object cellValue = worksheet.Cells[0, col].Value;
+                string parameterName = cellValue?.ToString();
+
+                if (!string.IsNullOrEmpty(parameterName))
                 {
-                    object cellValue = worksheet.Cells[0, col].Value;
-                    string parameterName = cellValue?.ToString();
-
-                    if (!string.IsNullOrEmpty(parameterName))
+                    foreach (var parameter in comparativeTable.Parameters)
                     {
-                        foreach (var parameter in comparativeTable.Parameters)
+                        if (parameter.Name == parameterName && parameter.IsGroup)
                         {
-                            if (parameter.Name == parameterName && parameter.IsGroup)
-                            {
-                                comparativeTable.GroupColumnIndex = col;
+                            comparativeTable.GroupColumnIndex = col;
 
 
-                                //MessageBox.Show(col.ToString());// Set the group column index for this table
-                                return col;
+                            //MessageBox.Show(col.ToString());// Set the group column index for this table
+                            return col;
 
 
-                            }
                         }
                     }
                 }
+            }
 
-                return -1;
-            
+            return -1;
+
         }
 
-        
 
-        
+
+
 
 
         public void FormatParameters(string TableName)
         {
             foreach (ComparativeTable table in ComparativeTables)
             {
-                if(TableName == table.TableName)
+                if (TableName == table.TableName)
                 {
                     foreach (Parameter parameter in table.Parameters)
                     {
                         //|| parameter.GroupedParameterValues.Count == 0
-                        if (parameter.IsGroup )
+                        if (parameter.IsGroup)
                         {
                             continue;
                         }
@@ -1154,7 +1154,7 @@ namespace ExcelScore.Forms
                                         parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
                                         parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F1}%";
                                     }
-                                    else if(!Row_Percent_Comparative)
+                                    else if (!Row_Percent_Comparative)
                                     {
                                         int frequency = values.Count(v => v == distinctValue);
                                         double percentage = (frequency / (double)totalCount) * 100;
@@ -1164,7 +1164,7 @@ namespace ExcelScore.Forms
 
                                     //MessageBox.Show(frequency.ToString());
                                     // Store frequency and percentage in the FormattedValues dictionary
-                                    
+
 
 
                                 }
@@ -1218,7 +1218,7 @@ namespace ExcelScore.Forms
                     }
                 }
                 //MessageBox.Show(table.TableName);
-                
+
             }
         }
 
@@ -1236,14 +1236,14 @@ namespace ExcelScore.Forms
             }
             else if (n % 2 == 0)
             {
-                
+
                 // Even number of elements, average the middle two
                 return (values[middle - 1] + values[middle]) / 2.0;
             }
-            
+
             else
             {
-                
+
                 // Odd number of elements, return the middle one
                 return values[middle];
             }
@@ -1254,7 +1254,7 @@ namespace ExcelScore.Forms
             values.Sort();
 
             int n = values.Count;
-            
+
 
             if (n % 2 == 0)
             {
@@ -1267,10 +1267,10 @@ namespace ExcelScore.Forms
                 //The fix was here we get same range from zero to middle but middle index is different
 
                 int middle = (n + 1) / 2;
-                
-                return CalculateMedian(values.GetRange(0 ,  middle));
+
+                return CalculateMedian(values.GetRange(0, middle));
             }
-            
+
         }
 
         public double CalculateUpperMedian(List<double> values)
@@ -1278,7 +1278,7 @@ namespace ExcelScore.Forms
             values.Sort();
 
             int n = values.Count;
-            
+
 
             if (n % 2 == 0)
             {
@@ -1290,14 +1290,14 @@ namespace ExcelScore.Forms
             {
                 return values[0];
             }
-            else if(n == 3)
+            else if (n == 3)
             {
                 return (values[1] + values[2]) / 2.0;
             }
-            
+
             else
             {
-                int middle = (n+1) / 2;
+                int middle = (n + 1) / 2;
                 // Odd number of elements, calculate median of upper half excluding the median
                 return CalculateMedian(values.GetRange(middle, n - middle - 1));
 
@@ -1366,15 +1366,15 @@ namespace ExcelScore.Forms
             {
                 foreach (var parameter in selectedTable.Parameters)
                 {
-                    if(parameter.IsGroup)
+                    if (parameter.IsGroup)
                     {
                         list_ViewTableParameters.Items.Add("Groups : " + parameter.Name);
                     }
-                    else if(!parameter.IsGroup)
+                    else if (!parameter.IsGroup)
                     {
                         list_ViewTableParameters.Items.Add(parameter.Name);
                     }
-                    
+
                 }
             }
 
@@ -1392,11 +1392,11 @@ namespace ExcelScore.Forms
 
 
         }
-        
-        
 
 
-        
+
+
+
 
         public int FormatParameters(List<ComparativeTable> tables)
         {
@@ -1570,9 +1570,9 @@ namespace ExcelScore.Forms
             if (isMeanThreeNumbers)
             {
                 meanValueString = Math.Round(meanValue, 1).ToString("0.0");
-                
+
             }
-            if(isStdThreeNumbers)
+            if (isStdThreeNumbers)
             {
                 stdDevValueString = Math.Round(stdDevValue, 1).ToString("0.0");
             }
@@ -1646,7 +1646,7 @@ namespace ExcelScore.Forms
                 }
                 else if (parameter.NominalOrScale == "Scale")
                 {
-                    if(parameter.ISFAnovaSig)
+                    if (parameter.ISFAnovaSig)
                     {
                         rowCount += 4;
                     }
@@ -1654,11 +1654,11 @@ namespace ExcelScore.Forms
                     {
                         rowCount += 3;
                     }
-                    
+
                 }
             }
 
-            
+
 
             return rowCount;
         }
@@ -1668,14 +1668,14 @@ namespace ExcelScore.Forms
 
             foreach (var parameter in table.Parameters)
             {
-                
+
                 if (parameter.NominalOrScale == "Nominal")
                 {
                     //int distinctValuesCount = parameter.ParameterValues.Distinct().Count();
                     int distinctValuesCount = parameter.DIC_LablesIfNomainal.Keys.Count;
                     // For nominal parameters, add the count of distinct values
-                    rowCount += distinctValuesCount+1;
-                    
+                    rowCount += distinctValuesCount + 1;
+
                 }
                 else if (parameter.NominalOrScale == "Scale")
                 {
@@ -1686,7 +1686,7 @@ namespace ExcelScore.Forms
 
             //MessageBox.Show(rowCount.ToString());
 
-            
+
 
             return rowCount;
         }
@@ -1703,15 +1703,15 @@ namespace ExcelScore.Forms
 
             foreach (int group in groupColumn)
             {
-                
+
                 if (!groupParameter.EachGroupCount.ContainsKey(group))
                 {
-                    
+
                     groupParameter.EachGroupCount[group] = 1;
                 }
                 else
                 {
-                    
+
                     groupParameter.EachGroupCount[group]++;
                 }
             }
@@ -1756,7 +1756,7 @@ namespace ExcelScore.Forms
 
             }
         }
-        public void InsertNeachGroup(IWTable table , List<double> EachGroupCount , ComparativeTable comparativeTable)
+        public void InsertNeachGroup(IWTable table, List<double> EachGroupCount, ComparativeTable comparativeTable)
         {
             //int numberofgroups = EachGroupCount.Count;
             //int GroupCountStr = 1;
@@ -1772,16 +1772,16 @@ namespace ExcelScore.Forms
             Parameter Groupparameter = null;
             foreach (var parameter in comparativeTable.Parameters)
             {
-                
-                if(parameter.IsGroup)
+
+                if (parameter.IsGroup)
                 {
                     Groupparameter = parameter;
                     break;
-                }    
+                }
             }
 
             int groupctr = 0;
-            
+
 
             foreach (var label in Groupparameter.DIC_LablesIfNomainal.Values)
             {
@@ -1789,7 +1789,7 @@ namespace ExcelScore.Forms
                 wordObj.AddPara_Center(table, 0, column, label + Convert.ToChar(11) + "(n = " + EachGroupCount[groupctr] + ")");
 
                 column = column + 2;
-                groupctr++; 
+                groupctr++;
             }
 
 
@@ -1797,17 +1797,17 @@ namespace ExcelScore.Forms
 
         }
 
-        DefinitionUnderTable definitionUnderTableObj = new DefinitionUnderTable(); 
+        DefinitionUnderTable definitionUnderTableObj = new DefinitionUnderTable();
 
-   
 
-        public void InsertPairwiseF(IWTable table ,ComparativeTable comparativeTable , int WordTableColumns)
+
+        public void InsertPairwiseF(IWTable table, ComparativeTable comparativeTable, int WordTableColumns)
         {
             bool Hasnominal = false;
             foreach (var parameter in comparativeTable.Parameters)
             {
                 // MessageBox.Show(parameter.Name);
-                if(parameter.NominalOrScale == "Nominal")
+                if (parameter.NominalOrScale == "Nominal")
                 {
                     Hasnominal = true;
                 }
@@ -1821,42 +1821,42 @@ namespace ExcelScore.Forms
             {
                 startrow = 1;
             }
-           
-            
-            
-            
+
+
+
+
             int count = 0;
 
             Parameter lastParameter = null;
             foreach (var parameter in comparativeTable.Parameters)
             {
-               // MessageBox.Show(parameter.Name);
+                // MessageBox.Show(parameter.Name);
                 lastParameter = parameter;
             }
 
             foreach (var parameter in comparativeTable.Parameters)
             {
-                
+
                 if (parameter.IsGroup)
                 {
                     continue;
                 }
-                if(parameter.NominalOrScale =="Nominal")
+                if (parameter.NominalOrScale == "Nominal")
                 {
                     //count = parameter.ParameterValues.Distinct().Count() + 2;
-                    count = parameter.DIC_LablesIfNomainal.Keys.Count() +1;
+                    count = parameter.DIC_LablesIfNomainal.Keys.Count() + 1;
                 }
-                else if(parameter.NominalOrScale == "Scale")
+                else if (parameter.NominalOrScale == "Scale")
                 {
                     count = 4;
                 }
 
 
-                if(parameter.ISFAnovaSig)
+                if (parameter.ISFAnovaSig)
                 {
-                    
+
                     WTableRow row;
-                     
+
                     int insert = startrow + 4;
 
 
@@ -1864,24 +1864,24 @@ namespace ExcelScore.Forms
                     row = table.AddRow();
                     table.Rows.Insert(insert, row);
 
-  
+
                     int rowindex = table.Rows.IndexOf(row);
 
 
 
-                    wordObj.AddParaCombined(table, rowindex, 0, "Sig. bet. grps.", true, true , Syncfusion.Drawing.Color.Empty , Syncfusion.Drawing.Color.Black);
-                    table.ApplyHorizontalMerge(rowindex, 1, WordTableColumns-3);
+                    wordObj.AddParaCombined(table, rowindex, 0, "Sig. bet. grps.", true, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+                    table.ApplyHorizontalMerge(rowindex, 1, WordTableColumns - 3);
 
 
                     for (int i = 0; i < WordTableColumns; i++)
                     {
                         if (parameter == lastParameter)
                         {
-                            
+
                             table.Rows[rowindex].Cells[i].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                             table.Rows[rowindex].Cells[i].CellFormat.Borders.Top.LineWidth = 0.5f;
                         }
-                        else if(!(parameter == lastParameter))
+                        else if (!(parameter == lastParameter))
                         {
                             //MessageBox.Show(rowindex.ToString());
                             table.Rows[rowindex].Cells[i].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
@@ -1893,35 +1893,35 @@ namespace ExcelScore.Forms
                     for (int i = 0; i < parameter.FPairwise.Count; i++)
                     {
                         string groupnumber = "";
-                        
+
                         bool issig = false;
                         try
                         {
                             double checkforP = double.Parse(parameter.FPairwise[i]);
-                            if(checkforP < 0.05)
+                            if (checkforP < 0.05)
                             {
-                                issig = true;   
+                                issig = true;
                                 //SubSuperScriptText
                             }
                         }
-                        catch(FormatException)
+                        catch (FormatException)
                         {
                             issig = true;
                             //wordObj.AddParaCombined(table, rowindex, 0, "Sig. bet. grps.", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
                         }
-                        groupnumber = (i+1).ToString();
-                        
+                        groupnumber = (i + 1).ToString();
+
 
                         //wordObj.AddParaCombined(table, rowindex, 1, "p" , false , true , Syncfusion.Drawing.Color.Empty , Syncfusion.Drawing.Color.Black);
                         //wordObj.SubSuperScriptText(table, rowindex, 1, Syncfusion.Drawing.Color.Empty, groupnumber, "Sub");
 
-                        wordObj.InsertPairwiseF(table, rowindex, 1, "p" , paragraph , false , true , Syncfusion.Drawing.Color.Empty , Syncfusion.Drawing.Color.Black);
-                        wordObj.SubSuperScriptText(table, rowindex, 1, Syncfusion.Drawing.Color.Empty , groupnumber , "Sub");
-                        if(!parameter.FPairwise[i].Contains("<"))
+                        wordObj.InsertPairwiseF(table, rowindex, 1, "p", paragraph, false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+                        wordObj.SubSuperScriptText(table, rowindex, 1, Syncfusion.Drawing.Color.Empty, groupnumber, "Sub");
+                        if (!parameter.FPairwise[i].Contains("<"))
                         {
                             wordObj.InsertPairwiseF(table, rowindex, 1, "=", paragraph, false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
                         }
-                        
+
                         wordObj.InsertPairwiseF(table, rowindex, 1, parameter.FPairwise[i], paragraph, false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
 
                         if (issig)
@@ -1929,7 +1929,7 @@ namespace ExcelScore.Forms
                             wordObj.SubSuperScriptText(table, rowindex, 1, Syncfusion.Drawing.Color.Empty, "*", "Super");
                         }
 
-                        if (i < parameter.FPairwise.Count-1)
+                        if (i < parameter.FPairwise.Count - 1)
                         {
                             wordObj.InsertPairwiseF(table, rowindex, 1, ",", paragraph, false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
                         }
@@ -1944,7 +1944,7 @@ namespace ExcelScore.Forms
                     table.ApplyHorizontalMerge(insert + 1, 1, WordTableColumns - 3);
 
                     string Column0text = table[insert, 0].Paragraphs[0].Text;
-                    wordObj.AddParaCombined(table, insert+1, 0, Column0text, true, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+                    wordObj.AddParaCombined(table, insert + 1, 0, Column0text, true, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
 
                     WParagraph NEWpara = (WParagraph)table[insert + 1, 1].AddParagraph();
                     for (int i = 0; i < parameter.FPairwise.Count; i++)
@@ -1992,7 +1992,7 @@ namespace ExcelScore.Forms
                     table.Rows[insert + 1].Cells[0].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                     table.Rows[insert + 1].Cells[0].CellFormat.Borders.Right.LineWidth = 1.5f;
 
-                    table.Rows[insert + 1].Cells[WordTableColumns-2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[insert + 1].Cells[WordTableColumns - 2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                     table.Rows[insert + 1].Cells[WordTableColumns - 2].CellFormat.Borders.Left.LineWidth = 1.5f;
 
                     for (int i = 0; i < WordTableColumns; i++)
@@ -2022,7 +2022,7 @@ namespace ExcelScore.Forms
                     startrow = startrow + 1;
                 }
 
-                startrow = startrow + count;    
+                startrow = startrow + count;
             }
 
 
@@ -2033,10 +2033,10 @@ namespace ExcelScore.Forms
         public void ComparativeBasic(string TableName)
         {
             GetDataValues(TableName);
-            
+
             foreach (ComparativeTable table in ComparativeTables)
             {
-                if(TableName == table.TableName)
+                if (TableName == table.TableName)
                 {
                     excelFunctionsobj.ReadLablesIfNominal(table);
                     int groupColumnIndex = newFindGroupColumnIndex(table);
@@ -2088,7 +2088,7 @@ namespace ExcelScore.Forms
 
                                     if (parameterCellValue == null)
                                     {
-                                        
+
                                         break;
                                     }
                                     if (parameterCellValue.ToString() == ".")
@@ -2136,7 +2136,7 @@ namespace ExcelScore.Forms
                                         }
 
                                     }
-                                        
+
                                 }
                             }
 
@@ -2144,13 +2144,13 @@ namespace ExcelScore.Forms
                     }
                 }
             }
-                
+
             FormatParameters(TableName);
         }
 
 
         WordDocument document;
-        public void AddTotalColumn(IWTable table , ComparativeTable comparativeTable)
+        public void AddTotalColumn(IWTable table, ComparativeTable comparativeTable)
         {
             bool tableHasNominal = false;
             foreach (WTableRow row in table.Rows)
@@ -2183,7 +2183,7 @@ namespace ExcelScore.Forms
                 {
                     tableHasNominal = true;
                 }
-                
+
             }
             //Merge Total
 
@@ -2214,7 +2214,7 @@ namespace ExcelScore.Forms
                 table.Rows[1].Cells[2].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                 table.Rows[1].Cells[2].CellFormat.Borders.Bottom.LineWidth = 1.5f;
             }
-            else if(!tableHasNominal)
+            else if (!tableHasNominal)
             {
                 table.Rows[0].Cells[1].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                 table.Rows[0].Cells[1].CellFormat.Borders.Bottom.LineWidth = 1.5f;
@@ -2222,21 +2222,21 @@ namespace ExcelScore.Forms
                 table.Rows[0].Cells[0].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                 table.Rows[0].Cells[0].CellFormat.Borders.Bottom.LineWidth = 1.5f;
             }
-            
+
 
 
             int TotalN = 0;
             foreach (var parameter in comparativeTable.Parameters)
             {
-                if(!parameter.hasLowerN)
+                if (!parameter.hasLowerN)
                 {
                     TotalN = parameter.ParameterValues.Count;
                     break;
                 }
             }
 
-            wordObj.AddPara_Center(table, 0, 1 , "Total\n(n = "+ TotalN + ")");
-            
+            wordObj.AddPara_Center(table, 0, 1, "Total\n(n = " + TotalN + ")");
+
 
             int startrow = 2;
 
@@ -2252,7 +2252,7 @@ namespace ExcelScore.Forms
                 if (parameter.NominalOrScale == "Nominal")
                 {
                     //tableHasNominal = true;
-                    count = parameter.DIC_LablesIfNomainal.Keys.Count+1;
+                    count = parameter.DIC_LablesIfNomainal.Keys.Count + 1;
                 }
                 else if (parameter.NominalOrScale == "Scale")
                 {
@@ -2272,9 +2272,9 @@ namespace ExcelScore.Forms
 
                 //border of each parameter
                 // except the first one 
-                if(startrow!= 2)
+                if (startrow != 2)
                 {
-                    if(tableHasNominal)
+                    if (tableHasNominal)
                     {
                         table.Rows[startrow].Cells[1].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                         table.Rows[startrow].Cells[1].CellFormat.Borders.Top.LineWidth = 0.5f;
@@ -2282,15 +2282,15 @@ namespace ExcelScore.Forms
                         table.Rows[startrow].Cells[2].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                         table.Rows[startrow].Cells[2].CellFormat.Borders.Top.LineWidth = 0.5f;
                     }
-                    else if(!tableHasNominal)
+                    else if (!tableHasNominal)
                     {
-                        table.Rows[startrow-1].Cells[1].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-                        table.Rows[startrow-1].Cells[1].CellFormat.Borders.Top.LineWidth = 0.5f;
+                        table.Rows[startrow - 1].Cells[1].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[startrow - 1].Cells[1].CellFormat.Borders.Top.LineWidth = 0.5f;
 
-                        table.Rows[startrow-1].Cells[2].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
-                        table.Rows[startrow-1].Cells[2].CellFormat.Borders.Top.LineWidth = 0.5f;
+                        table.Rows[startrow - 1].Cells[2].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                        table.Rows[startrow - 1].Cells[2].CellFormat.Borders.Top.LineWidth = 0.5f;
                     }
-                    
+
                 }
 
 
@@ -2366,11 +2366,11 @@ namespace ExcelScore.Forms
                     //    table.ApplyHorizontalMerge(startrow + i, 1, 2);
                     //}
 
-                    
 
 
 
-                    if(tableHasNominal)
+
+                    if (tableHasNominal)
                     {
                         table.Rows[1].Cells[1].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
                         table.Rows[1].Cells[1].CellFormat.Borders.Bottom.LineWidth = 1.5f;
@@ -2379,16 +2379,16 @@ namespace ExcelScore.Forms
                         table.Rows[1].Cells[2].CellFormat.Borders.Bottom.LineWidth = 1.5f;
 
 
-                        
+
 
                         table.ApplyVerticalMerge(1, 0, 1);
-                        table.ApplyHorizontalMerge(startrow , 1, 2);
+                        table.ApplyHorizontalMerge(startrow, 1, 2);
                         table.ApplyHorizontalMerge(startrow + 1, 1, 2);
                         table.ApplyHorizontalMerge(startrow + 2, 1, 2);
                         table.ApplyHorizontalMerge(startrow + 3, 1, 2);
 
 
-                        wordObj.Addpara_CenterNoBOLD(table, startrow +1, 1, formattedMinMax);
+                        wordObj.Addpara_CenterNoBOLD(table, startrow + 1, 1, formattedMinMax);
                         wordObj.Addpara_CenterNoBOLD(table, startrow + 2, 1, formattedMeanStd);
                         wordObj.Addpara_CenterNoBOLD(table, startrow + 3, 1, formattedMedian + " (" + formattedIQR + ")");
 
@@ -2405,9 +2405,9 @@ namespace ExcelScore.Forms
 
                         }
                     }
-                    else if(!tableHasNominal)
+                    else if (!tableHasNominal)
                     {
-                        table.ApplyHorizontalMerge(startrow-1, 1, 2);
+                        table.ApplyHorizontalMerge(startrow - 1, 1, 2);
 
                         table.ApplyHorizontalMerge(startrow, 1, 2);
                         table.ApplyHorizontalMerge(startrow + 1, 1, 2);
@@ -2420,8 +2420,8 @@ namespace ExcelScore.Forms
                         wordObj.Addpara_CenterNoBOLD(table, startrow + 2, 1, formattedMedian + " (" + formattedIQR + ")");
                     }
 
-                   
-                    
+
+
 
                     // Calculate scale statistics
 
@@ -2435,8 +2435,8 @@ namespace ExcelScore.Forms
 
 
             }
-            
-            
+
+
 
 
 
@@ -2457,7 +2457,7 @@ namespace ExcelScore.Forms
 
             foreach (var parameter in comparativeTable.Parameters)
             {
-                if(parameter.NominalOrScale == "Scale")
+                if (parameter.NominalOrScale == "Scale")
                 {
                     ColumnCtr++;
                 }
@@ -2483,7 +2483,7 @@ namespace ExcelScore.Forms
 
                     wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
 
-                    int Variablerows = (5 * numberofgroups) +3;
+                    int Variablerows = (5 * numberofgroups) + 3;
 
                     //log(Variablerows);
 
@@ -2496,7 +2496,7 @@ namespace ExcelScore.Forms
 
                     wordObj.GeneralTableFormat(table);
 
-                    wordObj.ApplyGeneralPeriodsUp_Groups_ComparativeMerges(table, WordTableColumns , WordTableRows, numberofgroups, ComparativeTables[tableindex]);
+                    wordObj.ApplyGeneralPeriodsUp_Groups_ComparativeMerges(table, WordTableColumns, WordTableRows, numberofgroups, ComparativeTables[tableindex]);
 
 
                     wordObj.ApplyGeneral_PeriodsUp_Groups_ComparativeBorders(table, WordTableRows, WordTableColumns, numberofgroups, ComparativeTables[tableindex]);
@@ -2509,10 +2509,10 @@ namespace ExcelScore.Forms
 
                     InsertData_scale_PeriodsUp_Groups(table, ComparativeTables[tableindex]);
 
-                    GetGroupsTest_PeriodsUp_groups(table , ComparativeTables[tableindex] , WordTableRows);
+                    GetGroupsTest_PeriodsUp_groups(table, ComparativeTables[tableindex], WordTableRows);
 
 
-                    GetPeriodsTest_PeriodsUp_groups(table, ComparativeTables[tableindex] , WordTableColumns);
+                    GetPeriodsTest_PeriodsUp_groups(table, ComparativeTables[tableindex], WordTableColumns);
 
 
                     wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
@@ -2522,7 +2522,7 @@ namespace ExcelScore.Forms
         }
         public void GetPeriodsTest_PeriodsUp_groups(IWTable table, ComparativeTable comparativeTable, int WordTableColumns)
         {
-            
+
             var scaleParameters = comparativeTable.Parameters
                                                   .Where(p => p.NominalOrScale == "Scale")
                                                   .ToList();
@@ -2542,8 +2542,8 @@ namespace ExcelScore.Forms
                     var key = kvp.Key;
                     var values = kvp.Value;
                     count = values.Count + tempctr;
-                    
-                    
+
+
                     for (int i = tempctr; i < count; i++)
                     {
                         firstParameterValues.Add(scaleParameters[0].ParameterValues[i]);
@@ -2555,7 +2555,7 @@ namespace ExcelScore.Forms
                     var firstParameterArray = firstParameterValues.ToArray();
                     var secondParameterArray = secondParameterValues.ToArray();
 
-                    
+
 
                     string[] result = manual.Tpaired(firstParameterArray, secondParameterArray);
 
@@ -2576,53 +2576,53 @@ namespace ExcelScore.Forms
             }
         }
 
-        public void GetGroupsTest_PeriodsUp_groups(IWTable table ,ComparativeTable comparativeTable , int WordTableRows)
+        public void GetGroupsTest_PeriodsUp_groups(IWTable table, ComparativeTable comparativeTable, int WordTableRows)
         {
 
             int col = 1;
             foreach (var parameter in comparativeTable.Parameters)
             {
-                if(parameter.IsGroup)
+                if (parameter.IsGroup)
                 {
                     continue;
                 }
 
-                if(parameter.NominalOrScale == "Scale")
+                if (parameter.NominalOrScale == "Scale")
                 {
 
-                    
-                    if(parameter.NormalOrAbnormal == "Normal")
+
+                    if (parameter.NormalOrAbnormal == "Normal")
                     {
                         List<double> group1Values = new List<double>();
                         List<double> group2Values = new List<double>();
 
                         SplitGroupedParameterValues(parameter, out group1Values, out group2Values);
 
-                        
+
 
                         string[] values = manual.StudentT_Unpaired(group1Values, group2Values);
 
 
 
-                        wordObj.AddParaCombined(table, WordTableRows-1, col, values[0], false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                        wordObj.AddParaCombined(table, WordTableRows - 1, col, values[0], false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
 
 
-                        WParagraph testparaHighlight = (WParagraph)table[WordTableRows-1, col].Paragraphs[0];
-                        
+                        WParagraph testparaHighlight = (WParagraph)table[WordTableRows - 1, col].Paragraphs[0];
+
 
                         WTextRange PText = new WTextRange(testparaHighlight.Document);
                         PText.Text = " (" + values[1] + ")";
 
                         testparaHighlight.ChildEntities.Insert(1, PText);
-                        
-                        
+
+
 
 
                         col++;
                     }
 
 
-                    else if(parameter.NormalOrAbnormal == "Abnormal")
+                    else if (parameter.NormalOrAbnormal == "Abnormal")
                     {
                         List<double> group1Values = new List<double>();
                         List<double> group2Values = new List<double>();
@@ -2656,10 +2656,10 @@ namespace ExcelScore.Forms
 
                 }
             }
-            
+
         }
 
-        public void InsertData_scale_PeriodsUp_Groups(IWTable table , ComparativeTable comparativeTable)
+        public void InsertData_scale_PeriodsUp_Groups(IWTable table, ComparativeTable comparativeTable)
         {
             int col = 1;
             int row = 3;
@@ -2722,18 +2722,18 @@ namespace ExcelScore.Forms
                     int Variablerows = CountRows_NoIQR(ComparativeTables[tableindex]);
                     int WordTableRows = 2 + Variablerows;
 
-                    if(!ComparativeTables[tableindex].HasTotalColumn)
+                    if (!ComparativeTables[tableindex].HasTotalColumn)
                     {
                         int WordTableColumns = 3 + (numberofgroups * 2);
                     }
-                    else if(ComparativeTables[tableindex].HasTotalColumn)
+                    else if (ComparativeTables[tableindex].HasTotalColumn)
                     {
-                        int WordTableColumns = 3 + (numberofgroups * 2) +1;
+                        int WordTableColumns = 3 + (numberofgroups * 2) + 1;
                     }
 
 
 
-                    
+
 
                 }
             }
@@ -2865,7 +2865,7 @@ namespace ExcelScore.Forms
                                 }
                                 // Reset startingRow and increment column for the next group
                                 startingRow = newRowCount;
-                                column ++;
+                                column++;
                             }
 
 
@@ -2895,20 +2895,20 @@ namespace ExcelScore.Forms
                                 // Reset startingRow and increment column for the next group
                                 startingRow = newRowCount;
 
-                               column++;
+                                column++;
                             }
-                            
+
                             PerformTest(table, numberofgroups, parameter, startingRow, WordTableColumns - 2, WordTableColumns, issame, ComparativeTables[tableindex]);
-                            
-                            if(parameter.NormalOrAbnormal == "Normal")
+
+                            if (parameter.NormalOrAbnormal == "Normal")
                             {
                                 wordObj.HighlightCellContent_Paper(table, startingRow + 2, WordTableColumns);
                             }
-                            else if(parameter.NormalOrAbnormal == "Abnormal")
+                            else if (parameter.NormalOrAbnormal == "Abnormal")
                             {
-                                wordObj.HighlightCellContent_Paper(table, startingRow +1, WordTableColumns);
+                                wordObj.HighlightCellContent_Paper(table, startingRow + 1, WordTableColumns);
                             }
-                            
+
                         }
 
                         // Increment newRowCount for the next parameter
@@ -2920,11 +2920,11 @@ namespace ExcelScore.Forms
                     {
                         InsertPairwiseF(table, ComparativeTables[tableindex], WordTableColumns);
                     }
-                    catch(Exception)
+                    catch (Exception)
                     {
                         MessageBox.Show("Remove Nominal Parameters!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    
+
 
                     wordObj.FormatTable(table, 12);
                 }
@@ -2937,9 +2937,9 @@ namespace ExcelScore.Forms
 
             foreach (var parameter in comparativeTable.Parameters)
             {
-                if(parameter.IsGroup)
+                if (parameter.IsGroup)
                 {
-                    int count = parameter.DIC_LablesIfNomainal.Keys.Count+1;
+                    int count = parameter.DIC_LablesIfNomainal.Keys.Count + 1;
                     TotalRows += count;
                 }
 
@@ -3030,8 +3030,8 @@ namespace ExcelScore.Forms
                         foreach (var GroupNameKvp in parameter.FormattedValues_Relation)
                         {
                             string GroupName = GroupNameKvp.Key;
-                            
-                           
+
+
                             Parameter groupParameter = ComparativeTables[tableindex].Parameters.SingleOrDefault(p => p.Name == GroupName);
                             PerformTest_Relation(ComparativeTables[tableindex], table, StartingRow, WordTableColumns - 2, parameter, groupParameter);
 
@@ -3081,7 +3081,7 @@ namespace ExcelScore.Forms
                                         StartingRow++;
                                     }
 
-                                        
+
 
 
                                     else if (parameter.GroupedParameterValues_Relation[GroupName][GroupValue].Count == 1)
@@ -3146,7 +3146,7 @@ namespace ExcelScore.Forms
         }
         public void Relation_Layout_DependentNumber_IQR()
         {
-            
+
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
             {
                 if (ComparativeTables[tableindex].FormatType == "Relation IQR")
@@ -3483,7 +3483,7 @@ namespace ExcelScore.Forms
         }
         public void Relation_Layout_DependentNumber()
         {
-            
+
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
             {
                 if (ComparativeTables[tableindex].FormatType == "Relation")
@@ -3492,7 +3492,7 @@ namespace ExcelScore.Forms
 
                     IWSection section = wordObj.CreatePortraitSection();
 
-                    
+
 
                     wordObj.AddRelationTitle(section, ComparativeTables[tableindex].TableName);
 
@@ -3526,7 +3526,7 @@ namespace ExcelScore.Forms
                     //
                     wordObj.InsertRelation_InnerHeader_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
 
-                    
+
 
                     wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test of Sig.");
 
@@ -3534,11 +3534,11 @@ namespace ExcelScore.Forms
                     foreach (var parameter in ComparativeTables[tableindex].Parameters)
                     {
 
-                        if(parameter.IsGroup || parameter.GroupedParameterValues_Relation.Count == 0)
+                        if (parameter.IsGroup || parameter.GroupedParameterValues_Relation.Count == 0)
                         {
                             continue;
                         }
-                        int StartingRow = 2;    
+                        int StartingRow = 2;
                         foreach (var GroupNameKvp in parameter.FormattedValues_Relation)
                         {
                             StartingRow++;
@@ -3546,7 +3546,7 @@ namespace ExcelScore.Forms
                             Parameter groupParameter = ComparativeTables[tableindex].Parameters.SingleOrDefault(p => p.Name == GroupName);
                             PerformTest_Relation(ComparativeTables[tableindex], table, StartingRow, WordTableColumns - 2, parameter, groupParameter);
 
-                            
+
                             var sortedGroups = parameter.FormattedValues_Relation[GroupName].Keys.OrderBy(key => key).ToList();
 
                             var SortedGroupDIC = groupParameter.DIC_LablesIfNomainal.Keys.OrderBy(key => key).ToList();
@@ -3591,7 +3591,7 @@ namespace ExcelScore.Forms
 
                                         StartingRow++;
                                     }
-                                        
+
 
 
                                     else if (parameter.GroupedParameterValues_Relation[GroupName][GroupValue].Count == 1)
@@ -3628,7 +3628,7 @@ namespace ExcelScore.Forms
 
                             }
 
-                            
+
 
 
                         }
@@ -3638,7 +3638,7 @@ namespace ExcelScore.Forms
 
                     }
 
-                    
+
 
 
 
@@ -3646,12 +3646,12 @@ namespace ExcelScore.Forms
 
                     //wordObj.FormatTableCustom(table, 11, 0, 0);
                     wordObj.LeftAndRightCellMarginCustom(table, wordObj.SetColumnWidthInCentimeters(0.09f), wordObj.SetColumnWidthInCentimeters(0.09f));
-                    
+
                 }
             }
         }
 
-        public void PerformTest_Relation(ComparativeTable comparativeTable,IWTable table,int addrow , int addColumn, Parameter parameter , Parameter GroupParameter)
+        public void PerformTest_Relation(ComparativeTable comparativeTable, IWTable table, int addrow, int addColumn, Parameter parameter, Parameter GroupParameter)
         {
             pythonStat.InitPython();
             int numberofgroups = parameter.FormattedValues_Relation[GroupParameter.Name].Keys.Count;
@@ -3660,7 +3660,7 @@ namespace ExcelScore.Forms
             int ValueOne = 0;
             foreach (var key in SortedGroupsValues)
             {
-                if(parameter.GroupedParameterValues_Relation[GroupParameter.Name][key].Count == 1)
+                if (parameter.GroupedParameterValues_Relation[GroupParameter.Name][key].Count == 1)
                 {
                     ValueOne++;
                 }
@@ -3692,7 +3692,7 @@ namespace ExcelScore.Forms
                 if (parameter.NormalOrAbnormal == "Normal")
                 {
                     comparativeTable.TestsDone.Add("tstudent");
-                    
+
 
                     string[] values = manual.StudentT_Unpaired(group1Values, group2Values);
                     values[0] = "t=" + Convert.ToChar(11) + values[0];
@@ -3700,7 +3700,7 @@ namespace ExcelScore.Forms
 
                 }
 
-                else if(parameter.NormalOrAbnormal == "Abnormal")
+                else if (parameter.NormalOrAbnormal == "Abnormal")
                 {
                     comparativeTable.TestsDone.Add("U");
 
@@ -3717,23 +3717,23 @@ namespace ExcelScore.Forms
                             values[0] = doubleValue.ToString("0.0");
                         }
                     }
-                    catch(Exception)
+                    catch (Exception)
                     {
-                        
+
                     }
                     finally
                     {
                         values[0] = "U=" + Convert.ToChar(11) + values[0];
                         wordObj.InsertTest_P(table, addrow, addColumn, values);
                     }
-                    
+
 
 
                 }
-                
+
             }
 
-            if (numberofgroups- ValueOne > 2)
+            if (numberofgroups - ValueOne > 2)
             {
                 if (parameter.NormalOrAbnormal == "Normal")
                 {
@@ -3744,7 +3744,7 @@ namespace ExcelScore.Forms
                     anovaTest = manual.Fanova_Relation(parameter, GroupParameter);
                     string[] values = { anovaTest.TestValue, anovaTest.PValue };
 
-                    
+
 
 
 
@@ -3760,7 +3760,7 @@ namespace ExcelScore.Forms
 
                     AnovaTestResult anovaTestResult = new AnovaTestResult();
 
-                    anovaTestResult = manual.Kruskal_H_Relation(parameter , GroupParameter);
+                    anovaTestResult = manual.Kruskal_H_Relation(parameter, GroupParameter);
                     string[] values = { anovaTestResult.TestValue, anovaTestResult.PValue };
 
                     values[0] = "H=" + Convert.ToChar(11) + values[0];
@@ -3771,7 +3771,7 @@ namespace ExcelScore.Forms
 
             }
 
-            
+
         }
         public bool DetermineHasNominal(ComparativeTable comparativeTable)
         {
@@ -3820,7 +3820,7 @@ namespace ExcelScore.Forms
 
 
         }
-        
+
         public void TestPic(string filePath)
         {
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // Get path to desktop
@@ -3853,7 +3853,7 @@ namespace ExcelScore.Forms
 
                 if (ComparativeTables[tableindex].FormatType == "Descriptive")
                 {
-                    
+
 
                     IWSection section = wordObj.CreatePortraitSection();
 
@@ -3914,7 +3914,7 @@ namespace ExcelScore.Forms
                     //    var allValues = par.GroupedParameterValues.Values.SelectMany(x => x).Distinct().ToList();
 
                     //    // Prepare contingency table
-                        
+
                     //    foreach (var value in allValues)
                     //    {
                     //        var categoryCounts = new List<int>();
@@ -3931,7 +3931,7 @@ namespace ExcelScore.Forms
                     wordObj.FormatTable(table, 12);
                 }
 
-                    
+
 
 
 
@@ -4066,9 +4066,9 @@ namespace ExcelScore.Forms
                 {
                     wordObj.AddPara_NoCenter(table, currentrow, 0, parameter.Name);
 
-                    if(parameter.hasLowerN)
+                    if (parameter.hasLowerN)
                     {
-                        wordObj.AddParaCombined(table, currentrow, 0, "(n = " + parameter.ParameterValues.Count + ")", true, false , Syncfusion.Drawing.Color.Empty , Syncfusion.Drawing.Color.Red) ;
+                        wordObj.AddParaCombined(table, currentrow, 0, "(n = " + parameter.ParameterValues.Count + ")", true, false, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Red);
                     }
 
                     if (currentrow < WordTableRows - 1)
@@ -4204,7 +4204,7 @@ namespace ExcelScore.Forms
 
         }
 
-        public int Count_Rows_Columns_Descriptive_Periods(ComparativeTable comparativeTable , int numberofperiods)
+        public int Count_Rows_Columns_Descriptive_Periods(ComparativeTable comparativeTable, int numberofperiods)
         {
             int rowcount = 0;
             bool hasNominal = false;
@@ -4212,17 +4212,17 @@ namespace ExcelScore.Forms
 
             foreach (var parameter in comparativeTable.Parameters)
             {
-                if(parameter.IsGroup)
+                if (parameter.IsGroup)
                 {
                     continue;
                 }
 
-                if(parameter.NominalOrScale == "Nominal")
+                if (parameter.NominalOrScale == "Nominal")
                 {
                     rowcount += parameter.DIC_LablesIfNomainal.Keys.Count + 1;
                     hasNominal = true;
                 }
-                else if(parameter.NominalOrScale == "Scale")
+                else if (parameter.NominalOrScale == "Scale")
                 {
                     rowcount += 4;
                 }
@@ -4255,11 +4255,11 @@ namespace ExcelScore.Forms
             bool hasNominal = false;
             foreach (var parameter in comparativeTable.Parameters)
             {
-                if(parameter.IsGroup)
+                if (parameter.IsGroup)
                 {
                     continue;
                 }
-                if( parameter.NominalOrScale == "Nominal")
+                if (parameter.NominalOrScale == "Nominal")
                 {
                     hasNominal = true;
                 }
@@ -4277,7 +4277,7 @@ namespace ExcelScore.Forms
 
                     bool Tablehasnominal = false;
 
-                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName , 1);
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, 1);
 
                     int PeriodCount = 0;
 
@@ -4290,14 +4290,14 @@ namespace ExcelScore.Forms
                         MessageBox.Show("Please enter a valid period count");
                     }
 
-                    int Variablerows = Count_Rows_Columns_Descriptive_Periods(ComparativeTables[tableindex] , PeriodCount);
+                    int Variablerows = Count_Rows_Columns_Descriptive_Periods(ComparativeTables[tableindex], PeriodCount);
 
 
-                    
 
-                    
-                    
-                    int WordTableColumns = 1 + (PeriodCount*2);
+
+
+
+                    int WordTableColumns = 1 + (PeriodCount * 2);
 
                     int WordTableRows = 2 + Variablerows;
 
@@ -4414,7 +4414,7 @@ namespace ExcelScore.Forms
                 }
             }
         }
-        public int Groups_Side_Periods_Up_Rows(ComparativeTable comparativeTable , int parametercount)
+        public int Groups_Side_Periods_Up_Rows(ComparativeTable comparativeTable, int parametercount)
         {
             int rows = 0;
 
@@ -4464,7 +4464,7 @@ namespace ExcelScore.Forms
 
         }
 
-        public void Groups_Side_Periods_Up_threePeriods_periodstest(IWTable table,ComparativeTable comparativeTable , List<Parameter> CurrentParameters , int insertrow , Parameter GroupParameter , int GroupColIndex , int WordTableColumns , ref List<int> RowsToremoveSigPeriods)
+        public void Groups_Side_Periods_Up_threePeriods_periodstest(IWTable table, ComparativeTable comparativeTable, List<Parameter> CurrentParameters, int insertrow, Parameter GroupParameter, int GroupColIndex, int WordTableColumns, ref List<int> RowsToremoveSigPeriods)
         {
             List<Dictionary<int, List<double>>> CorrectDataParameters = new List<Dictionary<int, List<double>>>();
 
@@ -4472,7 +4472,7 @@ namespace ExcelScore.Forms
 
             foreach (var CurrentParameter in CurrentParameters)
             {
-                Dictionary<int, List<double>> GroupedCorrectData = ExcelFunctions.GetDataWithMissingValues_withGroup(worksheet, CurrentParameter.Name , GroupParameter.Name  , GroupColIndex);
+                Dictionary<int, List<double>> GroupedCorrectData = ExcelFunctions.GetDataWithMissingValues_withGroup(worksheet, CurrentParameter.Name, GroupParameter.Name, GroupColIndex);
                 CorrectDataParameters.Add(GroupedCorrectData);
             }
 
@@ -4526,7 +4526,7 @@ namespace ExcelScore.Forms
                     }
                 }
 
-                
+
 
                 if (NormalOrAbnormal == "Normal")
                 {
@@ -4534,7 +4534,7 @@ namespace ExcelScore.Forms
 
                     bool pvalueSig = generalFunctions.PvalueHasSig(testresult.PValue);
 
-                    
+
 
                     int rowNumber = (loopCounter % 2 == 0) ? (insertrow - 9) : (insertrow - 4);
                     int rowNumber_Sig_Periods = (loopCounter % 2 == 0) ? (insertrow - 6) : (insertrow - 1);
@@ -4548,9 +4548,9 @@ namespace ExcelScore.Forms
                         wordObj.AddParaCombined(table, rowNumber, WordTableColumns - 2, "F=" + Convert.ToChar(11) + testresult.TestValue, false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
                     }
 
-                    
+
                     wordObj.Addpara_CenterNoBOLD(table, rowNumber, WordTableColumns - 1, testresult.PValue);
-                    
+
 
                     if (!pvalueSig)
                     {
@@ -4585,7 +4585,7 @@ namespace ExcelScore.Forms
                                 }
 
                                 // **Insert "p" first**
-                               wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, "p", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
+                                wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, "p", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
 
                                 // **Now insert subscripted number**
                                 wordObj.SubSuperScriptText(table, rowNumber_Sig_Periods, 3, Syncfusion.Drawing.Color.Transparent, pnumber.ToString(), "Sub");
@@ -4594,7 +4594,7 @@ namespace ExcelScore.Forms
                                 string finalText = (formattedPValue == "<0.001") ? "<0.001" : $"={formattedPValue}";
                                 wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, finalText, false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
 
-                                if(psig)
+                                if (psig)
                                 {
                                     wordObj.SubSuperScriptText(table, rowNumber_Sig_Periods, 3, Syncfusion.Drawing.Color.Empty, "*", "Super");
                                 }
@@ -4603,17 +4603,17 @@ namespace ExcelScore.Forms
                                 {
                                     wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, ",", false, true, Syncfusion.Drawing.Color.Transparent, Syncfusion.Drawing.Color.Black);
                                 }
-                                
+
 
                                 pnumber++;
                             }
                         }
 
                         //wordObj.AddPara_Center(table, rowNumber_Sig_Periods, WordTableColumns-2, "");
-                        table.Rows[rowNumber_Sig_Periods].Cells[WordTableColumns-2].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
+                        table.Rows[rowNumber_Sig_Periods].Cells[WordTableColumns - 2].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
 
                         //wordObj.AddPara_Center(table, rowNumber_Sig_Periods, WordTableColumns - 1, "");
-                        table.Rows[rowNumber_Sig_Periods].Cells[WordTableColumns-1].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
+                        table.Rows[rowNumber_Sig_Periods].Cells[WordTableColumns - 1].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
 
 
 
@@ -4630,7 +4630,7 @@ namespace ExcelScore.Forms
                 {
                     List<List<double>> Datalist = new List<List<double>>();
 
-                   
+
 
                     foreach (var parameter in parametersForGroup)
                     {
@@ -4639,7 +4639,7 @@ namespace ExcelScore.Forms
 
                     GeneralFunctions.RemoveInvalidEntries(ref Datalist);
 
-                    
+
 
                     AnovaTestResult testresult = pythonStat.PerformFriedmanWithDunnTest(Datalist);
 
@@ -4704,7 +4704,7 @@ namespace ExcelScore.Forms
                                 // **Now insert the p-value after the subscript**
                                 string finalText = (formattedPValue == "<0.001") ? "<0.001" : $"={formattedPValue}";
                                 wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, finalText, false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
-                               
+
 
                                 if (psig)
                                 {
@@ -4715,7 +4715,7 @@ namespace ExcelScore.Forms
                                 {
                                     wordObj.AddParaCombined_New(table, rowNumber_Sig_Periods, 3, ",", false, true, Syncfusion.Drawing.Color.Transparent, Syncfusion.Drawing.Color.Black);
                                 }
-                               
+
 
                                 pnumber++;
                             }
@@ -4768,9 +4768,9 @@ namespace ExcelScore.Forms
 
                     int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
 
-                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName , numberofgroups);
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
 
-                    int Variablerows = Groups_Side_Periods_Up_Rows(ComparativeTables[tableindex] , ParameterCount);
+                    int Variablerows = Groups_Side_Periods_Up_Rows(ComparativeTables[tableindex], ParameterCount);
 
                     int WordTableRows = 1 + Variablerows;
 
@@ -4788,7 +4788,7 @@ namespace ExcelScore.Forms
                     wordObj.Groups_Side_Periods_Up_threePeriods_Widths(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns, numberofgroups);
 
 
-                    wordObj.Groups_Side_Periods_Up_threePeriods_Headers(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns , ParameterCount);
+                    wordObj.Groups_Side_Periods_Up_threePeriods_Headers(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns, ParameterCount);
 
 
                     //the code applies data when group parameter is first and 3 periods (Note)***
@@ -4803,28 +4803,28 @@ namespace ExcelScore.Forms
                     var SortedGroupKeysAll = GroupPara.ParameterValues.Distinct().OrderBy(key => key).ToList();
 
                     //BIG parameter (3 parameters)
-                    for (int paractr = 0;paractr < ParameterCount/3;paractr++)
+                    for (int paractr = 0; paractr < ParameterCount / 3; paractr++)
                     {
                         int col = 3;
                         //small parameters DAY 1 , etc
                         List<Parameter> periodsparameter = new List<Parameter>();
-                        for (int SubParactr = 0;SubParactr < 3; SubParactr++)
+                        for (int SubParactr = 0; SubParactr < 3; SubParactr++)
                         {
                             periodsparameter.Add(ComparativeTables[tableindex].Parameters[parameterCounter]);
                             row = 1 + tempctr;
                             var sortedKeys = ComparativeTables[tableindex].Parameters[parameterCounter].FormattedValues.Keys.OrderBy(key => key).ToList();
-                            
+
                             foreach (int groupValue in SortedGroupKeysAll)
                             {
                                 if (sortedKeys.Contains(groupValue))
                                 {
-                                    
+
                                     //Add n
                                     int n = ComparativeTables[tableindex].Parameters[parameterCounter].GroupedParameterValues[groupValue].Count;
 
                                     int groupn = GroupPara.GetValueCount(groupValue);
 
-                                    if(n == groupn)
+                                    if (n == groupn)
                                     {
                                         wordObj.AddPara_Center(table, row, col, "(n = " + n + ")");
                                     }
@@ -4834,26 +4834,26 @@ namespace ExcelScore.Forms
                                     }
 
 
-                                    
+
 
                                     Dictionary<string, string> formattedValues = ComparativeTables[tableindex].Parameters[parameterCounter].FormattedValues[groupValue];
 
-                                    int currentRow = row+1; 
+                                    int currentRow = row + 1;
 
                                     foreach (var stat in formattedValues)
                                     {
-                                        if(stat.Key == "Mean ± StdDev")
+                                        if (stat.Key == "Mean ± StdDev")
                                         {
                                             if (ComparativeTables[tableindex].Parameters[parameterCounter].NormalOrAbnormal == "Abnormal")
                                             {
-                                                wordObj.AddParaCombined(table, currentRow, col, stat.Value, false, true,Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                                                wordObj.AddParaCombined(table, currentRow, col, stat.Value, false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
                                             }
                                             else
                                             {
                                                 wordObj.Addpara_CenterNoBOLD(table, currentRow, col, stat.Value);
                                             }
                                         }
-                                        else if(stat.Key == "Median")
+                                        else if (stat.Key == "Median")
                                         {
                                             if (ComparativeTables[tableindex].Parameters[parameterCounter].NormalOrAbnormal == "Normal")
                                             {
@@ -4868,7 +4868,7 @@ namespace ExcelScore.Forms
                                         {
                                             wordObj.Addpara_CenterNoBOLD(table, currentRow, col, stat.Value);
                                         }
-                                        
+
                                         currentRow++;
                                     }
 
@@ -4876,19 +4876,19 @@ namespace ExcelScore.Forms
                                 }
                                 else
                                 {
-                                    wordObj.AddParaCombined_New(table, row, col, "(n = " + 0 + ")" , true , true , Syncfusion.Drawing.Color.Empty , Syncfusion.Drawing.Color.Red);
-                                    
+                                    wordObj.AddParaCombined_New(table, row, col, "(n = " + 0 + ")", true, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Red);
+
                                     wordObj.Addpara_CenterNoBOLD(table, row + 1, col, "–");
                                     wordObj.Addpara_CenterNoBOLD(table, row + 2, col, "–");
                                     wordObj.Addpara_CenterNoBOLD(table, row + 3, col, "–");
                                 }
                                 row = row + 5;
 
-                                
+
                             }
 
-                            PerformTest_Groups_Side(table , ComparativeTables[tableindex] , ComparativeTables[tableindex].Parameters[parameterCounter] , row , col , WordTableColumns);
-                            
+                            PerformTest_Groups_Side(table, ComparativeTables[tableindex], ComparativeTables[tableindex].Parameters[parameterCounter], row, col, WordTableColumns);
+
 
                             col++;
                             parameterCounter++;
@@ -4896,7 +4896,7 @@ namespace ExcelScore.Forms
 
 
 
-                        Groups_Side_Periods_Up_threePeriods_periodstest(table,ComparativeTables[tableindex], periodsparameter, row , GroupPara , GroupColIndex , WordTableColumns , ref RowsToremoveSigPeriods);
+                        Groups_Side_Periods_Up_threePeriods_periodstest(table, ComparativeTables[tableindex], periodsparameter, row, GroupPara, GroupColIndex, WordTableColumns, ref RowsToremoveSigPeriods);
                         tempctr = tempctr + 11;
                     }
 
@@ -4906,7 +4906,7 @@ namespace ExcelScore.Forms
 
 
                     wordObj.LeftAndRightCellMarginCustom(table, 0.09f, 0.09f);
-                    wordObj.FormatTableCustom(table, 10 , 0 , 0);
+                    wordObj.FormatTableCustom(table, 10, 0, 0);
 
                     int rowindexSubtract = 0;
                     foreach (var rowindex in RowsToremoveSigPeriods)
@@ -4916,10 +4916,10 @@ namespace ExcelScore.Forms
                     }
                 }
             }
-           
+
         }
         GeneralFunctions generalFunctions = new GeneralFunctions();
-        public void PerformTest_Groups_Side(IWTable table,ComparativeTable comparativeTable , Parameter CurrenParameter , int InsertRow , int InsertColumn , int WordTableColumns)
+        public void PerformTest_Groups_Side(IWTable table, ComparativeTable comparativeTable, Parameter CurrenParameter, int InsertRow, int InsertColumn, int WordTableColumns)
         {
             //int GroupsCountPara = CurrenParameter.GroupedParameterValues.Keys.Count;
 
@@ -4947,29 +4947,29 @@ namespace ExcelScore.Forms
                     string[] values = manual.StudentT_Unpaired(group1Values, group2Values);
                     bool pvalueSig = generalFunctions.PvalueHasSig(values[1]);
 
-                    wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, values[0], false, true,Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
+                    wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, values[0], false, true, Syncfusion.Drawing.Color.Yellow, Syncfusion.Drawing.Color.Black);
 
-                    if(pvalueSig)
+                    if (pvalueSig)
                     {
                         wordObj.SubSuperScriptText(table, InsertRow, InsertColumn, Syncfusion.Drawing.Color.Yellow, "*", "Super");
                     }
 
                     wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, " (" + values[1], false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
 
-                    if(pvalueSig)
+                    if (pvalueSig)
                     {
                         wordObj.SubSuperScriptText(table, InsertRow, InsertColumn, Syncfusion.Drawing.Color.Empty, "*", "Super");
                     }
 
                     wordObj.AddParaCombined_New(table, InsertRow, InsertColumn, ")", false, true, Syncfusion.Drawing.Color.Empty, Syncfusion.Drawing.Color.Black);
 
-                   // wordObj.AddPara_Center(table, InsertRow, WordTableColumns - 2, "");
+                    // wordObj.AddPara_Center(table, InsertRow, WordTableColumns - 2, "");
                     table.Rows[InsertRow].Cells[WordTableColumns - 2].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
 
                     //wordObj.AddPara_Center(table, InsertRow, WordTableColumns - 1, "");
                     table.Rows[InsertRow].Cells[WordTableColumns - 1].CellFormat.BackColor = Syncfusion.Drawing.Color.LightGray;
                 }
-                else if(CurrenParameter.NormalOrAbnormal == "Abnormal")
+                else if (CurrenParameter.NormalOrAbnormal == "Abnormal")
                 {
                     List<double> group1Values = new List<double>();
                     List<double> group2Values = new List<double>();
@@ -5010,7 +5010,7 @@ namespace ExcelScore.Forms
         {
             //ComparativeBasic();
 
-           
+
             //pythonStat.InitPython();
 
             document = wordObj.InitWord();
@@ -5026,7 +5026,7 @@ namespace ExcelScore.Forms
 
             PaperComparative_Layout();
 
-            
+
 
             Pathology_Layout_NoIQR();
 
@@ -5049,12 +5049,12 @@ namespace ExcelScore.Forms
             DescriptivePeriodsTest();
 
             string filepath = wordObj.SaveWord();
-            
+
             wordObj.removeHeader(filepath);
 
             ClearPara();
 
-            
+
 
 
 
@@ -5069,19 +5069,20 @@ namespace ExcelScore.Forms
         {
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
             {
-                if (ComparativeTables[tableindex].FormatType == "Relation IQR")
+                if (ComparativeTables[tableindex].FormatType == "Anesthesia Periods")
                 {
-                    bool TableHasSigI = false;
-
-                    IWSection section = wordObj.CreatePortraitSection();
 
 
 
-                    wordObj.AddRelationTitle(section, ComparativeTables[tableindex].TableName);
 
 
+                    
+                    Anesthesia_Periods_EachGroup(ComparativeTables[tableindex]);
 
-                    int Variablerows = Relation_DependentNumber_Rows(ComparativeTables[tableindex]);
+                    
+
+                   
+                    
 
 
                     int WordTableColumns = 7;
@@ -5119,6 +5120,60 @@ namespace ExcelScore.Forms
 
                 }
             }
+        }
+        public int Anesthesia_Periods_EachGroup_rows()
+        {
+            int rows = 0;
+
+
+
+
+
+            return rows;
+
+
+        }
+        public void Anesthesia_Periods_EachGroup(ComparativeTable comparativeTable)
+        {
+            
+
+            Parameter GroupParam = null;
+            Parameter CurrentParameter = null;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup)
+                {
+                    GroupParam = parameter;
+                }
+                else
+                {
+                    CurrentParameter = parameter;
+                }
+
+            }
+
+            foreach (var KVP in GroupParam.DIC_LablesIfNomainal)
+            {
+                int fakeorder = 1;
+                IWSection section = wordObj.CreatePortraitSection();
+
+
+                int group_number_value = KVP.Key;
+                string group_name_value = KVP.Value;
+
+
+                wordObj.AddTitle_Dynamic(section, "Change in Systolic blood pressure in " + group_name_value + " Group", ref fakeorder );
+
+                int Current_GroupNumber_Count = GroupParam.GetValueCount(group_number_value);
+
+                int Variablerows = Anesthesia_Periods_EachGroup_rows();
+
+
+            }
+
+
+
+
         }
         public void ClearTable(ComparativeTable comparativeTable)
         {
