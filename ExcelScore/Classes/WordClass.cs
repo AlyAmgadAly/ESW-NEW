@@ -667,6 +667,37 @@ namespace ExcelScore.Classes
 
         }
 
+
+        //Anesthesia_Periods_EachGroup_Borders
+
+        public void Anesthesia_Periods_EachGroup_Widths(IWTable table, int WordTableRows, int WordTableColumns , int parametercount)
+        {
+            for (int row = 0; row < WordTableRows; row++)
+            {
+                table.Rows[row].Cells[0].Width = SetColumnWidthInCentimeters(1.25f);
+
+                for(int col = 1;col < WordTableColumns;col++)
+                {
+                    
+                    if (parametercount <= 6)
+                    {
+                        table.Rows[row].Cells[col].Width = SetColumnWidthInCentimeters(2f);
+                    }
+                    else if (parametercount > 6 && parametercount < 10)
+                    {
+                        table.Rows[row].Cells[col].Width = SetColumnWidthInCentimeters(1.75f);
+                    }
+                    else if (parametercount > 10)
+                    {
+                        table.Rows[row].Cells[col].Width = SetColumnWidthInCentimeters(1f);
+                    }
+
+                }
+                
+            }
+           
+
+        }
         public void ApplyRelation_Widths_Pathology(IWTable table, int WordTableRows, int WordTableColumns)
         {
             for (int row = 0; row < WordTableRows; row++)
@@ -1088,6 +1119,71 @@ namespace ExcelScore.Classes
 
 
         }
+
+        //Anesthesia_Periods_EachGroup_Widths
+        public void Anesthesia_Periods_EachGroup_Headers(IWTable table, int WordTableRows, int WordTableColumns , string ParameterNameHeader , ComparativeTable comparativeTable , Parameter CurrenParameter , int GroupCount , int parametercount)
+        {
+            AddPara_Center(table, 0, 0, "Cases No.");
+
+
+            AddPara_Center(table, 0, 1, ParameterNameHeader);
+
+            int col = 1;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup)
+                {
+                    continue;
+                }
+                string parametername = parameter.Name.Replace(ParameterNameHeader, "");
+                parametername = parametername.Replace(".", " ");
+                AddPara_Center(table, 1, col, parametername);
+
+                if(parametercount > 14)
+                {
+                    table[1, col].CellFormat.TextDirection = Syncfusion.DocIO.DLS.TextDirection.VerticalBottomToTop;
+                    table.Rows[1].Height = SetColumnWidthInCentimeters(2f);
+                    table.Rows[1].HeightType = TableRowHeightType.AtLeast;
+                }
+                
+
+                col++;
+            }
+
+            int row = WordTableRows - 1;
+            if (CurrenParameter.NormalOrAbnormal == "Normal")
+            {
+                AddPara_Center(table,row, 0, "p");
+                AddPara_Center(table, row-1, 0, "SD.");
+                AddPara_Center(table, row-2, 0, "Mean");
+                AddPara_Center(table, row-3, 0, "Max.");
+                AddPara_Center(table, row-4, 0, "Min.");
+
+
+            }
+            else if (CurrenParameter.NormalOrAbnormal == "Abnormal")
+            {
+                AddPara_Center(table, row, 0, "p");
+
+                AddPara_Center(table, row - 1, 0, "IQR");
+                AddPara_Center(table, row - 2, 0, "Median");
+
+                AddPara_Center(table, row - 3, 0, "SD.");
+                AddPara_Center(table, row - 4, 0, "Mean");
+                AddPara_Center(table, row - 5, 0, "Max.");
+                AddPara_Center(table, row - 6, 0, "Min.");
+            }
+
+
+            List<int> groupn = Enumerable.Range(1, GroupCount).ToList();
+            int Groupnumberrow = 2;
+            foreach (var item in groupn)
+            {
+                AddPara_Center(table, Groupnumberrow, 0, item.ToString());
+                Groupnumberrow++;
+            }
+        }
+
         public void ApplyRelation_Median_no_IQR_OuterHeaders(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
         {
             AddPara_Center(table, 0, 1, "N");
@@ -1263,10 +1359,39 @@ namespace ExcelScore.Classes
 
         }
 
-        public void Apply_Descriptive_OuterBorders_PeriodsNoTest()
+        public  void Anesthesia_Periods_EachGroup_Borders(IWTable table, int WordTableRows, int WordTableColumns , int groupcount)
         {
+            for (int k = 0; k < WordTableRows; k++)
+            {
+                table.Rows[k].Cells[0].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[k].Cells[0].CellFormat.Borders.Right.LineWidth = 1.5f;
+            }
 
+            
+
+            int countrow = 2 + groupcount;
+
+            for(int row = 0;row <countrow; row++)
+            {
+                for (int j = 0; j < WordTableColumns; j++)
+                {
+                    table.Rows[row].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[row].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+                }
+            }
+
+            for (int j = 0; j < WordTableColumns; j++)
+            {
+                table.Rows[WordTableRows - 2].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[WordTableRows - 2].Cells[j].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+
+
+                table.Rows[1].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[1].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+            }
         }
+
         public void ApplyRelation_OuterBorders_Pathology(IWTable table, int WordTableRows, int WordTableColumns)
         {
             for (int j = 0; j < WordTableColumns; j++)
@@ -1344,6 +1469,14 @@ namespace ExcelScore.Classes
 
 
         }
+
+        public void Anesthesia_Periods_EachGroup_Merges(IWTable table , int WordTableColumns)
+        {
+            table.ApplyVerticalMerge(0, 0, 1);
+            table.ApplyHorizontalMerge(0, 1, WordTableColumns-1);
+        }
+
+
 
         public void Groups_Side_Periods_Up_threePeriods_Merges(IWTable table , ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns , int groupcount ,int parametercount)
         {

@@ -5016,9 +5016,13 @@ namespace ExcelScore.Forms
             document = wordObj.InitWord();
 
 
+            Anesthesia_Periods();
+
             ComparativeTableGroups_2_periods();
 
             ComparativeTableGroups_Layout();
+
+            
 
             ComparativeTablePeriodsUp_Groups_Layout();
 
@@ -5073,59 +5077,24 @@ namespace ExcelScore.Forms
                 {
 
 
-
-
-
-                    
                     Anesthesia_Periods_EachGroup(ComparativeTables[tableindex]);
-
-                    
-
-                   
-                    
-
-
-                    int WordTableColumns = 7;
-
-                    int WordTableRows = 2 + Variablerows;
-
-                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
-                    wordObj.GeneralTableFormat(table);
-
-
-                    //Merges
-                    wordObj.ApplyRelation_IQR_OuterMerges(table, WordTableRows, WordTableColumns);
-
-                    //Borders
-                    wordObj.ApplyRelation_IQR_OuterBorders(table, WordTableRows, WordTableColumns);
-
-                    //Widths
-                    wordObj.ApplyRelation_IQR_Widths(table, WordTableRows, WordTableColumns);
-
-
-                    //Outer Headers
-                    wordObj.ApplyRelation_IQR_OuterHeaders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
-
-
-                    //
-                    wordObj.InsertRelation_InnerHeader_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
-
-
-
-
-
-
-
 
 
                 }
             }
         }
-        public int Anesthesia_Periods_EachGroup_rows()
+        public int Anesthesia_Periods_EachGroup_rows(Parameter CheckParameterNormality)
         {
             int rows = 0;
 
-
+            if(CheckParameterNormality.NormalOrAbnormal == "Normal")
+            {
+                rows = 7;
+            }
+            else if(CheckParameterNormality.NormalOrAbnormal == "Abnormal")
+            {
+                rows = 9;
+            }
 
 
 
@@ -5139,6 +5108,7 @@ namespace ExcelScore.Forms
 
             Parameter GroupParam = null;
             Parameter CurrentParameter = null;
+            int parametercount = 0;
             foreach (var parameter in comparativeTable.Parameters)
             {
                 if (parameter.IsGroup)
@@ -5148,9 +5118,13 @@ namespace ExcelScore.Forms
                 else
                 {
                     CurrentParameter = parameter;
+                    parametercount++;
                 }
 
             }
+
+            string[] ParameterExtractName = CurrentParameter.Name.Split('.');
+            string parameterName = ParameterExtractName[0]; 
 
             foreach (var KVP in GroupParam.DIC_LablesIfNomainal)
             {
@@ -5162,11 +5136,53 @@ namespace ExcelScore.Forms
                 string group_name_value = KVP.Value;
 
 
-                wordObj.AddTitle_Dynamic(section, "Change in Systolic blood pressure in " + group_name_value + " Group", ref fakeorder );
+                wordObj.AddTitle_Dynamic(section, "Change in "+ parameterName + " in " + group_name_value + " Group", ref fakeorder );
 
                 int Current_GroupNumber_Count = GroupParam.GetValueCount(group_number_value);
 
-                int Variablerows = Anesthesia_Periods_EachGroup_rows();
+                int Variablerows = Anesthesia_Periods_EachGroup_rows(CurrentParameter);
+
+
+                int WordTableRows = Current_GroupNumber_Count + Variablerows;
+
+                int WordTableColumns = 1 + parametercount;
+
+
+                IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+                wordObj.GeneralTableFormat(table);
+
+                ////Merges
+                wordObj.Anesthesia_Periods_EachGroup_Merges(table,  WordTableColumns);
+
+                ////Borders
+                wordObj.Anesthesia_Periods_EachGroup_Borders(table, WordTableRows, WordTableColumns , Current_GroupNumber_Count);
+
+                ////Widths
+                wordObj.Anesthesia_Periods_EachGroup_Widths(table, WordTableRows, WordTableColumns , parametercount);
+
+                ////Outer Headers
+                wordObj.Anesthesia_Periods_EachGroup_Headers(table, WordTableRows, WordTableColumns , parameterName , comparativeTable , CurrentParameter , Current_GroupNumber_Count , parametercount);
+
+
+
+                if(parametercount <= 6)
+                {
+                    wordObj.LeftAndRightCellMarginCustom(table, 0.01f, 0.01f);
+                    wordObj.FormatTableCustom(table, 10.5f, 2, 1);
+                }
+                else if (parametercount > 6 && parametercount < 10)
+                {
+                    wordObj.LeftAndRightCellMarginCustom(table, 0.01f, 0.01f);
+                    wordObj.FormatTableCustom(table, 10f , 2 , 1);
+                }
+                else if(parametercount > 10)
+                {
+                    wordObj.LeftAndRightCellMarginCustom(table, 0.05f, 0.05f);
+                    wordObj.FormatTableCustom(table, 9.5f, 2, 1);
+                }
+                
+
+               
 
 
             }

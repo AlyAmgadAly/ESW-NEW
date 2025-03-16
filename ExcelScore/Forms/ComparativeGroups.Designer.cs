@@ -377,6 +377,7 @@
             this.cmb_ChooseTableFormat.FormattingEnabled = true;
             this.cmb_ChooseTableFormat.Items.AddRange(new object[] {
             "Default",
+            "Anesthesia Periods",
             "Groups 2 periods",
             "Groups Side Periods Up",
             "Paper",
