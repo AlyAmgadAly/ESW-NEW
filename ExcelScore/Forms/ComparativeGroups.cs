@@ -5071,6 +5071,7 @@ namespace ExcelScore.Forms
 
         public void Anesthesia_Periods()
         {
+            pythonStat.InitPython();
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
             {
                 if (ComparativeTables[tableindex].FormatType == "Anesthesia Periods")
@@ -5102,9 +5103,136 @@ namespace ExcelScore.Forms
 
 
         }
+
+        public void Periods_test_Group_MissingValues(IWTable table ,ComparativeTable comparativeTable , Parameter GroupParameter , int GroupColIndex , int CurrentGroupKey , int WordTableRows, int WordTableColumns)
+        {
+            AnovaTestResult anovaTestResult = null;
+            List<Dictionary<int, List<double>>> CorrectDataParameters = new List<Dictionary<int, List<double>>>();
+            List<Parameter> CurrentParameters = new List<Parameter>();
+
+            foreach (var Parameter in comparativeTable.Parameters)
+            {
+                if (Parameter.IsGroup)
+                    continue;
+
+                CurrentParameters.Add(Parameter);
+
+            }
+
+            string NormalOrAbnormal = CurrentParameters[0].NormalOrAbnormal;
+
+            foreach (var CurrentParameter in CurrentParameters)
+            {
+                Dictionary<int, List<double>> GroupedCorrectData = ExcelFunctions.GetDataWithMissingValues_withGroup(worksheet, CurrentParameter.Name, GroupParameter.Name, GroupColIndex);
+                CorrectDataParameters.Add(GroupedCorrectData);
+            }
+
+            HashSet<int> uniqueGroupKeys = new HashSet<int>();
+            foreach (var dict in CorrectDataParameters)
+            {
+                foreach (var key in dict.Keys)
+                {
+                    uniqueGroupKeys.Add(key);
+                }
+            }
+
+
+
+
+
+            List<List<double>> valuesLists = new List<List<double>>();
+
+
+
+            for (int i = 0; i < CurrentParameters.Count; i++)
+            {
+                if (CorrectDataParameters[i].TryGetValue(CurrentGroupKey, out List<double> values))
+                {
+                    valuesLists.Add(new List<double>(values)); // Clone the list before cleaning
+                }
+                else
+                {
+                    valuesLists.Add(new List<double>()); // Maintain list count alignment
+                }
+            }
+
+            GeneralFunctions.RemoveInvalidEntries(ref valuesLists);
+
+            List<Parameter> parametersForGroup = new List<Parameter>();
+
+            for (int i = 0; i < CurrentParameters.Count; i++)
+            {
+                if (valuesLists[i].Count > 0) // Ensure there's still valid data
+                {
+                    Parameter newParameter = new Parameter
+                    {
+                        Name = CurrentParameters[i].Name, // Copy name from original list
+                        ParameterValues = valuesLists[i]  // Assign cleaned values
+                    };
+
+                    parametersForGroup.Add(newParameter);
+                }
+            }
+
+
+            if (NormalOrAbnormal == "Normal")
+            {
+                anovaTestResult = pythonStat.RepeatedMeasuresAnovaBoth(parametersForGroup);
+            }
+            //else if (NormalOrAbnormal == "Abnormal")
+            //{
+            //    List<List<double>> Datalist = new List<List<double>>();
+
+
+
+            //    foreach (var parameter in parametersForGroup)
+            //    {
+            //        Datalist.Add(parameter.ParameterValues);
+            //    }
+
+            //    GeneralFunctions.RemoveInvalidEntries(ref Datalist);
+
+
+
+            //    anovaTestResult = pythonStat.PerformFriedmanWithDunnTest(Datalist);
+
+
+
+
+            //}
+
+
+
+            if (anovaTestResult.PairwiseComparisons.Count > 0)
+            {
+                if (NormalOrAbnormal == "Normal")
+                {
+                    int pairwisectr = 0;
+                    for (int PairwiseCol = 1; PairwiseCol < WordTableColumns; PairwiseCol++)
+                    {
+                        wordObj.AddPara_Center(table, WordTableRows - 1, PairwiseCol, anovaTestResult.PairwiseComparisons[pairwisectr][2]);
+                        pairwisectr++;
+                    }
+                }
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+        }
         public void Anesthesia_Periods_EachGroup(ComparativeTable comparativeTable)
         {
-            
+            int GroupColIndex = newFindGroupColumnIndex(comparativeTable);
 
             Parameter GroupParam = null;
             Parameter CurrentParameter = null;
@@ -5163,9 +5291,94 @@ namespace ExcelScore.Forms
                 ////Outer Headers
                 wordObj.Anesthesia_Periods_EachGroup_Headers(table, WordTableRows, WordTableColumns , parameterName , comparativeTable , CurrentParameter , Current_GroupNumber_Count , parametercount);
 
+                int insert_col = 1;
+                foreach (var CurrentParameter_Insert in comparativeTable.Parameters)
+                {
+                    if (CurrentParameter_Insert.IsGroup)
+                        continue;
+
+                    int insert_row = 2;
+
+                    Dictionary<int, List<double>> GroupedCorrectData = ExcelFunctions.GetDataWithMissingValues_withGroup(worksheet, CurrentParameter_Insert.Name, GroupParam.Name, GroupColIndex);
 
 
-                if(parametercount <= 6)
+                    foreach (var GroupCorrected in GroupedCorrectData)
+                    {
+                        int GroupCorrected_key = GroupCorrected.Key;
+                        if(group_number_value == GroupCorrected_key)
+                        {
+                            foreach (var item in GroupCorrected.Value)
+                            {
+                                if(item != -999)
+                                {
+                                    wordObj.Addpara_CenterNoBOLD(table, insert_row, insert_col, item.ToString());
+                                }
+                                else
+                                {
+                                    wordObj.Addpara_CenterNoBOLD(table, insert_row, insert_col, "-");
+                                }
+                                
+                                insert_row++;
+                            }
+
+                        }
+                    }
+
+
+                    if (CurrentParameter_Insert.FormattedValues.ContainsKey(group_number_value))
+                    {
+                        foreach (var ParameterFormattedValues in CurrentParameter_Insert.FormattedValues[group_number_value])
+                        {
+                            string key = ParameterFormattedValues.Key;
+                            string value = ParameterFormattedValues.Value;
+
+                            switch (key)
+                            {
+                                case "Min-Max":
+                                case "Mean ± StdDev":
+                                    string[] splitValues = value.Split(' ');
+                                    string firstValue = splitValues[0];
+                                    string lastValue = splitValues[splitValues.Length - 1];
+
+                                    wordObj.Addpara_CenterNoBOLD(table, insert_row++, insert_col, firstValue);
+                                    wordObj.Addpara_CenterNoBOLD(table, insert_row++, insert_col, lastValue);
+                                    break;
+
+                                case "Median":
+                                    if (CurrentParameter_Insert.NormalOrAbnormal == "Abnormal")
+                                    {
+                                        string[] splitMedian = value.Split(new string[] { " (" }, StringSplitOptions.None);
+                                        if (splitMedian.Length == 2)  // Ensure proper format
+                                        {
+                                            string median = splitMedian[0];
+                                            string IQR = splitMedian[1].TrimEnd(')');
+                                            IQR = IQR.Replace(" ", "");
+
+                                            wordObj.Addpara_CenterNoBOLD(table, insert_row++, insert_col, median);
+                                            wordObj.Addpara_CenterNoBOLD(table, insert_row++, insert_col, IQR);
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+
+
+                    insert_col++;
+
+                }
+
+
+                
+               Periods_test_Group_MissingValues(table,comparativeTable, GroupParam, GroupColIndex, group_number_value , WordTableRows , WordTableColumns);
+
+               
+
+
+
+
+
+                if (parametercount <= 6)
                 {
                     wordObj.LeftAndRightCellMarginCustom(table, 0.01f, 0.01f);
                     wordObj.FormatTableCustom(table, 10.5f, 2, 1);
