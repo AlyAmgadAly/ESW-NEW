@@ -1832,6 +1832,14 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                     //MessageBox.Show($"p Value: {pValueString}");
 
 
+                    dynamic uniquePeriods = df["Period"].unique();
+                    List<string> periodOrder = new List<string>();
+
+                    foreach (dynamic period in uniquePeriods.tolist())
+                    {
+                        periodOrder.Add(period.As<string>());
+                    }
+
                     // Step 5: Perform Pairwise Comparisons (Bonferroni adjustment)
                     dynamic pairwiseResults = pingouin.pairwise_ttests(
          data: df,
@@ -1853,16 +1861,36 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                         pairwiseComparisons.Add(new[] { group1, group2, comparison });
                     }
 
-                    //Display pairwise comparison results
-                    //foreach (var comp in pairwiseComparisons)
-                    //{
-                    //    MessageBox.Show(comp[2]); // Display each pairwise comparison result
-                    //}
+                    var sortedComparisons = new List<string[]>();
+                    var addedComparisons = new HashSet<string>();
+
+                    foreach (string period in periodOrder)
+                    {
+                        var matches = pairwiseComparisons
+                            .Where(x => x.Contains(period))
+                            .OrderBy(x => periodOrder.IndexOf(x.First(p => p != period)))
+                            .ToList();
+
+                        foreach (var match in matches)
+                        {
+                            string key = string.Join("-", match.OrderBy(p => periodOrder.IndexOf(p)));
+                            if (!addedComparisons.Contains(key))
+                            {
+                                sortedComparisons.Add(match);
+                                addedComparisons.Add(key);
+                            }
+                        }
+                    }
+
+                    // Replace the old list with the sorted one
+                    
+
+
                     return new AnovaTestResult
                     {
                         TestValue = fValue.ToString("0.000"),
                         PValue = pValueString,
-                        PairwiseComparisons = pairwiseComparisons
+                        PairwiseComparisons = sortedComparisons
                     };
                 }
             }

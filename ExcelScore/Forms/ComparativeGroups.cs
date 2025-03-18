@@ -2296,11 +2296,41 @@ namespace ExcelScore.Forms
 
                 int totalCount = parameter.ParameterValues.Count;
 
+                //if (parameter.NominalOrScale == "Nominal")
+                //{
+                //    // Calculate frequency and percentage for each distinct value in the group
+                //    int incrow = 1;
+                //    foreach (var distinctValue in parameter.ParameterValues.Distinct())
+                //    {
+                //        int frequency = parameter.ParameterValues.Count(v => v == distinctValue);
+                //        double percentage = (frequency / (double)totalCount) * 100;
+
+                //        if (parameter.DIC_LablesIfNomainal.ContainsKey((int)distinctValue))
+                //        {
+                //            if (startrow != 2)
+                //            {
+                //                wordObj.Addpara_CenterNoBOLD(table, startrow + incrow, 1, frequency.ToString());
+                //                wordObj.Addpara_CenterNoBOLD(table, startrow + incrow, 2, percentage.ToString("0.0"));
+                //                incrow++;
+                //            }
+                //            else if (startrow == 2)
+                //            {
+                //                wordObj.Addpara_CenterNoBOLD(table, startrow + incrow, 1, frequency.ToString());
+                //                wordObj.Addpara_CenterNoBOLD(table, startrow + incrow, 2, percentage.ToString("0.0"));
+                //                incrow++;
+                //            }
+
+
+
+
+                //        }
+                //    }
+                //}
                 if (parameter.NominalOrScale == "Nominal")
                 {
                     // Calculate frequency and percentage for each distinct value in the group
                     int incrow = 1;
-                    foreach (var distinctValue in parameter.ParameterValues.Distinct())
+                    foreach (var distinctValue in parameter.DIC_LablesIfNomainal.Keys)
                     {
                         int frequency = parameter.ParameterValues.Count(v => v == distinctValue);
                         double percentage = (frequency / (double)totalCount) * 100;
@@ -5142,19 +5172,28 @@ namespace ExcelScore.Forms
 
             List<List<double>> valuesLists = new List<List<double>>();
 
-
+            Dictionary<string, bool> ParaName_999Missing = new Dictionary<string, bool>();
 
             for (int i = 0; i < CurrentParameters.Count; i++)
             {
                 if (CorrectDataParameters[i].TryGetValue(CurrentGroupKey, out List<double> values))
                 {
-                    valuesLists.Add(new List<double>(values)); // Clone the list before cleaning
-                }
-                else
-                {
-                    valuesLists.Add(new List<double>()); // Maintain list count alignment
+                    if(values.Contains(-999))
+                    {
+                        ParaName_999Missing.Add(CurrentParameters[i].Name, true);
+                    }
+                    else
+                    {
+                        ParaName_999Missing.Add(CurrentParameters[i].Name, false);
+                    }
+
+                    valuesLists.Add(new List<double>(values));
+
                 }
             }
+
+
+
 
             GeneralFunctions.RemoveInvalidEntries(ref valuesLists);
 
@@ -5162,7 +5201,7 @@ namespace ExcelScore.Forms
 
             for (int i = 0; i < CurrentParameters.Count; i++)
             {
-                if (valuesLists[i].Count > 0) // Ensure there's still valid data
+                if ((valuesLists[i].Count > 0) && ParaName_999Missing[CurrentParameters[i].Name] == false) // Ensure there's still valid data
                 {
                     Parameter newParameter = new Parameter
                     {
@@ -5207,12 +5246,25 @@ namespace ExcelScore.Forms
             {
                 if (NormalOrAbnormal == "Normal")
                 {
+                    
                     int pairwisectr = 0;
-                    for (int PairwiseCol = 1; PairwiseCol < WordTableColumns; PairwiseCol++)
+                    int PairwiseColumn = 2;
+                    for (int i = 1; i < CurrentParameters.Count; i++)
                     {
-                        wordObj.AddPara_Center(table, WordTableRows - 1, PairwiseCol, anovaTestResult.PairwiseComparisons[pairwisectr][2]);
-                        pairwisectr++;
+                        if (ParaName_999Missing[CurrentParameters[i].Name] == false)
+                        {
+                            wordObj.AddPara_Center(table, WordTableRows - 1, PairwiseColumn, anovaTestResult.PairwiseComparisons[pairwisectr][2]);
+                            pairwisectr++;
+                            PairwiseColumn++;
+                        }
+                        else
+                        {
+                            PairwiseColumn++;
+                        }
                     }
+
+
+                       
                 }
 
 
