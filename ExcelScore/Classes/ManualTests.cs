@@ -1215,15 +1215,15 @@ namespace ExcelScore.Classes
                 string pValueString = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
                 // Display the results
-                MessageBox.Show($"Z-value: {TtestString}");
-                MessageBox.Show($"P-value: {pValueString}");
+                //MessageBox.Show($"Z-value: {TtestString}");
+                //MessageBox.Show($"P-value: {pValueString}");
 
                 // Return the result
                 return new string[] { TtestString, pValueString };
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                //MessageBox.Show($"Error: {ex.Message}");
                 return new string[] { "-", "-" };
             }
         }

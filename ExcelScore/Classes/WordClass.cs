@@ -1119,12 +1119,17 @@ namespace ExcelScore.Classes
 
 
         }
-
+        public void ColorCertainCell(IWTable table , int row , int col , Syncfusion.Drawing.Color ColorChosen)
+        {
+            AddPara_Center(table, row, col, "");
+            table.Rows[row].Cells[col].CellFormat.BackColor = ColorChosen;
+        }
         //Anesthesia_Periods_EachGroup_Widths
         public void Anesthesia_Periods_EachGroup_Headers(IWTable table, int WordTableRows, int WordTableColumns , string ParameterNameHeader , ComparativeTable comparativeTable , Parameter CurrenParameter , int GroupCount , int parametercount)
         {
             AddPara_Center(table, 0, 0, "Cases No.");
-
+            //AddParaCombined(table , WordTableRows-1 , 1 , "" , false , false , )
+            ColorCertainCell(table, WordTableRows - 1, 1, Syncfusion.Drawing.Color.LightGray);
 
             AddPara_Center(table, 0, 1, ParameterNameHeader);
 

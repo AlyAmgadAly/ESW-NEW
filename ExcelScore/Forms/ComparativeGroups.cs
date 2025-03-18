@@ -5195,7 +5195,7 @@ namespace ExcelScore.Forms
 
 
 
-            GeneralFunctions.RemoveInvalidEntries(ref valuesLists);
+            
 
             List<Parameter> parametersForGroup = new List<Parameter>();
 
@@ -5218,27 +5218,23 @@ namespace ExcelScore.Forms
             {
                 anovaTestResult = pythonStat.RepeatedMeasuresAnovaBoth(parametersForGroup);
             }
-            //else if (NormalOrAbnormal == "Abnormal")
-            //{
-            //    List<List<double>> Datalist = new List<List<double>>();
+            else if (NormalOrAbnormal == "Abnormal")
+            {
+                List<List<double>> Datalist = new List<List<double>>();
 
 
 
-            //    foreach (var parameter in parametersForGroup)
-            //    {
-            //        Datalist.Add(parameter.ParameterValues);
-            //    }
+                foreach (var parameter in parametersForGroup)
+                {
+                    Datalist.Add(parameter.ParameterValues);
+                }
 
-            //    GeneralFunctions.RemoveInvalidEntries(ref Datalist);
-
-
-
-            //    anovaTestResult = pythonStat.PerformFriedmanWithDunnTest(Datalist);
+                anovaTestResult = pythonStat.PerformFriedmanWithDunnTest(Datalist);
 
 
 
 
-            //}
+            }
 
 
 
@@ -5254,17 +5250,88 @@ namespace ExcelScore.Forms
                         if (ParaName_999Missing[CurrentParameters[i].Name] == false)
                         {
                             wordObj.AddPara_Center(table, WordTableRows - 1, PairwiseColumn, anovaTestResult.PairwiseComparisons[pairwisectr][2]);
+                            bool Psig = generalFunctions.PvalueHasSig(anovaTestResult.PairwiseComparisons[pairwisectr][2]);
+                            if(Psig)
+                            {
+                                wordObj.SubSuperScriptText(table, WordTableRows - 1, PairwiseColumn, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                            }
+                            
                             pairwisectr++;
                             PairwiseColumn++;
                         }
                         else
                         {
+                            List<List<double>> tpairedLists = new List<List<double>>
+                                {
+                                new List<double>(valuesLists[0]), // Create a new list for period1
+                                new List<double>(valuesLists[i])  // Create a new list for period2
+                                };
+
+                            GeneralFunctions.RemoveInvalidEntries(ref tpairedLists);
+
+                            List<double> period1 = tpairedLists[0];
+                            List<double> period2 = tpairedLists[1];
+
+                            string[] result = pythonStat.TpairedTest(period1, period2);
+                            wordObj.AddPara_Center(table, WordTableRows - 1, PairwiseColumn, result[1]);
+
+                            bool Psig = generalFunctions.PvalueHasSig(result[1]);
+                            if (Psig)
+                            {
+                                wordObj.SubSuperScriptText(table, WordTableRows - 1, PairwiseColumn, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                            }
+
                             PairwiseColumn++;
                         }
                     }
 
 
                        
+                }
+                else if (NormalOrAbnormal == "Abnormal")
+                {
+                    int pairwisectr = 0;
+                    int PairwiseColumn = 2;
+                    for (int i = 1; i < CurrentParameters.Count; i++)
+                    {
+                        if (ParaName_999Missing[CurrentParameters[i].Name] == false)
+                        {
+                            wordObj.AddPara_Center(table, WordTableRows - 1, PairwiseColumn, anovaTestResult.PairwiseComparisons[pairwisectr][1]);
+                            bool Psig = generalFunctions.PvalueHasSig(anovaTestResult.PairwiseComparisons[pairwisectr][1]);
+                            if (Psig)
+                            {
+                                wordObj.SubSuperScriptText(table, WordTableRows - 1, PairwiseColumn, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                            }
+
+                            pairwisectr++;
+                            PairwiseColumn++;
+                        }
+                        else
+                        {
+                            List<List<double>> tpairedLists = new List<List<double>>
+                                {
+                                new List<double>(valuesLists[0]), // Create a new list for period1
+                                new List<double>(valuesLists[i])  // Create a new list for period2
+                                };
+
+                            GeneralFunctions.RemoveInvalidEntries(ref tpairedLists);
+
+                            List<double> period1 = tpairedLists[0];
+                            List<double> period2 = tpairedLists[1];
+
+                            string[] result = manual.Zpaired(period1.ToArray(), period2.ToArray());
+                            wordObj.AddPara_Center(table, WordTableRows - 1, PairwiseColumn, result[1]);
+
+                            bool Psig = generalFunctions.PvalueHasSig(result[1]);
+                            if (Psig)
+                            {
+                                wordObj.SubSuperScriptText(table, WordTableRows - 1, PairwiseColumn, Syncfusion.Drawing.Color.Empty, "*", "Super");
+                            }
+
+                            PairwiseColumn++;
+                        }
+                    }
+
                 }
 
 
