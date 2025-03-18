@@ -47,9 +47,6 @@
             this.lbl_Select = new System.Windows.Forms.Label();
             this.list_Select = new System.Windows.Forms.ListBox();
             this.data_allPara = new System.Windows.Forms.DataGridView();
-            this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
-            this.ColNormality = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label6 = new System.Windows.Forms.Label();
             this.cmb_ChooseTableFormat = new System.Windows.Forms.ComboBox();
             this.txt_ParaName = new System.Windows.Forms.TextBox();
@@ -88,6 +85,10 @@
             this.pic_SigAdj = new System.Windows.Forms.PictureBox();
             this.lbl_PeriodsCount = new System.Windows.Forms.Label();
             this.txt_PeriodCount = new System.Windows.Forms.TextBox();
+            this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
+            this.ColNormality = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ViewCode_Col = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RefreshListsUpdate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).BeginInit();
@@ -314,7 +315,8 @@
             this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Col_Name,
             this.ColMeasure,
-            this.ColNormality});
+            this.ColNormality,
+            this.ViewCode_Col});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -325,39 +327,16 @@
             this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            this.data_allPara.Location = new System.Drawing.Point(22, 94);
+            this.data_allPara.Location = new System.Drawing.Point(12, 94);
             this.data_allPara.Name = "data_allPara";
             this.data_allPara.ReadOnly = true;
             this.data_allPara.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.data_allPara.RowHeadersVisible = false;
             this.data_allPara.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.data_allPara.Size = new System.Drawing.Size(334, 577);
+            this.data_allPara.Size = new System.Drawing.Size(361, 577);
             this.data_allPara.TabIndex = 62;
             this.data_allPara.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.data_allPara_CellContentClick);
-            // 
-            // Col_Name
-            // 
-            this.Col_Name.DataPropertyName = "ColName";
-            this.Col_Name.HeaderText = "Name";
-            this.Col_Name.Name = "Col_Name";
-            this.Col_Name.ReadOnly = true;
-            this.Col_Name.Width = 150;
-            // 
-            // ColMeasure
-            // 
-            this.ColMeasure.HeaderText = "Measure";
-            this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.ColMeasure.Name = "ColMeasure";
-            this.ColMeasure.ReadOnly = true;
-            this.ColMeasure.Width = 75;
-            // 
-            // ColNormality
-            // 
-            this.ColNormality.HeaderText = "Normality";
-            this.ColNormality.Name = "ColNormality";
-            this.ColNormality.ReadOnly = true;
-            this.ColNormality.Width = 75;
             // 
             // label6
             // 
@@ -606,7 +585,7 @@
             // pic_AllParaToSelect
             // 
             this.pic_AllParaToSelect.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToSelect.Image")));
-            this.pic_AllParaToSelect.Location = new System.Drawing.Point(362, 615);
+            this.pic_AllParaToSelect.Location = new System.Drawing.Point(379, 617);
             this.pic_AllParaToSelect.Name = "pic_AllParaToSelect";
             this.pic_AllParaToSelect.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToSelect.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -728,7 +707,7 @@
             // pic_AllParaToGroups
             // 
             this.pic_AllParaToGroups.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToGroups.Image")));
-            this.pic_AllParaToGroups.Location = new System.Drawing.Point(362, 517);
+            this.pic_AllParaToGroups.Location = new System.Drawing.Point(379, 517);
             this.pic_AllParaToGroups.Name = "pic_AllParaToGroups";
             this.pic_AllParaToGroups.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToGroups.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -739,7 +718,7 @@
             // pic_AllParaToAbnormal
             // 
             this.pic_AllParaToAbnormal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToAbnormal.Image")));
-            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(362, 389);
+            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(379, 391);
             this.pic_AllParaToAbnormal.Name = "pic_AllParaToAbnormal";
             this.pic_AllParaToAbnormal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToAbnormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -750,7 +729,7 @@
             // pic_AllParaToNormal
             // 
             this.pic_AllParaToNormal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToNormal.Image")));
-            this.pic_AllParaToNormal.Location = new System.Drawing.Point(362, 242);
+            this.pic_AllParaToNormal.Location = new System.Drawing.Point(379, 240);
             this.pic_AllParaToNormal.Name = "pic_AllParaToNormal";
             this.pic_AllParaToNormal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToNormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -783,7 +762,7 @@
             // pic_AllParaToNominal
             // 
             this.pic_AllParaToNominal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToNominal.Image")));
-            this.pic_AllParaToNominal.Location = new System.Drawing.Point(362, 90);
+            this.pic_AllParaToNominal.Location = new System.Drawing.Point(379, 92);
             this.pic_AllParaToNominal.Name = "pic_AllParaToNominal";
             this.pic_AllParaToNominal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToNominal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -822,6 +801,38 @@
             this.txt_PeriodCount.Name = "txt_PeriodCount";
             this.txt_PeriodCount.Size = new System.Drawing.Size(51, 28);
             this.txt_PeriodCount.TabIndex = 84;
+            // 
+            // Col_Name
+            // 
+            this.Col_Name.DataPropertyName = "ColName";
+            this.Col_Name.HeaderText = "Name";
+            this.Col_Name.Name = "Col_Name";
+            this.Col_Name.ReadOnly = true;
+            this.Col_Name.Width = 150;
+            // 
+            // ColMeasure
+            // 
+            this.ColMeasure.HeaderText = "Measure";
+            this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.ColMeasure.Name = "ColMeasure";
+            this.ColMeasure.ReadOnly = true;
+            this.ColMeasure.Width = 75;
+            // 
+            // ColNormality
+            // 
+            this.ColNormality.HeaderText = "Normality";
+            this.ColNormality.Name = "ColNormality";
+            this.ColNormality.ReadOnly = true;
+            this.ColNormality.Width = 75;
+            // 
+            // ViewCode_Col
+            // 
+            this.ViewCode_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.ViewCode_Col.FillWeight = 50F;
+            this.ViewCode_Col.HeaderText = "View";
+            this.ViewCode_Col.Name = "ViewCode_Col";
+            this.ViewCode_Col.ReadOnly = true;
+            this.ViewCode_Col.Width = 35;
             // 
             // ComparativeGroups
             // 
@@ -959,9 +970,6 @@
         private System.Windows.Forms.PictureBox pic_TableFormat;
         private System.Windows.Forms.ComboBox cmb_ChooseTableFormat;
         private System.Windows.Forms.TextBox txt_ParaName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Col_Name;
-        private System.Windows.Forms.DataGridViewImageColumn ColMeasure;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColNormality;
         private System.Windows.Forms.Label lbl_Periods;
         private System.Windows.Forms.PictureBox pic_AllLists;
         private System.Windows.Forms.PictureBox pic_ClearNominalList;
@@ -978,5 +986,9 @@
         private System.Windows.Forms.PictureBox pic_SigAdj;
         private System.Windows.Forms.Label lbl_PeriodsCount;
         private System.Windows.Forms.TextBox txt_PeriodCount;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Col_Name;
+        private System.Windows.Forms.DataGridViewImageColumn ColMeasure;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColNormality;
+        private System.Windows.Forms.DataGridViewButtonColumn ViewCode_Col;
     }
 }
