@@ -347,6 +347,12 @@
     <Compile Include="Forms\Options_Frm.Designer.cs">
       <DependentUpon>Options_Frm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ParameterInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ParameterInfo.Designer.cs">
+      <DependentUpon>ParameterInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PreivewImage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -459,6 +465,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Options_Frm.resx">
       <DependentUpon>Options_Frm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ParameterInfo.resx">
+      <DependentUpon>ParameterInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PreivewImage.resx">
       <DependentUpon>PreivewImage.cs</DependentUpon>

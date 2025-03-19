@@ -8581,7 +8581,28 @@ namespace ExcelScore.Forms
 
         private void data_allPara_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex >= 0)
+            {
+                // Check if the clicked column is the button column
+                if (data_allPara.Columns[e.ColumnIndex] is DataGridViewButtonColumn)
+                {
+                    // Get the row where the button was clicked
+                    DataGridViewRow clickedRow = data_allPara.Rows[e.RowIndex];
 
+                    // index retrieve (name didn't work)
+                    string paraName = clickedRow.Cells[0].Value.ToString();
+
+
+                    ParameterInfo parameterInfo = new ParameterInfo();
+                    parameterInfo.ParameterName_ParaInfoFrm = paraName;
+                    parameterInfo.ShowDialog();
+
+
+                    // Perform an action (for example, show a message with the values)
+                    MessageBox.Show($"Button clicked in row {e.RowIndex}\n" +
+                                    $"Name: {paraName}\n");
+                }
+            }
         }
 
         private void pic_AllLists_Click(object sender, EventArgs e)
