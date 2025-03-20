@@ -8578,6 +8578,7 @@ namespace ExcelScore.Forms
                 row.Visible = shouldShow;
             }
         }
+        private ParameterInfo parameterInfoForm; // Store the form instance
 
         private void data_allPara_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -8589,18 +8590,18 @@ namespace ExcelScore.Forms
                     // Get the row where the button was clicked
                     DataGridViewRow clickedRow = data_allPara.Rows[e.RowIndex];
 
-                    // index retrieve (name didn't work)
+                    // Retrieve parameter name
                     string paraName = clickedRow.Cells[0].Value.ToString();
 
+                    // If the form is not open, create it
+                    if (parameterInfoForm == null || parameterInfoForm.IsDisposed)
+                    {
+                        parameterInfoForm = new ParameterInfo();
+                        parameterInfoForm.Show();
+                    }
 
-                    ParameterInfo parameterInfo = new ParameterInfo();
-                    parameterInfo.ParameterName_ParaInfoFrm = paraName;
-                    parameterInfo.ShowDialog();
-
-
-                    // Perform an action (for example, show a message with the values)
-                    MessageBox.Show($"Button clicked in row {e.RowIndex}\n" +
-                                    $"Name: {paraName}\n");
+                    // Update the existing form with the new data
+                    parameterInfoForm.UpdateParameter(paraName);
                 }
             }
         }

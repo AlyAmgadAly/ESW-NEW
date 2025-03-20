@@ -47,6 +47,10 @@
             this.lbl_Select = new System.Windows.Forms.Label();
             this.list_Select = new System.Windows.Forms.ListBox();
             this.data_allPara = new System.Windows.Forms.DataGridView();
+            this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
+            this.ColNormality = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ViewCode_Col = new System.Windows.Forms.DataGridViewButtonColumn();
             this.label6 = new System.Windows.Forms.Label();
             this.cmb_ChooseTableFormat = new System.Windows.Forms.ComboBox();
             this.txt_ParaName = new System.Windows.Forms.TextBox();
@@ -85,10 +89,6 @@
             this.pic_SigAdj = new System.Windows.Forms.PictureBox();
             this.lbl_PeriodsCount = new System.Windows.Forms.Label();
             this.txt_PeriodCount = new System.Windows.Forms.TextBox();
-            this.Col_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColMeasure = new System.Windows.Forms.DataGridViewImageColumn();
-            this.ColNormality = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ViewCode_Col = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RefreshListsUpdate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).BeginInit();
@@ -337,6 +337,38 @@
             this.data_allPara.Size = new System.Drawing.Size(361, 577);
             this.data_allPara.TabIndex = 62;
             this.data_allPara.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.data_allPara_CellContentClick);
+            // 
+            // Col_Name
+            // 
+            this.Col_Name.DataPropertyName = "ColName";
+            this.Col_Name.HeaderText = "Name";
+            this.Col_Name.Name = "Col_Name";
+            this.Col_Name.ReadOnly = true;
+            this.Col_Name.Width = 150;
+            // 
+            // ColMeasure
+            // 
+            this.ColMeasure.HeaderText = "Measure";
+            this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.ColMeasure.Name = "ColMeasure";
+            this.ColMeasure.ReadOnly = true;
+            this.ColMeasure.Width = 75;
+            // 
+            // ColNormality
+            // 
+            this.ColNormality.HeaderText = "Normality";
+            this.ColNormality.Name = "ColNormality";
+            this.ColNormality.ReadOnly = true;
+            this.ColNormality.Width = 75;
+            // 
+            // ViewCode_Col
+            // 
+            this.ViewCode_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.ViewCode_Col.FillWeight = 50F;
+            this.ViewCode_Col.HeaderText = "View";
+            this.ViewCode_Col.Name = "ViewCode_Col";
+            this.ViewCode_Col.ReadOnly = true;
+            this.ViewCode_Col.Width = 35;
             // 
             // label6
             // 
@@ -801,38 +833,6 @@
             this.txt_PeriodCount.Name = "txt_PeriodCount";
             this.txt_PeriodCount.Size = new System.Drawing.Size(51, 28);
             this.txt_PeriodCount.TabIndex = 84;
-            // 
-            // Col_Name
-            // 
-            this.Col_Name.DataPropertyName = "ColName";
-            this.Col_Name.HeaderText = "Name";
-            this.Col_Name.Name = "Col_Name";
-            this.Col_Name.ReadOnly = true;
-            this.Col_Name.Width = 150;
-            // 
-            // ColMeasure
-            // 
-            this.ColMeasure.HeaderText = "Measure";
-            this.ColMeasure.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.ColMeasure.Name = "ColMeasure";
-            this.ColMeasure.ReadOnly = true;
-            this.ColMeasure.Width = 75;
-            // 
-            // ColNormality
-            // 
-            this.ColNormality.HeaderText = "Normality";
-            this.ColNormality.Name = "ColNormality";
-            this.ColNormality.ReadOnly = true;
-            this.ColNormality.Width = 75;
-            // 
-            // ViewCode_Col
-            // 
-            this.ViewCode_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ViewCode_Col.FillWeight = 50F;
-            this.ViewCode_Col.HeaderText = "View";
-            this.ViewCode_Col.Name = "ViewCode_Col";
-            this.ViewCode_Col.ReadOnly = true;
-            this.ViewCode_Col.Width = 35;
             // 
             // ComparativeGroups
             // 
