@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComparativeGroups));
             this.list_Nominal = new System.Windows.Forms.ListBox();
             this.list_NormalScale = new System.Windows.Forms.ListBox();
@@ -89,6 +89,11 @@
             this.pic_SigAdj = new System.Windows.Forms.PictureBox();
             this.lbl_PeriodsCount = new System.Windows.Forms.Label();
             this.txt_PeriodCount = new System.Windows.Forms.TextBox();
+            this.pic_ClearAllSubGroups = new System.Windows.Forms.PictureBox();
+            this.pic_RemoveSubGroupsList = new System.Windows.Forms.PictureBox();
+            this.pic_AllParaToSubGroups = new System.Windows.Forms.PictureBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.list_SubGroups = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RefreshListsUpdate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).BeginInit();
@@ -116,6 +121,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_SigAdj)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAllSubGroups)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSubGroupsList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSubGroups)).BeginInit();
             this.SuspendLayout();
             // 
             // list_Nominal
@@ -139,7 +147,7 @@
             this.list_NormalScale.Location = new System.Drawing.Point(453, 210);
             this.list_NormalScale.Name = "list_NormalScale";
             this.list_NormalScale.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_NormalScale.Size = new System.Drawing.Size(263, 106);
+            this.list_NormalScale.Size = new System.Drawing.Size(263, 72);
             this.list_NormalScale.TabIndex = 9;
             // 
             // list_AbnormalScale
@@ -148,10 +156,10 @@
             this.list_AbnormalScale.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_AbnormalScale.FormattingEnabled = true;
             this.list_AbnormalScale.ItemHeight = 17;
-            this.list_AbnormalScale.Location = new System.Drawing.Point(453, 361);
+            this.list_AbnormalScale.Location = new System.Drawing.Point(453, 333);
             this.list_AbnormalScale.Name = "list_AbnormalScale";
             this.list_AbnormalScale.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_AbnormalScale.Size = new System.Drawing.Size(263, 106);
+            this.list_AbnormalScale.Size = new System.Drawing.Size(263, 72);
             this.list_AbnormalScale.TabIndex = 10;
             this.list_AbnormalScale.SelectedIndexChanged += new System.EventHandler(this.list_AbnormalScale_SelectedIndexChanged);
             // 
@@ -161,7 +169,7 @@
             this.list_Groups.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_Groups.FormattingEnabled = true;
             this.list_Groups.ItemHeight = 17;
-            this.list_Groups.Location = new System.Drawing.Point(453, 517);
+            this.list_Groups.Location = new System.Drawing.Point(453, 528);
             this.list_Groups.Name = "list_Groups";
             this.list_Groups.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_Groups.Size = new System.Drawing.Size(263, 38);
@@ -219,7 +227,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label2.Location = new System.Drawing.Point(448, 328);
+            this.label2.Location = new System.Drawing.Point(448, 300);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(186, 30);
@@ -262,7 +270,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label3.Location = new System.Drawing.Point(448, 484);
+            this.label3.Location = new System.Drawing.Point(448, 495);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(100, 30);
@@ -302,14 +310,14 @@
             this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.data_allPara.ColumnHeadersHeight = 54;
             this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -317,14 +325,14 @@
             this.ColMeasure,
             this.ColNormality,
             this.ViewCode_Col});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle4;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.Location = new System.Drawing.Point(12, 94);
@@ -512,7 +520,7 @@
             // pic_removeallGroupsList
             // 
             this.pic_removeallGroupsList.Image = ((System.Drawing.Image)(resources.GetObject("pic_removeallGroupsList.Image")));
-            this.pic_removeallGroupsList.Location = new System.Drawing.Point(597, 484);
+            this.pic_removeallGroupsList.Location = new System.Drawing.Point(597, 495);
             this.pic_removeallGroupsList.Name = "pic_removeallGroupsList";
             this.pic_removeallGroupsList.Size = new System.Drawing.Size(45, 31);
             this.pic_removeallGroupsList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -534,7 +542,7 @@
             // pic_ClearAbnormalList
             // 
             this.pic_ClearAbnormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_ClearAbnormalList.Image")));
-            this.pic_ClearAbnormalList.Location = new System.Drawing.Point(671, 327);
+            this.pic_ClearAbnormalList.Location = new System.Drawing.Point(671, 299);
             this.pic_ClearAbnormalList.Name = "pic_ClearAbnormalList";
             this.pic_ClearAbnormalList.Size = new System.Drawing.Size(45, 31);
             this.pic_ClearAbnormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -695,7 +703,7 @@
             // pic_RemoveGroupsList
             // 
             this.pic_RemoveGroupsList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveGroupsList.Image")));
-            this.pic_RemoveGroupsList.Location = new System.Drawing.Point(553, 484);
+            this.pic_RemoveGroupsList.Location = new System.Drawing.Point(553, 495);
             this.pic_RemoveGroupsList.Name = "pic_RemoveGroupsList";
             this.pic_RemoveGroupsList.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveGroupsList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -706,7 +714,7 @@
             // pic_RemoveAbNormalList
             // 
             this.pic_RemoveAbNormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveAbNormalList.Image")));
-            this.pic_RemoveAbNormalList.Location = new System.Drawing.Point(630, 328);
+            this.pic_RemoveAbNormalList.Location = new System.Drawing.Point(630, 300);
             this.pic_RemoveAbNormalList.Name = "pic_RemoveAbNormalList";
             this.pic_RemoveAbNormalList.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveAbNormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -739,7 +747,7 @@
             // pic_AllParaToGroups
             // 
             this.pic_AllParaToGroups.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToGroups.Image")));
-            this.pic_AllParaToGroups.Location = new System.Drawing.Point(379, 517);
+            this.pic_AllParaToGroups.Location = new System.Drawing.Point(379, 528);
             this.pic_AllParaToGroups.Name = "pic_AllParaToGroups";
             this.pic_AllParaToGroups.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToGroups.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -750,7 +758,7 @@
             // pic_AllParaToAbnormal
             // 
             this.pic_AllParaToAbnormal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToAbnormal.Image")));
-            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(379, 391);
+            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(379, 352);
             this.pic_AllParaToAbnormal.Name = "pic_AllParaToAbnormal";
             this.pic_AllParaToAbnormal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToAbnormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -761,7 +769,7 @@
             // pic_AllParaToNormal
             // 
             this.pic_AllParaToNormal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToNormal.Image")));
-            this.pic_AllParaToNormal.Location = new System.Drawing.Point(379, 240);
+            this.pic_AllParaToNormal.Location = new System.Drawing.Point(379, 224);
             this.pic_AllParaToNormal.Name = "pic_AllParaToNormal";
             this.pic_AllParaToNormal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToNormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -834,12 +842,74 @@
             this.txt_PeriodCount.Size = new System.Drawing.Size(51, 28);
             this.txt_PeriodCount.TabIndex = 84;
             // 
+            // pic_ClearAllSubGroups
+            // 
+            this.pic_ClearAllSubGroups.Image = ((System.Drawing.Image)(resources.GetObject("pic_ClearAllSubGroups.Image")));
+            this.pic_ClearAllSubGroups.Location = new System.Drawing.Point(631, 412);
+            this.pic_ClearAllSubGroups.Name = "pic_ClearAllSubGroups";
+            this.pic_ClearAllSubGroups.Size = new System.Drawing.Size(45, 31);
+            this.pic_ClearAllSubGroups.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_ClearAllSubGroups.TabIndex = 89;
+            this.pic_ClearAllSubGroups.TabStop = false;
+            this.pic_ClearAllSubGroups.Click += new System.EventHandler(this.pic_ClearAllSubGroups_Click);
+            // 
+            // pic_RemoveSubGroupsList
+            // 
+            this.pic_RemoveSubGroupsList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveSubGroupsList.Image")));
+            this.pic_RemoveSubGroupsList.Location = new System.Drawing.Point(588, 412);
+            this.pic_RemoveSubGroupsList.Name = "pic_RemoveSubGroupsList";
+            this.pic_RemoveSubGroupsList.Size = new System.Drawing.Size(37, 30);
+            this.pic_RemoveSubGroupsList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_RemoveSubGroupsList.TabIndex = 88;
+            this.pic_RemoveSubGroupsList.TabStop = false;
+            this.pic_RemoveSubGroupsList.Click += new System.EventHandler(this.pic_RemoveSubGroupsList_Click);
+            // 
+            // pic_AllParaToSubGroups
+            // 
+            this.pic_AllParaToSubGroups.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToSubGroups.Image")));
+            this.pic_AllParaToSubGroups.Location = new System.Drawing.Point(379, 446);
+            this.pic_AllParaToSubGroups.Name = "pic_AllParaToSubGroups";
+            this.pic_AllParaToSubGroups.Size = new System.Drawing.Size(59, 38);
+            this.pic_AllParaToSubGroups.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_AllParaToSubGroups.TabIndex = 87;
+            this.pic_AllParaToSubGroups.TabStop = false;
+            this.pic_AllParaToSubGroups.Click += new System.EventHandler(this.pic_AllParaToSubGroups_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
+            this.label7.Location = new System.Drawing.Point(448, 411);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(145, 30);
+            this.label7.TabIndex = 86;
+            this.label7.Text = "Sub Groups :";
+            // 
+            // list_SubGroups
+            // 
+            this.list_SubGroups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.list_SubGroups.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.list_SubGroups.FormattingEnabled = true;
+            this.list_SubGroups.ItemHeight = 17;
+            this.list_SubGroups.Location = new System.Drawing.Point(453, 446);
+            this.list_SubGroups.Name = "list_SubGroups";
+            this.list_SubGroups.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.list_SubGroups.Size = new System.Drawing.Size(263, 38);
+            this.list_SubGroups.TabIndex = 85;
+            // 
             // ComparativeGroups
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.pic_ClearAllSubGroups);
+            this.Controls.Add(this.pic_RemoveSubGroupsList);
+            this.Controls.Add(this.pic_AllParaToSubGroups);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.list_SubGroups);
             this.Controls.Add(this.txt_PeriodCount);
             this.Controls.Add(this.lbl_PeriodsCount);
             this.Controls.Add(this.pic_SigAdj);
@@ -926,6 +996,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_addTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToNominal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_SigAdj)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAllSubGroups)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSubGroupsList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSubGroups)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -990,5 +1063,10 @@
         private System.Windows.Forms.DataGridViewImageColumn ColMeasure;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColNormality;
         private System.Windows.Forms.DataGridViewButtonColumn ViewCode_Col;
+        private System.Windows.Forms.PictureBox pic_ClearAllSubGroups;
+        private System.Windows.Forms.PictureBox pic_RemoveSubGroupsList;
+        private System.Windows.Forms.PictureBox pic_AllParaToSubGroups;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ListBox list_SubGroups;
     }
 }

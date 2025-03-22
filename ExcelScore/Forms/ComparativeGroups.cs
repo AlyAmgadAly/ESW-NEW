@@ -475,6 +475,21 @@ namespace ExcelScore.Forms
                 comparativeTable.Parameters.Add(parameter);
             }
 
+
+            foreach (var item in list_SubGroups.Items)
+            {
+                //MessageBox.Show(item.ToString());
+                var parameter = new Parameter
+                {
+                    Name = item.ToString(),
+                    IsSubGroup = true,
+                    GroupedParameterValues = new Dictionary<double, List<double>>(),
+                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
+                };
+                comparativeTable.Parameters.Add(parameter);
+            }
+            //IsSubGroup
+
             // Add parameters from list_Nominal
             foreach (var item in list_Nominal.Items)
             {
@@ -9071,6 +9086,58 @@ namespace ExcelScore.Forms
         private void list_AbnormalScale_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void pic_RemoveSubGroupsList_Click(object sender, EventArgs e)
+        {
+            if (list_SubGroups.SelectedIndex != -1)
+            {
+
+                var selectedItems = new List<object>();
+                foreach (var selectedItem in list_SubGroups.SelectedItems)
+                {
+                    selectedItems.Add(selectedItem);
+                }
+
+
+                foreach (var selectedItem in selectedItems)
+                {
+                    list_SubGroups.Items.Remove(selectedItem);
+                }
+
+            }
+            else
+                MessageBox.Show("Please Select Item!");
+        }
+
+        private void pic_ClearAllSubGroups_Click(object sender, EventArgs e)
+        {
+            var selectedItemsGroups = new List<object>();
+            foreach (var selectedItemGroup in list_SubGroups.Items)
+            {
+                selectedItemsGroups.Add(selectedItemGroup);
+            }
+
+
+            foreach (var selectedItemGroup in selectedItemsGroups)
+            {
+                list_SubGroups.Items.Remove(selectedItemGroup);
+            }
+        }
+
+        private void pic_AllParaToSubGroups_Click(object sender, EventArgs e)
+        {
+            for (int i = data_allPara.SelectedRows.Count - 1; i >= 0; i--)
+            {
+                DataGridViewRow row = data_allPara.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    list_SubGroups.Items.Add(item);
+                }
+
+            }
         }
     }
 }

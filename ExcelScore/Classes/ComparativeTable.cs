@@ -14,6 +14,7 @@ namespace ExcelScore.Classes
         public string Name { get; set; }
         public bool IsGroup { get; set; }
 
+        public bool IsSubGroup { get; set; }
         public bool hasLowerN { get; set; }
         public string NominalOrScale { get; set; }
         public string NormalOrAbnormal { get; set; }
