@@ -85,13 +85,13 @@ public class SpssFileReader
     private void ExportToExcel(string filePath)
     {
         Workbook workbook = new Workbook();
-        Worksheet rawDataSheet = workbook.Worksheets[0];
-        rawDataSheet.Name = "Rawdata";
+        Worksheet sheet = workbook.Worksheets[0];
+        sheet.Name = "Rawdata";
 
         // Insert variable names in the first row
         for (int i = 0; i < Variables.Count; i++)
         {
-            rawDataSheet.Cells[0, i].Value = Variables[i].Name;
+            sheet.Cells[0, i].Value = Variables[i].Name;
         }
 
         // Insert variable data starting from row 1
@@ -100,41 +100,41 @@ public class SpssFileReader
         {
             for (int col = 0; col < Variables.Count; col++)
             {
-                rawDataSheet.Cells[row + 1, col].Value = Variables[col].Data[row];
+                sheet.Cells[row + 1, col].Value = Variables[col].Data[row];
             }
         }
 
-        // Create second sheet "ListVariables"
-        Worksheet listVariablesSheet = workbook.Worksheets.Add("ListVariables");
+        // Add second sheet "ListVariables"
+        Worksheet sheet2 = workbook.Worksheets.Add("ListVariables");
 
         // Insert variable names in the first row
         for (int i = 0; i < Variables.Count; i++)
         {
-            listVariablesSheet.Cells[0, i].Value = Variables[i].Name;
+            sheet2.Cells[0, i].Value = Variables[i].Name;
+            sheet2.Cells[1, i].Value = Variables[i].Measure; // Nominal or Scale
         }
 
-        // Insert measurement type in the second row
-        for (int i = 0; i < Variables.Count; i++)
-        {
-            listVariablesSheet.Cells[1, i].Value = Variables[i].Measure;
-        }
-
-        // Insert value labels starting from row 2
+        // Insert value labels if they exist
         int maxValueLabelCount = Variables.Max(v => v.ValueLabels.Count);
         for (int row = 0; row < maxValueLabelCount; row++)
         {
             for (int col = 0; col < Variables.Count; col++)
             {
-                var valueLabels = Variables[col].ValueLabels.ToList();
-                if (row < valueLabels.Count)
+                if (row < Variables[col].ValueLabels.Count)
                 {
-                    listVariablesSheet.Cells[row + 2, col].Value = $"{valueLabels[row].Key} | {valueLabels[row].Value}";
+                    var kvp = Variables[col].ValueLabels.ElementAt(row);
+                    sheet2.Cells[row + 2, col].Value = $"{kvp.Key} | {kvp.Value}";
                 }
             }
         }
 
-        // Save the file in the same directory as the SPSS file
+        // Save the file
         workbook.Save(filePath);
-        MessageBox.Show($"Excel file saved successfully at: {filePath}", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        // Extract folder path and copy it to clipboard
+        string folderPath = Path.GetDirectoryName(filePath);
+        Clipboard.SetText(folderPath);
+
+        MessageBox.Show("Excel file saved successfully! Folder path copied to clipboard.", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 }
