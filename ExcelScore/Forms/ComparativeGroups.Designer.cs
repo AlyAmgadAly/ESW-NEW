@@ -156,7 +156,7 @@
             this.list_AbnormalScale.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.list_AbnormalScale.FormattingEnabled = true;
             this.list_AbnormalScale.ItemHeight = 17;
-            this.list_AbnormalScale.Location = new System.Drawing.Point(453, 333);
+            this.list_AbnormalScale.Location = new System.Drawing.Point(453, 326);
             this.list_AbnormalScale.Name = "list_AbnormalScale";
             this.list_AbnormalScale.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_AbnormalScale.Size = new System.Drawing.Size(263, 72);
@@ -227,7 +227,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(137)))), ((int)(((byte)(36)))));
-            this.label2.Location = new System.Drawing.Point(448, 300);
+            this.label2.Location = new System.Drawing.Point(448, 293);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(186, 30);
@@ -542,7 +542,7 @@
             // pic_ClearAbnormalList
             // 
             this.pic_ClearAbnormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_ClearAbnormalList.Image")));
-            this.pic_ClearAbnormalList.Location = new System.Drawing.Point(671, 299);
+            this.pic_ClearAbnormalList.Location = new System.Drawing.Point(671, 292);
             this.pic_ClearAbnormalList.Name = "pic_ClearAbnormalList";
             this.pic_ClearAbnormalList.Size = new System.Drawing.Size(45, 31);
             this.pic_ClearAbnormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -714,7 +714,7 @@
             // pic_RemoveAbNormalList
             // 
             this.pic_RemoveAbNormalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveAbNormalList.Image")));
-            this.pic_RemoveAbNormalList.Location = new System.Drawing.Point(630, 300);
+            this.pic_RemoveAbNormalList.Location = new System.Drawing.Point(630, 293);
             this.pic_RemoveAbNormalList.Name = "pic_RemoveAbNormalList";
             this.pic_RemoveAbNormalList.Size = new System.Drawing.Size(37, 30);
             this.pic_RemoveAbNormalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -758,7 +758,7 @@
             // pic_AllParaToAbnormal
             // 
             this.pic_AllParaToAbnormal.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParaToAbnormal.Image")));
-            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(379, 352);
+            this.pic_AllParaToAbnormal.Location = new System.Drawing.Point(379, 344);
             this.pic_AllParaToAbnormal.Name = "pic_AllParaToAbnormal";
             this.pic_AllParaToAbnormal.Size = new System.Drawing.Size(59, 38);
             this.pic_AllParaToAbnormal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
