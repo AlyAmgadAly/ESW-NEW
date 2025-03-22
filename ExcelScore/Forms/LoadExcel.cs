@@ -155,8 +155,11 @@ namespace ExcelScore
 
         private void pic_ConvertSpssToExcel_Click(object sender, EventArgs e)
         {
-            string url = "https://secure.ncounter.de/spssconverter";
-            Process.Start(url);
+            //string url = "https://secure.ncounter.de/spssconverter";
+            //Process.Start(url);
+
+            SpssFileReader spssFileReader = new SpssFileReader();
+            spssFileReader.LoadSpssFile();
         }
     }
 }

@@ -252,6 +252,7 @@
     <Compile Include="Classes\pythonStat.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Classes\SpssFileReader.cs" />
     <Compile Include="Classes\SPSS_Class.cs" />
     <Compile Include="Classes\TableClasses.cs" />
     <Compile Include="Classes\Tool.cs" />

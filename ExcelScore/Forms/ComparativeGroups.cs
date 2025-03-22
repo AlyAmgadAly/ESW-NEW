@@ -5051,6 +5051,116 @@ namespace ExcelScore.Forms
 
 
         }
+
+        public int  letter_table_group_Subgroups_Rows(ComparativeTable comparativeTable)
+        {
+            int rows = 0;
+
+            Parameter SubGroup = null;
+
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(parameter.IsSubGroup)
+                {
+                    SubGroup = parameter;
+
+                    break;
+                }
+            }
+
+
+            foreach (var SubGroupValue in SubGroup.DIC_LablesIfNomainal.Keys)
+            {
+                rows = rows + 2;
+            }
+
+
+
+            rows = rows + 3;
+
+            return rows;
+
+
+        }
+        public int letter_table_group_Subgroups_Cols(ComparativeTable comparativeTable)
+        {
+            int columns = 0;
+
+
+            Parameter Group = null;
+
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup)
+                {
+                    Group = parameter;
+
+                    break;
+                }
+            }
+
+
+            foreach (var GroupValue in Group.DIC_LablesIfNomainal.Keys)
+            {
+                columns++;
+            }
+
+
+            columns = columns + 3;
+
+            return columns;
+        }
+        public void letter_table_group_Subgroups()
+        {
+
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Letter Groups SubGroups")
+                {
+                    IWSection section = wordObj.CreatePortraitSection();
+
+                    wordObj.AddRelationTitle(section, ComparativeTables[tableindex].TableName);
+
+
+                    int WordTableRows = letter_table_group_Subgroups_Rows(ComparativeTables[tableindex]);
+
+
+                    int WordTableColumns = letter_table_group_Subgroups_Cols(ComparativeTables[tableindex]);
+
+
+                }
+            }
+          
+            //        int WordTableRows = 2 + Variablerows;
+
+            //        IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+            //        wordObj.GeneralTableFormat(table);
+
+
+            //        //Merges
+            //        wordObj.ApplyRelation_IQR_OuterMerges(table, WordTableRows, WordTableColumns);
+
+            //        //Borders
+            //        wordObj.ApplyRelation_IQR_OuterBorders(table, WordTableRows, WordTableColumns);
+
+            //        //Widths
+            //        wordObj.ApplyRelation_IQR_Widths(table, WordTableRows, WordTableColumns);
+
+
+            //        //Outer Headers
+            //        wordObj.ApplyRelation_IQR_OuterHeaders(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+            //        //
+            //        wordObj.InsertRelation_InnerHeader_Merges(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
+
+
+            //        wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test of Sig.");
+
+
+        }
+
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
