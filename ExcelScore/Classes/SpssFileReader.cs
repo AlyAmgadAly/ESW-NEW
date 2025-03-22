@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using SpssLib.DataReader;
 using Aspose.Cells;
+using System.Diagnostics;
 
 public class SpssVariable
 {
@@ -32,6 +33,7 @@ public class SpssFileReader
                 ReadSpssFile(spssFilePath);
                 //ShowVariablesInMessageBox();
                 ExportToExcel(Path.Combine(Path.GetDirectoryName(spssFilePath), "ExportedData.xlsx"));
+                //RunSpssSyntax(spssFilePath);
             }
         }
     }
@@ -136,5 +138,42 @@ public class SpssFileReader
         Clipboard.SetText(folderPath);
 
         MessageBox.Show("Excel file saved successfully! Folder path copied to clipboard.", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
+
+    public static void RunSpssSyntax(string spssFilePath)
+    {
+        string folderPath = Path.GetDirectoryName(spssFilePath);
+        string syntaxPath = Path.Combine(folderPath, "temp_script.sps");
+        string outputPath = Path.Combine(folderPath, "output.spo"); // SPSS output file
+
+        // Create the SPSS syntax dynamically
+        File.WriteAllText(syntaxPath, $@"
+GET FILE='{spssFilePath}'.
+DESCRIPTIVES VARIABLES ALL /STATISTICS=MEAN STDDEV MIN MAX.
+SAVE OUTFILE='{outputPath}'.
+EXECUTE.
+");
+
+        // Run SPSS in batch mode (silent execution)
+        ProcessStartInfo processInfo = new ProcessStartInfo
+        {
+            FileName = @"C:\Program Files (x86)\SPSS\spssspla.exe", // Adjust SPSS path
+            Arguments = $"/production {syntaxPath}",
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        Process process = Process.Start(processInfo);
+        process.WaitForExit(); // Wait until the operation completes
+
+        if (File.Exists(outputPath))
+        {
+            Clipboard.SetText(folderPath); // Copy folder path to clipboard
+            MessageBox.Show("SPSS operation completed! Output file saved.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        else
+        {
+            MessageBox.Show("SPSS execution failed. Please check SPSS installation.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 }
