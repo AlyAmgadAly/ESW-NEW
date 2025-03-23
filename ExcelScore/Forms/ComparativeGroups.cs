@@ -5110,6 +5110,8 @@ namespace ExcelScore.Forms
 
             return columns;
         }
+
+        
         public void letter_table_group_Subgroups()
         {
 
@@ -5127,24 +5129,31 @@ namespace ExcelScore.Forms
 
                     int WordTableColumns = letter_table_group_Subgroups_Cols(ComparativeTables[tableindex]);
 
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+
+                    //wordObj.GeneralTableFormat(table);
+
+                    wordObj.GeneralLetterTableFormat(table);
+                    Parameter Groupparameter = ComparativeTable.GetGroupParamter(ComparativeTables[tableindex]);
+
+                    //Merges
+                    wordObj.letter_table_group_Subgroups_merges(table, WordTableRows, WordTableColumns , Groupparameter);
+
+                    //Borders
+                    wordObj.letter_table_group_Subgroups_borders(table, WordTableRows, WordTableColumns);
+
+
+                    //Widths
+                    wordObj.letter_table_group_Subgroups_widths(table, WordTableRows, WordTableColumns);
+
+
+                    //Outer Headers
+                    wordObj.letter_table_group_Subgroups_header(table, ComparativeTables[tableindex], WordTableRows, WordTableColumns);
+
 
                 }
             }
           
-            //        int WordTableRows = 2 + Variablerows;
-
-            //        IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
-            //        wordObj.GeneralTableFormat(table);
-
-
-            //        //Merges
-            //        wordObj.ApplyRelation_IQR_OuterMerges(table, WordTableRows, WordTableColumns);
-
-            //        //Borders
-            //        wordObj.ApplyRelation_IQR_OuterBorders(table, WordTableRows, WordTableColumns);
-
-            //        //Widths
-            //        wordObj.ApplyRelation_IQR_Widths(table, WordTableRows, WordTableColumns);
 
 
             //        //Outer Headers
@@ -5170,6 +5179,7 @@ namespace ExcelScore.Forms
 
             document = wordObj.InitWord();
 
+            letter_table_group_Subgroups();
 
             Anesthesia_Periods();
 

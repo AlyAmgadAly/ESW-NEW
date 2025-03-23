@@ -815,6 +815,8 @@ namespace ExcelScore.Forms
         {
             MessageBox.Show(message.ToString());
         }
+        
+
         public void HardLetters(IWTable table, Parameter parameter, int InsertColumn)
         {
             int numberofgroups = parameter.GroupedParameterValues.Keys.Distinct().Count();
@@ -1268,6 +1270,7 @@ namespace ExcelScore.Forms
                     }
                     else if (comparativeTable.LetterType == "Hard")
                     {
+                        //HardLettersNEW(table, parameter, startColumn);
                         HardLetters(table, parameter, startColumn);
                     }
                     
@@ -1281,6 +1284,149 @@ namespace ExcelScore.Forms
             }
             
         }
+
+        public void HardLettersNEW(IWTable table, Parameter parameter, int InsertColumn)
+        {
+            int numberofgroups = parameter.GroupedParameterValues.Keys.Distinct().Count();
+            int pairwiseTotalcount = parameter.FPairwise.Count();
+            int pairwisectr = 0;
+            Dictionary<int, double> Parameter_Groups_values = new Dictionary<int, double>();
+
+            // ✅ Step 1: Populate LabelPairwise
+            while (pairwiseTotalcount > 0)
+            {
+                for (int j = 1; j <= numberofgroups; j++)
+                {
+                    for (int i = 2; i <= numberofgroups; i++)
+                    {
+                        if (i > j)
+                        {
+                            parameter.LabelPairwise[(j, i)] = parameter.FPairwise[pairwisectr];
+                            pairwisectr++;
+                            pairwiseTotalcount--;
+                        }
+                    }
+                }
+                numberofgroups--;
+            }
+
+            // ✅ Step 2: Extract Mean or Median for Sorting
+            foreach (var kvp in parameter.FormattedValues)
+            {
+                double groupValue = kvp.Key;
+                Dictionary<string, string> scaleStats = kvp.Value;
+
+                foreach (var stat in scaleStats)
+                {
+                    if (parameter.NormalOrAbnormal == "Normal" && stat.Key == "Mean ± StdDev")
+                    {
+                        string[] meanStdArr = stat.Value.Split(' ');
+                        double mean = double.Parse(meanStdArr[0]);
+                        Parameter_Groups_values[(int)groupValue] = mean;
+                    }
+                    else if (parameter.NormalOrAbnormal == "Abnormal" && stat.Key == "Median (IQR)")
+                    {
+                        string medianStr = stat.Value.Split(' ')[0];
+                        double median = double.Parse(medianStr);
+                        Parameter_Groups_values[(int)groupValue] = median;
+                    }
+                }
+            }
+
+            // ✅ Step 3: Sort groups by descending Mean or Median
+            var sortedDict = Parameter_Groups_values.OrderByDescending(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+            List<int> SortedGroups = sortedDict.Keys.ToList();
+            Dictionary<int, string> GroupLetter = new Dictionary<int, string>();
+
+            // ✅ Step 4: Assign first group "a"
+            int HighestGroup = SortedGroups[0];
+            GroupLetter[HighestGroup] = "a";
+
+            // ✅ Step 5: Process remaining groups correctly
+            List<int> BlockedLowerGrps = new List<int>();
+            List<int> NotSigGroups = new List<int>();
+            int lowergroupCtr = 1;
+
+            while (lowergroupCtr < SortedGroups.Count)
+            {
+                int lowerGroup = SortedGroups[lowergroupCtr];
+                int higherGroupCtr = lowergroupCtr - 1;
+                bool isAnySignificant = false;
+                List<char> inheritedLetters = new List<char>();
+
+                if (!GroupLetter.ContainsKey(lowerGroup))
+                    GroupLetter[lowerGroup] = "";
+
+                while (higherGroupCtr >= 0)
+                {
+                    int higherGroup = SortedGroups[higherGroupCtr];
+
+                    if (!GroupLetter.ContainsKey(higherGroup))
+                        GroupLetter[higherGroup] = "";
+
+                    int smallerNumber = Math.Min(higherGroup, lowerGroup);
+                    int largerNumber = Math.Max(higherGroup, lowerGroup);
+                    string pvaluestr = parameter.LabelPairwise[(smallerNumber, largerNumber)];
+                    bool IsSig = pvaluestr == "<0.001" || double.Parse(pvaluestr) < 0.05;
+
+                    if (!IsSig)
+                    {
+                        // 🔹 If NOT significant, inherit letters from the higher group
+                        inheritedLetters.AddRange(GroupLetter[higherGroup]);
+                    }
+                    else
+                    {
+                        isAnySignificant = true;
+                    }
+
+                    higherGroupCtr--;
+                }
+
+                // ✅ Step 6: Assign Letters Correctly
+                inheritedLetters = inheritedLetters.Distinct().ToList(); // Remove duplicates
+
+                if (isAnySignificant)
+                {
+                    // Assign a new letter, but also keep inherited ones
+                    char newLetter = GetNextsmallLetter(inheritedLetters.LastOrDefault());
+                    inheritedLetters.Add(newLetter);
+                }
+
+                // Convert list to string and assign to group
+                GroupLetter[lowerGroup] = string.Join("", inheritedLetters);
+
+                lowergroupCtr++;
+            }
+
+            // ✅ Step 7: Remove duplicate letters
+            foreach (int key in new List<int>(GroupLetter.Keys))
+            {
+                HashSet<char> uniqueChars = new HashSet<char>(GroupLetter[key]);
+                GroupLetter[key] = string.Join("", uniqueChars);
+            }
+
+            // ✅ Step 8: Insert Letters into Word Table
+            foreach (var kvp in GroupLetter)
+            {
+                int row = kvp.Key + 1;
+                string myletters = string.Join("", kvp.Value);
+                string Data = table[row, InsertColumn].Paragraphs[0].Text;
+                string[] MeanStd = Data.Split(' ');
+
+                WParagraph datapara = table[row, InsertColumn].Paragraphs[0];
+                datapara.Text = "";
+                datapara.AppendText(MeanStd[0]);
+
+                WTextRange asteriskt = (WTextRange)datapara.AppendText(myletters);
+                asteriskt.CharacterFormat.SubSuperScript = SubSuperScript.SuperScript;
+
+                datapara.AppendText(" ");
+                datapara.AppendText(MeanStd[1]);
+                datapara.AppendText(" ");
+                datapara.AppendText(MeanStd[2]);
+            }
+        }
+
 
 
         ManualTests manualTests = new ManualTests();

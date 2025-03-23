@@ -648,7 +648,24 @@ namespace ExcelScore.Classes
             }
             
         }
+        //letter_table_group_Subgroups_widths
 
+        public void letter_table_group_Subgroups_widths(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+            for (int row = 0; row < WordTableRows; row++)
+            {
+                table.Rows[row].Cells[0].Width = SetColumnWidthInCentimeters(3.5f);
+                
+                for(int col = 1;col < WordTableColumns-2;col++)
+                {
+                    table.Rows[row].Cells[col].Width = SetColumnWidthInCentimeters(3f);
+                }
+                table.Rows[row].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(2f);
+                table.Rows[row].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(2f);
+
+            }
+
+        }
         public void ApplyRelation_IQR_Widths(IWTable table, int WordTableRows, int WordTableColumns)
         {
             for (int row = 0; row < WordTableRows; row++)
@@ -1104,6 +1121,32 @@ namespace ExcelScore.Classes
 
             
         }
+        //letter_table_group_Subgroups_header
+
+        public void letter_table_group_Subgroups_header(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
+        {
+            foreach (var Parameter in comparativeTable.Parameters)
+            {
+                if(Parameter.IsGroup || Parameter.IsSubGroup)
+                {
+                    continue;
+                }
+                AddPara_Center(table, 0, 0, Parameter.Name.RemoveDots());
+            }
+
+
+
+            int row = 1;
+
+            
+
+
+
+
+            
+
+
+        }
         public void ApplyRelation_IQR_OuterHeaders(IWTable table, ComparativeTable comparativeTable, int WordTableRows, int WordTableColumns)
         {
             AddPara_Center(table, 0, 1, "N");
@@ -1336,6 +1379,37 @@ namespace ExcelScore.Classes
 
             }
         }
+        //letter_table_group_Subgroups_borders
+
+        public void letter_table_group_Subgroups_borders(IWTable table, int WordTableRows, int WordTableColumns)
+        {
+
+
+            
+
+            for (int j = 0; j < WordTableColumns; j++)
+            {
+                table.Rows[0].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[0].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+
+                table.Rows[WordTableRows-2].Cells[j].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[WordTableRows-2].Cells[j].CellFormat.Borders.Top.LineWidth = 1.5f;
+            }
+
+            for (int k = 0; k < WordTableRows; k++)
+            {
+                table.Rows[k].Cells[0].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[k].Cells[0].CellFormat.Borders.Right.LineWidth = 1.5f;
+
+                table.Rows[k].Cells[WordTableColumns - 2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[k].Cells[WordTableColumns - 2].CellFormat.Borders.Left.LineWidth = 1.5f;
+            }
+
+            
+
+
+
+        }
         public void ApplyRelation_IQR_OuterBorders(IWTable table, int WordTableRows, int WordTableColumns)
         {
             for (int j = 0; j < WordTableColumns; j++)
@@ -1463,6 +1537,20 @@ namespace ExcelScore.Classes
 
         }
 
+        //letter_table_group_Subgroups
+
+        public void letter_table_group_Subgroups_merges(IWTable table, int WordTableRows, int WordTableColumns , Parameter GroupParameter)
+        {
+            int GroupCount = GroupParameter.DIC_LablesIfNomainal.Keys.Count;
+            for (int row = 2; row < WordTableRows-2; row = row+2)
+            {
+                table.ApplyHorizontalMerge(row, 1, GroupCount);
+            }
+
+            
+
+
+        }
         public void ApplyRelation_IQR_OuterMerges(IWTable table, int WordTableRows, int WordTableColumns)
         {
             table.ApplyVerticalMerge(1, 0, 1);

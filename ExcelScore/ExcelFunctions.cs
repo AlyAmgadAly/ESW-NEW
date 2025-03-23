@@ -124,7 +124,7 @@ namespace ExcelScore
                 foreach (var parameter in comparativeTable.Parameters)
                 {
                     
-                    if (parameter.Name == Sheet2.Cells[0 , column].Value.ToString() && (parameter.NominalOrScale == "Nominal" || parameter.IsGroup))
+                    if (parameter.Name == Sheet2.Cells[0 , column].Value.ToString() && (parameter.NominalOrScale == "Nominal" || parameter.IsGroup || parameter.IsSubGroup))
                     {
 
                         if (Sheet2.Cells[1, column].Value.ToString() == "Nominal")

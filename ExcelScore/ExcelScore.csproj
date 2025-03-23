@@ -254,6 +254,7 @@
     </Compile>
     <Compile Include="Classes\SpssFileReader.cs" />
     <Compile Include="Classes\SPSS_Class.cs" />
+    <Compile Include="Classes\StringExtensions.cs" />
     <Compile Include="Classes\TableClasses.cs" />
     <Compile Include="Classes\Tool.cs" />
     <Compile Include="Classes\WordClass.cs" />
