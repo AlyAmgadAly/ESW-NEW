@@ -32,7 +32,7 @@ public class SpssFileReader
                 spssFilePath = openFileDialog.FileName;
                 ReadSpssFile(spssFilePath);
                 //ShowVariablesInMessageBox();
-                ExportToExcel(Path.Combine(Path.GetDirectoryName(spssFilePath), "ExportedData.xlsx"));
+                ExportToExcel(Path.Combine(Path.GetDirectoryName(spssFilePath), "DataProg.xlsx"));
                 //RunSpssSyntax(spssFilePath);
             }
         }
