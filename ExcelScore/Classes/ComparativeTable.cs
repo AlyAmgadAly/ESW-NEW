@@ -1,4 +1,6 @@
-﻿using MathNet.Numerics.Statistics;
+﻿using Aspose.Cells;
+using DocumentFormat.OpenXml.Office2016.Excel;
+using MathNet.Numerics.Statistics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +52,59 @@ namespace ExcelScore.Classes
         public int GetValueCount(double number)
         {
             return ParameterValues.Count(val => val == number);
+        }
+
+        public static string GetParameterMeasure(string parameterName , Worksheet worksheet)
+        {
+            string measuretype = "";
+
+            for(int col = 0; col <= worksheet.Cells.MaxDataColumn;col++)
+            {
+                if (worksheet.Cells[0,col].Value != null)
+                {
+                    string CellParaname = worksheet.Cells[0, col].Value.ToString();
+
+                    if(CellParaname == parameterName)
+                    {
+                        measuretype = worksheet.Cells[1, col].Value.ToString();
+                        break;
+                    }
+
+                }
+
+            }
+
+
+            return measuretype;
+        }
+
+        public static List<string> GetParameterData(string parameterName, Worksheet worksheet)
+        {
+            List<string> data = new List<string>();
+
+
+            for (int col = 0; col <= worksheet.Cells.MaxDataColumn; col++)
+            {
+                if (worksheet.Cells[0, col].Value != null)
+                {
+                    string CellParaname = worksheet.Cells[0, col].Value.ToString();
+
+                    if (CellParaname == parameterName)
+                    {
+                        for(int row = 1; row <= worksheet.Cells.MaxDataRow;row++)
+                        {
+                            data.Add(worksheet.Cells[row, col].Value.ToString());
+                        }
+
+                        break;
+                    }
+
+                }
+
+            }
+
+
+            return data;
         }
         public Parameter()
         {

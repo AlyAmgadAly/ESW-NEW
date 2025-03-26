@@ -1,5 +1,6 @@
 ﻿using Accord.Statistics.Distributions.Univariate;
 using Aspose.Cells;
+using ExcelScore.Classes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,13 +26,87 @@ namespace ExcelScore.Forms
             InitializeComponent();
         }
 
-        public void GetParameterData()
+        public List<string> GetCodesIfNominal(string parameterName  , Worksheet worksheet)
         {
+            List<string> codes = new List<string>();    
+
+            for(int col = 0;col<= worksheet.Cells.MaxDataColumn;col++)
+            {
+                if (worksheet.Cells[0 , col].Value!=null)
+                {
+                    string valueCell = worksheet.Cells[0, col].Value.ToString();
+
+                    if(valueCell == parameterName)
+                    {
+                        if(worksheet.Cells[1, col].Value.ToString() == "Nominal")
+                        {
+                            for (int row = 2; row <= worksheet.Cells.MaxDataRow; row++)
+                            {
+                                if (Sheet2.Cells[row, col].Value != null)
+                                {
+                                    codes.Add(worksheet.Cells[row, col].Value.ToString());
+                                }
+                                    
+                            }
+                        }
+
+                        break;
+
+
+                    }
+
+
+                    
+                }
+
+
+                
+            }
+
+
+
+
+            return codes;
+
 
         }
         public void UpdateParameter(string paraName)
         {
+            data_allPara.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            data_allPara.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+
+            data_allPara.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            data_allPara.Rows.Clear();
+            list_Codes.Items.Clear();
+
             lbl_ParameterName.Text = $"Parameter: {paraName}"; // Update label
+
+            lbl_Measure.Text = Parameter.GetParameterMeasure(paraName, Sheet2);
+
+            List<string> codes = GetCodesIfNominal(paraName, Sheet2);
+
+            if(codes.Count > 0) 
+            { 
+                foreach (string code in codes) 
+                {
+                    list_Codes.Items.Add(code);
+                }
+            }
+
+
+            List<string> Data = Parameter.GetParameterData(paraName, Sheet1);
+
+
+            
+
+
+            foreach (string item in Data)
+            {
+                data_allPara.Rows.Add(item);
+            }
+
 
             if (this.WindowState == FormWindowState.Minimized)
             {

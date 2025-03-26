@@ -29,15 +29,20 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ParameterInfo));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbl_ParameterName = new System.Windows.Forms.Label();
             this.panelmove = new System.Windows.Forms.Panel();
             this.pic_CloseChooseTable = new System.Windows.Forms.PictureBox();
             this.pic_Minimize = new System.Windows.Forms.PictureBox();
             this.lbl_Measure = new System.Windows.Forms.Label();
-            this.list_Level = new System.Windows.Forms.ListBox();
+            this.list_Codes = new System.Windows.Forms.ListBox();
+            this.data_allPara = new System.Windows.Forms.DataGridView();
+            this.ColValues = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panelmove.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pic_CloseChooseTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_Minimize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             this.SuspendLayout();
             // 
             // lbl_ParameterName
@@ -98,16 +103,65 @@
             this.lbl_Measure.TabIndex = 51;
             this.lbl_Measure.Text = "Measure : XXX";
             // 
-            // list_Level
+            // list_Codes
             // 
-            this.list_Level.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
-            this.list_Level.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.list_Level.FormattingEnabled = true;
-            this.list_Level.ItemHeight = 21;
-            this.list_Level.Location = new System.Drawing.Point(275, 112);
-            this.list_Level.Name = "list_Level";
-            this.list_Level.Size = new System.Drawing.Size(253, 613);
-            this.list_Level.TabIndex = 52;
+            this.list_Codes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.list_Codes.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.list_Codes.FormattingEnabled = true;
+            this.list_Codes.ItemHeight = 21;
+            this.list_Codes.Location = new System.Drawing.Point(275, 112);
+            this.list_Codes.Name = "list_Codes";
+            this.list_Codes.Size = new System.Drawing.Size(253, 592);
+            this.list_Codes.TabIndex = 52;
+            // 
+            // data_allPara
+            // 
+            this.data_allPara.AllowUserToAddRows = false;
+            this.data_allPara.AllowUserToDeleteRows = false;
+            this.data_allPara.AllowUserToResizeColumns = false;
+            this.data_allPara.AllowUserToResizeRows = false;
+            this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.data_allPara.ColumnHeadersHeight = 54;
+            this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ColValues});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
+            this.data_allPara.EnableHeadersVisualStyles = false;
+            this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
+            this.data_allPara.Location = new System.Drawing.Point(25, 112);
+            this.data_allPara.Name = "data_allPara";
+            this.data_allPara.ReadOnly = true;
+            this.data_allPara.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.data_allPara.RowHeadersVisible = false;
+            this.data_allPara.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.data_allPara.Size = new System.Drawing.Size(215, 592);
+            this.data_allPara.TabIndex = 63;
+            // 
+            // ColValues
+            // 
+            this.ColValues.DataPropertyName = "ColValues";
+            this.ColValues.HeaderText = "Values";
+            this.ColValues.Name = "ColValues";
+            this.ColValues.ReadOnly = true;
+            this.ColValues.Width = 150;
             // 
             // ParameterInfo
             // 
@@ -115,7 +169,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(540, 761);
-            this.Controls.Add(this.list_Level);
+            this.Controls.Add(this.data_allPara);
+            this.Controls.Add(this.list_Codes);
             this.Controls.Add(this.lbl_Measure);
             this.Controls.Add(this.panelmove);
             this.Controls.Add(this.lbl_ParameterName);
@@ -126,6 +181,7 @@
             this.panelmove.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pic_CloseChooseTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_Minimize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -138,6 +194,8 @@
         private System.Windows.Forms.PictureBox pic_Minimize;
         private System.Windows.Forms.PictureBox pic_CloseChooseTable;
         private System.Windows.Forms.Label lbl_Measure;
-        private System.Windows.Forms.ListBox list_Level;
+        private System.Windows.Forms.ListBox list_Codes;
+        private System.Windows.Forms.DataGridView data_allPara;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColValues;
     }
 }
