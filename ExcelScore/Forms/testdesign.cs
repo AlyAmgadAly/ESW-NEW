@@ -72,7 +72,7 @@ namespace ExcelScore.Forms
         }
         private void testdesign_Load(object sender, EventArgs e)
         {
-
+            
         }
     }
 }
