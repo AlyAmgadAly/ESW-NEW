@@ -161,5 +161,11 @@ namespace ExcelScore
             SpssFileReader spssFileReader = new SpssFileReader();
             spssFileReader.LoadSpssFile();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            testdesign testdesign = new testdesign();
+            testdesign.Show();
+        }
     }
 }
