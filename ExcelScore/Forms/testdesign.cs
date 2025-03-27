@@ -82,5 +82,15 @@ namespace ExcelScore.Forms
         {
             
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            rjDropdownMenu1.Show(button1, button1.Width, 0);
+        }
+
+        private void rjDropdownMenu1_VisibleChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

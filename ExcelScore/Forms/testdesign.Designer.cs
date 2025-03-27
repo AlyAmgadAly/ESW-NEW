@@ -35,6 +35,7 @@
             this.groupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.button1 = new System.Windows.Forms.Button();
             this.rjDropdownMenu1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,6 +56,7 @@
             // 
             // rjDropdownMenu1
             // 
+            this.rjDropdownMenu1.BackColor = System.Drawing.Color.Aqua;
             this.rjDropdownMenu1.IsMainMenu = false;
             this.rjDropdownMenu1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.comparativeToolStripMenuItem});
@@ -62,7 +64,8 @@
             this.rjDropdownMenu1.MenuItemTextColor = System.Drawing.Color.Empty;
             this.rjDropdownMenu1.Name = "rjDropdownMenu1";
             this.rjDropdownMenu1.PrimaryColor = System.Drawing.Color.Empty;
-            this.rjDropdownMenu1.Size = new System.Drawing.Size(164, 28);
+            this.rjDropdownMenu1.Size = new System.Drawing.Size(181, 50);
+            this.rjDropdownMenu1.VisibleChanged += new System.EventHandler(this.rjDropdownMenu1_VisibleChanged);
             // 
             // comparativeToolStripMenuItem
             // 
@@ -93,11 +96,22 @@
             this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 24);
             this.toolStripMenuItem3.Text = "3";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(375, 121);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // testdesign
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 482);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.rjToggleButton1);
             this.Name = "testdesign";
             this.Text = "testdesign";
@@ -116,5 +130,6 @@
         private System.Windows.Forms.ToolStripMenuItem groupsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
+        private System.Windows.Forms.Button button1;
     }
 }

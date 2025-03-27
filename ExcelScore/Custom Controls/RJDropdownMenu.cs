@@ -101,5 +101,8 @@ namespace ExcelScore.Custom_Controls
                 LoadMenuItemHeight();
             }
         }
+
+
+
     }
 }
