@@ -258,6 +258,11 @@
     <Compile Include="Classes\TableClasses.cs" />
     <Compile Include="Classes\Tool.cs" />
     <Compile Include="Classes\WordClass.cs" />
+    <Compile Include="Custom Controls\MenuColorTable.cs" />
+    <Compile Include="Custom Controls\MenuRenderer.cs" />
+    <Compile Include="Custom Controls\RJDropdownMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Custom Controls\ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>

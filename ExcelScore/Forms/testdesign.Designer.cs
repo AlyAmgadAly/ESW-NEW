@@ -28,7 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.rjToggleButton1 = new ExcelScore.Custom_Controls.RJToggleButton();
+            this.rjDropdownMenu1 = new ExcelScore.Custom_Controls.RJDropdownMenu(this.components);
+            this.comparativeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.rjDropdownMenu1.SuspendLayout();
             this.SuspendLayout();
             // 
             // rjToggleButton1
@@ -46,6 +53,46 @@
             this.rjToggleButton1.TabIndex = 0;
             this.rjToggleButton1.UseVisualStyleBackColor = false;
             // 
+            // rjDropdownMenu1
+            // 
+            this.rjDropdownMenu1.IsMainMenu = false;
+            this.rjDropdownMenu1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.comparativeToolStripMenuItem});
+            this.rjDropdownMenu1.MenuItemHeight = 25;
+            this.rjDropdownMenu1.MenuItemTextColor = System.Drawing.Color.Empty;
+            this.rjDropdownMenu1.Name = "rjDropdownMenu1";
+            this.rjDropdownMenu1.PrimaryColor = System.Drawing.Color.Empty;
+            this.rjDropdownMenu1.Size = new System.Drawing.Size(164, 28);
+            // 
+            // comparativeToolStripMenuItem
+            // 
+            this.comparativeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.groupsToolStripMenuItem});
+            this.comparativeToolStripMenuItem.Name = "comparativeToolStripMenuItem";
+            this.comparativeToolStripMenuItem.Size = new System.Drawing.Size(163, 24);
+            this.comparativeToolStripMenuItem.Text = "Comparative";
+            // 
+            // groupsToolStripMenuItem
+            // 
+            this.groupsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem2,
+            this.toolStripMenuItem3});
+            this.groupsToolStripMenuItem.Name = "groupsToolStripMenuItem";
+            this.groupsToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.groupsToolStripMenuItem.Text = "Groups";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 24);
+            this.toolStripMenuItem2.Text = "2";
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 24);
+            this.toolStripMenuItem3.Text = "3";
+            // 
             // testdesign
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -55,6 +102,7 @@
             this.Name = "testdesign";
             this.Text = "testdesign";
             this.Load += new System.EventHandler(this.testdesign_Load);
+            this.rjDropdownMenu1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -63,5 +111,10 @@
         #endregion
 
         private Custom_Controls.RJToggleButton rjToggleButton1;
+        private Custom_Controls.RJDropdownMenu rjDropdownMenu1;
+        private System.Windows.Forms.ToolStripMenuItem comparativeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem groupsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
     }
 }
