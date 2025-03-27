@@ -8920,6 +8920,7 @@ namespace ExcelScore.Forms
         private void btn_Options_Click(object sender, EventArgs e)
         {
             Options_Frm options_ = new Options_Frm();
+            options_.Load += options_.Options_Frm_Load; // Ensure values are loaded
             options_.ShowDialog();
         }
 

@@ -12,62 +12,70 @@ namespace ExcelScore.Forms
 {
     public partial class testdesign : Form
     {
-        private Panel togglePanel;
-        private Button toggleButton;
-        private bool isOn = false;
+        private CircularToggle toggleSwitch;
         public testdesign()
         {
             InitializeComponent();
-            InitializeCircularToggleSwitch();
+            InitializeCustomToggle();
+
         }
-        private void InitializeCircularToggleSwitch()
+        private void InitializeCustomToggle()
         {
-            // Toggle Panel (Oval Background)
-            togglePanel = new Panel
+            toggleSwitch = new CircularToggle
             {
-                Size = new Size(60, 30),  // Oval shape
                 Location = new Point(50, 50),
-                BackColor = Color.Gray,
-                BorderStyle = BorderStyle.FixedSingle
+                Size = new Size(50, 50) // Keep it circular
             };
-            togglePanel.Region = new Region(new System.Drawing.Drawing2D.GraphicsPath());
-            System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-            path.AddEllipse(0, 0, togglePanel.Width, togglePanel.Height);
-            togglePanel.Region = new Region(path);
 
-            // Toggle Button (Circular Knob)
-            toggleButton = new Button
-            {
-                Size = new Size(28, 28), // Perfect circle
-                Location = new Point(2, 1), // Starts on left
-                BackColor = Color.White,
-                FlatStyle = FlatStyle.Flat
-            };
-            toggleButton.FlatAppearance.BorderSize = 0;
-            toggleButton.Region = new Region(new System.Drawing.Drawing2D.GraphicsPath());
-            System.Drawing.Drawing2D.GraphicsPath buttonPath = new System.Drawing.Drawing2D.GraphicsPath();
-            buttonPath.AddEllipse(0, 0, toggleButton.Width, toggleButton.Height);
-            toggleButton.Region = new Region(buttonPath);
-
-            toggleButton.Click += ToggleButton_Click;
-
-            // Add controls to form
-            togglePanel.Controls.Add(toggleButton);
-            this.Controls.Add(togglePanel);
+            this.Controls.Add(toggleSwitch);
         }
-        private void ToggleButton_Click(object sender, EventArgs e)
-        {
-            isOn = !isOn;
 
-            if (isOn)
+        public class CircularToggle : CheckBox
+        {
+            public CircularToggle()
             {
-                toggleButton.Location = new Point(30, 1); // Move Right (On)
-                togglePanel.BackColor = Color.Green;
+                this.Appearance = Appearance.Button;
+                this.FlatStyle = FlatStyle.Flat;
+                this.FlatAppearance.BorderSize = 0;
+                this.BackColor = Color.Transparent;
+                this.Size = new Size(50, 50);
             }
-            else
+
+            protected override void OnPaint(PaintEventArgs pevent)
             {
-                toggleButton.Location = new Point(2, 1); // Move Left (Off)
-                togglePanel.BackColor = Color.Gray;
+                base.OnPaint(pevent);
+                Graphics g = pevent.Graphics;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+                int toggleSize = 22;  // Small circle size
+                int padding = 4;      // Space around inner toggle
+
+                // Define Colors
+                Color backgroundColor = this.Checked ? Color.Green : Color.Gray;
+                Color toggleColor = Color.White;
+
+                // Draw Outer Circle (Toggle Background)
+                using (SolidBrush brush = new SolidBrush(backgroundColor))
+                {
+                    g.FillEllipse(brush, 0, 0, this.Width, this.Height);
+                }
+
+                // Calculate Inner Circle Position
+                int xPos = this.Checked ? this.Width - toggleSize - padding : padding;
+                int yPos = (this.Height - toggleSize) / 2; // Center vertically
+
+                // Draw Inner Circle (Movable Knob)
+                using (SolidBrush brush = new SolidBrush(toggleColor))
+                {
+                    g.FillEllipse(brush, xPos, yPos, toggleSize, toggleSize);
+                }
+            }
+
+            protected override void OnClick(EventArgs e)
+            {
+                this.Checked = !this.Checked; // Toggle the state
+                this.Invalidate(); // Redraw control
+                base.OnClick(e);
             }
         }
         private void testdesign_Load(object sender, EventArgs e)

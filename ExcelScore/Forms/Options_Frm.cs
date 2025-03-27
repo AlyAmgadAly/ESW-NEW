@@ -26,10 +26,12 @@ namespace ExcelScore.Forms
         public bool Row_Percent_Options { get; set; }
         public bool Maha_Options { get; set; }
         public bool Total_Column_Options { get; set; }
-        private void Options_Frm_Load(object sender, EventArgs e)
+        public void Options_Frm_Load(object sender, EventArgs e)
         {
-            //230; 446
-            
+            check_Perc_Row_new.Checked = ComparativeGroups.Row_Percent_Comparative;
+            check_Maha_new.Checked = ComparativeGroups.Maha_Comparative;
+            check_TotalColumn_new.Checked = ComparativeGroups.Total_Column_Comparative;
+
         }
         public void DrawFrmBorderLines(PaintEventArgs e)
         {
@@ -61,33 +63,20 @@ namespace ExcelScore.Forms
         }
         private void pic_DoneOptions_Click(object sender, EventArgs e)
         {
-            Row_Percent_Options = false;
-            Maha_Options = false;
-            Total_Column_Options = false;
+            
 
-            if(check_Perc_Row.Checked)
-            {
-                Row_Percent_Options = true;
-            }
 
-            if (check_Maha.Checked)
-            {
-                Maha_Options = true;
-            }
+            Row_Percent_Options = check_Perc_Row_new.Checked;
+            Maha_Options = check_Maha_new.Checked;
+            Total_Column_Options = check_TotalColumn_new.Checked;
 
-            if(check_TotalColumn.Checked)
-            {
-                Total_Column_Options = true;
-            }
-
-            ComparativeGroups.Maha_Comparative = Maha_Options;
+            // Update the static ComparativeGroups class
             ComparativeGroups.Row_Percent_Comparative = Row_Percent_Options;
+            ComparativeGroups.Maha_Comparative = Maha_Options;
             ComparativeGroups.Total_Column_Comparative = Total_Column_Options;
 
             this.Hide();
-
         }
-
         private void panelmove_MouseDown(object sender, MouseEventArgs e)
         {
             ReleaseCapture();
