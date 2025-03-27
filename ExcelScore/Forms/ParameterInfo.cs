@@ -123,9 +123,9 @@ namespace ExcelScore.Forms
             this.Activate();
         }
 
-        public Worksheet Sheet1 = ExcelFunctions.worksheet;
+        public Worksheet Sheet1 = ComparativeGroups.worksheet;
 
-        public Worksheet Sheet2 = ExcelFunctions.Sheet2;
+        public Worksheet Sheet2 = ComparativeGroups.Sheet2;
 
         public string ParameterName_ParaInfoFrm { get; set; }
 

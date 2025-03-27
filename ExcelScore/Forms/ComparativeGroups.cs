@@ -72,9 +72,9 @@ namespace ExcelScore.Forms
 
         List<string> ColumnExcelheaders = excelFunctionsobj.ReadHeaderColumnsExcel();
 
-        Worksheet worksheet = excelFunctionsobj.GetWorksheet();
+        public static Worksheet worksheet = excelFunctionsobj.GetWorksheet();
 
-        Worksheet Sheet2 = excelFunctionsobj.GetSheet2();
+        public static Worksheet Sheet2 = excelFunctionsobj.GetSheet2();
         public ComparativeGroups()
         {
             InitializeComponent();
@@ -95,6 +95,8 @@ namespace ExcelScore.Forms
         }
         public void AddHeadersToParameter()
         {
+            data_allPara.Rows.Clear();
+
             foreach (string columnName in ColumnExcelheaders)
             {
                 ComparativeClass comparativeClass = new ComparativeClass();
@@ -8586,6 +8588,10 @@ namespace ExcelScore.Forms
 
             // Accessing the first worksheet in the Excel file
             worksheet = workbook.Worksheets[0];
+            Sheet2 = workbook.Worksheets[1];
+
+
+            AddHeadersToParameter();
 
             MessageBox.Show("File Updated");
         }
