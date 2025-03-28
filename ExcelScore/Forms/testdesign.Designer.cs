@@ -29,15 +29,25 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this.button1 = new System.Windows.Forms.Button();
             this.rjToggleButton1 = new ExcelScore.Custom_Controls.RJToggleButton();
             this.rjDropdownMenu1 = new ExcelScore.Custom_Controls.RJDropdownMenu(this.components);
             this.comparativeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.button1 = new System.Windows.Forms.Button();
             this.rjDropdownMenu1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(375, 121);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // rjToggleButton1
             // 
@@ -56,15 +66,16 @@
             // 
             // rjDropdownMenu1
             // 
-            this.rjDropdownMenu1.BackColor = System.Drawing.Color.Aqua;
+            this.rjDropdownMenu1.BackColor = System.Drawing.Color.White;
+            this.rjDropdownMenu1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rjDropdownMenu1.IsMainMenu = false;
             this.rjDropdownMenu1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.comparativeToolStripMenuItem});
             this.rjDropdownMenu1.MenuItemHeight = 25;
             this.rjDropdownMenu1.MenuItemTextColor = System.Drawing.Color.Empty;
             this.rjDropdownMenu1.Name = "rjDropdownMenu1";
-            this.rjDropdownMenu1.PrimaryColor = System.Drawing.Color.Empty;
-            this.rjDropdownMenu1.Size = new System.Drawing.Size(181, 50);
+            this.rjDropdownMenu1.PrimaryColor = System.Drawing.Color.Black;
+            this.rjDropdownMenu1.Size = new System.Drawing.Size(198, 56);
             this.rjDropdownMenu1.VisibleChanged += new System.EventHandler(this.rjDropdownMenu1_VisibleChanged);
             // 
             // comparativeToolStripMenuItem
@@ -72,7 +83,7 @@
             this.comparativeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.groupsToolStripMenuItem});
             this.comparativeToolStripMenuItem.Name = "comparativeToolStripMenuItem";
-            this.comparativeToolStripMenuItem.Size = new System.Drawing.Size(163, 24);
+            this.comparativeToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
             this.comparativeToolStripMenuItem.Text = "Comparative";
             // 
             // groupsToolStripMenuItem
@@ -81,30 +92,20 @@
             this.toolStripMenuItem2,
             this.toolStripMenuItem3});
             this.groupsToolStripMenuItem.Name = "groupsToolStripMenuItem";
-            this.groupsToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.groupsToolStripMenuItem.Size = new System.Drawing.Size(125, 24);
             this.groupsToolStripMenuItem.Text = "Groups";
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 24);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(86, 24);
             this.toolStripMenuItem2.Text = "2";
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 24);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(86, 24);
             this.toolStripMenuItem3.Text = "3";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(375, 121);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // testdesign
             // 

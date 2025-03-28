@@ -11,25 +11,20 @@ namespace ExcelScore.Custom_Controls
 {
     public class RJDropdownMenu : ContextMenuStrip
     {
-        //Fields
+        // Fields
         private bool isMainMenu;
         private int menuItemHeight = 25;
-        private Color menuItemTextColor = Color.Empty;//No color, The default color is set in the MenuRenderer class
-        private Color primaryColor = Color.Empty;//No color, The default color is set in the MenuRenderer class
-
+        private Color menuItemTextColor = Color.Empty;
+        private Color primaryColor = Color.Empty;
         private Bitmap menuItemHeaderSize;
 
-        //Constructor
-        public RJDropdownMenu(IContainer container)
-            : base(container)
-        {
+        // Event for when an item is selected
+        public event EventHandler<string> ItemSelected;
 
-        }
+        // Constructor
+        public RJDropdownMenu(IContainer container) : base(container) { }
 
-        //Properties
-        //Optionally, hide the properties in the toolbox to avoid the problem of displaying and/or 
-        //saving control property changes in the designer at design time in Visual Studio.
-        //If the problem I mention does not occur you can expose the properties and manipulate them from the toolbox.
+        // Properties
         [Browsable(false)]
         public bool IsMainMenu
         {
@@ -58,12 +53,13 @@ namespace ExcelScore.Custom_Controls
             set { primaryColor = value; }
         }
 
-        //Private methods
+        // Private methods
         private void LoadMenuItemHeight()
         {
             if (isMainMenu)
                 menuItemHeaderSize = new Bitmap(25, 45);
-            else menuItemHeaderSize = new Bitmap(20, menuItemHeight);
+            else
+                menuItemHeaderSize = new Bitmap(20, menuItemHeight);
 
             foreach (ToolStripMenuItem menuItemL1 in this.Items)
             {
@@ -84,25 +80,55 @@ namespace ExcelScore.Custom_Controls
                         {
                             menuItemL4.ImageScaling = ToolStripItemImageScaling.None;
                             if (menuItemL4.Image == null) menuItemL4.Image = menuItemHeaderSize;
-                            ///Level 5++
                         }
                     }
                 }
             }
         }
 
-        //Overrides
-        protected override void OnHandleCreated(EventArgs e)
+        // Attach click events to final menu items
+        public void AttachClickEvents()
         {
-            base.OnHandleCreated(e);
-            if (this.DesignMode == false)
+            AssignClickEvents(this.Items);
+        }
+
+        private void AssignClickEvents(ToolStripItemCollection menuItems)
+        {
+            foreach (ToolStripItem item in menuItems)
             {
-                this.Renderer = new MenuRenderer(isMainMenu, primaryColor, menuItemTextColor);
-                LoadMenuItemHeight();
+                if (item is ToolStripMenuItem menuItem)
+                {
+                    if (menuItem.DropDownItems.Count == 0) // Final-level item
+                    {
+                        menuItem.Click += MenuItem_Click;
+                    }
+                    else
+                    {
+                        AssignClickEvents(menuItem.DropDownItems);
+                    }
+                }
             }
         }
 
+        private void MenuItem_Click(object sender, EventArgs e)
+        {
+            if (sender is ToolStripMenuItem clickedItem)
+            {
+                // Trigger event with selected item text
+                ItemSelected?.Invoke(this, clickedItem.Text);
+            }
+        }
 
-
+        // Overrides
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            if (!this.DesignMode)
+            {
+                this.Renderer = new MenuRenderer(isMainMenu, primaryColor, menuItemTextColor);
+                LoadMenuItemHeight();
+                AttachClickEvents();  // Attach event handlers after menu is created
+            }
+        }
     }
 }

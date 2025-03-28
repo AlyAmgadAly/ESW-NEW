@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExcelScore.Custom_Controls
 {
     public class MenuColorTable : ProfessionalColorTable
     {
-        //Fields
+        // Fields
         private Color backColor;
         private Color leftColumnColor;
         private Color borderColor;
         private Color menuItemBorderColor;
         private Color menuItemSelectedColor;
 
-        //Constructor
+        // Constructor
         public MenuColorTable(bool isMainMenu, Color primaryColor)
         {
             if (isMainMenu)
@@ -31,20 +27,23 @@ namespace ExcelScore.Custom_Controls
             else
             {
                 backColor = Color.White;
-                leftColumnColor = Color.LightGray;
+                leftColumnColor = Color.White;
                 borderColor = Color.LightGray;
                 menuItemBorderColor = primaryColor;
                 menuItemSelectedColor = primaryColor;
             }
         }
 
-        //Overrides
-        public override Color ToolStripDropDownBackground { get { return backColor; } }
-        public override Color MenuBorder { get { return borderColor; } }
-        public override Color MenuItemBorder { get { return menuItemBorderColor; } }
-        public override Color MenuItemSelected { get { return menuItemSelectedColor; } }
-        public override Color ImageMarginGradientBegin { get { return leftColumnColor; } }
-        public override Color ImageMarginGradientMiddle { get { return leftColumnColor; } }
-        public override Color ImageMarginGradientEnd { get { return leftColumnColor; } }
+        // Overrides
+        public override Color ToolStripDropDownBackground => backColor;
+        public override Color MenuBorder => borderColor;
+        public override Color MenuItemBorder => menuItemSelectedColor;
+        public override Color MenuItemSelectedGradientBegin => menuItemSelectedColor;
+        public override Color MenuItemSelectedGradientEnd => menuItemSelectedColor;
+
+        // Remove the gray strip
+        public override Color ImageMarginGradientBegin => backColor;
+        public override Color ImageMarginGradientMiddle => backColor;
+        public override Color ImageMarginGradientEnd => backColor;
     }
 }

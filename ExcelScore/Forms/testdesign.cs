@@ -17,7 +17,12 @@ namespace ExcelScore.Forms
         {
             InitializeComponent();
             InitializeCustomToggle();
+            rjDropdownMenu1.ItemSelected += RJDropdownMenu1_ItemSelected;
 
+        }
+        private void RJDropdownMenu1_ItemSelected(object sender, string selectedText)
+        {
+            MessageBox.Show($"You selected: {selectedText}", "Menu Selection", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void InitializeCustomToggle()
         {
