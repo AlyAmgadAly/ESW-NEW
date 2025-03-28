@@ -17,10 +17,10 @@ namespace ExcelScore.Forms
         {
             InitializeComponent();
             InitializeCustomToggle();
-            rjDropdownMenu1.ItemSelected += RJDropdownMenu1_ItemSelected;
+            rjDropdownMenu2.ItemSelected += RJDropdownMenu2_ItemSelected;
 
         }
-        private void RJDropdownMenu1_ItemSelected(object sender, string selectedText)
+        private void RJDropdownMenu2_ItemSelected(object sender, string selectedText)
         {
             MessageBox.Show($"You selected: {selectedText}", "Menu Selection", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -90,10 +90,15 @@ namespace ExcelScore.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            rjDropdownMenu1.Show(button1, button1.Width, 0);
+            rjDropdownMenu2.Show(button1, button1.Width, 0);
         }
 
         private void rjDropdownMenu1_VisibleChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comparativeToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }

@@ -45,20 +45,32 @@ namespace ExcelScore.Custom_Controls
 
         protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
         {
-            var graph = e.Graphics;
-            var arrowSize = new Size(5, 12);
-            var arrowColor = e.Item.Selected ? Color.White : primaryColor;
-            var rect = new Rectangle(e.ArrowRectangle.Location.X,
-                                     (e.ArrowRectangle.Height - arrowSize.Height) / 2,
-                                     arrowSize.Width, arrowSize.Height);
-            using (GraphicsPath path = new GraphicsPath())
-            using (Pen pen = new Pen(arrowColor, arrowThickness))
+            Graphics graph = e.Graphics;
+            graph.SmoothingMode = SmoothingMode.AntiAlias;
+
+            // Define arrow size
+            int arrowWidth = 8;
+            int arrowHeight = 12;
+            Point arrowPoint = e.ArrowRectangle.Location;
+            arrowPoint.Offset(0, (e.ArrowRectangle.Height - arrowHeight) / 2);
+
+            // Define points for a modern chevron-style arrow
+            Point[] chevronArrow = new Point[]
             {
-                graph.SmoothingMode = SmoothingMode.AntiAlias;
-                path.AddLine(rect.Left, rect.Top, rect.Right, rect.Top + rect.Height / 2);
-                path.AddLine(rect.Right, rect.Top + rect.Height / 2, rect.Left, rect.Top + rect.Height);
-                graph.DrawPath(pen, path);
+        new Point(arrowPoint.X, arrowPoint.Y),                       // Top point
+        new Point(arrowPoint.X + arrowWidth, arrowPoint.Y + (arrowHeight / 2)),  // Middle
+        new Point(arrowPoint.X, arrowPoint.Y + arrowHeight)          // Bottom point
+            };
+
+            // Smooth gradient color effect (optional)
+            using (LinearGradientBrush brush = new LinearGradientBrush(e.ArrowRectangle,
+                                                                       e.Item.Selected ? Color.White : primaryColor,
+                                                                       Color.Transparent,
+                                                                       45f))
+            {
+                graph.FillPolygon(brush, chevronArrow);
             }
         }
+
     }
 }

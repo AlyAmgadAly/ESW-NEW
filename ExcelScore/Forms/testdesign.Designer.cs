@@ -31,12 +31,17 @@
             this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.rjToggleButton1 = new ExcelScore.Custom_Controls.RJToggleButton();
-            this.rjDropdownMenu1 = new ExcelScore.Custom_Controls.RJDropdownMenu(this.components);
-            this.comparativeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.rjDropdownMenu1.SuspendLayout();
+            this.rjDropdownMenu2 = new ExcelScore.Custom_Controls.RJDropdownMenu(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.test1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.test2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ttToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rjDropdownMenu2.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -64,48 +69,84 @@
             this.rjToggleButton1.TabIndex = 0;
             this.rjToggleButton1.UseVisualStyleBackColor = false;
             // 
-            // rjDropdownMenu1
+            // rjDropdownMenu2
             // 
-            this.rjDropdownMenu1.BackColor = System.Drawing.Color.White;
-            this.rjDropdownMenu1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rjDropdownMenu1.IsMainMenu = false;
-            this.rjDropdownMenu1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.comparativeToolStripMenuItem});
-            this.rjDropdownMenu1.MenuItemHeight = 25;
-            this.rjDropdownMenu1.MenuItemTextColor = System.Drawing.Color.Empty;
-            this.rjDropdownMenu1.Name = "rjDropdownMenu1";
-            this.rjDropdownMenu1.PrimaryColor = System.Drawing.Color.Black;
-            this.rjDropdownMenu1.Size = new System.Drawing.Size(198, 56);
-            this.rjDropdownMenu1.VisibleChanged += new System.EventHandler(this.rjDropdownMenu1_VisibleChanged);
+            this.rjDropdownMenu2.BackColor = System.Drawing.Color.White;
+            this.rjDropdownMenu2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rjDropdownMenu2.IsMainMenu = false;
+            this.rjDropdownMenu2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.testToolStripMenuItem,
+            this.ffToolStripMenuItem});
+            this.rjDropdownMenu2.MenuItemHeight = 25;
+            this.rjDropdownMenu2.MenuItemTextColor = System.Drawing.Color.Empty;
+            this.rjDropdownMenu2.Name = "rjDropdownMenu1";
+            this.rjDropdownMenu2.PrimaryColor = System.Drawing.Color.Black;
+            this.rjDropdownMenu2.Size = new System.Drawing.Size(198, 94);
             // 
-            // comparativeToolStripMenuItem
+            // toolStripMenuItem1
             // 
-            this.comparativeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.groupsToolStripMenuItem});
-            this.comparativeToolStripMenuItem.Name = "comparativeToolStripMenuItem";
-            this.comparativeToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
-            this.comparativeToolStripMenuItem.Text = "Comparative";
+            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem4});
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(197, 30);
+            this.toolStripMenuItem1.Text = "Comparative";
             // 
-            // groupsToolStripMenuItem
+            // toolStripMenuItem4
             // 
-            this.groupsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem2,
-            this.toolStripMenuItem3});
-            this.groupsToolStripMenuItem.Name = "groupsToolStripMenuItem";
-            this.groupsToolStripMenuItem.Size = new System.Drawing.Size(125, 24);
-            this.groupsToolStripMenuItem.Text = "Groups";
+            this.toolStripMenuItem4.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem5,
+            this.toolStripMenuItem6});
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(180, 30);
+            this.toolStripMenuItem4.Text = "Groups";
             // 
-            // toolStripMenuItem2
+            // toolStripMenuItem5
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(86, 24);
-            this.toolStripMenuItem2.Text = "2";
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(180, 30);
+            this.toolStripMenuItem5.Text = "2";
             // 
-            // toolStripMenuItem3
+            // toolStripMenuItem6
             // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(86, 24);
-            this.toolStripMenuItem3.Text = "3";
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(180, 30);
+            this.toolStripMenuItem6.Text = "3";
+            // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.test1ToolStripMenuItem,
+            this.test2ToolStripMenuItem});
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(197, 30);
+            this.testToolStripMenuItem.Text = "Test";
+            // 
+            // test1ToolStripMenuItem
+            // 
+            this.test1ToolStripMenuItem.Name = "test1ToolStripMenuItem";
+            this.test1ToolStripMenuItem.Size = new System.Drawing.Size(180, 30);
+            this.test1ToolStripMenuItem.Text = "test1";
+            // 
+            // test2ToolStripMenuItem
+            // 
+            this.test2ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ttToolStripMenuItem});
+            this.test2ToolStripMenuItem.Name = "test2ToolStripMenuItem";
+            this.test2ToolStripMenuItem.Size = new System.Drawing.Size(180, 30);
+            this.test2ToolStripMenuItem.Text = "test2";
+            // 
+            // ttToolStripMenuItem
+            // 
+            this.ttToolStripMenuItem.Name = "ttToolStripMenuItem";
+            this.ttToolStripMenuItem.Size = new System.Drawing.Size(180, 30);
+            this.ttToolStripMenuItem.Text = "tt";
+            // 
+            // ffToolStripMenuItem
+            // 
+            this.ffToolStripMenuItem.Name = "ffToolStripMenuItem";
+            this.ffToolStripMenuItem.Size = new System.Drawing.Size(197, 30);
+            this.ffToolStripMenuItem.Text = "ff";
             // 
             // testdesign
             // 
@@ -117,7 +158,7 @@
             this.Name = "testdesign";
             this.Text = "testdesign";
             this.Load += new System.EventHandler(this.testdesign_Load);
-            this.rjDropdownMenu1.ResumeLayout(false);
+            this.rjDropdownMenu2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -126,11 +167,16 @@
         #endregion
 
         private Custom_Controls.RJToggleButton rjToggleButton1;
-        private Custom_Controls.RJDropdownMenu rjDropdownMenu1;
-        private System.Windows.Forms.ToolStripMenuItem comparativeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem groupsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
         private System.Windows.Forms.Button button1;
+        private Custom_Controls.RJDropdownMenu rjDropdownMenu2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem test1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem test2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ttToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ffToolStripMenuItem;
     }
 }
