@@ -24,11 +24,14 @@ namespace ExcelScore
         public static Aspose.Cells.Worksheet worksheet;
         public static Aspose.Cells.Worksheet Sheet2;
         public static string filepath { get; set; }
-
+        
 
         //public int ExcelDataCount = Sheet1.Cells.MaxDataRow - 1;
 
 
+        
+
+       
         public string GetNewWorkBook()
         {
 
@@ -73,6 +76,9 @@ namespace ExcelScore
                 // Accessing the first worksheet in the Excel file
                 worksheet = workbook.Worksheets[0];
                 Sheet2 = workbook.Worksheets[1];
+
+               
+
                 System.Data.DataTable dataTable = new System.Data.DataTable();
                 for (int col = 0; col < worksheet.Cells.MaxDataColumn + 1; col++)
                 {

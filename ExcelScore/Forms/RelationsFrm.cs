@@ -319,7 +319,7 @@ namespace ExcelScore.Forms
         {
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
             {
-                bool TableHasSigI = false;
+                
                 bool TablehasNominal = false;
 
                 IWSection section = wordObj.CreatePortraitSection();

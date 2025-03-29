@@ -2519,7 +2519,7 @@ namespace ExcelScore.Forms
             {
                 if (ComparativeTables[tableindex].FormatType == "Periods Groups")
                 {
-                    bool TableHasSigI = false;
+                   
 
                     IWSection section = wordObj.CreatePortraitSection();
 
@@ -2754,7 +2754,7 @@ namespace ExcelScore.Forms
             {
                 if (ComparativeTables[tableindex].FormatType == "Default No IQR")
                 {
-                    bool TableHasSigI = false;
+                    
 
                     IWSection section = wordObj.CreatePortraitSection();
 
@@ -3198,7 +3198,7 @@ namespace ExcelScore.Forms
             {
                 if (ComparativeTables[tableindex].FormatType == "Relation IQR")
                 {
-                    bool TableHasSigI = false;
+                    
 
                     IWSection section = wordObj.CreatePortraitSection();
 
@@ -3366,7 +3366,7 @@ namespace ExcelScore.Forms
             {
                 if (ComparativeTables[tableindex].FormatType == "Relation Median No IQR")
                 {
-                    bool TableHasSigI = false;
+                   
 
                     IWSection section = wordObj.CreatePortraitSection();
 
@@ -3535,7 +3535,7 @@ namespace ExcelScore.Forms
             {
                 if (ComparativeTables[tableindex].FormatType == "Relation")
                 {
-                    bool TableHasSigI = false;
+                    
 
                     IWSection section = wordObj.CreatePortraitSection();
 
@@ -4322,7 +4322,7 @@ namespace ExcelScore.Forms
                 {
                     IWSection section = wordObj.CreatePortraitSection();
 
-                    bool Tablehasnominal = false;
+                    
 
                     wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, 1);
 
@@ -4396,7 +4396,7 @@ namespace ExcelScore.Forms
                 {
                     IWSection section = wordObj.CreatePortraitSection();
 
-                    bool Tablehasnominal = false;
+                    
 
                     wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, 1);
 
@@ -4805,7 +4805,7 @@ namespace ExcelScore.Forms
                 {
                     List<int> RowsToremoveSigPeriods = new List<int>();
 
-                    bool TableHasSigI = false;
+                    
 
                     int ParameterCount = Groups_Side_Periods_Up_threePeriods_ParameterCount(ComparativeTables[tableindex]);
 
@@ -5171,6 +5171,7 @@ namespace ExcelScore.Forms
 
 
         }
+        
 
         private void btn_Done_Click(object sender, EventArgs e)
         {
@@ -7127,7 +7128,7 @@ namespace ExcelScore.Forms
                                 else
                                 {
                                     string MeanSD = "";
-                                    string Median = "";
+                                    
                                     string MinMax = "";
                                     string FormattedMedianIQR = "";
                                     bool isTwonumbers = false;
@@ -9265,6 +9266,11 @@ namespace ExcelScore.Forms
                 }
 
             }
+        }
+
+        private void cmb_ChooseTableFormat_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using ExcelScore.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using ExcelScore.FormsDesigns;
 
 namespace ExcelScore
 {
@@ -169,8 +170,11 @@ namespace ExcelScore
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            testdesign testdesign = new testdesign();
-            testdesign.Show();
+            //testdesign testdesign = new testdesign();
+            //testdesign.Show();
+
+            MainFormsDesign mainFormsDesign = new MainFormsDesign();    
+            mainFormsDesign.Show(); 
         }
     }
 }

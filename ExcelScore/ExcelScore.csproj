@@ -258,6 +258,9 @@
     <Compile Include="Classes\TableClasses.cs" />
     <Compile Include="Classes\Tool.cs" />
     <Compile Include="Classes\WordClass.cs" />
+    <Compile Include="Custom Controls\CustomButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Custom Controls\MenuColorTable.cs" />
     <Compile Include="Custom Controls\MenuRenderer.cs" />
     <Compile Include="Custom Controls\RJDropdownMenu.cs">
@@ -267,6 +270,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ExcelFunctions.cs" />
+    <Compile Include="FormsDesigns\MainFormsDesign.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsDesigns\MainFormsDesign.Designer.cs">
+      <DependentUpon>MainFormsDesign.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ChooseFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -437,6 +446,9 @@
       <DependentUpon>Resource.resx</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <EmbeddedResource Include="FormsDesigns\MainFormsDesign.resx">
+      <DependentUpon>MainFormsDesign.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ChooseFrm.resx">
       <DependentUpon>ChooseFrm.cs</DependentUpon>
     </EmbeddedResource>

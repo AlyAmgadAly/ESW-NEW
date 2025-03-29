@@ -626,7 +626,7 @@ namespace ExcelScore.Forms
         {
             int likertScaleCount = CurrentTool.LikertScale.Keys.Count;
 
-            bool hastitle = false;
+            
 
             int TestExist = 2;
 

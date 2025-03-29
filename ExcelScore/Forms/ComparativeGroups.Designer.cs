@@ -415,6 +415,7 @@
             this.cmb_ChooseTableFormat.Size = new System.Drawing.Size(202, 30);
             this.cmb_ChooseTableFormat.TabIndex = 66;
             this.cmb_ChooseTableFormat.SelectedIndexChanged += new System.EventHandler(this.cmb_ChooseTableFormat_SelectedIndexChanged);
+            this.cmb_ChooseTableFormat.Click += new System.EventHandler(this.cmb_ChooseTableFormat_Click);
             // 
             // txt_ParaName
             // 

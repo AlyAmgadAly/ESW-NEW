@@ -27,10 +27,7 @@ namespace ExcelScore.Classes
 
         //Linear Reg
 
-        public void FRepeated()
-        {
-            var Fanova = new Accord.Statistics.Analysis.RocAreaMethod();
-        }
+        
         public List<double> LinearRegressionn(double[] Indepenent , double[] Dependent)
         {
             List<double> Result = new List<double>();
@@ -1221,7 +1218,7 @@ namespace ExcelScore.Classes
                 // Return the result
                 return new string[] { TtestString, pValueString };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //MessageBox.Show($"Error: {ex.Message}");
                 return new string[] { "-", "-" };
