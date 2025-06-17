@@ -257,6 +257,7 @@
     <Compile Include="Classes\StringExtensions.cs" />
     <Compile Include="Classes\TableClasses.cs" />
     <Compile Include="Classes\Tool.cs" />
+    <Compile Include="Classes\TreeNodeSelection.cs" />
     <Compile Include="Classes\WordClass.cs" />
     <Compile Include="Custom Controls\CustomButton.cs">
       <SubType>Component</SubType>
@@ -270,6 +271,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ExcelFunctions.cs" />
+    <Compile Include="FormsDesigns\Comparative\Default.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsDesigns\Comparative\Default.Designer.cs">
+      <DependentUpon>Default.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormsDesigns\MainFormsDesign.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -446,6 +453,9 @@
       <DependentUpon>Resource.resx</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <EmbeddedResource Include="FormsDesigns\Comparative\Default.resx">
+      <DependentUpon>Default.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormsDesigns\MainFormsDesign.resx">
       <DependentUpon>MainFormsDesign.cs</DependentUpon>
     </EmbeddedResource>

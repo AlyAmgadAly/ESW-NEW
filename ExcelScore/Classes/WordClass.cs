@@ -958,7 +958,7 @@ namespace ExcelScore.Classes
                         {
                             int lastKey = parameter.DIC_LablesIfNomainal.Keys.LastOrDefault();
 
-                            AddPara_NoCenter(table, StartingRow, 0, parameter.DIC_LablesIfNomainal[lastKey]);
+                            AddPara_NoCenter(table, StartingRow, 0, parameter.Name + "["+ parameter.DIC_LablesIfNomainal[lastKey]+"]");
                             if (StartingRow < WordTableRows - 1)
                             {
                                 for (int j = 0; j < WordTableColumns; j++)

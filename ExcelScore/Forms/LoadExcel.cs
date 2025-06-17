@@ -24,6 +24,7 @@ using ExcelScore.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using ExcelScore.FormsDesigns;
+using ExcelScore.FormsDesigns.Comparative;
 
 namespace ExcelScore
 {
@@ -168,13 +169,19 @@ namespace ExcelScore
        
        
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MainFormsDesign mainFormsDesign = new MainFormsDesign();
+            mainFormsDesign.Show();
+        }
+
         private void button1_Click_1(object sender, EventArgs e)
         {
-            //testdesign testdesign = new testdesign();
-            //testdesign.Show();
+            MainFormsDesign mainFormsDesign = new MainFormsDesign();
+            mainFormsDesign.Show();
 
-            MainFormsDesign mainFormsDesign = new MainFormsDesign();    
-            mainFormsDesign.Show(); 
+            //Default defaultfrm = new Default();
+            //defaultfrm.Show();
         }
     }
 }
