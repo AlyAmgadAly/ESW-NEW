@@ -49,5 +49,79 @@ namespace ExcelScore.FormsDesigns.Comparative
         {
 
         }
+        Dictionary<string, bool> BuildNodeCheckedDictionary(System.Windows.Forms.TreeView treeView)
+        {
+            Dictionary<string, bool> result = new Dictionary<string, bool>();
+            AddNodesToDictionary(treeView.Nodes, result);
+            return result;
+        }
+
+
+        public string GetNodeTextByName(System.Windows.Forms.TreeView treeView, string nodeName)
+        {
+            return GetNodeTextByNameRecursive(treeView.Nodes, nodeName);
+        }
+
+        private string GetNodeTextByNameRecursive(TreeNodeCollection nodes, string nodeName)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (node.Name == nodeName)
+                    return node.Text;
+
+                if (node.Nodes.Count > 0)
+                {
+                    string found = GetNodeTextByNameRecursive(node.Nodes, nodeName);
+                    if (found != null)
+                        return found;
+                }
+            }
+
+            return null; // Not found
+        }
+
+        void AddNodesToDictionary(TreeNodeCollection nodes, Dictionary<string, bool> dict)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (!dict.ContainsKey(node.Name))
+                {
+                    dict[node.Name] = node.Checked;
+                }
+                else
+                {
+                    // If exists, update with the current checked value
+                    dict[node.Name] = node.Checked;
+                }
+
+                if (node.Nodes.Count > 0)
+                {
+                    AddNodesToDictionary(node.Nodes, dict);
+                }
+            }
+        }
+
+        private void pic_DoneSettings_Click(object sender, EventArgs e)
+        {
+            Dictionary<string, bool> nodeCheckedStatusPrimary = BuildNodeCheckedDictionary(Primary_TV);
+            Dictionary<string, bool> nodeCheckedStatusExtra = BuildNodeCheckedDictionary(Extra_TV);
+
+            string LeftMarginValue = GetNodeTextByName(Extra_TV, "LeftCellMarginValue");
+            string RightMarginValue = GetNodeTextByName(Extra_TV, "RightCellMarginValue");
+            string Type = "Default";
+
+            FormDataTransfer.Set("nodeCheckedStatusPrimary", nodeCheckedStatusPrimary);
+            FormDataTransfer.Set("nodeCheckedStatusExtra", nodeCheckedStatusExtra);
+            FormDataTransfer.Set("LeftMarginValue", LeftMarginValue);
+            FormDataTransfer.Set("RightMarginValue", RightMarginValue);
+            FormDataTransfer.Set("Type", Type);
+            
+
+            MessageBox.Show("Done");
+            //MessageBox.Show(LeftMarginValue);
+            //MessageBox.Show(RightMarginValue);
+
+
+        }
     }
 }

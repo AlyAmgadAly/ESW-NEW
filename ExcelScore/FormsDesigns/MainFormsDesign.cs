@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Vml.Office;
+using ExcelScore.Classes;
 using ExcelScore.Forms;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using System;
@@ -93,7 +94,13 @@ namespace ExcelScore.FormsDesigns
 
             if (e.Node.Text == "Default")
             {
-                ShowForm(new Comparative.Default());
+                //ShowForm(new Comparative.Default());
+                FormManager.ShowForm<Comparative.Default>(panelContainer);
+
+            }
+            else
+            {
+                FormManager.ShowForm<testdesign>(panelContainer);
             }
 
 
@@ -119,6 +126,11 @@ namespace ExcelScore.FormsDesigns
         private void panelContainer_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void pic_Close_Click(object sender, EventArgs e)
+        {
+            this.Hide();
         }
     }
 }

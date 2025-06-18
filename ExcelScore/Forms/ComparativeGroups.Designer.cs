@@ -94,6 +94,8 @@
             this.pic_AllParaToSubGroups = new System.Windows.Forms.PictureBox();
             this.label7 = new System.Windows.Forms.Label();
             this.list_SubGroups = new System.Windows.Forms.ListBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.pic_AddNew = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RefreshListsUpdate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_UpdateTableParameters)).BeginInit();
@@ -124,6 +126,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAllSubGroups)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSubGroupsList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSubGroups)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_AddNew)).BeginInit();
             this.SuspendLayout();
             // 
             // list_Nominal
@@ -255,6 +258,7 @@
             this.label5.Size = new System.Drawing.Size(147, 30);
             this.label5.TabIndex = 47;
             this.label5.Text = "Table Name :";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // panelmove
             // 
@@ -901,12 +905,35 @@
             this.list_SubGroups.Size = new System.Drawing.Size(263, 38);
             this.list_SubGroups.TabIndex = 85;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(176, 66);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 90;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // pic_AddNew
+            // 
+            this.pic_AddNew.Image = ((System.Drawing.Image)(resources.GetObject("pic_AddNew.Image")));
+            this.pic_AddNew.Location = new System.Drawing.Point(974, 66);
+            this.pic_AddNew.Name = "pic_AddNew";
+            this.pic_AddNew.Size = new System.Drawing.Size(37, 28);
+            this.pic_AddNew.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_AddNew.TabIndex = 92;
+            this.pic_AddNew.TabStop = false;
+            this.pic_AddNew.Click += new System.EventHandler(this.pic_AddNew_Click);
+            // 
             // ComparativeGroups
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(1031, 689);
+            this.Controls.Add(this.pic_AddNew);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.pic_ClearAllSubGroups);
             this.Controls.Add(this.pic_RemoveSubGroupsList);
             this.Controls.Add(this.pic_AllParaToSubGroups);
@@ -1001,6 +1028,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAllSubGroups)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveSubGroupsList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToSubGroups)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_AddNew)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1070,5 +1098,7 @@
         private System.Windows.Forms.PictureBox pic_AllParaToSubGroups;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ListBox list_SubGroups;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.PictureBox pic_AddNew;
     }
 }

@@ -44,6 +44,8 @@
             this.lbl_SelectedTable = new System.Windows.Forms.Label();
             this.panelmove = new System.Windows.Forms.Panel();
             this.panelContainer = new System.Windows.Forms.Panel();
+            this.pic_Close = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_Close)).BeginInit();
             this.SuspendLayout();
             // 
             // TableTreeview
@@ -93,7 +95,7 @@
             // panelmove
             // 
             this.panelmove.Location = new System.Drawing.Point(2, 1);
-            this.panelmove.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panelmove.Margin = new System.Windows.Forms.Padding(2);
             this.panelmove.Name = "panelmove";
             this.panelmove.Size = new System.Drawing.Size(898, 25);
             this.panelmove.TabIndex = 50;
@@ -108,12 +110,24 @@
             this.panelContainer.TabIndex = 51;
             this.panelContainer.Paint += new System.Windows.Forms.PaintEventHandler(this.panelContainer_Paint);
             // 
+            // pic_Close
+            // 
+            this.pic_Close.Image = ((System.Drawing.Image)(resources.GetObject("pic_Close.Image")));
+            this.pic_Close.Location = new System.Drawing.Point(825, 26);
+            this.pic_Close.Name = "pic_Close";
+            this.pic_Close.Size = new System.Drawing.Size(35, 30);
+            this.pic_Close.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_Close.TabIndex = 52;
+            this.pic_Close.TabStop = false;
+            this.pic_Close.Click += new System.EventHandler(this.pic_Close_Click);
+            // 
             // MainFormsDesign
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(862, 560);
+            this.Controls.Add(this.pic_Close);
             this.Controls.Add(this.panelContainer);
             this.Controls.Add(this.panelmove);
             this.Controls.Add(this.lbl_SelectedTable);
@@ -123,6 +137,7 @@
             this.Name = "MainFormsDesign";
             this.Text = "MainFormsDesign";
             this.Load += new System.EventHandler(this.MainFormsDesign_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pic_Close)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -134,5 +149,6 @@
         private System.Windows.Forms.Label lbl_SelectedTable;
         private System.Windows.Forms.Panel panelmove;
         private System.Windows.Forms.Panel panelContainer;
+        private System.Windows.Forms.PictureBox pic_Close;
     }
 }

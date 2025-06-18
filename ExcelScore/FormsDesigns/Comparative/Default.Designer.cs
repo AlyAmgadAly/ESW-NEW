@@ -67,10 +67,14 @@
             System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Pcontrol", new System.Windows.Forms.TreeNode[] {
             treeNode20,
             treeNode21});
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Paper");
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Default));
             this.Primary_TV = new System.Windows.Forms.TreeView();
             this.lbl_PrimarySettings = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.Extra_TV = new System.Windows.Forms.TreeView();
+            this.pic_DoneSettings = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_DoneSettings)).BeginInit();
             this.SuspendLayout();
             // 
             // Primary_TV
@@ -156,11 +160,11 @@
             treeNode13.Text = "Column";
             treeNode14.Name = "Percentages";
             treeNode14.Text = "Percentages";
-            treeNode15.Name = "0.19";
+            treeNode15.Name = "LeftCellMarginValue";
             treeNode15.Text = "0.19";
             treeNode16.Name = "Left";
             treeNode16.Text = "Left";
-            treeNode17.Name = "0.19";
+            treeNode17.Name = "RightCellMarginValue";
             treeNode17.Text = "0.19";
             treeNode18.Name = "Right";
             treeNode18.Text = "Right";
@@ -172,14 +176,28 @@
             treeNode21.Text = "Last Column";
             treeNode22.Name = "Pcontrol";
             treeNode22.Text = "Pcontrol";
+            treeNode23.Name = "PaperFormat";
+            treeNode23.Text = "Paper";
             this.Extra_TV.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode11,
             treeNode14,
             treeNode19,
-            treeNode22});
+            treeNode22,
+            treeNode23});
             this.Extra_TV.ShowLines = false;
             this.Extra_TV.Size = new System.Drawing.Size(283, 452);
             this.Extra_TV.TabIndex = 21;
+            // 
+            // pic_DoneSettings
+            // 
+            this.pic_DoneSettings.Image = ((System.Drawing.Image)(resources.GetObject("pic_DoneSettings.Image")));
+            this.pic_DoneSettings.Location = new System.Drawing.Point(559, 5);
+            this.pic_DoneSettings.Name = "pic_DoneSettings";
+            this.pic_DoneSettings.Size = new System.Drawing.Size(46, 30);
+            this.pic_DoneSettings.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_DoneSettings.TabIndex = 66;
+            this.pic_DoneSettings.TabStop = false;
+            this.pic_DoneSettings.Click += new System.EventHandler(this.pic_DoneSettings_Click);
             // 
             // Default
             // 
@@ -187,6 +205,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(855, 502);
+            this.Controls.Add(this.pic_DoneSettings);
             this.Controls.Add(this.Extra_TV);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lbl_PrimarySettings);
@@ -195,6 +214,7 @@
             this.Name = "Default";
             this.Text = "Default";
             this.Load += new System.EventHandler(this.Default_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pic_DoneSettings)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -206,5 +226,6 @@
         private System.Windows.Forms.Label lbl_PrimarySettings;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TreeView Extra_TV;
+        private System.Windows.Forms.PictureBox pic_DoneSettings;
     }
 }

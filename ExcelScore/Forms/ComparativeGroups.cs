@@ -52,6 +52,7 @@ using Accord.Statistics.Testing;
 using DocumentFormat.OpenXml.Vml.Office;
 using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using Syncfusion.Pdf.Tables;
+using ExcelScore.FormsDesigns;
 
 namespace ExcelScore.Forms
 {
@@ -7554,8 +7555,32 @@ namespace ExcelScore.Forms
 
             }
         }
+        public int CountRows_NewComparativeGroups_Fn()
+        {
+            return 0;
+
+        }
+        public void NewComparativeGroups_Fn()
+        {
+            for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
+            {
+                if (ComparativeTables[tableindex].FormatType == "Default")
+                {
+                    bool TableHasSigI = false;
+                    IWSection section = wordObj.CreatePortraitSection();
+
+                    int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
 
 
+                }
+
+
+            }
+
+
+        }
+        
         public void ComparativeTableGroups_Layout()
         {
             for(int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
@@ -9269,6 +9294,52 @@ namespace ExcelScore.Forms
         }
 
         private void cmb_ChooseTableFormat_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            FormManager.ShowStandaloneForm<MainFormsDesign>();
+        }
+
+
+
+        private void pic_AddNew_Click(object sender, EventArgs e)
+        {
+
+            string Typereturned = FormDataTransfer.Get<string>("Type");
+
+            //if (Typereturned == "Default")
+            //{
+            //    Dictionary<string, bool> CheckedDataprimary = FormDataTransfer.Get<Dictionary<string, bool>>("nodeCheckedStatusPrimary");
+            //    Dictionary<string, bool> CheckedDataExtra= FormDataTransfer.Get<Dictionary<string, bool>>("nodeCheckedStatusExtra");
+            //    string LeftMarginValue = FormDataTransfer.Get<string>("LeftMarginValue");
+            //    string RightMarginValue = FormDataTransfer.Get<string>("RightMarginValue");
+
+                
+            //}
+
+            cmb_ChooseTableFormat.Text = Typereturned;
+
+            string TableName = AddTableUI();
+
+            if (cmb_ChooseTableFormat.Text == "Relation" || cmb_ChooseTableFormat.Text == "Relation Scale Pathology" || cmb_ChooseTableFormat.Text == "Relation IQR" || cmb_ChooseTableFormat.Text == "Relation Median No IQR")
+            {
+                ComparativeBasic_Relation(TableName);
+            }
+            else
+            {
+                ComparativeBasic(TableName);
+            }
+
+
+
+            CheckFullEmptyParameters(TableName);
+            CheckForOthers_inNominal(TableName);
+        }
+
+        private void label5_Click(object sender, EventArgs e)
         {
 
         }
