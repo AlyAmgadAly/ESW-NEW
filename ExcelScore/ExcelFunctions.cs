@@ -170,6 +170,19 @@ namespace ExcelScore
                                 }
                             }
 
+                            if(parameter.DIC_LablesIfNomainal.Keys.Count == 0)
+                            {
+                                List<double> ForcedLabels = parameter.ParameterValues
+                                .Distinct()
+                                .OrderBy(x => x)
+                                .ToList();
+                                foreach (var item in ForcedLabels)
+                                {
+                                    parameter.DIC_LablesIfNomainal[(int)item] = item.ToString();
+                                }
+                                
+                            }
+
                         }
                     }
                     

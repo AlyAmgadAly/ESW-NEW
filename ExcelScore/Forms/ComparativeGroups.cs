@@ -5177,11 +5177,13 @@ namespace ExcelScore.Forms
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
-
+            
 
             //pythonStat.InitPython();
 
             document = wordObj.InitWord();
+
+            NewComparativeGroups_Fn();
 
             letter_table_group_Subgroups();
 
@@ -7555,11 +7557,54 @@ namespace ExcelScore.Forms
 
             }
         }
-        public int CountRows_NewComparativeGroups_Fn()
+        public int CountRows_NewComparativeGroups_Fn(ComparativeTable comparativeTable, List<string> CheckedPrimaryNeeded)
         {
-            return 0;
+            int rowCount = 0;
+
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+
+                if (parameter.NominalOrScale == "Nominal")
+                {
+                    int distinctValuesCount = parameter.DIC_LablesIfNomainal.Keys.Count;
+                    rowCount += distinctValuesCount + 1;
+                   
+                }
+                else if (parameter.NominalOrScale == "Scale")
+                {
+                    rowCount += CheckedPrimaryNeeded.Count + 1;
+                }
+            }
+
+
+            //MessageBox.Show(rowCount.ToString());
+
+
+
+            return rowCount;
+
 
         }
+        public int CountGroupValues_NewComparativeGroups_Fn(ComparativeTable comparativeTable)
+        {
+            int groupCount = 0;
+
+            // Find the group parameter
+            var groupParameter = comparativeTable.Parameters.FirstOrDefault(p => p.IsGroup);
+            if (groupParameter == null)
+            {
+                // Handle case where no group parameter is found
+                return groupCount;
+            }
+
+            // Count the distinct group values
+            groupCount = groupParameter.DIC_LablesIfNomainal.Keys.Distinct().Count();
+
+            return groupCount;
+
+            
+        }
+
         public void NewComparativeGroups_Fn()
         {
             for (int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)
@@ -7569,9 +7614,34 @@ namespace ExcelScore.Forms
                     bool TableHasSigI = false;
                     IWSection section = wordObj.CreatePortraitSection();
 
-                    int numberofgroups = CountGroupValues(ComparativeTables[tableindex]);
+                    int numberofgroups = CountGroupValues_NewComparativeGroups_Fn(ComparativeTables[tableindex]);
                     wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
 
+                    Dictionary<string, bool> CheckedDataprimary = FormDataTransfer.Get<Dictionary<string, bool>>("nodeCheckedStatusPrimary");
+                    Dictionary<string, bool> CheckedDataExtra = FormDataTransfer.Get<Dictionary<string, bool>>("nodeCheckedStatusExtra");
+                    string LeftMarginValue = FormDataTransfer.Get<string>("LeftMarginValue");
+                    string RightMarginValue = FormDataTransfer.Get<string>("RightMarginValue");
+
+                    List<string> CheckedPrimaryNeeded = new List<string>();
+
+                    string[] keysToCheck = { "NumberOfCasesFirst", "MinMaxFirst", "MeanSDFirst", "MedianIQRFirst" , "MedianMinMaxSecond" };
+
+                    foreach (string key in keysToCheck)
+                    {
+                        if (CheckedDataprimary.TryGetValue(key, out bool isChecked) && isChecked)
+                        {
+                            CheckedPrimaryNeeded.Add(key);
+                        }
+                    }
+
+
+                    int Variablerows = CountRows_NewComparativeGroups_Fn(ComparativeTables[tableindex] , CheckedPrimaryNeeded);
+
+                    int WordTableRows = 2 + Variablerows;
+                    int WordTableColumns = 3 + (numberofgroups * 2);
+
+                    IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
+                    wordObj.GeneralTableFormat(table);
 
                 }
 
@@ -7590,7 +7660,6 @@ namespace ExcelScore.Forms
                     bool TableHasSigI = false;
 
                     IWSection section = wordObj.CreatePortraitSection();
-
 
 
 
