@@ -50,24 +50,26 @@
             System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Total Column");
             System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Row");
             System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Column");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Percentages", new System.Windows.Forms.TreeNode[] {
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Total");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Percentages", new System.Windows.Forms.TreeNode[] {
             treeNode12,
-            treeNode13});
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("0.19");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Left", new System.Windows.Forms.TreeNode[] {
-            treeNode15});
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("0.19");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Right", new System.Windows.Forms.TreeNode[] {
-            treeNode17});
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Cell Margin", new System.Windows.Forms.TreeNode[] {
-            treeNode16,
+            treeNode13,
+            treeNode14});
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("0.19");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Left", new System.Windows.Forms.TreeNode[] {
+            treeNode16});
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("0.19");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Right", new System.Windows.Forms.TreeNode[] {
             treeNode18});
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("First Column");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Last Column");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Pcontrol", new System.Windows.Forms.TreeNode[] {
-            treeNode20,
-            treeNode21});
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Paper");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Cell Margin", new System.Windows.Forms.TreeNode[] {
+            treeNode17,
+            treeNode19});
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("First Column");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Last Column");
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Pcontrol", new System.Windows.Forms.TreeNode[] {
+            treeNode21,
+            treeNode22});
+            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Paper");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Default));
             this.Primary_TV = new System.Windows.Forms.TreeView();
             this.lbl_PrimarySettings = new System.Windows.Forms.Label();
@@ -153,37 +155,39 @@
             this.Extra_TV.Name = "Extra_TV";
             treeNode11.Name = "TotalColumn";
             treeNode11.Text = "Total Column";
-            treeNode12.Name = "Row";
+            treeNode12.Name = "RowPercentage";
             treeNode12.Text = "Row";
             treeNode13.Checked = true;
-            treeNode13.Name = "Column";
+            treeNode13.Name = "ColumnPercentage";
             treeNode13.Text = "Column";
-            treeNode14.Name = "Percentages";
-            treeNode14.Text = "Percentages";
-            treeNode15.Name = "LeftCellMarginValue";
-            treeNode15.Text = "0.19";
-            treeNode16.Name = "Left";
-            treeNode16.Text = "Left";
-            treeNode17.Name = "RightCellMarginValue";
-            treeNode17.Text = "0.19";
-            treeNode18.Name = "Right";
-            treeNode18.Text = "Right";
-            treeNode19.Name = "CellMargin";
-            treeNode19.Text = "Cell Margin";
-            treeNode20.Name = "FirstColumn";
-            treeNode20.Text = "First Column";
-            treeNode21.Name = "LastColumn";
-            treeNode21.Text = "Last Column";
-            treeNode22.Name = "Pcontrol";
-            treeNode22.Text = "Pcontrol";
-            treeNode23.Name = "PaperFormat";
-            treeNode23.Text = "Paper";
+            treeNode14.Name = "TotalPercentage";
+            treeNode14.Text = "Total";
+            treeNode15.Name = "Percentages";
+            treeNode15.Text = "Percentages";
+            treeNode16.Name = "LeftCellMarginValue";
+            treeNode16.Text = "0.19";
+            treeNode17.Name = "Left";
+            treeNode17.Text = "Left";
+            treeNode18.Name = "RightCellMarginValue";
+            treeNode18.Text = "0.19";
+            treeNode19.Name = "Right";
+            treeNode19.Text = "Right";
+            treeNode20.Name = "CellMargin";
+            treeNode20.Text = "Cell Margin";
+            treeNode21.Name = "FirstColumn";
+            treeNode21.Text = "First Column";
+            treeNode22.Name = "LastColumn";
+            treeNode22.Text = "Last Column";
+            treeNode23.Name = "Pcontrol";
+            treeNode23.Text = "Pcontrol";
+            treeNode24.Name = "PaperFormat";
+            treeNode24.Text = "Paper";
             this.Extra_TV.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode11,
-            treeNode14,
-            treeNode19,
-            treeNode22,
-            treeNode23});
+            treeNode15,
+            treeNode20,
+            treeNode23,
+            treeNode24});
             this.Extra_TV.ShowLines = false;
             this.Extra_TV.Size = new System.Drawing.Size(283, 452);
             this.Extra_TV.TabIndex = 21;

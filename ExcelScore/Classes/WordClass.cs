@@ -1820,6 +1820,50 @@ namespace ExcelScore.Classes
 
 
         }
+        public void ApplyGeneralComparativeBorders_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups, bool hasNominal)
+        {
+            
+
+
+
+            for (int k = 0; k < WordTableRows; k++)
+            {
+                table.Rows[k].Cells[0].CellFormat.Borders.Right.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[k].Cells[0].CellFormat.Borders.Right.LineWidth = 1.5f;
+            }
+
+            for (int l = 0; l < WordTableRows; l++)
+            {
+                table.Rows[l].Cells[WordTableColumns - 2].CellFormat.Borders.Left.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[l].Cells[WordTableColumns - 2].CellFormat.Borders.Left.LineWidth = 1.5f;
+
+            }
+
+            if(hasNominal)
+            {
+                for (int i = 1; i < WordTableColumns-2; i++)
+                {
+                    table.Rows[1].Cells[i].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[1].Cells[i].CellFormat.Borders.Top.LineWidth = 0.5f;
+                }
+                for (int j = 0; j < WordTableColumns; j++)
+                {
+                    table.Rows[1].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[1].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+                }
+            }
+            else
+            {
+                for (int j = 0; j < WordTableColumns; j++)
+                {
+                    table.Rows[0].Cells[j].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    table.Rows[0].Cells[j].CellFormat.Borders.Bottom.LineWidth = 1.5f;
+                }
+            }
+            
+            
+
+        }
         public void ApplyGeneralComparativeBorders(IWTable table,  int WordTableRows, int WordTableColumns, int numberofgroups )
         {
             for (int j = 0; j < WordTableColumns; j++)
@@ -2321,7 +2365,17 @@ namespace ExcelScore.Classes
 
             
         }
+        public void ApplyGeneralComparativeMerges_NewComparativeGroups_Fn(IWTable table, int WordTableColumns, int numberofgroups)
+        {
+            table.ApplyVerticalMerge(0, 0, 1);
+            for (int i = 1; i < WordTableColumns-2; i = i + 2)
+            {
+                table.ApplyHorizontalMerge(0, i, i + 1);
+            }
 
+            table.ApplyVerticalMerge(WordTableColumns - 1, 0, 1);
+            table.ApplyVerticalMerge(WordTableColumns - 2, 0, 1);
+        }
         public void ApplyGeneralComparativeMerges(IWTable table ,int WordTableColumns , int numberofgroups)
         {
             table.ApplyVerticalMerge(0, 0, 1);
@@ -3291,7 +3345,51 @@ namespace ExcelScore.Classes
             }
 
         }
+        public void SetComparativeWidths_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups, ComparativeTable comparativeTable , bool HasScale , bool HasNominal, bool HasTotalCol)
+        {
+            for (int i = 0; i < WordTableRows; i++)
+            {
+                if(numberofgroups == 2)
+                {
+                    table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(4f);
+                }
+                else if(numberofgroups > 2)
+                {
+                    table.Rows[i].Cells[0].Width = SetColumnWidthInCentimeters(3.5f);
+                }
 
+                table.Rows[i].Cells[WordTableColumns - 1].Width = SetColumnWidthInCentimeters(1.75f);
+                table.Rows[i].Cells[WordTableColumns - 2].Width = SetColumnWidthInCentimeters(1.75f);
+
+
+                if (HasNominal && HasScale)
+                {
+                    for (int j = 1; j < WordTableColumns-2; j++)
+                    {
+                        table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(1.75f);
+                    }
+                }
+                else if (!HasScale)
+                {
+                    for (int j = 1; j < WordTableColumns - 2; j++)
+                    {
+                        //MessageBox.Show(hasscale.ToString());
+                        table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(1.5f);
+
+                    }
+                }
+                else if (!HasNominal)
+                {
+                    for (int j = 1; j < WordTableColumns - 2; j++)
+                    {
+                        //MessageBox.Show(hasscale.ToString());
+                        table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(3.5f);
+
+                    }
+                }
+
+            }
+        }
         public void SetComparativeWidths(IWTable table, int WordTableRows, int WordTableColumns , int numberofgroups , ComparativeTable comparativeTable)
         {
             bool hasscale = false;
@@ -3781,7 +3879,26 @@ namespace ExcelScore.Classes
                 AddPara_Center(table, 0, 3, "Median (IQR)");
             }
         }
+        public void Add_GeneralHeaders_Comparative_Center_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, int numberofgroups , bool hasNominal)
+        {
+            AddPara_Center(table, 0, WordTableColumns - 1, "p");
+            if(hasNominal)
+            {
+                for (int i = 1; i < WordTableColumns - 2; i++)
+                {
+                    if (i % 2 != 0)
+                    {
+                        AddPara_Center(table, 1, i, "No.");
 
+                    }
+                    else if (i % 2 == 0)
+                    {
+                        AddPara_Center(table, 1, i, "%");
+                    }
+                }
+            }
+
+        }
         public void Add_GeneralHeaders_Comparative_Center(IWTable table , int WordTableRows , int WordTableColumns , int numberofgroups)
         {
             //InsertHighlightTestName(table, 0, WordTableColumns - 2, "Test Of Sig.");

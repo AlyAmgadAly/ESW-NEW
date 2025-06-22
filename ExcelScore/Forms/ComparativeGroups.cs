@@ -3821,6 +3821,20 @@ namespace ExcelScore.Forms
 
 
         }
+        public bool DetermineHasScale(ComparativeTable comparativeTable)
+        {
+            bool HasScale = false;
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.NominalOrScale == "Scale")
+                {
+                    HasScale = true;
+                    break;
+                }
+
+            }
+            return HasScale;
+        }
         public bool DetermineHasNominal(ComparativeTable comparativeTable)
         {
             bool HasNominal = false;
@@ -5785,7 +5799,17 @@ namespace ExcelScore.Forms
 
 
         }
-        
+        public void ComparativeParamaeterBorders_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, int tableindex, int numberofgroups , ComparativeTable comparativeTable , bool HasNominal , bool HasTotal)
+        {
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                int count = 0;
+                if (parameter.NominalOrScale == "Nominal")
+                {
+                    count = parameter.DIC_LablesIfNomainal.Keys.Count + 1;
+                }
+            }
+        }
 
 
         public void ComparativeParamaeterBorders(IWTable table, int WordTableRows, int WordTableColumns , int tableindex , int numberofgroups)
@@ -7561,14 +7585,16 @@ namespace ExcelScore.Forms
         {
             int rowCount = 0;
 
+            bool hasNominal = false;
             foreach (var parameter in comparativeTable.Parameters)
             {
 
                 if (parameter.NominalOrScale == "Nominal")
                 {
-                    int distinctValuesCount = parameter.DIC_LablesIfNomainal.Keys.Count;
-                    rowCount += distinctValuesCount + 1;
-                   
+                    Dictionary<int, int> parameterDistinctCount = parameter.GetValueCounts_AllIncludingUnknowns();
+                    
+                    rowCount += parameterDistinctCount.Keys.Count + 1;
+                    hasNominal = true;
                 }
                 else if (parameter.NominalOrScale == "Scale")
                 {
@@ -7576,7 +7602,10 @@ namespace ExcelScore.Forms
                 }
             }
 
-
+            if(!hasNominal)
+            {
+                rowCount--;
+            }
             //MessageBox.Show(rowCount.ToString());
 
 
@@ -7598,12 +7627,39 @@ namespace ExcelScore.Forms
             }
 
             // Count the distinct group values
-            groupCount = groupParameter.DIC_LablesIfNomainal.Keys.Distinct().Count();
+            groupCount = Math.Max(groupParameter.DIC_LablesIfNomainal.Keys.Distinct().Count() , groupParameter.ParameterValues.Distinct().Count());
 
             return groupCount;
 
             
         }
+
+        public int CountPairwiseRows_NewComparativeGroups_Fn(ComparativeTable comparativeTable)
+        {
+            int pairwiserowcount = 0;
+
+            int numberofgroups = CountGroupValues_NewComparativeGroups_Fn(comparativeTable);
+
+
+            if (numberofgroups > 2)
+            {
+                pairwiserowcount = numberofgroups - 2;
+            }
+
+            return pairwiserowcount;
+        }
+
+        public int CountCols_NewComparativeGroups_Fn(ComparativeTable comparativeTable, int numberofgroups, bool HasNominal, bool hastotal)
+        {
+            int totalcol = hastotal ? (HasNominal ? 2 : 1) : 0;
+
+            int colCount = HasNominal
+                ? 3 + (numberofgroups * 2) + totalcol
+                : 3 + numberofgroups + totalcol;
+
+            return colCount;
+        }
+
 
         public void NewComparativeGroups_Fn()
         {
@@ -7611,21 +7667,16 @@ namespace ExcelScore.Forms
             {
                 if (ComparativeTables[tableindex].FormatType == "Default")
                 {
-                    bool TableHasSigI = false;
-                    IWSection section = wordObj.CreatePortraitSection();
-
-                    int numberofgroups = CountGroupValues_NewComparativeGroups_Fn(ComparativeTables[tableindex]);
-                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
-
+                    bool HasNominal = DetermineHasNominal(ComparativeTables[tableindex]);
+                    bool HasScale = DetermineHasScale(ComparativeTables[tableindex]);
                     Dictionary<string, bool> CheckedDataprimary = FormDataTransfer.Get<Dictionary<string, bool>>("nodeCheckedStatusPrimary");
                     Dictionary<string, bool> CheckedDataExtra = FormDataTransfer.Get<Dictionary<string, bool>>("nodeCheckedStatusExtra");
                     string LeftMarginValue = FormDataTransfer.Get<string>("LeftMarginValue");
                     string RightMarginValue = FormDataTransfer.Get<string>("RightMarginValue");
+                    Total_Column_Comparative = CheckedDataExtra["TotalColumn"];
 
                     List<string> CheckedPrimaryNeeded = new List<string>();
-
-                    string[] keysToCheck = { "NumberOfCasesFirst", "MinMaxFirst", "MeanSDFirst", "MedianIQRFirst" , "MedianMinMaxSecond" };
-
+                    string[] keysToCheck = { "NumberOfCasesFirst", "MinMaxFirst", "MeanSDFirst", "MedianIQRFirst", "MedianMinMaxSecond" };
                     foreach (string key in keysToCheck)
                     {
                         if (CheckedDataprimary.TryGetValue(key, out bool isChecked) && isChecked)
@@ -7634,14 +7685,32 @@ namespace ExcelScore.Forms
                         }
                     }
 
+                    IWSection section = wordObj.CreatePortraitSection();
+
+                    int numberofgroups = CountGroupValues_NewComparativeGroups_Fn(ComparativeTables[tableindex]);
+                    wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
 
                     int Variablerows = CountRows_NewComparativeGroups_Fn(ComparativeTables[tableindex] , CheckedPrimaryNeeded);
-
-                    int WordTableRows = 2 + Variablerows;
-                    int WordTableColumns = 3 + (numberofgroups * 2);
+                    int PairwiseCount = CountPairwiseRows_NewComparativeGroups_Fn(ComparativeTables[tableindex]);
+                    int WordTableRows = 2 + Variablerows + PairwiseCount;
+                    int WordTableColumns = CountCols_NewComparativeGroups_Fn(ComparativeTables[tableindex] , numberofgroups , HasNominal , Total_Column_Comparative); 
 
                     IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
                     wordObj.GeneralTableFormat(table);
+
+
+                    //Merges
+                    if(HasNominal)
+                    {
+                        wordObj.ApplyGeneralComparativeMerges_NewComparativeGroups_Fn(table, WordTableColumns, numberofgroups);
+                    }
+                    wordObj.ApplyGeneralComparativeBorders_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, numberofgroups, HasNominal);
+
+
+                    wordObj.SetComparativeWidths_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, numberofgroups, ComparativeTables[tableindex] , HasScale , HasNominal , Total_Column_Comparative);
+
+                    wordObj.Add_GeneralHeaders_Comparative_Center_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, numberofgroups, HasNominal);
+
 
                 }
 

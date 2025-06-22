@@ -77,6 +77,30 @@ namespace ExcelScore.Classes
 
             return measuretype;
         }
+        public Dictionary<int, int> GetValueCounts_AllIncludingUnknowns()
+        {
+            var counts = new Dictionary<int, int>();
+
+            // Count all values found in ParameterValues
+            foreach (double val in ParameterValues)
+            {
+                int key = (int)val;
+
+                if (counts.ContainsKey(key))
+                    counts[key]++;
+                else
+                    counts[key] = 1;
+            }
+
+            // Now ensure that DIC_LablesIfNomainal keys are also present, even if missing in ParameterValues
+            foreach (int knownKey in DIC_LablesIfNomainal.Keys)
+            {
+                if (!counts.ContainsKey(knownKey))
+                    counts[knownKey] = 0;
+            }
+
+            return counts;
+        }
 
         public static List<string> GetParameterData(string parameterName, Worksheet worksheet)
         {
