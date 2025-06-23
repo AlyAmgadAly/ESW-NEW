@@ -92,15 +92,18 @@ namespace ExcelScore.Classes
                     counts[key] = 1;
             }
 
-            // Now ensure that DIC_LablesIfNomainal keys are also present, even if missing in ParameterValues
+            // Ensure DIC_LablesIfNomainal keys are present even if not in ParameterValues
             foreach (int knownKey in DIC_LablesIfNomainal.Keys)
             {
                 if (!counts.ContainsKey(knownKey))
                     counts[knownKey] = 0;
             }
 
-            return counts;
+            // Return the result sorted by key (ascending)
+            return counts.OrderBy(kvp => kvp.Key)
+                         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
+
 
         public static List<string> GetParameterData(string parameterName, Worksheet worksheet)
         {
