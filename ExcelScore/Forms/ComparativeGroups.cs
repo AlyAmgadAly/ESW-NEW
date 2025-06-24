@@ -5801,7 +5801,7 @@ namespace ExcelScore.Forms
         }
        
 
-        public void ComparativeParamaeterBorders_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, ComparativeTable comparativeTable, int numberofgroups , bool HasScale , bool HasNominal)
+        public void ComparativeParamaeterBorders_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, ComparativeTable comparativeTable, int numberofgroups , bool HasScale , bool HasNominal , List<string> CheckedDataNeeded)
         {
             int startingrow = 0;
             if (HasNominal)
@@ -7725,7 +7725,7 @@ namespace ExcelScore.Forms
 
                     wordObj.Add_GeneralHeaders_Comparative_Center_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, numberofgroups, HasNominal);
 
-                    ComparativeParamaeterBorders_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex], numberofgroups, HasScale, HasNominal);
+                    ComparativeParamaeterBorders_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex], numberofgroups, HasScale, HasNominal  , CheckedPrimaryNeeded);
                 }
 
 
