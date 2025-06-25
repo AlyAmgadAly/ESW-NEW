@@ -244,7 +244,10 @@ namespace ExcelScore.Forms
             }
 
         }
+        //to retrieve the % parts in default (% row , col , total)
+        public Dictionary<string, bool> CheckedDataExtraGeneral = new Dictionary<string, bool>();
 
+        public List<string> OrderedParameters = new List<string>();
         public Dictionary<string, string> NormalityParaNameList_ComparaGroups { get; set; } = new Dictionary<string, string>();
         private void ComparativeGroups_Load(object sender, EventArgs e)
         {
@@ -295,6 +298,7 @@ namespace ExcelScore.Forms
                 {
                     string item = cellValue.ToString();
                     list_Nominal.Items.Add(item);
+                    OrderedParameters.Add(item);
                 }
 
             }
@@ -322,6 +326,12 @@ namespace ExcelScore.Forms
                     list_Nominal.Items.Remove(selectedItem);
                 }
 
+
+                foreach (var item in selectedItems)
+                {
+                    OrderedParameters.Remove(item.ToString());
+                }
+
             }
             else
                 MessageBox.Show("Please Select Item!");
@@ -338,6 +348,7 @@ namespace ExcelScore.Forms
                 {
                     string item = cellValue.ToString();
                     list_NormalScale.Items.Add(item);
+                    OrderedParameters.Add(item);
                 }
 
             }
@@ -364,6 +375,11 @@ namespace ExcelScore.Forms
                     list_NormalScale.Items.Remove(selectedItem);
                 }
 
+                foreach (var item in selectedItems)
+                {
+                    OrderedParameters.Remove(item.ToString());
+                }
+
             }
             else
                 MessageBox.Show("Please Select Item!");
@@ -379,6 +395,7 @@ namespace ExcelScore.Forms
                 {
                     string item = cellValue.ToString();
                     list_AbnormalScale.Items.Add(item);
+                    OrderedParameters.Add(item);
                 }
 
             }
@@ -405,6 +422,10 @@ namespace ExcelScore.Forms
                     list_AbnormalScale.Items.Remove(selectedItem);
                 }
 
+                foreach (var item in selectedItems)
+                {
+                    OrderedParameters.Remove(item.ToString());
+                }
             }
             else
                 MessageBox.Show("Please Select Item!");
@@ -459,8 +480,6 @@ namespace ExcelScore.Forms
             {
                 TableName = tableName,
                 Parameters = new List<Parameter>(),
-
-
                 HasTotalColumn = totalcolumn
             };
 
@@ -493,67 +512,52 @@ namespace ExcelScore.Forms
             }
             //IsSubGroup
 
-            // Add parameters from list_Nominal
-            foreach (var item in list_Nominal.Items)
+            foreach (var paramName in OrderedParameters)
             {
-                var parameter = new Parameter
-                {
-                    Name = item.ToString(),
-                    NominalOrScale = "Nominal",
-                    GroupedParameterValues = new Dictionary<double, List<double>>(),
-                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
-                };
-                comparativeTable.Parameters.Add(parameter);
-            }
+                Parameter parameter = null;
 
-            foreach (var parameter in comparativeTable.Parameters)
-            {
-                if (NominalYes_Compara != null)
+                
+                if (list_Nominal.Items.Contains(paramName))
                 {
-                    foreach (string parameteryes in NominalYes_Compara)
+                    parameter = new Parameter
                     {
-                        if (parameteryes == parameter.Name)
-                        {
-                            parameter.NominalIsYes = true;
-                        }
-                    }
+                        Name = paramName,
+                        NominalOrScale = "Nominal",
+                        GroupedParameterValues = new Dictionary<double, List<double>>(),
+                        FormattedValues = new Dictionary<double, Dictionary<string, string>>()
+                    };
+
+                    if (NominalYes_Compara != null && NominalYes_Compara.Contains(paramName))
+                        parameter.NominalIsYes = true;
+                }
+                else if (list_NormalScale.Items.Contains(paramName))
+                {
+                    parameter = new Parameter
+                    {
+                        Name = paramName,
+                        NominalOrScale = "Scale",
+                        NormalOrAbnormal = "Normal",
+                        GroupedParameterValues = new Dictionary<double, List<double>>(),
+                        FormattedValues = new Dictionary<double, Dictionary<string, string>>()
+                    };
+                }
+                else if (list_AbnormalScale.Items.Contains(paramName))
+                {
+                    parameter = new Parameter
+                    {
+                        Name = paramName,
+                        NominalOrScale = "Scale",
+                        NormalOrAbnormal = "Abnormal",
+                        GroupedParameterValues = new Dictionary<double, List<double>>(),
+                        FormattedValues = new Dictionary<double, Dictionary<string, string>>()
+                    };
                 }
 
-            }
-
-
-            // Add parameters from list_NormalScale
-            foreach (var item in list_NormalScale.Items)
-            {
-                var parameter = new Parameter
+                if (parameter != null)
                 {
-
-                    Name = item.ToString(),
-                    NominalOrScale = "Scale",
-                    NormalOrAbnormal = "Normal",
-                    GroupedParameterValues = new Dictionary<double, List<double>>(),
-                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
-                };
-
-
-                comparativeTable.Parameters.Add(parameter);
+                    comparativeTable.Parameters.Add(parameter);
+                }
             }
-
-            // Add parameters from list_AbnormalScale
-            foreach (var item in list_AbnormalScale.Items)
-            {
-                var parameter = new Parameter
-                {
-                    Name = item.ToString(),
-                    NominalOrScale = "Scale",
-                    NormalOrAbnormal = "Abnormal",
-                    GroupedParameterValues = new Dictionary<double, List<double>>(),
-                    FormattedValues = new Dictionary<double, Dictionary<string, string>>() // Initialize FormattedValues dictionary
-                };
-                comparativeTable.Parameters.Add(parameter);
-            }
-
-
 
             comparativeTable.FormatType = cmb_ChooseTableFormat.Text;
 
@@ -1127,6 +1131,9 @@ namespace ExcelScore.Forms
             {
                 if (TableName == table.TableName)
                 {
+                    CheckedDataExtraGeneral = FormDataTransfer.Get<Dictionary<string, bool>>("nodeCheckedStatusExtra");
+                    Parameter GroupParameter = ComparativeTable.GetGroupParamter(table);
+                    double GrandTotalCount = GroupParameter.ParameterValues.Count;
                     foreach (Parameter parameter in table.Parameters)
                     {
                         //|| parameter.GroupedParameterValues.Count == 0
@@ -1150,11 +1157,15 @@ namespace ExcelScore.Forms
                             // Check if the parameter is nominal
                             if (parameter.NominalOrScale == "Nominal")
                             {
+                                bool RowPercent = CheckedDataExtraGeneral["RowPercentage"];
+                                bool ColumnPercent = CheckedDataExtraGeneral["ColumnPercentage"];
+                                bool TotalPercent = CheckedDataExtraGeneral["TotalPercentage"];
+                                
                                 // Calculate frequency and percentage for each distinct value in the group
                                 foreach (var distinctValue in values.Distinct())
                                 {
 
-
+                                    
                                     int Totalrowfreq = 0;
                                     foreach (var kvp2 in parameter.GroupedParameterValues)
                                     {
@@ -1163,21 +1174,27 @@ namespace ExcelScore.Forms
                                         int frequency2 = values2.Count(v => v == distinctValue);
                                         Totalrowfreq += frequency2;
                                     }
-                                    //MessageBox.Show(frequency2.ToString());
-                                    //check_Perc_Row.Checked
-                                    if (Row_Percent_Comparative)
+
+                                    if (RowPercent)
                                     {
                                         int frequency = values.Count(v => v == distinctValue);
                                         double percentage = (frequency / (double)Totalrowfreq) * 100;
                                         parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
                                         parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F1}%";
                                     }
-                                    else if (!Row_Percent_Comparative)
+                                    else if (ColumnPercent)
                                     {
                                         int frequency = values.Count(v => v == distinctValue);
                                         double percentage = (frequency / (double)totalCount) * 100;
                                         parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
                                         parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F1}%";
+                                    }
+                                    else if(TotalPercent)
+                                    {
+                                        int frequency = values.Count(v => v == distinctValue);
+                                        double percentage = (frequency / (double)GrandTotalCount) * 100;
+                                        parameter.FormattedValues[groupValue][$"Frequency_{distinctValue}"] = frequency.ToString();
+                                        parameter.FormattedValues[groupValue][$"Percentage_{distinctValue}"] = $"{percentage:F1}%";                      
                                     }
 
                                     //MessageBox.Show(frequency.ToString());
@@ -5801,7 +5818,7 @@ namespace ExcelScore.Forms
         }
        
 
-        public void ComparativeParamaeterBorders_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, ComparativeTable comparativeTable, int numberofgroups , bool HasScale , bool HasNominal , List<string> CheckedDataNeeded)
+        public void ComparativeParamaeterBorders_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, ComparativeTable comparativeTable, int numberofgroups , bool HasScale , bool HasNominal , List<string> CheckedScaleDataNeeded , int PairwiseCount)
         {
             int startingrow = 0;
             if (HasNominal)
@@ -5810,8 +5827,13 @@ namespace ExcelScore.Forms
             }
             foreach (var parameter in comparativeTable.Parameters)
             {
+
+                if (parameter.IsGroup)
+                    continue;
+
+                //getting count for nominal and scale
                 int count = 0;
-                //count = parameter.DIC_LablesIfNomainal.Keys.Count + 1;
+                
                 if (parameter.NominalOrScale == "Nominal")
                 {
                     Dictionary<int , int> Correctcount = parameter.GetValueCounts_AllIncludingUnknowns();
@@ -5819,8 +5841,52 @@ namespace ExcelScore.Forms
                 }
                 else if (parameter.NominalOrScale == "Scale")
                 {
-                    count = 4;
+                    count = CheckedScaleDataNeeded.Count + 1 + PairwiseCount;
                 }
+
+                //Merge for all parameters test
+                if(count > 0)
+                {
+
+                    //Merges of test
+
+                    if (parameter.NominalOrScale == "Nominal")
+                    {
+                        if (startingrow + count < WordTableRows)
+                        {
+                            table.ApplyVerticalMerge(WordTableColumns - 1, startingrow + 2, startingrow + count);
+                            table.ApplyVerticalMerge(WordTableColumns - 2, startingrow + 2, startingrow + count);
+                        }
+
+                    }
+                    else if (parameter.NominalOrScale == "Scale")
+                    {
+                        if (startingrow + count < WordTableRows)
+                        {
+                            table.ApplyVerticalMerge(WordTableColumns - 1, startingrow + 2, startingrow + count-PairwiseCount);
+                            table.ApplyVerticalMerge(WordTableColumns - 2, startingrow + 2, startingrow + count- PairwiseCount);
+                        }
+                    }
+
+                    //if(HasNominal)
+                    //{
+
+                        //    for (int j = 0; j < CheckedScaleDataNeeded.Count; j++)
+                        //    {
+                        //        for (int i = 1; i < WordTableColumns - 2; i = i + 2)
+                        //        {
+                        //            table.ApplyHorizontalMerge(startingrow + j + 1, i, i + 1);
+
+                        //        }
+
+                        //    }
+
+
+                        //}
+
+                }
+
+                startingrow += count;
 
             }
 
@@ -7648,20 +7714,20 @@ namespace ExcelScore.Forms
             
         }
 
-        public int CountPairwiseRows_NewComparativeGroups_Fn(ComparativeTable comparativeTable)
+        public (int baseCount, int totalCount) CountPairwiseRows_NewComparativeGroups_Fn(ComparativeTable comparativeTable)
         {
-            int pairwiserowcount = 0;
-
             int numberofgroups = CountGroupValues_NewComparativeGroups_Fn(comparativeTable);
+            int baseCount = numberofgroups > 2 ? numberofgroups - 2 : 0;
 
+            int scaleParameterCount = comparativeTable.Parameters
+                .Count(p => !p.IsGroup && p.NominalOrScale == "Scale");
 
-            if (numberofgroups > 2)
-            {
-                pairwiserowcount = numberofgroups - 2;
-            }
+            int totalCount = baseCount * scaleParameterCount;
 
-            return pairwiserowcount;
+            return (baseCount, totalCount);
         }
+
+
 
         public int CountCols_NewComparativeGroups_Fn(ComparativeTable comparativeTable, int numberofgroups, bool HasNominal, bool hastotal)
         {
@@ -7705,8 +7771,8 @@ namespace ExcelScore.Forms
                     wordObj.AddComparativeTitle(section, ComparativeTables[tableindex].TableName, numberofgroups);
 
                     int Variablerows = CountRows_NewComparativeGroups_Fn(ComparativeTables[tableindex] , CheckedPrimaryNeeded);
-                    int PairwiseCount = CountPairwiseRows_NewComparativeGroups_Fn(ComparativeTables[tableindex]);
-                    int WordTableRows = 2 + Variablerows + PairwiseCount;
+                    (int PairwiseCount,int TotalPairwiseCount)  = CountPairwiseRows_NewComparativeGroups_Fn(ComparativeTables[tableindex]);
+                    int WordTableRows = 2 + Variablerows + TotalPairwiseCount;
                     int WordTableColumns = CountCols_NewComparativeGroups_Fn(ComparativeTables[tableindex] , numberofgroups , HasNominal , Total_Column_Comparative); 
 
                     IWTable table = wordObj.Createtable(section, WordTableRows, WordTableColumns);
@@ -7725,7 +7791,7 @@ namespace ExcelScore.Forms
 
                     wordObj.Add_GeneralHeaders_Comparative_Center_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, numberofgroups, HasNominal);
 
-                    ComparativeParamaeterBorders_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex], numberofgroups, HasScale, HasNominal  , CheckedPrimaryNeeded);
+                    ComparativeParamaeterBorders_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex], numberofgroups, HasScale, HasNominal  , CheckedPrimaryNeeded , PairwiseCount);
                 }
 
 
@@ -8973,6 +9039,19 @@ namespace ExcelScore.Forms
                 list_AbnormalScale.Items.Remove(selectedItemAbnormal);
             }
 
+
+
+            var itemsToRemove = new List<object>();
+            itemsToRemove.AddRange(selectedItemsNominal);
+            itemsToRemove.AddRange(selectedItemsNormal);
+            itemsToRemove.AddRange(selectedItemsAbnormal);
+
+            
+            foreach (var item in itemsToRemove)
+            {
+                OrderedParameters.Remove(item.ToString());
+            }
+
         }
         public void ClearAllLists()
         {
@@ -9044,6 +9123,11 @@ namespace ExcelScore.Forms
             {
                 list_Nominal.Items.Remove(selectedItemNominal);
             }
+
+            foreach (var item in selectedItemsNominal)
+            {
+                OrderedParameters.Remove(item.ToString());
+            }
         }
 
         private void pic_clearNormalList_Click(object sender, EventArgs e)
@@ -9059,6 +9143,11 @@ namespace ExcelScore.Forms
             {
                 list_NormalScale.Items.Remove(selectedItemNormal);
             }
+
+            foreach (var item in selectedItemsNormal)
+            {
+                OrderedParameters.Remove(item.ToString());
+            }
         }
 
         private void pic_ClearAbnormalList_Click(object sender, EventArgs e)
@@ -9073,6 +9162,11 @@ namespace ExcelScore.Forms
             foreach (var selectedItemAbnormal in selectedItemsAbnormal)
             {
                 list_AbnormalScale.Items.Remove(selectedItemAbnormal);
+            }
+
+            foreach (var item in selectedItemsAbnormal)
+            {
+                OrderedParameters.Remove(item.ToString());
             }
         }
 
@@ -9461,7 +9555,7 @@ namespace ExcelScore.Forms
         {
 
             string Typereturned = FormDataTransfer.Get<string>("Type");
-
+            //RowPercentage
             //if (Typereturned == "Default")
             //{
             //    Dictionary<string, bool> CheckedDataprimary = FormDataTransfer.Get<Dictionary<string, bool>>("nodeCheckedStatusPrimary");
@@ -9469,7 +9563,7 @@ namespace ExcelScore.Forms
             //    string LeftMarginValue = FormDataTransfer.Get<string>("LeftMarginValue");
             //    string RightMarginValue = FormDataTransfer.Get<string>("RightMarginValue");
 
-                
+
             //}
 
             cmb_ChooseTableFormat.Text = Typereturned;
