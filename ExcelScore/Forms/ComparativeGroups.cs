@@ -53,6 +53,7 @@ using DocumentFormat.OpenXml.Vml.Office;
 using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using Syncfusion.Pdf.Tables;
 using ExcelScore.FormsDesigns;
+using DocumentFormat.OpenXml.Presentation;
 
 namespace ExcelScore.Forms
 {
@@ -5222,7 +5223,7 @@ namespace ExcelScore.Forms
 
             ComparativeTableGroups_2_periods();
 
-            ComparativeTableGroups_Layout();
+            //ComparativeTableGroups_Layout();
 
             
 
@@ -5816,82 +5817,329 @@ namespace ExcelScore.Forms
 
 
         }
-       
 
-        public void ComparativeParamaeterBorders_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, ComparativeTable comparativeTable, int numberofgroups , bool HasScale , bool HasNominal , List<string> CheckedScaleDataNeeded , int PairwiseCount)
+
+        //public void ComparativeParamaeterBorders_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, ComparativeTable comparativeTable, int numberofgroups , bool HasScale , bool HasNominal , List<string> CheckedScaleDataNeeded , int PairwiseCount)
+        //{
+        //    int startingrow = 0;
+        //    if (HasNominal)
+        //    {
+        //        startingrow = 1; 
+        //    }
+        //    foreach (var parameter in comparativeTable.Parameters)
+        //    {
+
+        //        if (parameter.IsGroup)
+        //            continue;
+
+        //        //getting count for nominal and scale
+        //        int count = 0;
+
+        //        if (parameter.NominalOrScale == "Nominal")
+        //        {
+        //            Dictionary<int , int> Correctcount = parameter.GetValueCounts_AllIncludingUnknowns();
+        //            count = Correctcount.Keys.Count+1;
+        //        }
+        //        else if (parameter.NominalOrScale == "Scale")
+        //        {
+        //            count = CheckedScaleDataNeeded.Count + 1 + PairwiseCount;
+        //        }
+
+        //        //Merge for all parameters test
+        //        if(count > 0)
+        //        {
+
+        //            //Merges of test
+
+        //            if (parameter.NominalOrScale == "Nominal")
+        //            {
+        //                if (startingrow + count < WordTableRows)
+        //                {
+        //                    table.ApplyVerticalMerge(WordTableColumns - 1, startingrow + 2, startingrow + count);
+        //                    table.ApplyVerticalMerge(WordTableColumns - 2, startingrow + 2, startingrow + count);
+        //                }
+
+        //            }
+        //            else if (parameter.NominalOrScale == "Scale")
+        //            {
+        //                if (startingrow + count < WordTableRows)
+        //                {
+        //                    table.ApplyVerticalMerge(WordTableColumns - 1, startingrow + 2, startingrow + count-PairwiseCount);
+        //                    table.ApplyVerticalMerge(WordTableColumns - 2, startingrow + 2, startingrow + count- PairwiseCount);
+        //                }
+        //            }
+
+        //            if (parameter.NominalOrScale == "Scale")
+        //            {
+        //                if(HasNominal)
+        //                {
+        //                    for (int j = 0; j <= CheckedScaleDataNeeded.Count; j++)
+        //                    {
+        //                        for (int i = 1; i < WordTableColumns - 2; i = i + 2)
+        //                        {
+        //                            table.ApplyHorizontalMerge(startingrow + j + 1, i, i + 1);
+
+        //                        }
+
+        //                    }
+        //                }
+
+
+        //                int pairwiseStartRow = startingrow + CheckedScaleDataNeeded.Count + 2;
+
+        //                for (int i = 0; i < PairwiseCount; i++)
+        //                {
+        //                    int currentRow = pairwiseStartRow + i;
+
+
+        //                    // Only merge on the last row of the pairwise block
+        //                    if (i == PairwiseCount - 1)
+        //                    {
+        //                        table.ApplyHorizontalMerge(currentRow, 1, WordTableColumns-3);
+        //                    }
+
+        //                    if (HasNominal && !(i == PairwiseCount - 1))
+        //                    {
+        //                        for (int colctrpair = 1; colctrpair < WordTableColumns-2; colctrpair = colctrpair+2)
+        //                        {
+        //                            table.ApplyHorizontalMerge(currentRow, colctrpair, colctrpair +1);
+        //                        }
+        //                    }
+
+        //                    for (int toppairwiseborder = 0; toppairwiseborder < WordTableColumns; toppairwiseborder++)
+        //                    {
+        //                        table.Rows[currentRow].Cells[toppairwiseborder].CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+        //                        table.Rows[currentRow].Cells[toppairwiseborder].CellFormat.Borders.Top.LineWidth = 0.5f;
+        //                    }
+
+        //                }
+
+        //                wordObj.AddPara_NoCenter(table, startingrow + 1, 0, parameter.Name);
+
+        //            }
+
+        //        }
+
+
+        //        if (startingrow + count < WordTableRows - 1)
+        //        {
+
+        //            // Insert bottom border for each parameter
+        //            if (count > 0)
+        //            {
+        //                for (int i = 0; i < WordTableColumns; i++)
+        //                {
+        //                    table.Rows[startingrow + count].Cells[i].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+        //                    table.Rows[startingrow + count].Cells[i].CellFormat.Borders.Bottom.LineWidth = 0.5f;
+        //                }
+
+        //                startingrow += count;
+
+        //            }
+
+
+        //        }
+
+
+        //    }
+
+
+        //}
+
+
+        //string[] keysToCheck = { "NumberOfCasesFirst", "MinMaxFirst", "MeanSDFirst", "MedianIQRFirst", "MedianMinMaxSecond" };
+
+        public void ComparativeParamaeterBorders_NewComparativeGroups_Fn(
+    IWTable table, int WordTableRows, int WordTableColumns,
+    ComparativeTable comparativeTable, int numberofgroups,
+    bool HasScale, bool HasNominal, List<string> CheckedScaleDataNeeded, int PairwiseCount, Dictionary<string, bool> CheckedExtraData)
         {
-            int startingrow = 0;
-            if (HasNominal)
-            {
-                startingrow = 1; 
-            }
+            int startingRow = HasNominal ? 1 : 0;
+
             foreach (var parameter in comparativeTable.Parameters)
             {
+                if (parameter.IsGroup) continue;
 
-                if (parameter.IsGroup)
-                    continue;
+                int count = GetRowCount(parameter, CheckedScaleDataNeeded, PairwiseCount);
 
-                //getting count for nominal and scale
-                int count = 0;
+                if (count <= 0) continue;
+
+                ApplyVerticalMerges(table, WordTableColumns, WordTableRows, parameter, startingRow, count, PairwiseCount);
+                InsertTitles(table, parameter, CheckedScaleDataNeeded, startingRow , CheckedExtraData , CheckedScaleDataNeeded.Count , PairwiseCount);
+
+                if (parameter.NominalOrScale == "Scale")
+                {
+                    if (HasNominal)
+                    {
+                        ApplyScaleHorizontalMerges(table, startingRow, CheckedScaleDataNeeded.Count, WordTableColumns);
+                    }
+
+                    ApplyPairwiseSection(table, startingRow, WordTableColumns, CheckedScaleDataNeeded.Count, PairwiseCount, HasNominal);
+                    wordObj.AddPara_NoCenter(table, startingRow + 1, 0, parameter.Name);
+                }
+
+                // Add bottom border after the parameter block if not the last
+                if (startingRow + count < WordTableRows - 1)
+                {
+                    ApplyBottomBorder(table, startingRow + count, WordTableColumns);
+                }
+
+                startingRow += count;
+            }
+        }
+        public Dictionary<string, string> DIC_ParameterDataNames = new Dictionary<string, string>
+        {
+                { "NumberOfCasesFirst", "N" },
+                { "MinMaxFirst", "Min. – Max." },
+                { "MeanSDFirst", "Mean ± SD" },
+                { "MedianIQRFirst", "Median (IQR)" },
+                { "MedianMinMaxSecond", "Median (Min. – Max.)" }
+        };
+        public void InsertTitles(IWTable table,Parameter parameter , List<string> CheckedParameterNames, int startrow, Dictionary<string,bool> CheckedExtraData , int scaleCount , int pairwiseCount)
+        {
+            int pairwiseStartRow = startrow + scaleCount + 2;
+
+            if (parameter.NominalOrScale == "Scale")
+            {
+                foreach (var kvp in DIC_ParameterDataNames)
+                {
+                    if (CheckedParameterNames.Contains(kvp.Key))
+                    {
+                        string DataInsertValue = kvp.Value;
+                        wordObj.Addpara_NoCenterNoBOLD(table, startrow + 2, 0, DataInsertValue);
+                        wordObj.LeftIntendBeforeText(table, startrow + 2, 0, 14.17f);
+                        startrow++;
+                    }
+                }
+
+
+
+                bool p1used = false;
+                for (int i = 0; i < pairwiseCount; i++)
+                {
+                    int currentRow = pairwiseStartRow + i;
+
+                    if (i == pairwiseCount - 1)
+                    {
+                        wordObj.AddPara_Center(table, currentRow, 0, "Sig. bet. groups");
+                    }
+                    else
+                    {
+                        if(i == 0)
+                        {
+                            if (CheckedExtraData["PcontrolFirst"] || CheckedExtraData["PcontrolLast"])
+                            {
+
+                                wordObj.AddPara_Center(table, startrow, 0, "p");
+                                wordObj.SubSuperScriptText(table, startrow, 0, Syncfusion.Drawing.Color.Black, "Control", "Sub");
+                                startrow++;
+                            }
+                            else
+                            {
+                                p1used = true;
+                                wordObj.AddPara_Center(table, startrow, 0, "p");
+                                wordObj.SubSuperScriptText(table, startrow, 0, Syncfusion.Drawing.Color.Black, "1", "Sub");
+                                startrow++;
+                            }
+                        }
+                        else
+                        {
+
+                        }
+                        
+                    }
+                }
+
                 
-                if (parameter.NominalOrScale == "Nominal")
-                {
-                    Dictionary<int , int> Correctcount = parameter.GetValueCounts_AllIncludingUnknowns();
-                    count = Correctcount.Keys.Count+1;
-                }
-                else if (parameter.NominalOrScale == "Scale")
-                {
-                    count = CheckedScaleDataNeeded.Count + 1 + PairwiseCount;
-                }
-
-                //Merge for all parameters test
-                if(count > 0)
-                {
-
-                    //Merges of test
-
-                    if (parameter.NominalOrScale == "Nominal")
-                    {
-                        if (startingrow + count < WordTableRows)
-                        {
-                            table.ApplyVerticalMerge(WordTableColumns - 1, startingrow + 2, startingrow + count);
-                            table.ApplyVerticalMerge(WordTableColumns - 2, startingrow + 2, startingrow + count);
-                        }
-
-                    }
-                    else if (parameter.NominalOrScale == "Scale")
-                    {
-                        if (startingrow + count < WordTableRows)
-                        {
-                            table.ApplyVerticalMerge(WordTableColumns - 1, startingrow + 2, startingrow + count-PairwiseCount);
-                            table.ApplyVerticalMerge(WordTableColumns - 2, startingrow + 2, startingrow + count- PairwiseCount);
-                        }
-                    }
-
-                    //if(HasNominal)
-                    //{
-
-                        //    for (int j = 0; j < CheckedScaleDataNeeded.Count; j++)
-                        //    {
-                        //        for (int i = 1; i < WordTableColumns - 2; i = i + 2)
-                        //        {
-                        //            table.ApplyHorizontalMerge(startingrow + j + 1, i, i + 1);
-
-                        //        }
-
-                        //    }
 
 
-                        //}
-
-                }
-
-                startingrow += count;
 
             }
-
-
         }
+        //string[] keysToCheck = { "NumberOfCasesFirst", "MinMaxFirst", "MeanSDFirst", "MedianIQRFirst", "MedianMinMaxSecond" };
+        private int GetRowCount(Parameter parameter, List<string> checkedScaleItems, int pairwiseCount)
+        {
+            if (parameter.NominalOrScale == "Nominal")
+            {
+                var countDict = parameter.GetValueCounts_AllIncludingUnknowns();
+                return countDict.Keys.Count + 1;
+            }
+            else if (parameter.NominalOrScale == "Scale")
+            {
+                return checkedScaleItems.Count + 1 + pairwiseCount;
+            }
+
+            return 0;
+        }
+
+        private void ApplyVerticalMerges(IWTable table, int cols, int rows, Parameter param, int startRow, int count, int pairwiseCount)
+        {
+            if (startRow + count >= rows) return;
+
+            int endRow = param.NominalOrScale == "Scale" ? startRow + count - pairwiseCount : startRow + count;
+
+            table.ApplyVerticalMerge(cols - 1, startRow + 2, endRow);
+            table.ApplyVerticalMerge(cols - 2, startRow + 2, endRow);
+        }
+
+        private void ApplyScaleHorizontalMerges(IWTable table, int startRow, int scaleCount, int cols)
+        {
+            for (int j = 0; j <= scaleCount; j++)
+            {
+                for (int i = 1; i < cols - 2; i += 2)
+                {
+                    table.ApplyHorizontalMerge(startRow + j + 1, i, i + 1);
+                }
+            }
+        }
+
+        private void ApplyPairwiseSection(IWTable table, int startRow, int cols, int scaleCount, int pairwiseCount, bool hasNominal)
+        {
+            int pairwiseStartRow = startRow + scaleCount + 2;
+
+            for (int i = 0; i < pairwiseCount; i++)
+            {
+                int currentRow = pairwiseStartRow + i;
+
+                // Top border for each pairwise row
+                for (int c = 0; c < cols; c++)
+                {
+                    var cell = table.Rows[currentRow].Cells[c];
+                    cell.CellFormat.Borders.Top.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                    cell.CellFormat.Borders.Top.LineWidth = 0.5f;
+                }
+
+                if (i == pairwiseCount - 1)
+                {
+                    // Last row gets full width merge
+                    table.ApplyHorizontalMerge(currentRow, 1, cols - 3);
+                }
+                else if (hasNominal)
+                {
+                    // Mid rows get pairwise 2-column merges
+                    for (int col = 1; col < cols - 2; col += 2)
+                    {
+                        table.ApplyHorizontalMerge(currentRow, col, col + 1);
+                    }
+                }
+
+                // Optional: Insert text here if needed
+                // wordObj.AddPara_Center(table, currentRow, 0, "Pairwise result...");
+            }
+        }
+
+        private void ApplyBottomBorder(IWTable table, int rowIndex, int cols)
+        {
+            for (int i = 0; i < cols; i++)
+            {
+                var cell = table.Rows[rowIndex].Cells[i];
+                cell.CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                cell.CellFormat.Borders.Bottom.LineWidth = 0.5f;
+            }
+        }
+
+
+
         public void ComparativeParamaeterBorders(IWTable table, int WordTableRows, int WordTableColumns , int tableindex , int numberofgroups)
         {
             int currentRow = 1;
@@ -7791,7 +8039,7 @@ namespace ExcelScore.Forms
 
                     wordObj.Add_GeneralHeaders_Comparative_Center_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, numberofgroups, HasNominal);
 
-                    ComparativeParamaeterBorders_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex], numberofgroups, HasScale, HasNominal  , CheckedPrimaryNeeded , PairwiseCount);
+                    ComparativeParamaeterBorders_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex], numberofgroups, HasScale, HasNominal  , CheckedPrimaryNeeded , PairwiseCount , CheckedDataExtra);
                 }
 
 

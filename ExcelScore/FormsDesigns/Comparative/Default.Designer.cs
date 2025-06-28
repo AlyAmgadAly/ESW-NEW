@@ -174,9 +174,9 @@
             treeNode19.Text = "Right";
             treeNode20.Name = "CellMargin";
             treeNode20.Text = "Cell Margin";
-            treeNode21.Name = "FirstColumn";
+            treeNode21.Name = "PcontrolFirst";
             treeNode21.Text = "First Column";
-            treeNode22.Name = "LastColumn";
+            treeNode22.Name = "PcontrolLast";
             treeNode22.Text = "Last Column";
             treeNode23.Name = "Pcontrol";
             treeNode23.Text = "Pcontrol";
