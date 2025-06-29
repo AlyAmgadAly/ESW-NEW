@@ -175,15 +175,45 @@ namespace ExcelScore
             mainFormsDesign.Show();
         }
 
-      
+        
 
         private void button1_Click_3(object sender, EventArgs e)
         {
-            MainFormsDesign mainFormsDesign = new MainFormsDesign();
-            mainFormsDesign.Show();
+            
 
-            //Default defaultfrm = new Default();
-            //defaultfrm.Show();
+            string syntaxPath = @"C:\Users\Win\Desktop\auto_crosstab.sps";
+            string savFilePath = @"C:\Users\Win\Desktop\asss.sav";
+
+            string syntax = $@"
+GET
+  FILE='{savFilePath.Replace(@"\", @"\\")}.'.
+DATASET NAME DataSet1 WINDOW=ASIS.
+CROSSTABS
+  /TABLES=B BY A
+  /FORMAT=AVALUE TABLES
+  /STATISTICS=CHISQ
+  /CELLS=COUNT COLUMN
+  /COUNT ROUND CELL
+  /METHOD=MC CIN(99) SAMPLES(10000).
+";
+
+            File.WriteAllText(syntaxPath, syntax);
+
+
+            Type spssType = Type.GetTypeFromProgID("SPSS.Application");
+            dynamic spssApp = Activator.CreateInstance(spssType);
+
+            // Optional: Show SPSS interface (or hide it by setting to false)
+            spssApp.Visible = true;
+
+            // Run the syntax
+            spssApp.ExecuteSyntax(syntaxPath);
+
+            dynamic outputDoc = spssApp.GetDesignatedOutputDoc();
+            outputDoc.SaveAs(@"C:\Users\Win\Desktop\my_output.spo");
+
+
+
         }
     }
 }

@@ -120,19 +120,18 @@ namespace ExcelScore
             return columns;
         }
 
-        
+
         public void ReadLablesIfNominal(ComparativeTable comparativeTable)
         {
             Worksheet Sheet2 = workbook.Worksheets[1];
 
-            for(int column = 0; column <= Sheet2.Cells.MaxDataColumn;column++)
+            for (int column = 0; column <= Sheet2.Cells.MaxDataColumn; column++)
             {
                 foreach (var parameter in comparativeTable.Parameters)
                 {
-                    
-                    if (parameter.Name == Sheet2.Cells[0 , column].Value.ToString() && (parameter.NominalOrScale == "Nominal" || parameter.IsGroup || parameter.IsSubGroup))
+                    if (parameter.Name == Sheet2.Cells[0, column].Value.ToString() &&
+                       (parameter.NominalOrScale == "Nominal" || parameter.IsGroup || parameter.IsSubGroup))
                     {
-
                         if (Sheet2.Cells[1, column].Value.ToString() == "Nominal")
                         {
                             for (int row = 2; row <= worksheet.Cells.MaxDataRow; row++)
@@ -142,57 +141,59 @@ namespace ExcelScore
                                     Cell cell = Sheet2.Cells[row, column];
                                     string cellstring = cell.Value.ToString();
 
-
-
-
                                     var parts = cellstring.Split('|');
                                     if (parts.Length >= 2)
                                     {
                                         var keyPart = parts[0].Trim();
                                         var valuePart = parts[1].Trim();
 
-                                        // Parse the key (assuming it's always an integer at the start of the keyPart)
                                         if (int.TryParse(keyPart, out int key))
                                         {
-                                            // Assign to the dictionary
                                             parameter.DIC_LablesIfNomainal[key] = valuePart;
                                             parameter.LablesIfNomainal.Add(cellstring);
                                         }
                                         else
                                         {
-                                            // Handle parsing error - invalid key
                                             continue;
                                         }
                                     }
-
-
-
                                 }
                             }
 
-                            if(parameter.DIC_LablesIfNomainal.Keys.Count == 0)
-                            {
-                                List<double> ForcedLabels = parameter.ParameterValues
+                            List<double> ForcedLabels = parameter.ParameterValues
                                 .Distinct()
                                 .OrderBy(x => x)
                                 .ToList();
+
+                            if (parameter.DIC_LablesIfNomainal.Keys.Count == 0)
+                            {
                                 foreach (var item in ForcedLabels)
                                 {
                                     parameter.DIC_LablesIfNomainal[(int)item] = item.ToString();
                                 }
-                                
                             }
+                            else
+                            {
+                                foreach (var item in ForcedLabels)
+                                {
+                                    int key = (int)item;
+                                    if (!parameter.DIC_LablesIfNomainal.ContainsKey(key))
+                                    {
+                                        parameter.DIC_LablesIfNomainal[key] = item.ToString();
+                                    }
+                                }
 
+                                // Optional: sort dictionary by key
+                                parameter.DIC_LablesIfNomainal = parameter.DIC_LablesIfNomainal
+                                    .OrderBy(kv => kv.Key)
+                                    .ToDictionary(kv => kv.Key, kv => kv.Value);
+                            }
                         }
                     }
-                    
                 }
-                
             }
-
-            
-
         }
+
 
         public List<string> GetLevelCount(Worksheet Sheet , string SelectedOverall)
         {

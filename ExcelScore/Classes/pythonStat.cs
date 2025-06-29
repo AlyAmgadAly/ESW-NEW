@@ -887,50 +887,99 @@ tukey_result = statsmodels.pairwise_tukeyhsd(data,groups)
                 {
                     if(hasSmallExpectedCell)
                     {
-                        return new string[] { "FET", "0"};
                         //parameter.IsMonteCarlo = true;
-                        //// Perform Monte Carlo simulation
-                        //int numSimulations = 10000; // Adjust the number of simulations
-                        //double[] simulatedChiSquares = new double[numSimulations];
-                        //int rowSum = 0, colSum = 0;
-                        //foreach (var row in contingencyTable)
-                        //{
-                        //    rowSum += row.Sum();
-                        //}
-                        //for (int i = 0; i < contingencyTable[0].Count; i++)
-                        //{
-                        //    foreach (var row in contingencyTable)
+
+                        //dynamic numpy = Py.Import("numpy");
+                        //dynamic special = Py.Import("scipy.special");
+                        //Random rnd = new Random();
+
+                        //// Convert .NET contingency table to flat list
+                        //int[][] rawArray = contingencyTable.Select(row => row.ToArray()).ToArray();
+                        //int R = rawArray.Length;
+                        //int C = rawArray[0].Length;
+                        //int N = rawArray.Sum(row => row.Sum());
+
+                        //// Row and column margins
+                        //int[] rowSum = new int[R];
+                        //int[] colSum = new int[C];
+                        //for (int r = 0; r < R; r++)
+                        //    for (int c = 0; c < C; c++)
                         //    {
-                        //        colSum += row[i];
+                        //        rowSum[r] += rawArray[r][c];
+                        //        colSum[c] += rawArray[r][c];
                         //    }
+
+                        //// Helper to compute log-factorial using gammaln
+                        //double LogFact(int n) => special.gammaln(n + 1).As<double>();
+
+                        //// Log-probability of a table (hypergeometric constant dropped)
+                        //double LogProb(int[,] table)
+                        //{
+                        //    double sum = 0;
+                        //    for (int r = 0; r < R; r++)
+                        //        for (int c = 0; c < C; c++)
+                        //            sum += LogFact(table[r, c]);
+                        //    return sum;
                         //}
 
-                        //Random rand = new Random();
-                        //for (int i = 0; i < numSimulations; i++)
-                        //{
-                        //    // Generate a random table based on row and column sums
-                        //    dynamic simulatedTable = new PyList();
-                        //    for (int r = 0; r < contingencyTable.Count; r++)
-                        //    {
-                        //        dynamic simulatedRow = new PyList();
-                        //        for (int c = 0; c < contingencyTable[0].Count; c++)
+                        //// Observed log-probability
+                        //int[,] observedTable = new int[R, C];
+                        //for (int r = 0; r < R; r++)
+                        //    for (int c = 0; c < C; c++)
+                        //        observedTable[r, c] = rawArray[r][c];
+                        //double logProbObs = LogProb(observedTable);
+
+                        //// Step 1: Create "population" list of cell positions
+                        //List<int> rows = new();
+                        //List<int> cols = new();
+                        //for (int r = 0; r < R; r++)
+                        //    for (int c = 0; c < C; c++)
+                        //        for (int k = 0; k < rawArray[r][c]; k++)
                         //        {
-                        //            int simulatedValue = rand.Next(1, 10); // Random number generation logic to fill the table
-                        //            simulatedRow.append(simulatedValue);
+                        //            rows.Add(r);
+                        //            cols.Add(c);
                         //        }
-                        //        simulatedTable.append(simulatedRow);
+
+                        //// Step 2: Monte Carlo simulation
+                        //int numSimulations = 10000;
+                        //int countExtreme = 0;
+                        //double probObs = Math.Round(Math.Exp(logProbObs), 6); // SPSS shows test value as actual P(table)
+                        //List<double> simProbs = new();
+
+                        //for (int sim = 0; sim < numSimulations; sim++)
+                        //{
+                        //    // Shuffle column labels
+                        //    var shuffledCols = cols.OrderBy(_ => rnd.Next()).ToArray();
+
+                        //    int[,] simTable = new int[R, C];
+                        //    for (int i = 0; i < N; i++)
+                        //    {
+                        //        int r = rows[i];
+                        //        int c = shuffledCols[i];
+                        //        simTable[r, c]++;
                         //    }
 
-                        //    // Compute chi-square statistic for the simulated table
-                        //    dynamic simulatedChiSquare = scipyStats.chi2_contingency(simulatedTable, correction: false);
-                        //    simulatedChiSquares[i] = simulatedChiSquare[0].As<double>();
+                        //    double logP = LogProb(simTable);
+                        //    if (logP <= logProbObs + 1e-10) countExtreme++;
+                        //    simProbs.Add(Math.Exp(logP));
                         //}
 
-                        //// Calculate p-value
-                        //double pValueMonteCarlo = simulatedChiSquares.Count(x => x >= chiSquareStatistic) / (double)numSimulations;
-                        //pValue = Math.Round(pValueMonteCarlo, 3);
+                        //// Step 3: p-value
+                        //double pValuea = Math.Round((double)countExtreme / numSimulations, 3);
+                        //string pStr = pValue < 0.001 ? "<0.001" : pValue.ToString("0.000");
 
-                        //return new string[] { chiSquareStatistic.ToString("0.000"), pValue.ToString() };
+                        //// Step 4: Return test value = probability of observed table
+                        //string testStr = probObs.ToString("0.000000");
+
+                        return new string[] { "MC", "0"};
+
+
+
+
+
+
+
+
                     }
                     else
                     {

@@ -5223,7 +5223,7 @@ namespace ExcelScore.Forms
 
             ComparativeTableGroups_2_periods();
 
-            //ComparativeTableGroups_Layout();
+            ComparativeTableGroups_Layout();
 
             
 
@@ -5977,6 +5977,10 @@ namespace ExcelScore.Forms
                     ApplyPairwiseSection(table, startingRow, WordTableColumns, CheckedScaleDataNeeded.Count, PairwiseCount, HasNominal);
                     wordObj.AddPara_NoCenter(table, startingRow + 1, 0, parameter.Name);
                 }
+                else if (parameter.NominalOrScale == "Nominal")
+                {
+                    wordObj.AddPara_NoCenter(table, startingRow + 1, 0, parameter.Name);
+                }
 
                 // Add bottom border after the parameter block if not the last
                 if (startingRow + count < WordTableRows - 1)
@@ -5991,7 +5995,7 @@ namespace ExcelScore.Forms
         {
                 { "NumberOfCasesFirst", "N" },
                 { "MinMaxFirst", "Min. – Max." },
-                { "MeanSDFirst", "Mean ± SD" },
+                { "MeanSDFirst", "Mean ± SD." },
                 { "MedianIQRFirst", "Median (IQR)" },
                 { "MedianMinMaxSecond", "Median (Min. – Max.)" }
         };
@@ -6014,7 +6018,6 @@ namespace ExcelScore.Forms
 
 
 
-                bool p1used = false;
                 for (int i = 0; i < pairwiseCount; i++)
                 {
                     int currentRow = pairwiseStartRow + i;
@@ -6030,30 +6033,35 @@ namespace ExcelScore.Forms
                             if (CheckedExtraData["PcontrolFirst"] || CheckedExtraData["PcontrolLast"])
                             {
 
-                                wordObj.AddPara_Center(table, startrow, 0, "p");
-                                wordObj.SubSuperScriptText(table, startrow, 0, Syncfusion.Drawing.Color.Black, "Control", "Sub");
-                                startrow++;
+                                wordObj.AddPara_Center(table, currentRow, 0, "p");
+                                wordObj.SubSuperScriptText(table, currentRow, 0, Syncfusion.Drawing.Color.Empty, "Control", "Sub");
+                                
                             }
                             else
                             {
-                                p1used = true;
-                                wordObj.AddPara_Center(table, startrow, 0, "p");
-                                wordObj.SubSuperScriptText(table, startrow, 0, Syncfusion.Drawing.Color.Black, "1", "Sub");
-                                startrow++;
+                                wordObj.AddPara_Center(table, currentRow, 0, "p");
+                                wordObj.SubSuperScriptText(table, currentRow, 0, Syncfusion.Drawing.Color.Empty, "0", "Sub");
+                                
                             }
                         }
                         else
                         {
-
+                            wordObj.AddPara_Center(table, currentRow, 0, "p");
+                            wordObj.SubSuperScriptText(table, currentRow, 0, Syncfusion.Drawing.Color.Empty, i.ToString(), "Sub");
+                            
                         }
                         
                     }
                 }
-
-                
-
-
-
+            }
+            else if (parameter.NominalOrScale == "Nominal")
+            {
+                foreach (var label in parameter.DIC_LablesIfNomainal.Values)
+                {
+                    wordObj.Addpara_NoCenterNoBOLD(table, startrow+2 , 0, label.ToString());
+                    wordObj.LeftIntendBeforeText(table, startrow+2 , 0, 14.17f);
+                    startrow++;
+                }
             }
         }
         //string[] keysToCheck = { "NumberOfCasesFirst", "MinMaxFirst", "MeanSDFirst", "MedianIQRFirst", "MedianMinMaxSecond" };
@@ -8040,6 +8048,10 @@ namespace ExcelScore.Forms
                     wordObj.Add_GeneralHeaders_Comparative_Center_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, numberofgroups, HasNominal);
 
                     ComparativeParamaeterBorders_NewComparativeGroups_Fn(table, WordTableRows, WordTableColumns, ComparativeTables[tableindex], numberofgroups, HasScale, HasNominal  , CheckedPrimaryNeeded , PairwiseCount , CheckedDataExtra);
+                    
+                    (string testtype, string NominalOrScale, bool issame) = InsertSeperateTest_TestOfSig(ComparativeTables[tableindex], numberofgroups);
+
+                    wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, testtype);
                 }
 
 
