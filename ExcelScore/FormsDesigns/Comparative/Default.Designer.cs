@@ -70,6 +70,7 @@
             treeNode21,
             treeNode22});
             System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Paper");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Group Title");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Default));
             this.Primary_TV = new System.Windows.Forms.TreeView();
             this.lbl_PrimarySettings = new System.Windows.Forms.Label();
@@ -182,12 +183,15 @@
             treeNode23.Text = "Pcontrol";
             treeNode24.Name = "PaperFormat";
             treeNode24.Text = "Paper";
+            treeNode25.Name = "GT";
+            treeNode25.Text = "Group Title";
             this.Extra_TV.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode11,
             treeNode15,
             treeNode20,
             treeNode23,
-            treeNode24});
+            treeNode24,
+            treeNode25});
             this.Extra_TV.ShowLines = false;
             this.Extra_TV.Size = new System.Drawing.Size(283, 452);
             this.Extra_TV.TabIndex = 21;
