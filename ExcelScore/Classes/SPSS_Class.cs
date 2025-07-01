@@ -44,8 +44,13 @@ namespace ExcelScore.Classes
             return Enumerable.Repeat(1.0, totalN).ToList();
         }
 
-        static string GetSaveFilePath()
+        public static string SavedFilePath { get; private set; }
+
+        public static string GetSaveFilePath()
         {
+            if (!string.IsNullOrEmpty(SavedFilePath))
+                return SavedFilePath; // Return already selected path
+
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Filter = "SPSS Files (*.sav)|*.sav";
@@ -56,11 +61,53 @@ namespace ExcelScore.Classes
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    return saveFileDialog.FileName;
+                    SavedFilePath = saveFileDialog.FileName;
+                    return SavedFilePath;
                 }
             }
-            return ""; 
+
+            return "";
         }
+        public class SPSSFilePaths
+        {
+            public string SavFilePath;
+            public string SyntaxPath;
+            public string ResultPath;
+            public string SpoPath;
+            public string OutputFolder;
+        }
+        public static SPSSFilePaths PrepareOutputPaths(string savFilePath)
+        {
+            string baseFolder = Path.GetDirectoryName(savFilePath);
+            string outputFolder = Path.Combine(baseFolder, "Program Output");
+
+            if (!Directory.Exists(outputFolder))
+                Directory.CreateDirectory(outputFolder);
+
+            string syntaxPath = Path.Combine(outputFolder, "auto_crosstab.sps");
+            string resultPath = Path.Combine(outputFolder, "result.txt");
+
+            // Generate unique .spo name: output.spo, output_1.spo, output_2.spo, ...
+            string spoBaseName = "output";
+            string spoPath = Path.Combine(outputFolder, spoBaseName + ".spo");
+            int counter = 1;
+
+            while (File.Exists(spoPath))
+            {
+                spoPath = Path.Combine(outputFolder, $"{spoBaseName}_{counter}.spo");
+                counter++;
+            }
+
+            return new SPSSFilePaths
+            {
+                SavFilePath = savFilePath,
+                OutputFolder = outputFolder,
+                SyntaxPath = syntaxPath,
+                ResultPath = resultPath,
+                SpoPath = spoPath
+            };
+        }
+
         public static void InsertMultipleVariablesnew(Dictionary<string, (List<double?>, string, Dictionary<double, string>?)> variablesData)
         {
             // Open Save File Dialog

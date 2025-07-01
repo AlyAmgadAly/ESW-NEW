@@ -5223,7 +5223,7 @@ namespace ExcelScore.Forms
 
             ComparativeTableGroups_2_periods();
 
-            ComparativeTableGroups_Layout();
+            //ComparativeTableGroups_Layout();
 
             
 
@@ -8052,6 +8052,13 @@ namespace ExcelScore.Forms
                     (string testtype, string NominalOrScale, bool issame) = InsertSeperateTest_TestOfSig(ComparativeTables[tableindex], numberofgroups);
 
                     wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, testtype);
+
+
+                    //var runner = new SPSS_TestRunner();
+                    //SPSS_TestRunner.RunCrosstabChiSquare("A", new List<string> { "B", "C" });
+                    testspsschi(ComparativeTables[tableindex]);
+
+
                 }
 
 
@@ -8060,6 +8067,24 @@ namespace ExcelScore.Forms
 
         }
         
+        public void testspsschi(ComparativeTable comparativeTable)
+        {
+            var groupparameter = ComparativeTable.GetGroupParamter(comparativeTable);
+            
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if(parameter.NominalOrScale == "Nominal")
+                {
+                    var results = SPSS_TestRunner.RunCrosstabChiSquare(groupparameter.Name, new List<string> { parameter.Name});
+                    foreach (var result in results)
+                    {
+                        MessageBox.Show(result.FisherExpectedCountPercentage);
+                    }
+                }
+            }
+
+        }
+
         public void ComparativeTableGroups_Layout()
         {
             for(int tableindex = 0; tableindex < ComparativeTables.Count; tableindex++)

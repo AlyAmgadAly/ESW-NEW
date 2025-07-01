@@ -28,6 +28,7 @@ using ExcelScore.FormsDesigns.Comparative;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Threading;
 using SkiaSharp;
+using ExcelScore.Classes;
 
 namespace ExcelScore
 {
@@ -165,6 +166,12 @@ namespace ExcelScore
 
             SpssFileReader spssFileReader = new SpssFileReader();
             spssFileReader.LoadSpssFile();
+
+           //var tests = SPSS_TestRunner.RunCrosstabChiSquare("A", new List<string> { "B", "C" });
+            //foreach (var item in tests)
+            //{
+            //    foreach (var row in item.)
+            //}
         }
 
 
@@ -182,23 +189,23 @@ namespace ExcelScore
 
         private void button1_Click_3(object sender, EventArgs e)
         {
-            string syntaxPath = @"C:\Users\Win\Desktop\auto_crosstab.sps";
-            string savFilePath = @"C:\Users\Win\Desktop\asss.sav";
-            string resultPath = @"C:\Users\Win\Desktop\result.txt";
-            string spoPath = @"C:\Users\Win\Desktop\output.spo";
+            string savFilePath = SPSS_Class.GetSaveFilePath();
+            if (string.IsNullOrWhiteSpace(savFilePath))
+                return;
 
-            if (File.Exists(syntaxPath)) File.Delete(syntaxPath);
-            if (File.Exists(resultPath)) File.Delete(resultPath);
-            if (File.Exists(spoPath)) File.Delete(spoPath);
+            var paths = SPSS_Class.PrepareOutputPaths(savFilePath);
+
+            if (File.Exists(paths.SyntaxPath)) File.Delete(paths.SyntaxPath);
+            if (File.Exists(paths.ResultPath)) File.Delete(paths.ResultPath);
 
             string syntax = $@"
-GET FILE='{savFilePath.Replace(@"\", @"\\")}'.
+GET FILE='{paths.SavFilePath.Replace(@"\", @"\\")}'.
 DATASET NAME DataSet1 WINDOW=ASIS.
 
 OMS
   /SELECT TABLES
   /IF SUBTYPES = ['Crosstabulation', 'Chi-Square Tests']
-  /DESTINATION FORMAT = TEXT OUTFILE = '{resultPath.Replace(@"\", @"\\")}'.
+  /DESTINATION FORMAT = TEXT OUTFILE = '{paths.ResultPath.Replace(@"\", @"\\")}'.
 
 CROSSTABS
   /TABLES=B BY A
@@ -210,11 +217,11 @@ CROSSTABS
 
 OMSEND.
 ";
-            File.WriteAllText(syntaxPath, syntax);
+            File.WriteAllText(paths.SyntaxPath, syntax);
 
             Type spssType = Type.GetTypeFromProgID("SPSS.Application");
             dynamic spssApp = Activator.CreateInstance(spssType);
-            dynamic syntaxDoc = spssApp.OpenSyntaxDoc(syntaxPath);
+            dynamic syntaxDoc = spssApp.OpenSyntaxDoc(paths.SyntaxPath);
             syntaxDoc.Run();
 
             string outputText = null;
@@ -224,11 +231,11 @@ OMSEND.
             {
                 try
                 {
-                    if (File.Exists(resultPath))
+                    if (File.Exists(paths.ResultPath))
                     {
-                        outputText = File.ReadAllText(resultPath);
+                        outputText = File.ReadAllText(paths.ResultPath);
                         dynamic outputDoc = spssApp.GetDesignatedOutputDoc();
-                        outputDoc.SaveAs(spoPath);
+                        outputDoc.SaveAs(paths.SpoPath);
                         if (!string.IsNullOrWhiteSpace(outputText))
                             break;
                     }
@@ -238,6 +245,7 @@ OMSEND.
                 Thread.Sleep(intervalMs);
                 waited += intervalMs;
             }
+
 
             if (!string.IsNullOrWhiteSpace(outputText))
             {
@@ -375,6 +383,7 @@ OMSEND.
             public List<string> Counts;      // e.g. [14, 13, 4, 5, 36]
             public List<string> Percentages; // e.g. [40.0%, 65.0%, ...]
         }
+
 
 
 

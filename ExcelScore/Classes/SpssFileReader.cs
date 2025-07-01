@@ -20,7 +20,7 @@ public class SpssVariable
 public class SpssFileReader
 {
     public List<SpssVariable> Variables { get; private set; } = new List<SpssVariable>();
-    private string spssFilePath;
+    public static string spssFilePath;
 
     public void LoadSpssFile()
     {
