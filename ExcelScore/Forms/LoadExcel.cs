@@ -194,6 +194,9 @@ namespace ExcelScore
             var parsed = SPSS_TestRunner.ParseDescriptiveOutput(resultText);
 
 
+            //var results = SPSS_TestRunner.RunCrosstabChiSquare("Groups", new List<string> { "Age" });
+
+
         }
 
 

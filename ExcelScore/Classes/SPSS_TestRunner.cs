@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -353,7 +354,7 @@ OMSEND.
 
                         if (!string.IsNullOrWhiteSpace(outputText))
                         {
-                            Thread.Sleep(7000); // Let it catch up
+                            Thread.Sleep(10000); // Let it catch up
                             try
                             {
                                 dynamic outputDoc = spssApp.GetDesignatedOutputDoc();
@@ -392,6 +393,7 @@ OMSEND.
 
             if (string.IsNullOrEmpty(savFile))
                 return null;
+           // / DESTINATION FORMAT = TEXT OUTFILE = '{paths.ResultPath.Replace(@"\", @"\\")}'.
 
             var paths = PrepareOutputPaths(savFile);
 
@@ -409,8 +411,8 @@ DATASET NAME DataSet1 WINDOW=ASIS.
 
 OMS
   /SELECT TABLES
-  /IF SUBTYPES=['Means']
-  /DESTINATION FORMAT=TEXT OUTFILE='{paths.ResultPath.Replace(@"\", @"\\")}'.
+  /IF COMMANDS=['Means']
+  /DESTINATION FORMAT = TEXT OUTFILE = '{paths.ResultPath.Replace(@"\", @"\\")}'.
 
 MEANS
   TABLES={tablePart} BY {groupVar}
