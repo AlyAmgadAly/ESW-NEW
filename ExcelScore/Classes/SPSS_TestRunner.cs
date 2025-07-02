@@ -269,48 +269,6 @@ OMSEND.
                 }
             }
 
-            //Display each block
-            //foreach (var block in blocks)
-            //{
-            //    string crosstab = $"Crosstab for {block.RowVariable} by {groupVar}:\n";
-            //    if (block.Headers != null)
-            //        crosstab += "     | " + string.Join(" | ", block.Headers) + "\n";
-
-            //    foreach (var row in block.CrosstabRows)
-            //    {
-            //        crosstab += $"Group = {row.GroupName}\n";
-            //        crosstab += "Count     : " + string.Join(" | ", row.Counts) + "\n";
-            //        crosstab += "% within : " + string.Join(" | ", row.Percentages) + "\n\n";
-            //    }
-
-            //    // ➕ Add total row values (i.e., last column of each data row)
-            //    if (block.TotalRowCounts != null && block.TotalRowCounts.Count > 0)
-            //    {
-            //        crosstab += "Total Row Counts       : " + string.Join(" | ", block.TotalRowCounts) + "\n";
-            //        crosstab += "Total Row Percentages  : " + string.Join(" | ", block.TotalRowPercentages) + "\n\n";
-            //    }
-
-            //    // ➕ Add total column values (i.e., final totals row in SPSS output)
-            //    if (block.TotalColumnCounts != null && block.TotalColumnCounts.Count > 0)
-            //    {
-            //        crosstab += "Total Column Counts    : " + string.Join(" | ", block.TotalColumnCounts) + "\n";
-            //    }
-
-            //    if (block.TotalColumnPercentages != null && block.TotalColumnPercentages.Count > 0)
-            //    {
-            //        crosstab += "Total Column % within A: " + string.Join(" | ", block.TotalColumnPercentages) + "\n";
-            //    }
-
-            //    string chi = $"Chi-Square Tests for {block.RowVariable}:\n";
-            //    foreach (var chiTest in block.ChiResults)
-            //    {
-            //        chi += $"{chiTest.Name}: χ²={chiTest.Value}, df={chiTest.df}, p={chiTest.AsympSig}, MC p={chiTest.MC_Sig2sided}, CI=({chiTest.MC_CI_Lower}, {chiTest.MC_CI_Upper})\n";
-            //    }
-
-            //    MessageBox.Show(crosstab);
-            //    MessageBox.Show(chi);
-            //}
-
             return blocks;
 
         }
@@ -346,5 +304,175 @@ OMSEND.
             public string MC_CI_Lower;
             public string MC_CI_Upper;
         }
+
+        public static Dictionary<string, bool> DefaultDescriptiveStats = new Dictionary<string, bool>
+{
+    { "COUNT", true },
+    { "MIN", true },
+    { "MAX", true },
+    { "MEAN", true },
+    { "SEMEAN", true },
+    { "STDDEV", true },
+    { "MEDIAN", true },
+    { "GMEDIAN", true },
+    { "SUM", false },
+    { "RANGE", false },
+    { "FIRST", false },
+    { "LAST", false },
+    { "VAR", false },
+    { "KURT", false },
+    { "SEKURT", false },
+    { "SKEW", false },
+    { "SESKEW", false },
+    { "HARMONIC", false },
+    { "GEOMETRIC", false },
+    { "SPCT", true },
+    { "NPCT", true }
+};
+
+
+        public static string ExecuteSpssSyntaxAndGetTextResult(SPSSFilePaths paths, string syntax)
+        {
+            File.WriteAllText(paths.SyntaxPath, syntax);
+
+            Type spssType = Type.GetTypeFromProgID("SPSS.Application");
+            dynamic spssApp = Activator.CreateInstance(spssType);
+            dynamic syntaxDoc = spssApp.OpenSyntaxDoc(paths.SyntaxPath);
+            syntaxDoc.Run();
+
+            string outputText = null;
+            int waited = 0, maxWaitMs = 8000, intervalMs = 250;
+
+            while (waited < maxWaitMs)
+            {
+                try
+                {
+                    if (File.Exists(paths.ResultPath))
+                    {
+                        outputText = File.ReadAllText(paths.ResultPath);
+
+                        if (!string.IsNullOrWhiteSpace(outputText))
+                        {
+                            Thread.Sleep(7000); // Let it catch up
+                            try
+                            {
+                                dynamic outputDoc = spssApp.GetDesignatedOutputDoc();
+                                outputDoc.SaveAs(paths.SpoPath);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Failed to save .spo file: " + ex.Message);
+                            }
+                            break;
+                        }
+                    }
+                }
+                catch { }
+
+                Thread.Sleep(intervalMs);
+                waited += intervalMs;
+            }
+
+            try
+            {
+                spssApp.Quit();
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(spssApp);
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+            catch { }
+
+            return outputText;
+        }
+
+        public static string RunDescriptiveSyntax(string groupVar, List<string> variables, Dictionary<string, bool> statsEnabled, out string resultText)
+        {
+            string savFile = SpssFileReader.spssFilePath;
+            resultText = null;
+
+            if (string.IsNullOrEmpty(savFile))
+                return null;
+
+            var paths = PrepareOutputPaths(savFile);
+
+            var selectedStats = statsEnabled
+                .Where(kvp => kvp.Value)
+                .Select(kvp => kvp.Key.ToUpper())
+                .ToList();
+
+            string cellsPart = string.Join(" ", selectedStats);
+            string tablePart = string.Join(" ", variables);
+
+            string syntax = $@"
+GET FILE='{paths.SavFilePath.Replace(@"\", @"\\")}'.
+DATASET NAME DataSet1 WINDOW=ASIS.
+
+OMS
+  /SELECT TABLES
+  /IF SUBTYPES=['Means']
+  /DESTINATION FORMAT=TEXT OUTFILE='{paths.ResultPath.Replace(@"\", @"\\")}'.
+
+MEANS
+  TABLES={tablePart} BY {groupVar}
+  /CELLS={cellsPart}.
+
+OMSEND.
+";
+
+            resultText = ExecuteSpssSyntaxAndGetTextResult(paths, syntax);
+            MessageBox.Show(resultText);
+            return resultText;
+        }
+
+        public class DescriptiveResult
+        {
+            public string VariableName { get; set; }
+            public string Group { get; set; }
+            public Dictionary<string, string> Stats { get; set; } = new Dictionary<string, string>();
+        }
+
+        public static List<DescriptiveResult> ParseDescriptiveOutput(string rawText)
+        {
+            var results = new List<DescriptiveResult>();
+            var lines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            List<string> headers = null;
+
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("Variable") || line.StartsWith("Mean") || line.StartsWith("Count"))
+                {
+                    headers = Regex.Split(line.Trim(), @"\s+").ToList();
+                    continue;
+                }
+
+                if (!string.IsNullOrWhiteSpace(line) && headers != null)
+                {
+                    var parts = Regex.Split(line.Trim(), @"\s+").ToList();
+
+                    if (parts.Count >= headers.Count)
+                    {
+                        var result = new DescriptiveResult
+                        {
+                            VariableName = parts[0],
+                            Group = parts[1]
+                        };
+
+                        for (int i = 2; i < headers.Count && i < parts.Count; i++)
+                        {
+                            result.Stats[headers[i]] = parts[i];
+                        }
+
+                        results.Add(result);
+                    }
+                }
+            }
+
+            return results;
+        }
+
+
+
+
     }
 }

@@ -5817,7 +5817,79 @@ namespace ExcelScore.Forms
 
 
         }
+        
+        public void InsertGroupTitles_NewComparativeGroups_Fn(IWTable table,bool HasNominal , ComparativeTable comparativeTable)
+        {
+            int startcol = 1;
+            int totalcount = 0;
 
+            if(Total_Column_Comparative && HasNominal)
+            {
+                startcol = 3;
+            }
+            else if(Total_Column_Comparative && !HasNominal)
+            {
+                startcol = 2;
+            }
+
+            Parameter groupparameter = ComparativeTable.GetGroupParamter(comparativeTable);
+            Dictionary<int, int> ValuewithCounts = groupparameter.GetValueCounts_AllIncludingUnknowns();
+            foreach (var kvp in groupparameter.DIC_LablesIfNomainal)
+            {
+                string GroupName = kvp.Value;
+                int CurrentGroupCount = ValuewithCounts[kvp.Key];
+                string GroupNameCount = GroupName + Convert.ToChar(11) + "(n = " + CurrentGroupCount+ ")";
+
+                
+                wordObj.AddPara_Center(table, 0, startcol, GroupNameCount);
+                if(HasNominal)
+                {
+                    startcol = startcol + 2;
+                }
+                else
+                {
+                    startcol++;
+                }
+
+                totalcount += CurrentGroupCount;
+
+            }
+
+
+            if(Total_Column_Comparative)
+            {
+                string TotalCount = "Total" + Convert.ToChar(11) + "(n = " + totalcount + ")";
+                wordObj.AddPara_Center(table, 0, 1, TotalCount);
+            }
+
+
+        }
+        public void InsertData_NewComparativeGroups_Fn(ComparativeTable comparativeTable , int startingrow)
+        {
+            int insertcol = 1;
+
+            var groupparameter = ComparativeTable.GetGroupParamter(comparativeTable);
+            if (Total_Column_Comparative)
+            {
+
+            }
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.NominalOrScale == "Nominal")
+                {
+                    var results = SPSS_TestRunner.RunCrosstabChiSquare(groupparameter.Name, new List<string> { parameter.Name });
+                    foreach (var result in results)
+                    {
+                        foreach (var Row in result.CrosstabRows)
+                        {
+
+                        }
+                        MessageBox.Show(result.FisherExpectedCountPercentage);
+                    }
+                }
+            }
+
+        }
 
         //public void ComparativeParamaeterBorders_NewComparativeGroups_Fn(IWTable table, int WordTableRows, int WordTableColumns, ComparativeTable comparativeTable, int numberofgroups , bool HasScale , bool HasNominal , List<string> CheckedScaleDataNeeded , int PairwiseCount)
         //{
@@ -5954,6 +6026,7 @@ namespace ExcelScore.Forms
     ComparativeTable comparativeTable, int numberofgroups,
     bool HasScale, bool HasNominal, List<string> CheckedScaleDataNeeded, int PairwiseCount, Dictionary<string, bool> CheckedExtraData)
         {
+            InsertGroupTitles_NewComparativeGroups_Fn(table,HasNominal , comparativeTable);
             int startingRow = HasNominal ? 1 : 0;
 
             foreach (var parameter in comparativeTable.Parameters)
@@ -8054,9 +8127,8 @@ namespace ExcelScore.Forms
                     wordObj.InsertHighlightTestName(table, 0, WordTableColumns - 2, testtype);
 
 
-                    //var runner = new SPSS_TestRunner();
-                    //SPSS_TestRunner.RunCrosstabChiSquare("A", new List<string> { "B", "C" });
-                    testspsschi(ComparativeTables[tableindex]);
+
+                    //InsertData_NewComparativeGroups_Fn(ComparativeTables[tableindex]);
 
 
                 }
@@ -8067,23 +8139,7 @@ namespace ExcelScore.Forms
 
         }
         
-        public void testspsschi(ComparativeTable comparativeTable)
-        {
-            var groupparameter = ComparativeTable.GetGroupParamter(comparativeTable);
-            
-            foreach (var parameter in comparativeTable.Parameters)
-            {
-                if(parameter.NominalOrScale == "Nominal")
-                {
-                    var results = SPSS_TestRunner.RunCrosstabChiSquare(groupparameter.Name, new List<string> { parameter.Name});
-                    foreach (var result in results)
-                    {
-                        MessageBox.Show(result.FisherExpectedCountPercentage);
-                    }
-                }
-            }
-
-        }
+        
 
         public void ComparativeTableGroups_Layout()
         {
