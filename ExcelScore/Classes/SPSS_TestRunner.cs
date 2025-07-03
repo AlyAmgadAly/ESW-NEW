@@ -422,56 +422,81 @@ OMSEND.
 ";
 
             resultText = ExecuteSpssSyntaxAndGetTextResult(paths, syntax);
-            MessageBox.Show(resultText);
+            //MessageBox.Show(resultText);
             return resultText;
         }
 
         public class DescriptiveResult
         {
             public string VariableName { get; set; }
-            public string Group { get; set; }
-            public Dictionary<string, string> Stats { get; set; } = new Dictionary<string, string>();
-        }
 
-        public static List<DescriptiveResult> ParseDescriptiveOutput(string rawText)
+            // GroupName -> (StatName -> Value)
+            public Dictionary<string, Dictionary<string, string>> Stats { get; set; } = new Dictionary<string, Dictionary<string, string>>();
+        }
+        public static List<DescriptiveResult> ParseDescriptiveOutput(string rawText, List<string> variableNames)
         {
             var results = new List<DescriptiveResult>();
             var lines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-            List<string> headers = null;
+            // Initialize result containers for each variable
+            var variableMap = variableNames.ToDictionary(
+                v => v,
+                v => new DescriptiveResult { VariableName = v });
+
+            string currentGroup = null;
 
             foreach (var line in lines)
             {
-                if (line.StartsWith("Variable") || line.StartsWith("Mean") || line.StartsWith("Count"))
+                string trimmed = line.Trim();
+
+                // Detect group line (e.g., "Patient N", "Control N", "Total N")
+                if (trimmed.EndsWith(" N") && !trimmed.StartsWith("Total Number") && !trimmed.Contains("*"))
                 {
-                    headers = Regex.Split(line.Trim(), @"\s+").ToList();
+                    var groupParts = Regex.Split(trimmed, @"\s+");
+                    currentGroup = string.Join(" ", groupParts.Take(groupParts.Count() - variableNames.Count));
+
+                    var statName = groupParts.Last().ToUpper(); // Should be 'N' or similar
+                    var values = groupParts.Skip(groupParts.Count() - variableNames.Count).ToList();
+
+                    for (int i = 0; i < variableNames.Count; i++)
+                    {
+                        string variable = variableNames[i];
+                        string value = values.ElementAtOrDefault(i);
+
+                        if (!variableMap[variable].Stats.ContainsKey(currentGroup))
+                            variableMap[variable].Stats[currentGroup] = new Dictionary<string, string>();
+
+                        variableMap[variable].Stats[currentGroup][statName] = value;
+                    }
+
                     continue;
                 }
 
-                if (!string.IsNullOrWhiteSpace(line) && headers != null)
+                // Handle stat lines like "Mean", "Std. Deviation", etc.
+                if (!string.IsNullOrEmpty(currentGroup) && !line.StartsWith(" ") && !line.Contains("*") && !line.StartsWith("Report"))
                 {
-                    var parts = Regex.Split(line.Trim(), @"\s+").ToList();
+                    var parts = Regex.Split(trimmed, @"\s+");
 
-                    if (parts.Count >= headers.Count)
+                    string statName = parts[0];
+                    var values = parts.Skip(1).ToList();
+
+                    for (int i = 0; i < variableNames.Count; i++)
                     {
-                        var result = new DescriptiveResult
-                        {
-                            VariableName = parts[0],
-                            Group = parts[1]
-                        };
+                        string variable = variableNames[i];
+                        string value = values.ElementAtOrDefault(i);
 
-                        for (int i = 2; i < headers.Count && i < parts.Count; i++)
-                        {
-                            result.Stats[headers[i]] = parts[i];
-                        }
+                        if (!variableMap[variable].Stats.ContainsKey(currentGroup))
+                            variableMap[variable].Stats[currentGroup] = new Dictionary<string, string>();
 
-                        results.Add(result);
+                        variableMap[variable].Stats[currentGroup][statName] = value;
                     }
                 }
             }
 
-            return results;
+            return variableMap.Values.ToList();
         }
+
+
 
 
 

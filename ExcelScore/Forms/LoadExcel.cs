@@ -190,12 +190,22 @@ namespace ExcelScore
         private void button1_Click_3(object sender, EventArgs e)
         {
             string resultText;
-            string output = SPSS_TestRunner.RunDescriptiveSyntax("Groups", new List<string> { "Age" }, SPSS_TestRunner.DefaultDescriptiveStats, out resultText);
-            var parsed = SPSS_TestRunner.ParseDescriptiveOutput(resultText);
+            string output = SPSS_TestRunner.RunDescriptiveSyntax("Groups", new List<string> { "Age" , "Weight" }, SPSS_TestRunner.DefaultDescriptiveStats, out resultText);
+            var parsed = SPSS_TestRunner.ParseDescriptiveOutput(resultText , new List<string> { "Age", "Weight" });
 
+            foreach (var result in parsed)
+            {
+                Console.WriteLine("Variable: " + result.VariableName);
 
-            //var results = SPSS_TestRunner.RunCrosstabChiSquare("Groups", new List<string> { "Age" });
-
+                foreach (var group in result.Stats)
+                {
+                    Console.WriteLine("  Group: " + group.Key);
+                    foreach (var stat in group.Value)
+                    {
+                        Console.WriteLine($"    {stat.Key}: {stat.Value}");
+                    }
+                }
+            }
 
         }
 
