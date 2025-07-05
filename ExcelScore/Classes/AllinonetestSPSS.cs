@@ -152,13 +152,13 @@ OMSEND.
             string groupVar,
             List<string> nominalVars,
             List<string> scaleVars,
-            string savFilePath,
             out string resultText)
         {
+            string savFile = SpssFileReader.spssFilePath;
             resultText = null;
-            if (string.IsNullOrEmpty(savFilePath))
+            if (string.IsNullOrEmpty(savFile))
                 return null;
-            var paths = PrepareOutputPaths(savFilePath);
+            var paths = PrepareOutputPaths(savFile);
             var syntax = BuildUnifiedSyntax(groupVar, nominalVars, scaleVars, paths);
             resultText = ExecuteSpssSyntaxAndGetTextResult(paths, syntax);
             return resultText;
@@ -594,12 +594,11 @@ OMSEND.
         public static List<ParameterAnalysisResult> RunAllFromUnifiedSyntax(
             string groupVar,
             List<(string Name, string Type)> parameters,
-            List<string> groupLabels,
-            string savFilePath)
+            List<string> groupLabels)
         {
             var nominalVars = parameters.Where(p => p.Type == "Nominal").Select(p => p.Name).ToList();
             var scaleVars = parameters.Where(p => p.Type == "Scale").Select(p => p.Name).ToList();
-            string outputText = RunUnifiedSyntaxAndGetResult(groupVar, nominalVars, scaleVars, savFilePath, out _);
+            string outputText = RunUnifiedSyntaxAndGetResult(groupVar, nominalVars, scaleVars, out _);
             if (string.IsNullOrWhiteSpace(outputText)) return new List<ParameterAnalysisResult>();
             return ParseUnifiedOutput(outputText, groupVar, parameters, groupLabels);
         }

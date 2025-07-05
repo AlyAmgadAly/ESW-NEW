@@ -30,7 +30,7 @@ using System.Threading;
 using SkiaSharp;
 using ExcelScore.Classes;
 using static SkiaSharp.HarfBuzz.SKShaper;
-using static ExcelScore.Classes.AllinonetestSPSS;
+
 
 namespace ExcelScore
 {
