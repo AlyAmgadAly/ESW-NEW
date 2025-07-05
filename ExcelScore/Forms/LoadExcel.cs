@@ -221,7 +221,8 @@ namespace ExcelScore
             List<(string Name, string Type)> parameters = new List<(string Name, string Type)>
             {
                 ("Age","Scale" ),
-                ("Sex" , "Nominal")
+                ("Sex" , "Nominal"),
+                ("Weight","Scale" )
             };
 
             

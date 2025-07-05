@@ -69,7 +69,6 @@ DATASET NAME DataSet1 WINDOW=ASIS.
 
 OMS
   /SELECT TABLES
-  /IF SUBTYPES = ['Crosstabulation', 'Chi-Square Tests', 'Means', 'Percentiles']
   /DESTINATION FORMAT = TEXT OUTFILE = '{paths.ResultPath.Replace(@"\", @"\\")}'.
 
 {(nominalVars.Any() ? $@"
