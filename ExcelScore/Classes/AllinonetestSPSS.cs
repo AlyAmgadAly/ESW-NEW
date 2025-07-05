@@ -335,40 +335,132 @@ OMSEND.
         {
             var results = variableNames.Select(var => new DescriptiveResult { VariableName = var }).ToList();
             var lines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            string currentGroup = null;
-            foreach (var line in lines)
+
+            // Find the "Report" section
+            int reportIdx = Array.FindIndex(lines, l => l.Trim().Equals("Report", StringComparison.OrdinalIgnoreCase));
+            if (reportIdx == -1) return results;
+
+            // Find the header line (should be after "Report")
+            int headerIdx = reportIdx + 1;
+            while (headerIdx < lines.Length && string.IsNullOrWhiteSpace(lines[headerIdx])) headerIdx++;
+            if (headerIdx >= lines.Length) return results;
+
+            var headerLine = lines[headerIdx].Trim();
+            var headerParts = Regex.Split(headerLine, @"\s+").ToList();
+
+            // Detect format
+            bool isMultiParam = headerParts.Count > 2 && variableNames.All(v => headerParts.Contains(v));
+
+            if (isMultiParam)
             {
-                string trimmed = line.Trim();
-                if (string.IsNullOrEmpty(trimmed))
-                    continue;
-                string matchedGroup = groupLabels.FirstOrDefault(gl => trimmed.StartsWith(gl + " "));
-                if (matchedGroup != null)
+                // Multiple parameter format
+                // headerParts: Groups, [var1, var2, ...]
+                var varIndices = variableNames.Select(v => headerParts.IndexOf(v)).ToList();
+
+                // Parse each group block
+                string currentGroup = null;
+                for (int i = headerIdx + 1; i < lines.Length; i++)
                 {
-                    currentGroup = matchedGroup;
-                    continue;
-                }
-                if (string.IsNullOrEmpty(currentGroup))
-                    continue;
-                var match = Regex.Match(trimmed, @"^(.+?)(-?\d[\d\.\-Ee ]*)$");
-                if (!match.Success) continue;
-                string statName = match.Groups[1].Value.Trim();
-                string[] statValues = Regex.Split(match.Groups[2].Value.Trim(), @"\s+");
-                for (int i = 0; i < variableNames.Count && i < statValues.Length; i++)
-                {
-                    string varName = variableNames[i];
-                    string value = statValues[i];
-                    var variableResult = results.First(r => r.VariableName == varName);
-                    if (!variableResult.Stats_Groups.ContainsKey(currentGroup))
-                        variableResult.Stats_Groups[currentGroup] = new Dictionary<string, string>();
-                    variableResult.Stats_Groups[currentGroup][statName] = value;
+                    var line = lines[i].Trim();
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    var parts = Regex.Split(line, @"\\s+").ToList();
+
+                    // Group row: e.g. "Patient N 35 35"
+                    if (groupLabels.Any(gl => line.StartsWith(gl + " ")))
+                    {
+                        var groupMatch = groupLabels.First(gl => line.StartsWith(gl + " "));
+                        currentGroup = groupMatch;
+                        // e.g. "Patient N 35 35"
+                        var statName = parts[1];
+                        for (int v = 0; v < variableNames.Count; v++)
+                        {
+                            var variable = variableNames[v];
+                            var value = parts.Count > v + 2 ? parts[v + 2] : null;
+                            var result = results.First(r => r.VariableName == variable);
+                            if (!result.Stats_Groups.ContainsKey(currentGroup))
+                                result.Stats_Groups[currentGroup] = new Dictionary<string, string>();
+                            result.Stats_Groups[currentGroup][statName] = value;
+                        }
+                    }
+                    // Stat row: e.g. "         Minimum 6.00 14.00"
+                    else if (!string.IsNullOrEmpty(currentGroup) && parts.Count > 1)
+                    {
+                        var statName = parts[0];
+                        for (int v = 0; v < variableNames.Count; v++)
+                        {
+                            var variable = variableNames[v];
+                            var value = parts.Count > v + 1 ? parts[v + 1] : null;
+                            var result = results.First(r => r.VariableName == variable);
+                            if (!result.Stats_Groups.ContainsKey(currentGroup))
+                                result.Stats_Groups[currentGroup] = new Dictionary<string, string>();
+                            result.Stats_Groups[currentGroup][statName] = value;
+                        }
+                    }
+                    // Total row: e.g. "Total   N 70 70"
+                    else if (line.StartsWith("Total"))
+                    {
+                        var statName = parts[1];
+                        for (int v = 0; v < variableNames.Count; v++)
+                        {
+                            var variable = variableNames[v];
+                            var value = parts.Count > v + 2 ? parts[v + 2] : null;
+                            var result = results.First(r => r.VariableName == variable);
+                            result.Stats_Total[statName] = value;
+                        }
+                    }
+                    // Stat row for Total: e.g. "         Minimum 6.00 14.00"
+                    else if (line.StartsWith("Minimum") || line.StartsWith("Maximum") || line.StartsWith("Mean") || line.StartsWith("Std.") || line.StartsWith("Median") || line.StartsWith("Grouped"))
+                    {
+                        var statName = parts[0];
+                        for (int v = 0; v < variableNames.Count; v++)
+                        {
+                            var variable = variableNames[v];
+                            var value = parts.Count > v + 1 ? parts[v + 1] : null;
+                            var result = results.First(r => r.VariableName == variable);
+                            result.Stats_Total[statName] = value;
+                        }
+                    }
                 }
             }
-            foreach (var r in results)
+            else
             {
-                if (r.Stats_Groups.ContainsKey("Total"))
+                // Single parameter format (your original logic)
+                string currentGroup = null;
+                for (int i = headerIdx + 1; i < lines.Length; i++)
                 {
-                    r.Stats_Total = r.Stats_Groups["Total"];
-                    r.Stats_Groups.Remove("Total");
+                    var line = lines[i].Trim();
+                    if (string.IsNullOrEmpty(line)) continue;
+                    var parts = Regex.Split(line, @"\\s+").ToList();
+                    if (groupLabels.Any(gl => line.StartsWith(gl + " ")))
+                    {
+                        currentGroup = groupLabels.First(gl => line.StartsWith(gl + " "));
+                        for (int v = 0; v < variableNames.Count; v++)
+                        {
+                            var variable = variableNames[v];
+                            var result = results.First(r => r.VariableName == variable);
+                            if (!result.Stats_Groups.ContainsKey(currentGroup))
+                                result.Stats_Groups[currentGroup] = new Dictionary<string, string>();
+                            // Map stats by headerParts
+                            for (int h = 1; h < headerParts.Count; h++)
+                            {
+                                if (parts.Count > h)
+                                    result.Stats_Groups[currentGroup][headerParts[h]] = parts[h];
+                            }
+                        }
+                    }
+                    else if (line.StartsWith("Total"))
+                    {
+                        for (int v = 0; v < variableNames.Count; v++)
+                        {
+                            var variable = variableNames[v];
+                            var result = results.First(r => r.VariableName == variable);
+                            for (int h = 1; h < headerParts.Count; h++)
+                            {
+                                if (parts.Count > h)
+                                    result.Stats_Total[headerParts[h]] = parts[h];
+                            }
+                        }
+                    }
                 }
             }
             return results;
