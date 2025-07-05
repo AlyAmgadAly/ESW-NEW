@@ -29,6 +29,8 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using System.Threading;
 using SkiaSharp;
 using ExcelScore.Classes;
+using static SkiaSharp.HarfBuzz.SKShaper;
+using static ExcelScore.Classes.AllinonetestSPSS;
 
 namespace ExcelScore
 {
@@ -189,23 +191,45 @@ namespace ExcelScore
 
         private void button1_Click_3(object sender, EventArgs e)
         {
-            string resultText;
-            string output = SPSS_TestRunner.RunDescriptiveSyntax("Groups", new List<string> { "Age" , "Weight" }, SPSS_TestRunner.DefaultDescriptiveStats, out resultText);
-            var parsed = SPSS_TestRunner.ParseDescriptiveOutput(resultText , new List<string> { "Age", "Weight" });
+            //string resultText;
 
-            foreach (var result in parsed)
+
+            ////string output = SPSS_TestRunner.RunDescriptiveSyntax("Groups", new List<string> { "Age" }, SPSS_TestRunner.DefaultDescriptiveStats, out resultText);
+            ////var results = SPSS_TestRunner.ParseDescriptiveOutput(resultText , new List<string> { "Age"} , groupLabels);
+
+
+            //string percentile = SPSS_TestRunner.RunPercentilesSyntax("Groups", new List<string> { "Age" }, out resultText);
+            //var percentiles = SPSS_TestRunner.ParseTukeyTukeyHingesOnly(percentile, new List<string> { "Age" }, groupLabels , "Groups");
+
+            //foreach (var result in percentiles)
+            //{
+            //    MessageBox.Show($"Variable: {result.VariableName}");
+
+            //    MessageBox.Show("  Total:");
+            //    foreach (var kvp in result.TotalPercentiles)
+            //        MessageBox.Show($"    {kvp.Key}: {kvp.Value}");
+
+            //    MessageBox.Show("  Groups:");
+            //    foreach (var group in result.GroupPercentiles)
+            //    {
+            //        MessageBox.Show($"    {group.Key}: 25={group.Value["25"]}, 50={group.Value["50"]}, 75={group.Value["75"]}");
+            //    }
+            //}
+
+            var groupLabels = new List<string> { "Patient", "Control", "3.00", "4.00"};
+
+            List<(string Name, string Type)> parameters = new List<(string Name, string Type)>
             {
-                Console.WriteLine("Variable: " + result.VariableName);
+                ("Age","Scale" ),
+                ("Sex" , "Nominal")
+            };
 
-                foreach (var group in result.Stats)
-                {
-                    Console.WriteLine("  Group: " + group.Key);
-                    foreach (var stat in group.Value)
-                    {
-                        Console.WriteLine($"    {stat.Key}: {stat.Value}");
-                    }
-                }
-            }
+            
+            var finalResults = SPSSUnifiedRunner.RunAllFromUnifiedSyntax("Groups", parameters, groupLabels);
+            MessageBox.Show("|");
+
+            //MessageBox.Show(percentile);
+
 
         }
 

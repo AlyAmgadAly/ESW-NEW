@@ -242,6 +242,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\AllinonetestSPSS.cs" />
     <Compile Include="Classes\AnovaTestResult.cs" />
     <Compile Include="Classes\ColorClass.cs" />
     <Compile Include="Classes\ComparativeClass.cs" />
