@@ -29,6 +29,9 @@ namespace ExcelScore.Classes
             string syntaxPath = Path.Combine(outputFolder, "auto_crosstab.sps");
             string resultPath = Path.Combine(outputFolder, "result.txt");
 
+            if (File.Exists(resultPath))
+                File.Delete(resultPath);
+
             string spoPath = Path.Combine(outputFolder, "output.spo");
             int counter = 1;
             while (File.Exists(spoPath))
