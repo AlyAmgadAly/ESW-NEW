@@ -216,20 +216,46 @@ namespace ExcelScore
             //    }
             //}
 
-            var groupLabels = new List<string> { "Patient", "Control", "3.00", "4.00"};
+            var groupLabels = new List<string> { "Patient", "Control", "3.00", "4.00" , "Total"};
 
             List<(string Name, string Type)> parameters = new List<(string Name, string Type)>
             {
-                ("Age","Scale" ),
+                //("Age","Scale" ),
                 ("Sex" , "Nominal"),
-                ("Weight","Scale" )
+                //("Weight","Scale" )
+                ("Height","Scale" )
             };
 
             
             var finalResults = SPSSUnifiedRunner.RunAllFromUnifiedSyntax("Groups", parameters, groupLabels);
-            MessageBox.Show("|");
 
-            //MessageBox.Show(percentile);
+            var scaleResults = finalResults
+    .Where(r => r.Type == "Scale" && r.Descriptives != null)
+    .ToList();
+
+            foreach (var result in scaleResults)
+            {
+                var desc = result.Descriptives;
+                var msg = $"--- {desc.VariableName} ---\n";
+
+                foreach (var group in desc.Stats_Groups)
+                {
+                    msg += $"Group: {group.Key}\n";
+                    foreach (var stat in group.Value)
+                    {
+                        msg += $"[{stat.Key}, {stat.Value}]\n";
+                    }
+                }
+
+                msg += "Total:\n";
+                foreach (var stat in desc.Stats_Total)
+                {
+                    msg += $"[{stat.Key}, {stat.Value}]\n";
+                }
+
+                MessageBox.Show(msg, desc.VariableName);
+            }
+
 
 
         }
