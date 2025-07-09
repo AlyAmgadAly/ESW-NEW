@@ -393,7 +393,42 @@ OMSEND.
                 {
                     currentGroup = groupLabels.First(gl => line.StartsWith(gl + " "));
 
-                    if (parts.Count >= 2)
+
+                    if (currentGroup == "Total")
+                    {
+
+                        if (parts.Count >= 2)
+                        {
+                            string statLabel = parts[1];
+                            if (activeSpssLabels.Contains(statLabel))
+                            {
+                                for (int v = 0; v < variableNames.Count; v++)
+                                {
+                                    string variable = variableNames[v];
+                                    string value = parts.Count > v + 2 ? parts[v + 2] : null;
+                                    var result = results.First(r => r.VariableName == variable);
+
+                                    if (!result.Stats_Groups.ContainsKey(currentGroup))
+                                        result.Stats_Groups[currentGroup] = new Dictionary<string, string>();
+
+                                    if (currentGroup == "Total")
+                                    {
+                                        if (!result.Stats_Total.ContainsKey(statLabel))
+                                            result.Stats_Total[statLabel] = value;
+                                    }
+                                    else
+                                    {
+                                        if (!result.Stats_Groups.ContainsKey(currentGroup))
+                                            result.Stats_Groups[currentGroup] = new Dictionary<string, string>();
+
+                                        if (!result.Stats_Groups[currentGroup].ContainsKey(statLabel))
+                                            result.Stats_Groups[currentGroup][statLabel] = value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (parts.Count >= 2)
                     {
                         string statLabel = parts[1];
                         if (activeSpssLabels.Contains(statLabel))
@@ -404,10 +439,19 @@ OMSEND.
                                 string value = parts.Count > v + 2 ? parts[v + 2] : null;
                                 var result = results.First(r => r.VariableName == variable);
 
-                                if (!result.Stats_Groups.ContainsKey(currentGroup))
-                                    result.Stats_Groups[currentGroup] = new Dictionary<string, string>();
+                                if (currentGroup == "Total")
+                                {
+                                    if (!result.Stats_Total.ContainsKey(statLabel))
+                                        result.Stats_Total[statLabel] = value;
+                                }
+                                else
+                                {
+                                    if (!result.Stats_Groups.ContainsKey(currentGroup))
+                                        result.Stats_Groups[currentGroup] = new Dictionary<string, string>();
 
-                                result.Stats_Groups[currentGroup][statLabel] = value;
+                                    if (!result.Stats_Groups[currentGroup].ContainsKey(statLabel))
+                                        result.Stats_Groups[currentGroup][statLabel] = value;
+                                }
                             }
                         }
                     }
@@ -437,55 +481,38 @@ OMSEND.
                             string value = parts.Count > valueStartIndex + v ? parts[valueStartIndex + v] : null;
                             var result = results.First(r => r.VariableName == variable);
 
-                            if (!result.Stats_Groups.ContainsKey(currentGroup))
-                                result.Stats_Groups[currentGroup] = new Dictionary<string, string>();
+                            
 
-                            result.Stats_Groups[currentGroup][statLabel] = value;
-                        }
-                    }
-                }
-                
-                // Total N line: "Total N 70 70"
-                else if (line.TrimStart().StartsWith("Total", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (parts.Count >= 2)
-                    {
-                        string statLabel = parts[1];
-                        if (activeSpssLabels.Contains(statLabel))
-                        {
-                            for (int v = 0; v < variableNames.Count; v++)
+
+                            if(currentGroup == "Total")
                             {
-                                string variable = variableNames[v];
-                                string value = parts.Count > v + 2 ? parts[v + 2] : null;
-                                var result = results.First(r => r.VariableName == variable);
-
-                                result.Stats_Total[statLabel] = value;
+                                if (!result.Stats_Total.ContainsKey(statLabel))
+                                    result.Stats_Total[statLabel] = value;
                             }
+                            else
+                            {
+                                if (!result.Stats_Groups.ContainsKey(currentGroup))
+                                    result.Stats_Groups[currentGroup] = new Dictionary<string, string>();
+
+                                if (!result.Stats_Groups[currentGroup].ContainsKey(statLabel))
+                                    result.Stats_Groups[currentGroup][statLabel] = value;
+                            }
+                            
                         }
                     }
-
-                    if (totaldone)
-                        break;
-                    
                 }
-                // Total stats line: "Minimum 6.00 14.00"
-                else if (line.StartsWith("Minimum") || line.StartsWith("Maximum") || line.StartsWith("Mean") || line.StartsWith("Std.") || line.StartsWith("Median") || line.StartsWith("Grouped"))
+
+                
+                
+            }
+
+            foreach (var result in results)
+            {
+                if (result.Stats_Groups.ContainsKey("Total") && (result.Stats_Groups["Total"] == null || result.Stats_Groups["Total"].Count == 0))
                 {
-                    string statLabel = parts[0];
-                    if (activeSpssLabels.Contains(statLabel))
-                    {
-                        for (int v = 0; v < variableNames.Count; v++)
-                        {
-                            string variable = variableNames[v];
-                            string value = parts.Count > v + 1 ? parts[v + 1] : null;
-                            var result = results.First(r => r.VariableName == variable);
-
-                            result.Stats_Total[statLabel] = value;
-                        }
-                    }
-
-                    totaldone = true;
+                    result.Stats_Groups.Remove("Total");
                 }
+
             }
 
             return results;

@@ -222,9 +222,9 @@ namespace ExcelScore
             {
                 
                 ("Sex" , "Nominal"),
-                ("Age","Scale" ),
+                //("Age","Scale" ),
                 ("Weight","Scale" ),
-                //("Height","Scale" )
+                ("Height","Scale" )
             };
 
             
@@ -237,6 +237,8 @@ namespace ExcelScore
             foreach (var result in scaleResults)
             {
                 var desc = result.Descriptives;
+                var percentiles = result.Percentiles;
+
                 var msg = $"--- {desc.VariableName} ---\n";
 
                 foreach (var group in desc.Stats_Groups)
@@ -253,6 +255,9 @@ namespace ExcelScore
                 {
                     msg += $"[{stat.Key}, {stat.Value}]\n";
                 }
+
+                
+
 
                 MessageBox.Show(msg, desc.VariableName);
             }
