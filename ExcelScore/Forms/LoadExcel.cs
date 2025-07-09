@@ -223,16 +223,16 @@ namespace ExcelScore
                 
                 ("Sex" , "Nominal"),
                 //("Age","Scale" ),
-                ("Weight","Scale" ),
+                //("Weight","Scale" ),
                 ("Height","Scale" )
             };
 
-            
+
             var finalResults = SPSSUnifiedRunner.RunAllFromUnifiedSyntax("Groups", parameters, groupLabels);
 
             var scaleResults = finalResults
-    .Where(r => r.Type == "Scale" && r.Descriptives != null)
-    .ToList();
+                .Where(r => r.Type == "Scale" && r.Descriptives != null)
+                .ToList();
 
             foreach (var result in scaleResults)
             {
@@ -241,6 +241,7 @@ namespace ExcelScore
 
                 var msg = $"--- {desc.VariableName} ---\n";
 
+                //// Descriptive stats by group
                 foreach (var group in desc.Stats_Groups)
                 {
                     msg += $"Group: {group.Key}\n";
@@ -250,14 +251,35 @@ namespace ExcelScore
                     }
                 }
 
+                // Descriptive stats total
                 msg += "Total:\n";
                 foreach (var stat in desc.Stats_Total)
                 {
                     msg += $"[{stat.Key}, {stat.Value}]\n";
                 }
 
-                
+                // Percentiles (if available)
+                //if (percentiles != null)
+                //{
+                //    msg += "\n--- Percentiles ---\n";
 
+                //    // Percentiles by group
+                //    foreach (var group in percentiles.GroupPercentiles)
+                //    {
+                //        msg += $"Group: {group.Key}\n";
+                //        foreach (var p in group.Value)
+                //        {
+                //            msg += $"[{p.Key}, {p.Value}]\n";
+                //        }
+                //    }
+
+                //    // Total percentiles
+                //    msg += "Total:\n";
+                //    foreach (var p in percentiles.TotalPercentiles)
+                //    {
+                //        msg += $"[{p.Key}, {p.Value}]\n";
+                //    }
+                //}
 
                 MessageBox.Show(msg, desc.VariableName);
             }
