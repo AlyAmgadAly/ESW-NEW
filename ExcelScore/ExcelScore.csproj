@@ -460,6 +460,9 @@
       <DependentUpon>Resource.resx</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="StatClasses\SpssReaderStat.cs" />
+    <Compile Include="StatClasses\StatParameter.cs" />
+    <Compile Include="StatClasses\StatTable.cs" />
     <EmbeddedResource Include="FormsDesigns\Comparative\Default.resx">
       <DependentUpon>Default.cs</DependentUpon>
     </EmbeddedResource>
@@ -707,6 +710,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

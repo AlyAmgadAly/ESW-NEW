@@ -30,7 +30,8 @@ using System.Threading;
 using SkiaSharp;
 using ExcelScore.Classes;
 using static SkiaSharp.HarfBuzz.SKShaper;
-
+using ExcelScore.StatClasses;
+using static ExcelScore.StatClasses.SpssReaderStat;
 
 namespace ExcelScore
 {
@@ -169,11 +170,46 @@ namespace ExcelScore
             SpssFileReader spssFileReader = new SpssFileReader();
             spssFileReader.LoadSpssFile();
 
-            
-            //foreach (var item in tests)
+            var sentparameters = SpssReaderStat.ReadSpssParameters(SpssFileReader.spssFilePath);
+            FormDataTransfer.Set("SPSS_Parameters", sentparameters);
+
+            //
+            // Retrieve the stored SPSS parameters as SpssParameter list
+            //var spssParams = FormDataTransfer.Get<List<SpssParameter>>("SPSS_Parameters");
+
+            //if (spssParams == null)
             //{
-            //    foreach (var row in item.)
+            //    MessageBox.Show("No parameters found.");
+            //    return;
             //}
+
+            //// Convert to StatParameter
+            //var statParams = spssParams.Select(s => new StatParameter
+            //{
+            //    Name = s.Name,
+            //    Label = s.Label,
+            //    Type = s.Type,
+            //    RawValues = new List<string>(s.Values),
+            //    ValueLabels = new Dictionary<int, string>(s.ValueLabels)
+            //}).ToList();
+
+            //var groupParams = statParams.Where(p => p.Name == "Sex" || p.Name == "Groups").ToList();
+
+            //if (statParams == null)
+            //{
+            //    MessageBox.Show("Group parameter 'Groups' not found.");
+            //    return;
+            //}
+
+            //// Assign grouping to all others
+            //foreach (var param in statParams)
+            //{
+            //    if (groupParams.Any(g => g.Name == param.Name)) continue;
+            //    param.AssignGroupedValues(groupParams);
+            //}
+
+
+            MessageBox.Show(".");
         }
 
 

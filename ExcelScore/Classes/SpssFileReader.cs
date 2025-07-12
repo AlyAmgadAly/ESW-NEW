@@ -7,6 +7,8 @@ using SpssLib.DataReader;
 using Aspose.Cells;
 using System.Diagnostics;
 
+
+// this is used for Questionnare
 public class SpssVariable
 {
     public string Name { get; set; }
@@ -16,6 +18,7 @@ public class SpssVariable
     public string Measure { get; set; }
     public bool HasValueLabels => ValueLabels.Count > 0;
 }
+
 
 public class SpssFileReader
 {

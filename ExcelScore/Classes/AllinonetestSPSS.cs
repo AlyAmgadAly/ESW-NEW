@@ -216,10 +216,14 @@ OMSEND.
         {
             public string VariableName { get; set; }
             public string Type { get; set; } // "Nominal" or "Scale"
+
+            public string NormalOrAbnormal { get; set; }
             public string GroupVariable { get; set; }
             public CrosstabBlock ChiSquareBlock { get; set; }
             public DescriptiveResult Descriptives { get; set; }
             public PercentileResult Percentiles { get; set; }
+
+            public List<string> test_Pvalue { get; set; }
         }
 
         // --- Parsing Methods ---
