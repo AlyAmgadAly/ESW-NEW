@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExcelScore.StatClasses;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -166,12 +167,41 @@ OMSEND.
             if (string.IsNullOrEmpty(savFile))
                 return null;
             var paths = PrepareOutputPaths(savFile);
+            //var syntax = BuildUnifiedSyntax(groupVar, nominalVars, scaleVars, paths);
             var syntax = BuildUnifiedSyntax(groupVar, nominalVars, scaleVars, paths);
             resultText = ExecuteSpssSyntaxAndGetTextResult(paths, syntax);
             return resultText;
         }
 
         // --- Data Structures ---
+
+        public static string BuildNominalCrosstabSection(StatTable table)
+        {
+            var groupParam = table.GetGroupParameters().FirstOrDefault();
+            if (groupParam == null) return ""; // No group, skip
+
+            string groupVar = groupParam.Name;
+
+            var nominalVars = table.GetNonGroupParameters()
+                                   .Where(p => p.Type == "Nominal")
+                                   .Select(p => p.Name)
+                                   .ToList();
+
+            if (!nominalVars.Any()) return ""; // No nominal variables
+
+            string cells = table.PercentageMode.ToUpper(); // ROW / COLUMN / TOTAL
+            string tablePart = string.Join(" ", nominalVars);
+
+            return $@"
+CROSSTABS
+  /TABLES={tablePart} BY {groupVar}
+  /FORMAT=AVALUE TABLES
+  /STATISTICS=CHISQ
+  /CELLS=COUNT {cells}
+  /COUNT ROUND CELL
+  /METHOD=MC CIN(99) SAMPLES(10000).";
+        }
+
         public class CrosstabBlock
         {
             public string RowVariable;

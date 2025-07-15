@@ -460,6 +460,9 @@
       <DependentUpon>Resource.resx</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="StatClasses\ComparativeStatTable.cs" />
+    <Compile Include="StatClasses\DescriptiveStatTable.cs" />
+    <Compile Include="StatClasses\RelationStatTable.cs" />
     <Compile Include="StatClasses\SpssReaderStat.cs" />
     <Compile Include="StatClasses\StatParameter.cs" />
     <Compile Include="StatClasses\StatTable.cs" />
