@@ -108,14 +108,16 @@ namespace ExcelScore.FormsDesigns.Comparative
 
             string LeftMarginValue = GetNodeTextByName(Extra_TV, "LeftCellMarginValue");
             string RightMarginValue = GetNodeTextByName(Extra_TV, "RightCellMarginValue");
-            string Type = "Default";
+            string TableDesignType = "Default";
+            string TableType = "comparative";
 
             FormDataTransfer.Set("nodeCheckedStatusPrimary", nodeCheckedStatusPrimary);
             FormDataTransfer.Set("nodeCheckedStatusExtra", nodeCheckedStatusExtra);
             FormDataTransfer.Set("LeftMarginValue", LeftMarginValue);
             FormDataTransfer.Set("RightMarginValue", RightMarginValue);
-            FormDataTransfer.Set("Type", Type);
-            
+            FormDataTransfer.Set("TableDesignType", TableDesignType);
+            FormDataTransfer.Set("TableType", TableType);
+
 
             MessageBox.Show("Done");
             //MessageBox.Show(LeftMarginValue);

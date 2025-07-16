@@ -15,10 +15,12 @@ namespace ExcelScore.StatClasses
         // --- Parameters ---
         public List<StatParameter> Parameters { get; set; } = new();
 
+        public string TableDesignType { get; set; }
+
         // --- Abstract Type to be overridden (e.g., "Comparative", "Relation") ---
         public abstract string TableType { get; }
 
-        public string PercentageMode { get; set; } = "Column"; 
+        public string PercentType  { get; set; } = "Column"; 
 
         // --- Utility Methods ---
 

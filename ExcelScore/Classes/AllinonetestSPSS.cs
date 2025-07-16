@@ -60,10 +60,88 @@ namespace ExcelScore.Classes
             { "GMEDIAN", true }
         };
 
-        
+        public static string BuildUnifiedSyntax(List<StatTable> tables, SPSSFilePaths paths)
+        {
+            var syntaxBuilder = new StringBuilder();
+
+            // Global Start
+            syntaxBuilder.AppendLine($@"
+GET FILE='{paths.SavFilePath.Replace(@"\", @"\\")}'.
+DATASET NAME DataSet1 WINDOW=ASIS.
+
+OMS
+  /SELECT TABLES
+  /DESTINATION FORMAT=TEXT OUTFILE='{paths.ResultPath.Replace(@"\", @"\\")}'.
+");
+
+            foreach (var table in tables)
+            {
+                // Get group variable
+                var groupVar = table.GetGroupParameters().FirstOrDefault()?.Name;
+                if (string.IsNullOrWhiteSpace(groupVar)) continue; // Skip if no group
+
+                var percentType = table.PercentType?.ToUpper() ?? "COLUMN";
+
+                var nominalVars = table.Parameters
+                    .Where(p => p.Type == "Nominal" && !p.IsGroup)
+                    .Select(p => p.Name)
+                    .ToList();
+
+                var scaleVars = table.Parameters
+                    .Where(p => p.Type == "Scale")
+                    .Select(p => p.Name)
+                    .ToList();
+
+                string tableHeader = $"* --- Table: {table.TableName} ---.";
+                syntaxBuilder.AppendLine();
+                syntaxBuilder.AppendLine(tableHeader);
+
+                // CROSSTABS (Nominal)
+                if (nominalVars.Any())
+                {
+                    var tablePartNominal = string.Join(" ", nominalVars);
+                    syntaxBuilder.AppendLine($@"
+CROSSTABS
+  /TABLES={tablePartNominal} BY {groupVar}
+  /FORMAT=AVALUE TABLES
+  /STATISTICS=CHISQ
+  /CELLS=COUNT {percentType}
+  /COUNT ROUND CELL
+  /METHOD=MC CIN(99) SAMPLES(10000).");
+                }
+
+                // MEANS + EXAMINE (Scale)
+                if (scaleVars.Any())
+                {
+                    var tablePartScale = string.Join(" ", scaleVars);
+                    var cellsPart = string.Join(" ", DefaultDescriptiveStats
+                        .Where(kvp => kvp.Value)
+                        .Select(kvp => kvp.Key.ToUpper()));
+
+                    syntaxBuilder.AppendLine($@"
+MEANS
+  TABLES={tablePartScale} BY {groupVar}
+  /CELLS={cellsPart}.");
+
+                    syntaxBuilder.AppendLine($@"
+EXAMINE
+  VARIABLES={tablePartScale} BY {groupVar}
+  /PLOT NONE
+  /PERCENTILES(25,50,75) HAVERAGE
+  /STATISTICS NONE
+  /MISSING PAIRWISE
+  /TOTAL.");
+                }
+            }
+
+            // Global End
+            syntaxBuilder.AppendLine("OMSEND.");
+            return syntaxBuilder.ToString();
+        }
 
 
-        public static string BuildUnifiedSyntax(string groupVar,
+
+        public static string BuildUnifiedSyntaxOld(string groupVar,
             List<string> nominalVars,
             List<string> scaleVars,
             SPSSFilePaths paths)
@@ -156,10 +234,25 @@ OMSEND.
             return outputText;
         }
 
+        //public static string RunUnifiedSyntaxAndGetResult(
+        //    string groupVar,
+        //    List<string> nominalVars,
+        //    List<string> scaleVars,
+        //    out string resultText)
+        //{
+        //    string savFile = SpssFileReader.spssFilePath;
+        //    resultText = null;
+        //    if (string.IsNullOrEmpty(savFile))
+        //        return null;
+        //    var paths = PrepareOutputPaths(savFile);
+        //    //var syntax = BuildUnifiedSyntax(groupVar, nominalVars, scaleVars, paths);
+        //    var syntax = BuildUnifiedSyntax(groupVar, nominalVars, scaleVars, paths);
+        //    resultText = ExecuteSpssSyntaxAndGetTextResult(paths, syntax);
+        //    return resultText;
+        //}
+
         public static string RunUnifiedSyntaxAndGetResult(
-            string groupVar,
-            List<string> nominalVars,
-            List<string> scaleVars,
+            List<StatTable> StatTables, 
             out string resultText)
         {
             string savFile = SpssFileReader.spssFilePath;
@@ -168,39 +261,14 @@ OMSEND.
                 return null;
             var paths = PrepareOutputPaths(savFile);
             //var syntax = BuildUnifiedSyntax(groupVar, nominalVars, scaleVars, paths);
-            var syntax = BuildUnifiedSyntax(groupVar, nominalVars, scaleVars, paths);
+            var syntax = BuildUnifiedSyntax(StatTables , paths);
             resultText = ExecuteSpssSyntaxAndGetTextResult(paths, syntax);
             return resultText;
         }
 
         // --- Data Structures ---
 
-        public static string BuildNominalCrosstabSection(StatTable table)
-        {
-            var groupParam = table.GetGroupParameters().FirstOrDefault();
-            if (groupParam == null) return ""; // No group, skip
 
-            string groupVar = groupParam.Name;
-
-            var nominalVars = table.GetNonGroupParameters()
-                                   .Where(p => p.Type == "Nominal")
-                                   .Select(p => p.Name)
-                                   .ToList();
-
-            if (!nominalVars.Any()) return ""; // No nominal variables
-
-            string cells = table.PercentageMode.ToUpper(); // ROW / COLUMN / TOTAL
-            string tablePart = string.Join(" ", nominalVars);
-
-            return $@"
-CROSSTABS
-  /TABLES={tablePart} BY {groupVar}
-  /FORMAT=AVALUE TABLES
-  /STATISTICS=CHISQ
-  /CELLS=COUNT {cells}
-  /COUNT ROUND CELL
-  /METHOD=MC CIN(99) SAMPLES(10000).";
-        }
 
         public class CrosstabBlock
         {
@@ -873,16 +941,23 @@ CROSSTABS
             return allResults;
         }
 
-        public static List<ParameterAnalysisResult> RunAllFromUnifiedSyntax(
-            string groupVar,
-            List<(string Name, string Type)> parameters,
-            List<string> groupLabels)
-        {
-            var nominalVars = parameters.Where(p => p.Type == "Nominal").Select(p => p.Name).ToList();
-            var scaleVars = parameters.Where(p => p.Type == "Scale").Select(p => p.Name).ToList();
-            string outputText = RunUnifiedSyntaxAndGetResult(groupVar, nominalVars, scaleVars, out _);
-            if (string.IsNullOrWhiteSpace(outputText)) return new List<ParameterAnalysisResult>();
-            return ParseUnifiedOutput(outputText, groupVar, parameters, groupLabels);
-        }
+        //public static List<ParameterAnalysisResult> RunAllFromUnifiedSyntax(
+        //    string groupVar,
+        //    List<(string Name, string Type)> parameters,
+        //    List<string> groupLabels)
+        //{
+        //    var nominalVars = parameters.Where(p => p.Type == "Nominal").Select(p => p.Name).ToList();
+        //    var scaleVars = parameters.Where(p => p.Type == "Scale").Select(p => p.Name).ToList();
+        //    string outputText = RunUnifiedSyntaxAndGetResult(groupVar, nominalVars, scaleVars, out _);
+        //    if (string.IsNullOrWhiteSpace(outputText)) return new List<ParameterAnalysisResult>();
+        //    return ParseUnifiedOutput(outputText, groupVar, parameters, groupLabels);
+        //}
+        //public static List<ParameterAnalysisResult> RunAllFromUnifiedSyntax(List<StatTable> statTables)
+        //{
+        //    //var nominalVars = parameters.Where(p => p.Type == "Nominal").Select(p => p.Name).ToList();
+        //    //var scaleVars = parameters.Where(p => p.Type == "Scale").Select(p => p.Name).ToList();
+        //    string outputText = RunUnifiedSyntaxAndGetResult(statTables, out _);
+            
+        //}
     }
 }

@@ -170,8 +170,19 @@ namespace ExcelScore
             SpssFileReader spssFileReader = new SpssFileReader();
             spssFileReader.LoadSpssFile();
 
-            var sentparameters = SpssReaderStat.ReadSpssParameters(SpssFileReader.spssFilePath);
-            FormDataTransfer.Set("SPSS_Parameters", sentparameters);
+            var spssRaw = SpssReaderStat.ReadSpssParameters(SpssFileReader.spssFilePath);
+            var statParams = spssRaw.Select(s => new StatParameter
+            {
+                Name = s.Name,
+                Label = s.Label,
+                Type = s.Type,
+                RawValues = new List<string>(s.Values),
+                ValueLabels = new Dictionary<int, string>(s.ValueLabels)
+            }).ToList();
+
+            // Store the correct type
+            FormDataTransfer.Set("SPSS_Parameters", statParams);
+
 
             //
             // Retrieve the stored SPSS parameters as SpssParameter list
@@ -209,7 +220,7 @@ namespace ExcelScore
             //}
 
 
-            MessageBox.Show(".");
+            //MessageBox.Show(".");
         }
 
 
@@ -264,61 +275,10 @@ namespace ExcelScore
             };
 
 
-            var finalResults = SPSSUnifiedRunner.RunAllFromUnifiedSyntax("Groups", parameters, groupLabels);
+            //var finalResults = SPSSUnifiedRunner.RunAllFromUnifiedSyntax("Groups", parameters, groupLabels);
 
-            var scaleResults = finalResults
-                .Where(r => r.Type == "Scale" && r.Descriptives != null)
-                .ToList();
-
-            foreach (var result in scaleResults)
-            {
-                var desc = result.Descriptives;
-                var percentiles = result.Percentiles;
-
-                var msg = $"--- {desc.VariableName} ---\n";
-
-                //// Descriptive stats by group
-                foreach (var group in desc.Stats_Groups)
-                {
-                    msg += $"Group: {group.Key}\n";
-                    foreach (var stat in group.Value)
-                    {
-                        msg += $"[{stat.Key}, {stat.Value}]\n";
-                    }
-                }
-
-                // Descriptive stats total
-                msg += "Total:\n";
-                foreach (var stat in desc.Stats_Total)
-                {
-                    msg += $"[{stat.Key}, {stat.Value}]\n";
-                }
-
-                // Percentiles (if available)
-                //if (percentiles != null)
-                //{
-                //    msg += "\n--- Percentiles ---\n";
-
-                //    // Percentiles by group
-                //    foreach (var group in percentiles.GroupPercentiles)
-                //    {
-                //        msg += $"Group: {group.Key}\n";
-                //        foreach (var p in group.Value)
-                //        {
-                //            msg += $"[{p.Key}, {p.Value}]\n";
-                //        }
-                //    }
-
-                //    // Total percentiles
-                //    msg += "Total:\n";
-                //    foreach (var p in percentiles.TotalPercentiles)
-                //    {
-                //        msg += $"[{p.Key}, {p.Value}]\n";
-                //    }
-                //}
-
-                MessageBox.Show(msg, desc.VariableName);
-            }
+            
+            
 
 
 
