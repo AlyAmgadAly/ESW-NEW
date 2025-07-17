@@ -20,7 +20,9 @@ namespace ExcelScore.StatClasses
         // --- Abstract Type to be overridden (e.g., "Comparative", "Relation") ---
         public abstract string TableType { get; }
 
-        public string PercentType  { get; set; } = "Column"; 
+        public string PercentType  { get; set; } = "Column";
+
+        public string PostHoc { get; set; } = "Tukey";
 
         // --- Utility Methods ---
 

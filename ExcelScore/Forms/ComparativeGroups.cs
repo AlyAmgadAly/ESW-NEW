@@ -2235,7 +2235,7 @@ namespace ExcelScore.Forms
                     param.RawValues = new List<string>(match.RawValues);
                     param.ValueLabels = new Dictionary<int, string>(match.ValueLabels);
                     param.Type = match.Type;
-                    param.Normality = match.Normality;
+                    //param.Normality = match.Normality;
                 }
             }
 
