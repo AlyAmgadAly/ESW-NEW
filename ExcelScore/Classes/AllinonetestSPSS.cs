@@ -64,45 +64,43 @@ namespace ExcelScore.Classes
         {
             var syntaxBuilder = new StringBuilder();
 
-            // Global Start
+            // --- Global Header ---
             syntaxBuilder.AppendLine($@"
 GET FILE='{paths.SavFilePath.Replace(@"\", @"\\")}'.
 DATASET NAME DataSet1 WINDOW=ASIS.
 
 OMS
   /SELECT TABLES
-  /DESTINATION FORMAT=TEXT OUTFILE='{paths.ResultPath.Replace(@"\", @"\\")}'.
-");
+  /DESTINATION FORMAT=TEXT OUTFILE='{paths.ResultPath.Replace(@"\", @"\\")}.'");
 
             foreach (var table in tables)
             {
-                // Get group variable
-                var groupVar = table.GetGroupParameters().FirstOrDefault()?.Name;
-                if (string.IsNullOrWhiteSpace(groupVar)) continue; // Skip if no group
+                var groupParams = table.GetGroupParameters();
+                if (groupParams.Count == 0) continue;
 
                 var percentType = table.PercentType?.ToUpper() ?? "COLUMN";
 
-                var nominalVars = table.Parameters
-                    .Where(p => p.Type == "Nominal" && !p.IsGroup)
+                var nominalVars = table.GetNonGroupParameters()
+                    .Where(p => p.Type == "Nominal")
                     .Select(p => p.Name)
                     .ToList();
 
-                var scaleVars = table.Parameters
+                var scaleVars = table.GetNonGroupParameters()
                     .Where(p => p.Type == "Scale")
-                    .Select(p => p.Name)
                     .ToList();
 
-                string tableHeader = $"* --- Table: {table.TableName} ---.";
                 syntaxBuilder.AppendLine();
-                syntaxBuilder.AppendLine(tableHeader);
+                //syntaxBuilder.AppendLine($"* --- Table: {table.TableName} ---.");
+                syntaxBuilder.AppendLine($@"TITLE ""{table.TableName}"".");
 
-                // CROSSTABS (Nominal)
+
+                // --- CROSSTABS ---
                 if (nominalVars.Any())
                 {
-                    var tablePartNominal = string.Join(" ", nominalVars);
+                    var mainGroup = groupParams.First().Name;
                     syntaxBuilder.AppendLine($@"
 CROSSTABS
-  /TABLES={tablePartNominal} BY {groupVar}
+  /TABLES={string.Join(" ", nominalVars)} BY {mainGroup}
   /FORMAT=AVALUE TABLES
   /STATISTICS=CHISQ
   /CELLS=COUNT {percentType}
@@ -110,20 +108,50 @@ CROSSTABS
   /METHOD=MC CIN(99) SAMPLES(10000).");
                 }
 
-                // MEANS + EXAMINE (Scale)
+                // --- MEANS + EXAMINE ---
                 if (scaleVars.Any())
                 {
-                    var tablePartScale = string.Join(" ", scaleVars);
+                    var tablePartScale = string.Join(" ", scaleVars.Select(p => p.Name));
                     var cellsPart = string.Join(" ", DefaultDescriptiveStats
                         .Where(kvp => kvp.Value)
                         .Select(kvp => kvp.Key.ToUpper()));
 
-                    syntaxBuilder.AppendLine($@"
+                    // CASE 1: One grouping variable
+                    if (scaleVars.Any(p => p.GroupedParameterValues?.Count > 0))
+                    {
+                        var mainGroup = groupParams.First().Name;
+
+                        syntaxBuilder.AppendLine($@"
+MEANS
+  TABLES={tablePartScale} BY {mainGroup}
+  /CELLS={cellsPart}.");
+
+                        syntaxBuilder.AppendLine($@"
+EXAMINE
+  VARIABLES={tablePartScale} BY {mainGroup}
+  /PLOT NONE
+  /PERCENTILES(25,50,75) HAVERAGE
+  /STATISTICS NONE
+  /MISSING PAIRWISE
+  /TOTAL.");
+                    }
+                    // CASE 2: Multiple grouping variables (relation tables)
+                    else if (scaleVars.Any(p => p.GroupedParameterValuesRelation?.Count > 0))
+                    {
+                        var allGroupVars = scaleVars
+                            .SelectMany(p => p.GroupedParameterValuesRelation?.Keys ?? Enumerable.Empty<string>())
+                            .Distinct();
+
+                        foreach (var groupVar in allGroupVars)
+                        {
+                            syntaxBuilder.AppendLine($@"* --- Descriptives for GroupVar: {groupVar} ---.");
+
+                            syntaxBuilder.AppendLine($@"
 MEANS
   TABLES={tablePartScale} BY {groupVar}
   /CELLS={cellsPart}.");
 
-                    syntaxBuilder.AppendLine($@"
+                            syntaxBuilder.AppendLine($@"
 EXAMINE
   VARIABLES={tablePartScale} BY {groupVar}
   /PLOT NONE
@@ -131,13 +159,137 @@ EXAMINE
   /STATISTICS NONE
   /MISSING PAIRWISE
   /TOTAL.");
+                        }
+                    }
+                }
+
+                // --- STATISTICAL TESTS ---
+                foreach (var param in scaleVars)
+                {
+                    string paramName = param.Name;
+                    string normality = param.Normality?.ToUpper();
+
+                    // SINGLE GROUPING VARIABLE
+                    if (param.GroupedParameterValues?.Count >= 2)
+                    {
+                        string groupVar = groupParams.First().Name;
+
+                        var validGroups = param.GroupedParameterValues
+                            .Where(g => g.Value.Count > 1)
+                            .Select(g => Convert.ToInt32(g.Key))
+                            .ToList();
+
+                        if (validGroups.Count < 2) continue;
+
+                        if (validGroups.Count == 2)
+                        {
+                            int g1 = validGroups[0];
+                            int g2 = validGroups[1];
+
+                            if (normality == "NORMAL")
+                            {
+                                syntaxBuilder.AppendLine($@"
+T-TEST
+  GROUPS = {groupVar}({g1} {g2})
+  /MISSING = ANALYSIS
+  /VARIABLES = {paramName}
+  /CRITERIA = CI(.95).");
+                            }
+                            else if (normality == "ABNORMAL")
+                            {
+                                syntaxBuilder.AppendLine($@"
+NPAR TESTS
+  /M-W = {paramName} BY {groupVar}({g1} {g2})
+  /MISSING ANALYSIS.");
+                            }
+                        }
+                        else
+                        {
+                            string groupList = string.Join(" ", validGroups);
+
+                            if (normality == "NORMAL")
+                            {
+                                syntaxBuilder.AppendLine($@"
+ONEWAY
+  {paramName} BY {groupVar}
+  /MISSING ANALYSIS
+  /POSTHOC = {table.PostHoc} ALPHA(.05).");
+                            }
+                            else if (normality == "ABNORMAL")
+                            {
+                                syntaxBuilder.AppendLine($@"
+NPAR TESTS
+  /K-W = {paramName} BY {groupVar}(0 11)
+  /MISSING ANALYSIS.");
+                            }
+                        }
+                    }
+                    // MULTIPLE GROUPING VARIABLES
+                    else if (param.GroupedParameterValuesRelation?.Count >= 1)
+                    {
+                        foreach (var relationGroup in param.GroupedParameterValuesRelation)
+                        {
+                            string groupVar = relationGroup.Key;
+
+                            var validGroups = relationGroup.Value
+                                .Where(g => g.Value.Count > 1)
+                                .Select(g => Convert.ToInt32(g.Key))
+                                .ToList();
+
+                            if (validGroups.Count < 2) continue;
+
+                            if (validGroups.Count == 2)
+                            {
+                                int g1 = validGroups[0];
+                                int g2 = validGroups[1];
+
+                                if (normality == "NORMAL")
+                                {
+                                    syntaxBuilder.AppendLine($@"
+T-TEST
+  GROUPS = {groupVar}({g1} {g2})
+  /MISSING = ANALYSIS
+  /VARIABLES = {paramName}
+  /CRITERIA = CI(.95).");
+                                }
+                                else if (normality == "ABNORMAL")
+                                {
+                                    syntaxBuilder.AppendLine($@"
+NPAR TESTS
+  /M-W = {paramName} BY {groupVar}({g1} {g2})
+  /MISSING ANALYSIS.");
+                                }
+                            }
+                            else
+                            {
+                                string groupList = string.Join(" ", validGroups);
+
+                                if (normality == "NORMAL")
+                                {
+                                    syntaxBuilder.AppendLine($@"
+ONEWAY
+  {paramName} BY {groupVar}
+  /MISSING ANALYSIS
+  /POSTHOC = {table.PostHoc} ALPHA(.05).");
+                                }
+                                else if (normality == "ABNORMAL")
+                                {
+                                    syntaxBuilder.AppendLine($@"
+NPAR TESTS
+  /K-W = {paramName} BY {groupVar}(0 11)
+  /MISSING ANALYSIS.");
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
-            // Global End
             syntaxBuilder.AppendLine("OMSEND.");
             return syntaxBuilder.ToString();
         }
+
+
 
 
 
@@ -252,7 +404,7 @@ OMSEND.
         //}
 
         public static string RunUnifiedSyntaxAndGetResult(
-            List<StatTable> StatTables, 
+            List<StatTable> StatTables,
             out string resultText)
         {
             string savFile = SpssFileReader.spssFilePath;
