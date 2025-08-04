@@ -207,6 +207,31 @@ NPAR TESTS
                         {
                             string groupList = string.Join(" ", validGroups);
 
+                            var lowCountGroups = param.GroupedParameterValuesRelation?.ContainsKey(groupVar) == true
+                                ? param.GroupedParameterValuesRelation[groupVar]
+                                    .Where(g => g.Value.Count <= 1)
+                                    .Select(g => Convert.ToInt32(g.Key))
+                                    .ToList()
+                                : param.GroupedParameterValues
+                                    .Where(g => g.Value.Count <= 1)
+                                    .Select(g => Convert.ToInt32(g.Key))
+                                    .ToList();
+
+                            if (lowCountGroups.Count > 0)
+                            {
+                                var filterCondition = string.Join("  |  ", validGroups.Select(v => $"{groupVar} = {v}"));
+                                var filterLabel = $"{groupVar} = " + string.Join("  |  ", validGroups);
+
+                                syntaxBuilder.AppendLine($@"
+USE ALL.
+COMPUTE filter_$=({filterCondition}).
+VARIABLE LABEL filter_$ '{filterLabel} (FILTER)'.
+VALUE LABELS filter_$  0 'Not Selected' 1 'Selected'.
+FORMAT filter_$ (f1.0).
+FILTER BY filter_$.
+EXECUTE.");
+                            }
+
                             if (normality == "NORMAL")
                             {
                                 syntaxBuilder.AppendLine($@"
@@ -219,10 +244,11 @@ ONEWAY
                             {
                                 syntaxBuilder.AppendLine($@"
 NPAR TESTS
-  /K-W = {paramName} BY {groupVar}(0 11)
+  /K-W = {paramName} BY {groupVar}({groupList})
   /MISSING ANALYSIS.");
                             }
                         }
+
                     }
                     // MULTIPLE GROUPING VARIABLES
                     else if (param.GroupedParameterValuesRelation?.Count >= 1)
