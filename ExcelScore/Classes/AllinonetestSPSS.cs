@@ -247,6 +247,11 @@ NPAR TESTS
   /K-W = {paramName} BY {groupVar}(0 11)
   /MISSING ANALYSIS.");
                             }
+
+                            syntaxBuilder.AppendLine($@"
+FILTER OFF.
+USE ALL.
+EXECUTE.");
                         }
 
                     }
@@ -330,6 +335,10 @@ NPAR TESTS
   /K-W = {paramName} BY {groupVar}(0 11)
   /MISSING ANALYSIS.");
                                 }
+                                syntaxBuilder.AppendLine($@"
+FILTER OFF.
+USE ALL.
+EXECUTE.");
                             }
                         }
                     }
