@@ -19,6 +19,7 @@ namespace ExcelScore.Classes
             public string ResultPath;
             public string SpoPath;
             public string OutputFolder;
+            
         }
 
         public static SPSSFilePaths PrepareOutputPaths(string savFilePath)
@@ -29,9 +30,12 @@ namespace ExcelScore.Classes
 
             string syntaxPath = Path.Combine(outputFolder, "auto_crosstab.sps");
             string resultPath = Path.Combine(outputFolder, "result.txt");
+            
 
             if (File.Exists(resultPath))
                 File.Delete(resultPath);
+
+            
 
             string spoPath = Path.Combine(outputFolder, "output.spo");
             int counter = 1;
@@ -423,6 +427,7 @@ OMSEND.
                             {
                                 dynamic outputDoc = spssApp.GetDesignatedOutputDoc();
                                 outputDoc.SaveAs(paths.SpoPath);
+                                
                             }
                             catch { }
                             break;
@@ -1094,6 +1099,7 @@ OMSEND.
             }
             return results.Values.ToList();
         }
+        
 
         public static List<ParameterAnalysisResult> ParseUnifiedOutput(
             string outputText,
