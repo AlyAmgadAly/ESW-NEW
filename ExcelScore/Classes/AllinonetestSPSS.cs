@@ -552,7 +552,7 @@ OMSEND.
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();
-                if (line.Contains("* " + groupVar) && line.Trim().EndsWith("Crosstabulation"))
+                if ((line.Contains("* " + groupVar) && line.Trim().EndsWith("Crosstabulation")) || (line.Contains("* " + groupVar) && lines[i+2] == "Crosstab"))
                 {
                     string rowVar = line.Split('*')[0].Trim();
                     currentBlock = new CrosstabBlock
@@ -1139,6 +1139,87 @@ OMSEND.
             }
         }
 
+
+        public static void ParseUnifiedOutput_Descriptives(
+    string outputText,
+    List<StatTable> tables)
+        {
+            foreach (var table in tables)
+            {
+                // collect scale parameter names for this table
+                var scaleParamNames = table.GetNonGroupParameters()
+                    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+                    .Select(p => p.Name)
+                    .ToList();
+
+                if (!scaleParamNames.Any())
+                    continue;
+
+                var groupParams = table.GetGroupParameters();
+
+                // If there are no group parameters, still call parser once with empty labels
+                if (!groupParams.Any())
+                {
+                    var descResults = ParseDescriptiveOutput_Smart(outputText, scaleParamNames, new List<string>());
+
+                    foreach (var desc in descResults)
+                    {
+                        var param = table.GetParameterByName(desc.VariableName);
+                        if (param == null) continue;
+
+                        // assign into the legacy single-slot
+                        param.DescriptiveStats = desc;
+                    }
+
+                    continue;
+                }
+
+                // For each group parameter separately, parse and assign
+                foreach (var g in groupParams)
+                {
+                    // Build labels for this group parameter (human readable)
+                    var groupLabels = new List<string>();
+
+                    // Always start from raw distinct values (ensures we don’t miss unlabeled values)
+                    var distinctRaw = g.RawValues
+                        .Where(v => !string.IsNullOrWhiteSpace(v))
+                        .Distinct()
+                        .ToList();
+
+                    foreach (var raw in distinctRaw)
+                    {
+                        if (int.TryParse(raw, out int rawCode) && g.ValueLabels.ContainsKey(rawCode))
+                        {
+                            // if label exists for numeric code, use it
+                            groupLabels.Add(g.ValueLabels[rawCode]);
+                        }
+                        else
+                        {
+                            // otherwise use the raw value itself
+                            groupLabels.Add(raw);
+                        }
+                    }
+
+
+                    // call the existing parser with this group's labels only
+                    var descResultsForThisGroup = ParseDescriptiveOutput_Smart(outputText, scaleParamNames, groupLabels);
+
+                    // assign each result back into its StatParameter under the group name
+                    foreach (var desc in descResultsForThisGroup)
+                    {
+                        var param = table.GetParameterByName(desc.VariableName);
+                        if (param == null) continue;
+
+                        // store per group variable (keyed by group parameter name)
+                        param.DescriptiveStatsByGroup[g.Name] = desc;
+
+                        // For backward compatibility, if the single DescriptiveStats is empty, set it
+                        if (param.DescriptiveStats == null)
+                            param.DescriptiveStats = desc;
+                    }
+                }
+            }
+        }
 
 
 

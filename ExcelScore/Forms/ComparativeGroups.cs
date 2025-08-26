@@ -5393,6 +5393,8 @@ namespace ExcelScore.Forms
 
             SPSSUnifiedRunner.ParseUnifiedOutput_Crosstabs(outputText, StatTables);
 
+            SPSSUnifiedRunner.ParseUnifiedOutput_Descriptives(outputText, StatTables);
+
             //pythonStat.InitPython();
 
             document = wordObj.InitWord();
