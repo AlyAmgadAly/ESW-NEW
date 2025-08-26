@@ -1100,7 +1100,48 @@ OMSEND.
             return results.Values.ToList();
         }
 
-        
+        public static void ParseUnifiedOutput_Crosstabs(
+     string outputText,
+     List<StatTable> tables)
+        {
+            // 1. Gather all unique group variable names across tables
+            var groupVars = tables
+                .SelectMany(t => t.GetGroupParameters().Select(g => g.Name))
+                .Distinct()
+                .ToList();
+
+            // 2. Parse and map for each group variable
+            foreach (var groupVar in groupVars)
+            {
+                var blocks = ParseMultipleCrosstabBlocks(outputText, groupVar);
+
+                foreach (var block in blocks)
+                {
+                    foreach (var table in tables)
+                    {
+                        // Must have this group variable
+                        var groupParam = table.GetGroupParameters()
+                            .FirstOrDefault(g => g.Name == groupVar);
+                        if (groupParam == null)
+                            continue;
+
+                        // Must also have this row variable
+                        var param = table.GetNonGroupParameters()
+                            .FirstOrDefault(p => p.Name == block.RowVariable);
+                        if (param == null)
+                            continue;
+
+                        // Assign once only
+                        if (param.ChiSquareBlock == null)
+                            param.ChiSquareBlock = block;
+                    }
+                }
+            }
+        }
+
+
+
+
 
         public static List<ParameterAnalysisResult> ParseUnifiedOutput(
             string outputText,

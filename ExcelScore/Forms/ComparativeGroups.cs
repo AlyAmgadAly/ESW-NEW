@@ -5391,7 +5391,7 @@ namespace ExcelScore.Forms
             //ComparativeBasic();
             string outputText = SPSSUnifiedRunner.RunUnifiedSyntaxAndGetResult(StatTables, out _);
 
-            
+            SPSSUnifiedRunner.ParseUnifiedOutput_Crosstabs(outputText, StatTables);
 
             //pythonStat.InitPython();
 
