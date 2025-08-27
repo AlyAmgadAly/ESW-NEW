@@ -662,7 +662,7 @@ OMSEND.
         {
             var results = variableNames.Select(var => new DescriptiveResult { VariableName = var }).ToList();
             var lines = rawText.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
-
+            groupLabels.Add("Total");
 
             // Mapping from your keys to SPSS output labels
             var statKeyToSpssLabel = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -1177,27 +1177,46 @@ OMSEND.
                 // For each group parameter separately, parse and assign
                 foreach (var g in groupParams)
                 {
-                    // Build labels for this group parameter (human readable)
-                    var groupLabels = new List<string>();
-
-                    // Always start from raw distinct values (ensures we don’t miss unlabeled values)
-                    var distinctRaw = g.RawValues
-                        .Where(v => !string.IsNullOrWhiteSpace(v))
-                        .Distinct()
-                        .ToList();
-
-                    foreach (var raw in distinctRaw)
+                    // Build ordered distinct raw values (preserve first appearance order),
+                    // excluding missing tokens like "." and empty strings
+                    var seen = new HashSet<string>();
+                    var orderedRawDistinct = new List<string>();
+                    foreach (var raw in g.RawValues ?? Enumerable.Empty<string>())
                     {
-                        if (int.TryParse(raw, out int rawCode) && g.ValueLabels.ContainsKey(rawCode))
+                        if (string.IsNullOrWhiteSpace(raw)) continue;
+                        if (raw == ".") continue; // treat dot as missing, skip
+                        if (seen.Add(raw))
+                            orderedRawDistinct.Add(raw);
+                    }
+                    var groupLabels = new List<string>();
+                    foreach (var raw in orderedRawDistinct)
+                    {
+                        string chosen = null;
+
+                        if (double.TryParse(raw, out double d))
                         {
-                            // if label exists for numeric code, use it
-                            groupLabels.Add(g.ValueLabels[rawCode]);
+                            int code = (int)d;
+                            if (g.ValueLabels != null && g.ValueLabels.TryGetValue(code, out var mappedLabel))
+                            {
+                                // Check if mapped label is "real" (different from code)
+                                if (!string.Equals(mappedLabel, code.ToString(), StringComparison.OrdinalIgnoreCase))
+                                {
+                                    chosen = mappedLabel; // use real label (like "Patient")
+                                }
+                            }
+
+                            // If not labeled or label is just the number → normalize to 2 decimals
+                            if (chosen == null)
+                                chosen = d.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                         }
                         else
                         {
-                            // otherwise use the raw value itself
-                            groupLabels.Add(raw);
+                            // Non-numeric raw → keep as-is
+                            chosen = raw;
                         }
+
+                        if (!groupLabels.Contains(chosen))
+                            groupLabels.Add(chosen);
                     }
 
 
@@ -1209,6 +1228,10 @@ OMSEND.
                     {
                         var param = table.GetParameterByName(desc.VariableName);
                         if (param == null) continue;
+
+                        // ensure the per-group container exists on StatParameter
+                        if (param.DescriptiveStatsByGroup == null)
+                            param.DescriptiveStatsByGroup = new Dictionary<string, SPSSUnifiedRunner.DescriptiveResult>();
 
                         // store per group variable (keyed by group parameter name)
                         param.DescriptiveStatsByGroup[g.Name] = desc;
@@ -1222,6 +1245,9 @@ OMSEND.
         }
 
 
+
+
+       
 
 
         public static List<ParameterAnalysisResult> ParseUnifiedOutput(
