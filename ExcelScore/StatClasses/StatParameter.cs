@@ -136,7 +136,11 @@ namespace ExcelScore.StatClasses
 
         public Dictionary<string, SPSSUnifiedRunner.DescriptiveResult> DescriptiveStatsByGroup { get; set; }
     = new Dictionary<string, SPSSUnifiedRunner.DescriptiveResult>();
-        public SPSSUnifiedRunner.PercentileResult PercentileStats { get; set; }
+        
+
+        public Dictionary<string, SPSSUnifiedRunner.PercentileResult> PercentileStats { get; set; }
+    = new Dictionary<string, SPSSUnifiedRunner.PercentileResult>();
+
         public SPSSUnifiedRunner.CrosstabBlock ChiSquareBlock { get; set; }
         public List<string> Test_PValues { get; set; } = new(); // t, U, F, H results
         public List<string> PostHocResults { get; set; } = new();

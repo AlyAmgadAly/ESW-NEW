@@ -1,4 +1,5 @@
-﻿using ExcelScore.StatClasses;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using ExcelScore.StatClasses;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -916,6 +917,7 @@ OMSEND.
             return results;
         }
 
+        
 
         public static List<DescriptiveResult> ParseDescriptiveOutput_Smart(
     string rawText,
@@ -939,6 +941,123 @@ OMSEND.
 
 
 
+        public static List<PercentileResult> ParseTukeyHingesOnly_CGPT(
+    string rawText,
+    List<string> variableNames,
+    List<string> groupLabels,
+    string groupSectionName)
+        {
+            var results = variableNames.ToDictionary(
+                v => v,
+                v => new PercentileResult { VariableName = v });
+
+            var lines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            string currentSection = null;      // "Total" or "Groups"
+            string currentVariable = null;
+            bool inPercentileBlock = false;
+            bool inTukey = false;
+
+            foreach (string raw in lines)
+            {
+                string line = raw.Trim();
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                // --- Detect blocks ---
+                if (line.StartsWith("Percentiles"))
+                {
+                    inPercentileBlock = true;
+                    continue;
+                }
+                if (!inPercentileBlock)
+                    continue;
+
+                if (line.StartsWith("Total Sample"))
+                {
+                    currentSection = "Total";
+                    currentVariable = null;
+                    continue;
+                }
+                if (line.StartsWith(groupSectionName))
+                {
+                    currentSection = "Groups";
+                    currentVariable = null;
+                    continue;
+                }
+
+                // --- Detect Tukey start/end ---
+                if (line.StartsWith("Tukey's Hinges"))
+                {
+                    inTukey = true;
+                    line = line.Substring("Tukey's Hinges".Length).Trim();
+                }
+                else if (line.StartsWith("Weighted") || line.StartsWith("Average") || line.StartsWith("Explore"))
+                {
+                    inTukey = false;
+                    continue;
+                }
+
+                if (!inTukey || string.IsNullOrEmpty(line))
+                    continue;
+
+                // --- Parse line ---
+                var parts = Regex.Split(line, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+                if (parts.Count == 0) continue;
+
+                if (currentSection == "Total")
+                {
+                    // Format: <Variable> 25% 50% 75%  OR just 25% 50% 75%
+                    if (variableNames.Contains(parts[0]) && parts.Count == 4)
+                    {
+                        currentVariable = parts[0];
+                        results[currentVariable].TotalPercentiles = new Dictionary<string, string>
+                {
+                    { "25", parts[1] },
+                    { "50", parts[2] },
+                    { "75", parts[3] }
+                };
+                    }
+                    else if (parts.Count == 3 && currentVariable != null)
+                    {
+                        results[currentVariable].TotalPercentiles = new Dictionary<string, string>
+                {
+                    { "25", parts[0] },
+                    { "50", parts[1] },
+                    { "75", parts[2] }
+                };
+                    }
+                }
+                else if (currentSection == "Groups")
+                {
+                    // Format A: <Variable> <Group> 25% 50% 75%
+                    if (variableNames.Contains(parts[0]) && groupLabels.Contains(parts[1]) && parts.Count == 5)
+                    {
+                        currentVariable = parts[0];
+                        string group = parts[1];
+                        results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
+                {
+                    { "25", parts[2] },
+                    { "50", parts[3] },
+                    { "75", parts[4] }
+                };
+                    }
+                    // Format B: <Group> 25% 50% 75%
+                    else if (groupLabels.Contains(parts[0]) && parts.Count == 4 && currentVariable != null)
+                    {
+                        string group = parts[0];
+                        results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
+                {
+                    { "25", parts[1] },
+                    { "50", parts[2] },
+                    { "75", parts[3] }
+                };
+                    }
+                }
+            }
+
+            return results.Values.ToList();
+        }
 
 
 
@@ -1134,6 +1253,84 @@ OMSEND.
                         // Assign once only
                         if (param.ChiSquareBlock == null)
                             param.ChiSquareBlock = block;
+                    }
+                }
+            }
+        }
+
+        public static void ParseUnifiedOutput_Percentiles(
+    string outputText,
+    List<StatTable> tables)
+        {
+            foreach (var table in tables)
+            {
+                // collect scale parameter names for this table
+                var scaleParamNames = table.GetNonGroupParameters()
+                    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+                    .Select(p => p.Name)
+                    .ToList();
+
+                if (!scaleParamNames.Any())
+                    continue;
+
+                var groupParams = table.GetGroupParameters();
+
+                // If there are no group parameters, parse once without groups
+               
+
+                // For each group parameter separately
+                foreach (var g in groupParams)
+                {
+                    // build ordered distinct labels from raw values
+                    var seen = new HashSet<string>();
+                    var orderedRawDistinct = new List<string>();
+                    foreach (var raw in g.RawValues ?? Enumerable.Empty<string>())
+                    {
+                        if (string.IsNullOrWhiteSpace(raw)) continue;
+                        if (raw == ".") continue;
+                        if (seen.Add(raw))
+                            orderedRawDistinct.Add(raw);
+                    }
+
+                    var groupLabels = new List<string>();
+                    foreach (var raw in orderedRawDistinct)
+                    {
+                        string chosen = null;
+
+                        if (double.TryParse(raw, out double d))
+                        {
+                            int code = (int)d;
+                            if (g.ValueLabels != null && g.ValueLabels.TryGetValue(code, out var mappedLabel))
+                            {
+                                if (!string.Equals(mappedLabel, code.ToString(), StringComparison.OrdinalIgnoreCase))
+                                    chosen = mappedLabel;
+                            }
+
+                            if (chosen == null)
+                                chosen = d.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            chosen = raw;
+                        }
+
+                        if (!groupLabels.Contains(chosen))
+                            groupLabels.Add(chosen);
+                    }
+
+                    // call the percentile parser for this group
+                    var percResultsForThisGroup = ParseTukeyHingesOnly_CGPT(outputText, scaleParamNames, groupLabels , g.Name);
+                    
+                    foreach (var perc in percResultsForThisGroup)
+                    {
+                        var param = table.GetParameterByName(perc.VariableName);
+                        if (param == null) continue;
+
+                        if (param.PercentileStats == null)
+                            param.PercentileStats = new Dictionary<string, SPSSUnifiedRunner.PercentileResult>();
+
+                        // store this PercentileResult under the group parameter name
+                        param.PercentileStats[g.Name] = perc;
                     }
                 }
             }

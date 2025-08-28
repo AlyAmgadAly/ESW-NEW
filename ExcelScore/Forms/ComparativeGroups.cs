@@ -5395,6 +5395,16 @@ namespace ExcelScore.Forms
 
             SPSSUnifiedRunner.ParseUnifiedOutput_Descriptives(outputText, StatTables);
 
+            SPSSUnifiedRunner.ParseUnifiedOutput_Percentiles(outputText, StatTables);
+
+            //List<string> groupLabels = new List<string>() { "Patient" , "Control" , "3.00" , "4.00" };
+            //List<string> vars = new  List<string>() { "Age" };
+
+            //var result = SPSSUnifiedRunner.ParseTukeyTukeyHingesOnly(outputText, vars, groupLabels, "Groups");
+            
+            
+
+
             //pythonStat.InitPython();
 
             document = wordObj.InitWord();
