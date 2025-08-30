@@ -525,7 +525,7 @@ OMSEND.
         public class PercentileResult
         {
             public string VariableName { get; set; }
-            public Dictionary<string, Dictionary<string, string>> GroupPercentiles { get; set; } = new();
+            public Dictionary<string, Dictionary<string, Dictionary< string,string>>> GroupPercentiles { get; set; } = new();
             public Dictionary<string, string> TotalPercentiles { get; set; } = new();
         }
         public class ParameterAnalysisResult
@@ -941,283 +941,167 @@ OMSEND.
 
 
 
-        public static List<PercentileResult> ParseTukeyHingesOnly_CGPT(
-    string rawText,
-    List<string> variableNames,
-    List<string> groupLabels,
-    string groupSectionName)
-        {
-            var results = variableNames.ToDictionary(
-                v => v,
-                v => new PercentileResult { VariableName = v });
-
-            var lines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-            string currentSection = null;      // "Total" or "Groups"
-            string currentVariable = null;
-            bool inPercentileBlock = false;
-            bool inTukey = false;
-
-            foreach (string raw in lines)
-            {
-                string line = raw.Trim();
-                if (string.IsNullOrWhiteSpace(line))
-                    continue;
-
-                // --- Detect blocks ---
-                if (line.StartsWith("Percentiles"))
-                {
-                    inPercentileBlock = true;
-                    continue;
-                }
-                if (!inPercentileBlock)
-                    continue;
-
-                if (line.StartsWith("Total Sample"))
-                {
-                    currentSection = "Total";
-                    currentVariable = null;
-                    continue;
-                }
-                if (line.StartsWith(groupSectionName))
-                {
-                    currentSection = "Groups";
-                    currentVariable = null;
-                    continue;
-                }
-
-                // --- Detect Tukey start/end ---
-                if (line.StartsWith("Tukey's Hinges"))
-                {
-                    inTukey = true;
-                    line = line.Substring("Tukey's Hinges".Length).Trim();
-                }
-                else if (line.StartsWith("Weighted") || line.StartsWith("Average") || line.StartsWith("Explore"))
-                {
-                    inTukey = false;
-                    continue;
-                }
-
-                if (!inTukey || string.IsNullOrEmpty(line))
-                    continue;
-
-                // --- Parse line ---
-                var parts = Regex.Split(line, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
-                if (parts.Count == 0) continue;
-
-                if (currentSection == "Total")
-                {
-                    // Format: <Variable> 25% 50% 75%  OR just 25% 50% 75%
-                    if (variableNames.Contains(parts[0]) && parts.Count == 4)
-                    {
-                        currentVariable = parts[0];
-                        results[currentVariable].TotalPercentiles = new Dictionary<string, string>
-                {
-                    { "25", parts[1] },
-                    { "50", parts[2] },
-                    { "75", parts[3] }
-                };
-                    }
-                    else if (parts.Count == 3 && currentVariable != null)
-                    {
-                        results[currentVariable].TotalPercentiles = new Dictionary<string, string>
-                {
-                    { "25", parts[0] },
-                    { "50", parts[1] },
-                    { "75", parts[2] }
-                };
-                    }
-                }
-                else if (currentSection == "Groups")
-                {
-                    // Format A: <Variable> <Group> 25% 50% 75%
-                    if (variableNames.Contains(parts[0]) && groupLabels.Contains(parts[1]) && parts.Count == 5)
-                    {
-                        currentVariable = parts[0];
-                        string group = parts[1];
-                        results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
-                {
-                    { "25", parts[2] },
-                    { "50", parts[3] },
-                    { "75", parts[4] }
-                };
-                    }
-                    // Format B: <Group> 25% 50% 75%
-                    else if (groupLabels.Contains(parts[0]) && parts.Count == 4 && currentVariable != null)
-                    {
-                        string group = parts[0];
-                        results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
-                {
-                    { "25", parts[1] },
-                    { "50", parts[2] },
-                    { "75", parts[3] }
-                };
-                    }
-                }
-            }
-
-            return results.Values.ToList();
-        }
+       
 
 
 
-        public static List<PercentileResult> ParseTukeyTukeyHingesOnly(
-            string rawText,
-            List<string> variableNames,
-            List<string> groupLabels,
-            string groupSectionName)
-        {
-            var results = variableNames.ToDictionary(v => v, v => new PercentileResult { VariableName = v });
-            var lines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            string currentSection = null;
-            string currentVariable = null;
-            bool inTukey = false;
-            bool inPercentileBlock = false;
-            foreach (string raw in lines)
-            {
-                string line = raw.Trim();
-                if (string.IsNullOrWhiteSpace(line))
-                    continue;
-                if (line.StartsWith("Percentiles"))
-                {
-                    inPercentileBlock = true;
-                    continue;
-                }
-                if (line.StartsWith("Total Sample"))
-                {
-                    currentSection = "Total";
-                    currentVariable = null;
-                    continue;
-                }
-                if (line.StartsWith(groupSectionName))
-                {
-                    currentSection = "Groups";
-                    currentVariable = null;
-                    continue;
-                }
-                if (!inPercentileBlock)
-                    continue;
-                if (line.StartsWith("Tukey's Hinges"))
-                {
-                    inTukey = true;
-                    string afterHeader = line.Substring("Tukey's Hinges".Length).Trim();
-                    if (!string.IsNullOrEmpty(afterHeader))
-                    {
-                        string workingLine = afterHeader;
-                        var parts = Regex.Split(workingLine, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
-                        if (parts.Count > 0)
-                        {
-                            if (currentSection == "Total")
-                            {
-                                if (variableNames.Contains(parts[0]) && parts.Count == 4)
-                                {
-                                    currentVariable = parts[0];
-                                    results[currentVariable].TotalPercentiles = new Dictionary<string, string>
-                                    {
-                                        { "25", parts[1] },
-                                        { "50", parts[2] },
-                                        { "75", parts[3] }
-                                    };
-                                }
-                                else if (parts.Count == 4 && currentVariable != null)
-                                {
-                                    results[currentVariable].TotalPercentiles = new Dictionary<string, string>
-                                    {
-                                        { "25", parts[1] },
-                                        { "50", parts[2] },
-                                        { "75", parts[3] }
-                                    };
-                                }
-                            }
-                            else if (currentSection == "Groups")
-                            {
-                                if (variableNames.Contains(parts[0]) && groupLabels.Contains(parts[1]) && parts.Count == 5)
-                                {
-                                    currentVariable = parts[0];
-                                    string group = parts[1];
-                                    results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
-                                    {
-                                        { "25", parts[2] },
-                                        { "50", parts[3] },
-                                        { "75", parts[4] }
-                                    };
-                                }
-                                else if (groupLabels.Contains(parts[0]) && parts.Count == 4 && currentVariable != null)
-                                {
-                                    string group = parts[0];
-                                    results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
-                                    {
-                                        { "25", parts[1] },
-                                        { "50", parts[2] },
-                                        { "75", parts[3] }
-                                    };
-                                }
-                            }
-                        }
-                    }
-                    continue;
-                }
-                if (line.StartsWith("Weighted") || line.StartsWith("Average(Definition 1)") || line.StartsWith("Explore"))
-                {
-                    inTukey = false;
-                    continue;
-                }
-                if (!inTukey)
-                    continue;
-                string workingLine2 = line;
-                if (workingLine2.StartsWith("Tukey's Hinges"))
-                    workingLine2 = workingLine2.Substring("Tukey's Hinges".Length).Trim();
-                var parts2 = Regex.Split(workingLine2, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
-                if (parts2.Count == 0) continue;
-                if (currentSection == "Total")
-                {
-                    if (variableNames.Contains(parts2[0]) && parts2.Count == 4)
-                    {
-                        currentVariable = parts2[0];
-                        results[currentVariable].TotalPercentiles = new Dictionary<string, string>
-                        {
-                            { "25", parts2[1] },
-                            { "50", parts2[2] },
-                            { "75", parts2[3] }
-                        };
-                    }
-                    else if (parts2.Count == 4 && currentVariable != null)
-                    {
-                        results[currentVariable].TotalPercentiles = new Dictionary<string, string>
-                        {
-                            { "25", parts2[1] },
-                            { "50", parts2[2] },
-                            { "75", parts2[3] }
-                        };
-                    }
-                }
-                else if (currentSection == "Groups")
-                {
-                    if (variableNames.Contains(parts2[0]) && groupLabels.Contains(parts2[1]) && parts2.Count == 5)
-                    {
-                        currentVariable = parts2[0];
-                        string group = parts2[1];
-                        results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
-                        {
-                            { "25", parts2[2] },
-                            { "50", parts2[3] },
-                            { "75", parts2[4] }
-                        };
-                    }
-                    else if (groupLabels.Contains(parts2[0]) && parts2.Count == 4 && currentVariable != null)
-                    {
-                        string group = parts2[0];
-                        results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
-                        {
-                            { "25", parts2[1] },
-                            { "50", parts2[2] },
-                            { "75", parts2[3] }
-                        };
-                    }
-                }
-            }
-            return results.Values.ToList();
-        }
+        //public static List<PercentileResult> ParseTukeyTukeyHingesOnly(
+        //    string rawText,
+        //    List<string> variableNames,
+        //    List<string> groupLabels,
+        //    string groupSectionName)
+        //{
+        //    var results = variableNames.ToDictionary(v => v, v => new PercentileResult { VariableName = v });
+        //    var lines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        //    string currentSection = null;
+        //    string currentVariable = null;
+        //    bool inTukey = false;
+        //    bool inPercentileBlock = false;
+        //    foreach (string raw in lines)
+        //    {
+        //        string line = raw.Trim();
+        //        if (string.IsNullOrWhiteSpace(line))
+        //            continue;
+        //        if (line.StartsWith("Percentiles"))
+        //        {
+        //            inPercentileBlock = true;
+        //            continue;
+        //        }
+        //        if (line.StartsWith("Total Sample"))
+        //        {
+        //            currentSection = "Total";
+        //            currentVariable = null;
+        //            continue;
+        //        }
+        //        if (line.StartsWith(groupSectionName))
+        //        {
+        //            currentSection = "Groups";
+        //            currentVariable = null;
+        //            continue;
+        //        }
+        //        if (!inPercentileBlock)
+        //            continue;
+        //        if (line.StartsWith("Tukey's Hinges"))
+        //        {
+        //            inTukey = true;
+        //            string afterHeader = line.Substring("Tukey's Hinges".Length).Trim();
+        //            if (!string.IsNullOrEmpty(afterHeader))
+        //            {
+        //                string workingLine = afterHeader;
+        //                var parts = Regex.Split(workingLine, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+        //                if (parts.Count > 0)
+        //                {
+        //                    if (currentSection == "Total")
+        //                    {
+        //                        if (variableNames.Contains(parts[0]) && parts.Count == 4)
+        //                        {
+        //                            currentVariable = parts[0];
+        //                            results[currentVariable].TotalPercentiles = new Dictionary<string, string>
+        //                            {
+        //                                { "25", parts[1] },
+        //                                { "50", parts[2] },
+        //                                { "75", parts[3] }
+        //                            };
+        //                        }
+        //                        else if (parts.Count == 4 && currentVariable != null)
+        //                        {
+        //                            results[currentVariable].TotalPercentiles = new Dictionary<string, string>
+        //                            {
+        //                                { "25", parts[1] },
+        //                                { "50", parts[2] },
+        //                                { "75", parts[3] }
+        //                            };
+        //                        }
+        //                    }
+        //                    else if (currentSection == "Groups")
+        //                    {
+        //                        if (variableNames.Contains(parts[0]) && groupLabels.Contains(parts[1]) && parts.Count == 5)
+        //                        {
+        //                            currentVariable = parts[0];
+        //                            string group = parts[1];
+        //                            results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
+        //                            {
+        //                                { "25", parts[2] },
+        //                                { "50", parts[3] },
+        //                                { "75", parts[4] }
+        //                            };
+        //                        }
+        //                        else if (groupLabels.Contains(parts[0]) && parts.Count == 4 && currentVariable != null)
+        //                        {
+        //                            string group = parts[0];
+        //                            results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
+        //                            {
+        //                                { "25", parts[1] },
+        //                                { "50", parts[2] },
+        //                                { "75", parts[3] }
+        //                            };
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            continue;
+        //        }
+        //        if (line.StartsWith("Weighted") || line.StartsWith("Average(Definition 1)") || line.StartsWith("Explore"))
+        //        {
+        //            inTukey = false;
+        //            continue;
+        //        }
+        //        if (!inTukey)
+        //            continue;
+        //        string workingLine2 = line;
+        //        if (workingLine2.StartsWith("Tukey's Hinges"))
+        //            workingLine2 = workingLine2.Substring("Tukey's Hinges".Length).Trim();
+        //        var parts2 = Regex.Split(workingLine2, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+        //        if (parts2.Count == 0) continue;
+        //        if (currentSection == "Total")
+        //        {
+        //            if (variableNames.Contains(parts2[0]) && parts2.Count == 4)
+        //            {
+        //                currentVariable = parts2[0];
+        //                results[currentVariable].TotalPercentiles = new Dictionary<string, string>
+        //                {
+        //                    { "25", parts2[1] },
+        //                    { "50", parts2[2] },
+        //                    { "75", parts2[3] }
+        //                };
+        //            }
+        //            else if (parts2.Count == 4 && currentVariable != null)
+        //            {
+        //                results[currentVariable].TotalPercentiles = new Dictionary<string, string>
+        //                {
+        //                    { "25", parts2[1] },
+        //                    { "50", parts2[2] },
+        //                    { "75", parts2[3] }
+        //                };
+        //            }
+        //        }
+        //        else if (currentSection == "Groups")
+        //        {
+        //            if (variableNames.Contains(parts2[0]) && groupLabels.Contains(parts2[1]) && parts2.Count == 5)
+        //            {
+        //                currentVariable = parts2[0];
+        //                string group = parts2[1];
+        //                results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
+        //                {
+        //                    { "25", parts2[2] },
+        //                    { "50", parts2[3] },
+        //                    { "75", parts2[4] }
+        //                };
+        //            }
+        //            else if (groupLabels.Contains(parts2[0]) && parts2.Count == 4 && currentVariable != null)
+        //            {
+        //                string group = parts2[0];
+        //                results[currentVariable].GroupPercentiles[group] = new Dictionary<string, string>
+        //                {
+        //                    { "25", parts2[1] },
+        //                    { "50", parts2[2] },
+        //                    { "75", parts2[3] }
+        //                };
+        //            }
+        //        }
+        //    }
+        //    return results.Values.ToList();
+        //}
 
         public static void ParseUnifiedOutput_Crosstabs(
      string outputText,
@@ -1257,84 +1141,163 @@ OMSEND.
                 }
             }
         }
+        //public static void ParsePercentiles(List<StatTable> tables, string rawText)
+        //{
+        //    var lines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        //    StatParameter currentParam = null;
+        //    bool inTotalBlock = false;
+        //    bool inGroupBlock = false;
 
-        public static void ParseUnifiedOutput_Percentiles(
-    string outputText,
-    List<StatTable> tables)
-        {
-            foreach (var table in tables)
-            {
-                // collect scale parameter names for this table
-                var scaleParamNames = table.GetNonGroupParameters()
-                    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
-                    .Select(p => p.Name)
-                    .ToList();
+        //    foreach (var line in lines)
+        //    {
+        //        // --- Detect start of a TOTAL block ---
+        //        if (line.Contains("Tukey's Hinges"))
+        //        {
+        //            // Example: "Tukey's Hinges Age     8.0000   11.0000   14.0000"
+        //            var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        //            if (parts.Length == 6)
+        //            {
+        //                string varName = parts[2];
 
-                if (!scaleParamNames.Any())
-                    continue;
+        //                // find parameter in our tables
+        //                currentParam = tables
+        //                    .SelectMany(t => t.Parameters)
+        //                    .FirstOrDefault(p => p.Name == varName && p.Type == "Scale");
 
-                var groupParams = table.GetGroupParameters();
+        //                if (currentParam == null) continue;
 
-                // If there are no group parameters, parse once without groups
+        //                // Reset flags
+        //                inTotalBlock = true;
+        //                inGroupBlock = false;
+
+        //                // Prepare PercentileResult
+        //                var result = new SPSSUnifiedRunner.PercentileResult
+        //                {
+        //                    VariableName = varName
+        //                };
+
+        //                result.TotalPercentiles["25"] = parts[3];
+        //                result.TotalPercentiles["50"] = parts[4];
+        //                result.TotalPercentiles["75"] = parts[5];
+
+        //                currentParam.PercentileStats["Total"] = result;
+        //            }
+        //        }
+
+        //        // --- Detect start of a GROUP block ---
+        //        else if (line.Contains("Tukey's Hinges") && currentParam != null)
+        //        {
+        //            // Example: "Age  Patient  Tukey's Hinges   8.0000   10.0000   14.0000"
+        //            var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        //            if (parts.Length >= 6)
+        //            {
+        //                string varName = parts[0];
+        //                string groupLabel = parts[1];
+
+        //                // Switch to group mode
+        //                inTotalBlock = false;
+        //                inGroupBlock = true;
+
+        //                // Ensure group PercentileResult exists
+        //                if (!currentParam.PercentileStats.ContainsKey("Groups"))
+        //                {
+        //                    currentParam.PercentileStats["Groups"] = new SPSSUnifiedRunner.PercentileResult
+        //                    {
+        //                        VariableName = varName
+        //                    };
+        //                }
+
+        //                var groupResult = currentParam.PercentileStats["Groups"];
+
+        //                groupResult.GroupPercentiles[groupLabel] = new Dictionary<string, string>
+        //        {
+        //            { "25", parts[3] },
+        //            { "50", parts[4] },
+        //            { "75", parts[5] }
+        //        };
+        //            }
+        //        }
+        //    }
+        //}
+
+
+    //    public static void ParseUnifiedOutput_Percentiles(
+    //string outputText,
+    //List<StatTable> tables)
+    //    {
+    //        foreach (var table in tables)
+    //        {
+    //            // collect scale parameter names for this table
+    //            var scaleParamNames = table.GetNonGroupParameters()
+    //                .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+    //                .Select(p => p.Name)
+    //                .ToList();
+
+    //            if (!scaleParamNames.Any())
+    //                continue;
+
+    //            var groupParams = table.GetGroupParameters();
+
+    //            // If there are no group parameters, parse once without groups
                
 
-                // For each group parameter separately
-                foreach (var g in groupParams)
-                {
-                    // build ordered distinct labels from raw values
-                    var seen = new HashSet<string>();
-                    var orderedRawDistinct = new List<string>();
-                    foreach (var raw in g.RawValues ?? Enumerable.Empty<string>())
-                    {
-                        if (string.IsNullOrWhiteSpace(raw)) continue;
-                        if (raw == ".") continue;
-                        if (seen.Add(raw))
-                            orderedRawDistinct.Add(raw);
-                    }
+    //            // For each group parameter separately
+    //            foreach (var g in groupParams)
+    //            {
+    //                // build ordered distinct labels from raw values
+    //                var seen = new HashSet<string>();
+    //                var orderedRawDistinct = new List<string>();
+    //                foreach (var raw in g.RawValues ?? Enumerable.Empty<string>())
+    //                {
+    //                    if (string.IsNullOrWhiteSpace(raw)) continue;
+    //                    if (raw == ".") continue;
+    //                    if (seen.Add(raw))
+    //                        orderedRawDistinct.Add(raw);
+    //                }
 
-                    var groupLabels = new List<string>();
-                    foreach (var raw in orderedRawDistinct)
-                    {
-                        string chosen = null;
+    //                var groupLabels = new List<string>();
+    //                foreach (var raw in orderedRawDistinct)
+    //                {
+    //                    string chosen = null;
 
-                        if (double.TryParse(raw, out double d))
-                        {
-                            int code = (int)d;
-                            if (g.ValueLabels != null && g.ValueLabels.TryGetValue(code, out var mappedLabel))
-                            {
-                                if (!string.Equals(mappedLabel, code.ToString(), StringComparison.OrdinalIgnoreCase))
-                                    chosen = mappedLabel;
-                            }
+    //                    if (double.TryParse(raw, out double d))
+    //                    {
+    //                        int code = (int)d;
+    //                        if (g.ValueLabels != null && g.ValueLabels.TryGetValue(code, out var mappedLabel))
+    //                        {
+    //                            if (!string.Equals(mappedLabel, code.ToString(), StringComparison.OrdinalIgnoreCase))
+    //                                chosen = mappedLabel;
+    //                        }
 
-                            if (chosen == null)
-                                chosen = d.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-                        }
-                        else
-                        {
-                            chosen = raw;
-                        }
+    //                        if (chosen == null)
+    //                            chosen = d.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+    //                    }
+    //                    else
+    //                    {
+    //                        chosen = raw;
+    //                    }
 
-                        if (!groupLabels.Contains(chosen))
-                            groupLabels.Add(chosen);
-                    }
+    //                    if (!groupLabels.Contains(chosen))
+    //                        groupLabels.Add(chosen);
+    //                }
 
-                    // call the percentile parser for this group
-                    var percResultsForThisGroup = ParseTukeyHingesOnly_CGPT(outputText, scaleParamNames, groupLabels , g.Name);
+    //                // call the percentile parser for this group
+    //                var percResultsForThisGroup = ParseTukeyHingesOnly_CGPT(outputText, scaleParamNames, groupLabels , g.Name);
                     
-                    foreach (var perc in percResultsForThisGroup)
-                    {
-                        var param = table.GetParameterByName(perc.VariableName);
-                        if (param == null) continue;
+    //                foreach (var perc in percResultsForThisGroup)
+    //                {
+    //                    var param = table.GetParameterByName(perc.VariableName);
+    //                    if (param == null) continue;
 
-                        if (param.PercentileStats == null)
-                            param.PercentileStats = new Dictionary<string, SPSSUnifiedRunner.PercentileResult>();
+    //                    if (param.PercentileStats == null)
+    //                        param.PercentileStats = new Dictionary<string, SPSSUnifiedRunner.PercentileResult>();
 
-                        // store this PercentileResult under the group parameter name
-                        param.PercentileStats[g.Name] = perc;
-                    }
-                }
-            }
-        }
+    //                    // store this PercentileResult under the group parameter name
+    //                    param.PercentileStats[g.Name] = perc;
+    //                }
+    //            }
+    //        }
+    //    }
 
 
         public static void ParseUnifiedOutput_Descriptives(
@@ -1447,63 +1410,63 @@ OMSEND.
        
 
 
-        public static List<ParameterAnalysisResult> ParseUnifiedOutput(
-            string outputText,
-            string groupVar,
-            List<(string Name, string Type)> parameters,
-            List<string> groupLabels)
-        {
-            var nominalVars = parameters.Where(p => p.Type == "Nominal").Select(p => p.Name).ToList();
-            var scaleVars = parameters.Where(p => p.Type == "Scale").Select(p => p.Name).ToList();
-            var allResults = new List<ParameterAnalysisResult>();
-            var chiBlocks = ParseMultipleCrosstabBlocks(outputText, groupVar);
-            foreach (var block in chiBlocks)
-            {
-                if (nominalVars.Contains(block.RowVariable))
-                {
-                    allResults.Add(new ParameterAnalysisResult
-                    {
-                        VariableName = block.RowVariable,
-                        Type = "Nominal",
-                        GroupVariable = groupVar,
-                        ChiSquareBlock = block
-                    });
-                }
-            }
-            var descResults = ParseDescriptiveOutput_Smart(outputText, scaleVars, groupLabels);
-            foreach (var desc in descResults)
-            {
-                var result = allResults.FirstOrDefault(r => r.VariableName == desc.VariableName);
-                if (result == null)
-                {
-                    result = new ParameterAnalysisResult
-                    {
-                        VariableName = desc.VariableName,
-                        Type = "Scale",
-                        GroupVariable = groupVar
-                    };
-                    allResults.Add(result);
-                }
-                result.Descriptives = desc;
-            }
-            var tukeyResults = ParseTukeyTukeyHingesOnly(outputText, scaleVars, groupLabels, "Groups");
-            foreach (var tukey in tukeyResults)
-            {
-                var result = allResults.FirstOrDefault(r => r.VariableName == tukey.VariableName);
-                if (result == null)
-                {
-                    result = new ParameterAnalysisResult
-                    {
-                        VariableName = tukey.VariableName,
-                        Type = "Scale",
-                        GroupVariable = groupVar
-                    };
-                    allResults.Add(result);
-                }
-                result.Percentiles = tukey;
-            }
-            return allResults;
-        }
+        //public static List<ParameterAnalysisResult> ParseUnifiedOutput(
+        //    string outputText,
+        //    string groupVar,
+        //    List<(string Name, string Type)> parameters,
+        //    List<string> groupLabels)
+        //{
+        //    var nominalVars = parameters.Where(p => p.Type == "Nominal").Select(p => p.Name).ToList();
+        //    var scaleVars = parameters.Where(p => p.Type == "Scale").Select(p => p.Name).ToList();
+        //    var allResults = new List<ParameterAnalysisResult>();
+        //    var chiBlocks = ParseMultipleCrosstabBlocks(outputText, groupVar);
+        //    foreach (var block in chiBlocks)
+        //    {
+        //        if (nominalVars.Contains(block.RowVariable))
+        //        {
+        //            allResults.Add(new ParameterAnalysisResult
+        //            {
+        //                VariableName = block.RowVariable,
+        //                Type = "Nominal",
+        //                GroupVariable = groupVar,
+        //                ChiSquareBlock = block
+        //            });
+        //        }
+        //    }
+        //    var descResults = ParseDescriptiveOutput_Smart(outputText, scaleVars, groupLabels);
+        //    foreach (var desc in descResults)
+        //    {
+        //        var result = allResults.FirstOrDefault(r => r.VariableName == desc.VariableName);
+        //        if (result == null)
+        //        {
+        //            result = new ParameterAnalysisResult
+        //            {
+        //                VariableName = desc.VariableName,
+        //                Type = "Scale",
+        //                GroupVariable = groupVar
+        //            };
+        //            allResults.Add(result);
+        //        }
+        //        result.Descriptives = desc;
+        //    }
+        //    var tukeyResults = ParseTukeyTukeyHingesOnly(outputText, scaleVars, groupLabels, "Groups");
+        //    foreach (var tukey in tukeyResults)
+        //    {
+        //        var result = allResults.FirstOrDefault(r => r.VariableName == tukey.VariableName);
+        //        if (result == null)
+        //        {
+        //            result = new ParameterAnalysisResult
+        //            {
+        //                VariableName = tukey.VariableName,
+        //                Type = "Scale",
+        //                GroupVariable = groupVar
+        //            };
+        //            allResults.Add(result);
+        //        }
+        //        result.Percentiles = tukey;
+        //    }
+        //    return allResults;
+        //}
 
         //public static List<ParameterAnalysisResult> RunAllFromUnifiedSyntax(
         //    string groupVar,
