@@ -5395,7 +5395,8 @@ namespace ExcelScore.Forms
 
             SPSSUnifiedRunner.ParseUnifiedOutput_Descriptives(outputText, StatTables);
 
-            //SPSSUnifiedRunner.ParsePercentiles(StatTables, outputText);
+            var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            SPSSUnifiedRunner.ParsePercentiles(StatTables, lines);
 
             //List<string> groupLabels = new List<string>() { "Patient" , "Control" , "3.00" , "4.00" };
             //List<string> vars = new  List<string>() { "Age" };

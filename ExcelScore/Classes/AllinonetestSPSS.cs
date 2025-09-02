@@ -1122,13 +1122,16 @@ OMSEND.
 
 
                         // We entered the block for this table
-                        for (int j = i + 1; j < spssOutputLines.Count; j++)
+                        for (int j = i + 1; j < spssOutputLines.Count;j++)
                         {
                             string innerLine = spssOutputLines[j];
+                            //string[] parts = innerLine.Split(' ');
 
-                            if(line.Contains("Tukey's Hinges"))
+
+                            var parts = Regex.Split(innerLine, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+                            if (parts.Contains("Tukey's Hinges") && parts.Count == 6)
                             {
-                                string[] parts = innerLine.Split(' ');
+                                
                                 string currentparametername = parts[2];
 
                                 var currentparameter = table.GetParameterByName(currentparametername);
@@ -1146,7 +1149,20 @@ OMSEND.
                                 for(int k = j+1;k < spssOutputLines.Count;k++)
                                 {
                                     string newline = spssOutputLines[k];
+                                    parts = Regex.Split(newline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
                                     bool found = ScaleParamsNames.Any(s=> newline.Contains(s));
+
+                                    if(found)
+                                    {
+                                        
+                                        currentparametername = parts[0];
+
+                                        currentparameter = table.GetParameterByName(currentparametername);
+
+                                        currentparameter.PercentileStats.TotalPercentiles["25"] = parts[3];
+                                        currentparameter.PercentileStats.TotalPercentiles["50"] = parts[4];
+                                        currentparameter.PercentileStats.TotalPercentiles["75"] = parts[5];
+                                    }
 
                                 }
 
@@ -1154,11 +1170,6 @@ OMSEND.
 
                             }
 
-
-
-                            // exit condition
-                            if (string.IsNullOrWhiteSpace(innerLine) || innerLine.StartsWith("Groups"))
-                                break;
 
                             // process innerLine here
                         }
