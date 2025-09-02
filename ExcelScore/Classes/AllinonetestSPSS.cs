@@ -1118,19 +1118,43 @@ OMSEND.
                             .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
                             .ToList();
 
+                        List<string> ScaleParamsNames = ScaleParams.Select(p => p.Name).ToList();
 
-                        foreach (var scale in ScaleParams)
-                        {
-                            var result = new SPSSUnifiedRunner.PercentileResult
-                            {
-                                VariableName = scale.Name
-                            };
-                        }
 
                         // We entered the block for this table
                         for (int j = i + 1; j < spssOutputLines.Count; j++)
                         {
                             string innerLine = spssOutputLines[j];
+
+                            if(line.Contains("Tukey's Hinges"))
+                            {
+                                string[] parts = innerLine.Split(' ');
+                                string currentparametername = parts[2];
+
+                                var currentparameter = table.GetParameterByName(currentparametername);
+
+                                currentparameter.PercentileStats.VariableName = currentparametername;
+
+                                currentparameter.PercentileStats.TotalPercentiles["25"] = parts[3];
+                                currentparameter.PercentileStats.TotalPercentiles["50"] = parts[4];
+                                currentparameter.PercentileStats.TotalPercentiles["75"] = parts[5];
+
+                                //j++;
+
+                                
+
+                                for(int k = j+1;k < spssOutputLines.Count;k++)
+                                {
+                                    string newline = spssOutputLines[k];
+                                    bool found = ScaleParamsNames.Any(s=> newline.Contains(s));
+
+                                }
+
+
+
+                            }
+
+
 
                             // exit condition
                             if (string.IsNullOrWhiteSpace(innerLine) || innerLine.StartsWith("Groups"))
