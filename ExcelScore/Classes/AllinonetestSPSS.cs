@@ -941,7 +941,7 @@ OMSEND.
 
 
 
-       
+
 
 
 
@@ -1102,6 +1102,66 @@ OMSEND.
         //    }
         //    return results.Values.ToList();
         //}
+
+        public static void ParsePercentiles(List<StatTable> tables, List<string> spssOutputLines)
+        {
+
+            for (int i = 0; i < spssOutputLines.Count; i++)
+            {
+                string line = spssOutputLines[i];
+
+                foreach (var table in tables)
+                {
+                    if (line == table.TableName)
+                    {
+                        var ScaleParams = table.GetNonGroupParameters()
+                            .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+
+
+                        foreach (var scale in ScaleParams)
+                        {
+                            var result = new SPSSUnifiedRunner.PercentileResult
+                            {
+                                VariableName = scale.Name
+                            };
+                        }
+
+                        // We entered the block for this table
+                        for (int j = i + 1; j < spssOutputLines.Count; j++)
+                        {
+                            string innerLine = spssOutputLines[j];
+
+                            // exit condition
+                            if (string.IsNullOrWhiteSpace(innerLine) || innerLine.StartsWith("Groups"))
+                                break;
+
+                            // process innerLine here
+                        }
+                    }
+                }
+            }
+
+
+            //var mytable = tables.FirstOrDefault(t => t.TableName == "YourTableName");
+
+            //var groupParams = table.GetGroupParameters();
+
+
+            //var scaleParamNames = table.GetNonGroupParameters()
+            //    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+            //    .ToList();
+
+            //foreach (var scale in scaleParamNames)
+            //{
+            //    var result = new SPSSUnifiedRunner.PercentileResult
+            //    {
+            //        VariableName = scale.Name
+            //    };
+            //}
+
+
+        }
 
         public static void ParseUnifiedOutput_Crosstabs(
      string outputText,
