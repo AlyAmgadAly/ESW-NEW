@@ -1129,7 +1129,7 @@ OMSEND.
 
 
                             var parts = Regex.Split(innerLine, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
-                            if (parts.Contains("Tukey's Hinges") && parts.Count == 6)
+                            if (parts.Count == 6 && (parts[0] + " " + parts[1]) == "Tukey's Hinges")
                             {
                                 
                                 string currentparametername = parts[2];
@@ -1150,7 +1150,13 @@ OMSEND.
                                 {
                                     string newline = spssOutputLines[k];
                                     parts = Regex.Split(newline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
-                                    bool found = ScaleParamsNames.Any(s=> newline.Contains(s));
+                                    bool found = false;
+
+                                    if (parts.Count > 0 && (ScaleParamsNames.Contains(parts[0])))
+                                    {
+                                        found = true;
+                                    }
+                                    
 
                                     if(found)
                                     {
@@ -1159,9 +1165,9 @@ OMSEND.
 
                                         currentparameter = table.GetParameterByName(currentparametername);
 
-                                        currentparameter.PercentileStats.TotalPercentiles["25"] = parts[3];
-                                        currentparameter.PercentileStats.TotalPercentiles["50"] = parts[4];
-                                        currentparameter.PercentileStats.TotalPercentiles["75"] = parts[5];
+                                        currentparameter.PercentileStats.TotalPercentiles["25"] = parts[1];
+                                        currentparameter.PercentileStats.TotalPercentiles["50"] = parts[2];
+                                        currentparameter.PercentileStats.TotalPercentiles["75"] = parts[3];
                                     }
 
                                 }
