@@ -1152,7 +1152,7 @@ OMSEND.
                                     parts = Regex.Split(newline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
                                     bool found = false;
 
-                                    if (parts.Count > 0 && (ScaleParamsNames.Contains(parts[0])))
+                                    if (parts.Count == 4 && ScaleParamsNames.Any(name => string.Equals(name, parts[0], StringComparison.OrdinalIgnoreCase)))
                                     {
                                         found = true;
                                     }
