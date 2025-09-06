@@ -1180,7 +1180,8 @@ OMSEND.
                                 //groups section
                                 string groupline = spssOutputLines[j - 4];
                                 var groupparts = Regex.Split(groupline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
-
+                                string GroupParameterName = groupparts.First(p => p != "Percentiles");
+                                var CurrentGroup = table.GetParameterByName(GroupParameterName);
 
 
                                 string currentparaname = parts[2];
@@ -1188,10 +1189,10 @@ OMSEND.
 
                                 var currentpara = table.GetParameterByName(currentparaname);
 
-                                
+
                                 //string currentparaname = parts[parts.Count - 4];
 
-
+                                //currentpara.PercentileStats.GroupPercentiles[GroupParameterName][]
 
 
                             }
