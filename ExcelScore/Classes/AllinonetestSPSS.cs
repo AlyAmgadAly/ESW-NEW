@@ -1175,6 +1175,26 @@ OMSEND.
 
 
                             }
+                            else if (parts.Count > 6 && (parts[0] + " " + parts[1]) == "Tukey's Hinges")
+                            {
+                                //groups section
+                                string groupline = spssOutputLines[j - 4];
+                                var groupparts = Regex.Split(groupline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+
+
+
+                                string currentparaname = parts[2];
+                                string GroupLabel = string.Join(" ", parts.Skip(3).Take(parts.Count - 6));
+
+                                var currentpara = table.GetParameterByName(currentparaname);
+
+                                
+                                //string currentparaname = parts[parts.Count - 4];
+
+
+
+
+                            }
 
 
                             // process innerLine here
