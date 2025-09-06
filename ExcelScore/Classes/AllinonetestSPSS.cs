@@ -1190,9 +1190,25 @@ OMSEND.
                                 var currentpara = table.GetParameterByName(currentparaname);
 
 
-                                //string currentparaname = parts[parts.Count - 4];
+                                // Ensure first-level key exists
+                                if (!currentpara.PercentileStats.GroupPercentiles.ContainsKey(GroupParameterName))
+                                {
+                                    currentpara.PercentileStats.GroupPercentiles[GroupParameterName]
+                                        = new Dictionary<string, Dictionary<string, string>>();
+                                }
 
-                                //currentpara.PercentileStats.GroupPercentiles[GroupParameterName][]
+                                // Ensure second-level key exists
+                                if (!currentpara.PercentileStats.GroupPercentiles[GroupParameterName].ContainsKey(GroupLabel))
+                                {
+                                    currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]
+                                        = new Dictionary<string, string>();
+                                }
+
+
+
+                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]["25"] = parts[parts.Count- 3];
+                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]["50"] = parts[parts.Count - 2];
+                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]["75"] = parts[parts.Count - 1];
 
 
                             }
