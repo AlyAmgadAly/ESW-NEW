@@ -1195,10 +1195,10 @@ OMSEND.
 
 
                                 string GroupParameterName = null;
-
-                                while (j >= 0)
+                                int newcount = j;
+                                while (newcount >= 0)
                                 {
-                                    string groupline = spssOutputLines[j];
+                                    string groupline = spssOutputLines[newcount];
                                     var groupparts = Regex.Split(groupline, @"\s+")
                                                           .Where(p => !string.IsNullOrWhiteSpace(p))
                                                           .ToList();
@@ -1215,7 +1215,7 @@ OMSEND.
                                         }
                                     }
 
-                                    j--; // keep going backwards
+                                    newcount--; // keep going backwards
                                 }
 
 
@@ -1273,11 +1273,12 @@ OMSEND.
                                         }
 
                                         // Ensure second-level key exists
-                                        if (!currentpara.PercentileStats.GroupPercentiles[GroupParameterName].ContainsKey(GroupLabel))
+                                        if (!currentpara.PercentileStats.GroupPercentiles[GroupParameterName].ContainsKey(newGroupLabel))
                                         {
                                             currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]
                                                 = new Dictionary<string, string>();
                                         }
+                                        
                                         currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["25"] = parts[parts.Count - 3];
                                         currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["50"] = parts[parts.Count - 2];
                                         currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["75"] = parts[parts.Count - 1];
