@@ -5384,7 +5384,53 @@ namespace ExcelScore.Forms
 
 
         }
-        
+
+        public static void PrintPercentiles(List<StatTable> tables)
+        {
+            foreach (var table in tables)
+            {
+                string output = $"Table: {table.TableName}\n";
+
+                foreach (var param in table.Parameters)
+                {
+                    output += $"\nParameter: {param.Name}";
+
+                    // --- Total percentiles ---
+                    if (param.PercentileStats?.TotalPercentiles?.Count > 0)
+                    {
+                        output += "\n  Total Percentiles:";
+                        foreach (var kv in param.PercentileStats.TotalPercentiles)
+                        {
+                            output += $"\n    {kv.Key}% = {kv.Value}";
+                        }
+                    }
+
+                    // --- Group percentiles ---
+                    if (param.PercentileStats?.GroupPercentiles?.Count > 0)
+                    {
+                        output += "\n  Group Percentiles:";
+                        foreach (var groupKvp in param.PercentileStats.GroupPercentiles)
+                        {
+                            string groupParam = groupKvp.Key;
+                            foreach (var labelKvp in groupKvp.Value)
+                            {
+                                string label = labelKvp.Key;
+                                output += $"\n    {groupParam} = {label}";
+
+                                foreach (var pKvp in labelKvp.Value)
+                                {
+                                    output += $"\n      {pKvp.Key}% = {pKvp.Value}";
+                                }
+                            }
+                        }
+                    }
+
+                    output += "\n";
+                }
+
+                MessageBox.Show(output, "Parsed Percentiles");
+            }
+        }
 
         private void btn_Done_Click(object sender, EventArgs e)
         {
@@ -5393,10 +5439,13 @@ namespace ExcelScore.Forms
 
             SPSSUnifiedRunner.ParseUnifiedOutput_Crosstabs(outputText, StatTables);
 
-            SPSSUnifiedRunner.ParseUnifiedOutput_Descriptives(outputText, StatTables);
+            //SPSSUnifiedRunner.ParseUnifiedOutput_Descriptives(outputText, StatTables);
 
-            var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            SPSSUnifiedRunner.ParsePercentiles(StatTables, lines);
+            //var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            //SPSSUnifiedRunner.ParsePercentiles(StatTables, lines);
+            
+
+
 
             //List<string> groupLabels = new List<string>() { "Patient" , "Control" , "3.00" , "4.00" };
             //List<string> vars = new  List<string>() { "Age" };

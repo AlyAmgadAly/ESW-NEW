@@ -443,7 +443,7 @@ OMSEND.
             try
             {
                 spssApp.Quit();
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(spssApp);
+                //System.Runtime.InteropServices.Marshal.ReleaseComObject(spssApp);
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             }
@@ -1108,217 +1108,219 @@ OMSEND.
         //    return results.Values.ToList();
         //}
 
-        public static void ParsePercentiles(List<StatTable> tables, List<string> spssOutputLines)
-        {
+        //public static void ParsePercentiles(List<StatTable> tables, List<string> spssOutputLines)
+        //{
 
-            for (int i = 0; i < spssOutputLines.Count; i++)
-            {
-                string line = spssOutputLines[i];
+        //    for (int i = 0; i < spssOutputLines.Count; i++)
+        //    {
+        //        string line = spssOutputLines[i];
 
-                foreach (var table in tables)
-                {
-                    if (line == table.TableName)
-                    {
-                        var ScaleParams = table.GetNonGroupParameters()
-                            .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
-                            .ToList();
+        //        foreach (var table in tables)
+        //        {
+        //            if (line == table.TableName)
+        //            {
+        //                var ScaleParams = table.GetNonGroupParameters()
+        //                    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+        //                    .ToList();
 
-                        List<string> ScaleParamsNames = ScaleParams.Select(p => p.Name).ToList();
-
-
-                        // We entered the block for this table
-                        for (int j = i + 1; j < spssOutputLines.Count;j++)
-                        {
-                            string innerLine = spssOutputLines[j];
-                            //string[] parts = innerLine.Split(' ');
+        //                List<string> ScaleParamsNames = ScaleParams.Select(p => p.Name).ToList();
 
 
-                            var parts = Regex.Split(innerLine, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
-                            if (parts.Count == 6 && (parts[0] + " " + parts[1]) == "Tukey's Hinges")
-                            {
+        //                // We entered the block for this table
+        //                for (int j = i + 1; j < spssOutputLines.Count;j++)
+        //                {
+        //                    string innerLine = spssOutputLines[j];
+        //                    //string[] parts = innerLine.Split(' ');
+
+
+        //                    var parts = Regex.Split(innerLine, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+        //                    if (parts.Count == 6 && (parts[0] + " " + parts[1]) == "Tukey's Hinges")
+        //                    {
                                 
-                                string currentparametername = parts[2];
+        //                        string currentparametername = parts[2];
 
-                                var currentparameter = table.GetParameterByName(currentparametername);
+        //                        var currentparameter = table.GetParameterByName(currentparametername);
 
-                                currentparameter.PercentileStats.VariableName = currentparametername;
+        //                        currentparameter.PercentileStats.VariableName = currentparametername;
 
-                                currentparameter.PercentileStats.TotalPercentiles["25"] = parts[3];
-                                currentparameter.PercentileStats.TotalPercentiles["50"] = parts[4];
-                                currentparameter.PercentileStats.TotalPercentiles["75"] = parts[5];
+        //                        currentparameter.PercentileStats.TotalPercentiles["25"] = parts[3];
+        //                        currentparameter.PercentileStats.TotalPercentiles["50"] = parts[4];
+        //                        currentparameter.PercentileStats.TotalPercentiles["75"] = parts[5];
 
-                                //j++;
+        //                        //j++;
 
                                 
 
-                                for(int k = j+1;k < spssOutputLines.Count;k++)
-                                {
-                                    string newline = spssOutputLines[k];
-                                    parts = Regex.Split(newline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
-                                    bool found = false;
+        //                        for(int k = j+1;k < spssOutputLines.Count;k++)
+        //                        {
+        //                            string newline = spssOutputLines[k];
+        //                            parts = Regex.Split(newline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+        //                            bool found = false;
 
-                                    if (parts.Count == 4 && ScaleParamsNames.Any(name => string.Equals(name, parts[0], StringComparison.OrdinalIgnoreCase)))
-                                    {
-                                        found = true;
-                                    }
+        //                            if (parts.Count == 4 && ScaleParamsNames.Any(name => string.Equals(name, parts[0], StringComparison.OrdinalIgnoreCase)))
+        //                            {
+        //                                found = true;
+        //                            }
                                     
 
-                                    if(found)
-                                    {
+        //                            if(found)
+        //                            {
                                         
-                                        currentparametername = parts[0];
+        //                                currentparametername = parts[0];
 
-                                        currentparameter = table.GetParameterByName(currentparametername);
+        //                                currentparameter = table.GetParameterByName(currentparametername);
 
-                                        currentparameter.PercentileStats.TotalPercentiles["25"] = parts[1];
-                                        currentparameter.PercentileStats.TotalPercentiles["50"] = parts[2];
-                                        currentparameter.PercentileStats.TotalPercentiles["75"] = parts[3];
-                                    }
+        //                                currentparameter.PercentileStats.TotalPercentiles["25"] = parts[1];
+        //                                currentparameter.PercentileStats.TotalPercentiles["50"] = parts[2];
+        //                                currentparameter.PercentileStats.TotalPercentiles["75"] = parts[3];
+        //                            }
 
-                                }
-
-
-
-                            }
-                            else if (parts.Count > 6 && (parts[0] + " " + parts[1]) == "Tukey's Hinges")
-                            {
-                                //groups section
-                                //problem here!!!!!!! line has to be  a word with percentile
-
-
-                                //string groupline = spssOutputLines[j - 4];
-                                //var groupparts = Regex.Split(groupline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
-
-                                //string GroupParameterName = groupparts.First(p => p != "Percentiles");
-
-                                //var CurrentGroup = table.GetParameterByName(GroupParameterName);
-
-
-                                string GroupParameterName = null;
-                                int newcount = j;
-                                while (newcount >= 0)
-                                {
-                                    string groupline = spssOutputLines[newcount];
-                                    var groupparts = Regex.Split(groupline, @"\s+")
-                                                          .Where(p => !string.IsNullOrWhiteSpace(p))
-                                                          .ToList();
-
-                                    if (groupparts.Count == 2 && groupparts.Contains("Percentiles"))
-                                    {
-                                        string candidate = groupparts.First(p => p != "Percentiles");
-
-                                        var param = table.GetParameterByName(candidate);
-                                        if (param != null && param.IsGroup)
-                                        {
-                                            GroupParameterName = candidate;
-                                            break; // found it
-                                        }
-                                    }
-
-                                    newcount--; // keep going backwards
-                                }
+        //                        }
 
 
 
-
-                                string currentparaname = parts[2];
-                                string GroupLabel = string.Join(" ", parts.Skip(3).Take(parts.Count - 6));
-
-                                var currentpara = table.GetParameterByName(currentparaname);
-
-
-                                // Ensure first-level key exists
-                                if (!currentpara.PercentileStats.GroupPercentiles.ContainsKey(GroupParameterName))
-                                {
-                                    currentpara.PercentileStats.GroupPercentiles[GroupParameterName]
-                                        = new Dictionary<string, Dictionary<string, string>>();
-                                }
-
-                                // Ensure second-level key exists
-                                if (!currentpara.PercentileStats.GroupPercentiles[GroupParameterName].ContainsKey(GroupLabel))
-                                {
-                                    currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]
-                                        = new Dictionary<string, string>();
-                                }
+        //                    }
+        //                    else if (parts.Count > 6 && (parts[0] + " " + parts[1]) == "Tukey's Hinges")
+        //                    {
+        //                        //groups section
+        //                        //problem here!!!!!!! line has to be  a word with percentile
 
 
+        //                        //string groupline = spssOutputLines[j - 4];
+        //                        //var groupparts = Regex.Split(groupline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
 
-                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]["25"] = parts[parts.Count- 3];
-                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]["50"] = parts[parts.Count - 2];
-                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]["75"] = parts[parts.Count - 1];
+        //                        //string GroupParameterName = groupparts.First(p => p != "Percentiles");
 
-                                for (int k = j + 1; k < spssOutputLines.Count; k++)
-                                {
-                                    string newline = spssOutputLines[k];
-                                    parts = Regex.Split(newline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+        //                        //var CurrentGroup = table.GetParameterByName(GroupParameterName);
 
-                                    if (parts.Count < 4)
-                                    {
-                                        break;
-                                    }
 
-                                    if (ScaleParamsNames.Any(name => string.Equals(name, parts[0], StringComparison.OrdinalIgnoreCase)))
-                                    {
-                                        //New parameter
-                                    }
-                                    else
-                                    {
-                                        //Rest of labels
-                                        string newGroupLabel = string.Join(" ", parts.Take(parts.Count - 3));
+        //                        string GroupParameterName = null;
+        //                        int newcount = j;
+        //                        while (newcount >= 0)
+        //                        {
+        //                            string groupline = spssOutputLines[newcount];
+        //                            var groupparts = Regex.Split(groupline, @"\s+")
+        //                                                  .Where(p => !string.IsNullOrWhiteSpace(p))
+        //                                                  .ToList();
 
-                                        if (!currentpara.PercentileStats.GroupPercentiles.ContainsKey(GroupParameterName))
-                                        {
-                                            currentpara.PercentileStats.GroupPercentiles[GroupParameterName]
-                                                = new Dictionary<string, Dictionary<string, string>>();
-                                        }
+        //                            if (groupparts.Count == 2 && groupparts.Contains("Percentiles"))
+        //                            {
+        //                                string candidate = groupparts.First(p => p != "Percentiles");
 
-                                        // Ensure second-level key exists
-                                        if (!currentpara.PercentileStats.GroupPercentiles[GroupParameterName].ContainsKey(newGroupLabel))
-                                        {
-                                            currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]
-                                                = new Dictionary<string, string>();
-                                        }
+        //                                var param = table.GetParameterByName(candidate);
+        //                                if (param != null && param.IsGroup)
+        //                                {
+        //                                    GroupParameterName = candidate;
+        //                                    break; // found it
+        //                                }
+        //                            }
+
+        //                            newcount--; // keep going backwards
+        //                        }
+
+
+
+
+        //                        string currentparaname = parts[2];
+        //                        string GroupLabel = string.Join(" ", parts.Skip(3).Take(parts.Count - 6));
+
+        //                        var currentpara = table.GetParameterByName(currentparaname);
+
+
+        //                        // Ensure first-level key exists
+        //                        if (!currentpara.PercentileStats.GroupPercentiles.ContainsKey(GroupParameterName))
+        //                        {
+        //                            currentpara.PercentileStats.GroupPercentiles[GroupParameterName]
+        //                                = new Dictionary<string, Dictionary<string, string>>();
+        //                        }
+
+        //                        // Ensure second-level key exists
+        //                        if (!currentpara.PercentileStats.GroupPercentiles[GroupParameterName].ContainsKey(GroupLabel))
+        //                        {
+        //                            currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]
+        //                                = new Dictionary<string, string>();
+        //                        }
+
+
+
+        //                        currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]["25"] = parts[parts.Count- 3];
+        //                        currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]["50"] = parts[parts.Count - 2];
+        //                        currentpara.PercentileStats.GroupPercentiles[GroupParameterName][GroupLabel]["75"] = parts[parts.Count - 1];
+
+        //                        for (int k = j + 1; k < spssOutputLines.Count; k++)
+        //                        {
+        //                            string newline = spssOutputLines[k];
+        //                            parts = Regex.Split(newline, @"\s+").Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+
+        //                            if (parts.Count < 4)
+        //                            {
+        //                                break;
+        //                            }
+
+        //                            if (ScaleParamsNames.Any(name => string.Equals(name, parts[0], StringComparison.OrdinalIgnoreCase)))
+        //                            {
+        //                                currentpara = table.GetParameterByName(parts[0]);
+        //                                string newGroupLabel = string.Join(" ", parts.Take(parts.Count - 3));
+
+        //                                if (!currentpara.PercentileStats.GroupPercentiles.ContainsKey(GroupParameterName))
+        //                                {
+        //                                    currentpara.PercentileStats.GroupPercentiles[GroupParameterName]
+        //                                        = new Dictionary<string, Dictionary<string, string>>();
+        //                                }
+
+        //                                // Ensure second-level key exists
+        //                                if (!currentpara.PercentileStats.GroupPercentiles[GroupParameterName].ContainsKey(newGroupLabel))
+        //                                {
+        //                                    currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]
+        //                                        = new Dictionary<string, string>();
+        //                                }
+
+
+        //                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["25"] = parts[parts.Count - 3];
+        //                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["50"] = parts[parts.Count - 2];
+        //                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["75"] = parts[parts.Count - 1];
+
+        //                                //New parameter
+        //                            }
+        //                            else
+        //                            {
+        //                                //Rest of labels
+        //                                string newGroupLabel = string.Join(" ", parts.Take(parts.Count - 3));
+
+        //                                if (!currentpara.PercentileStats.GroupPercentiles.ContainsKey(GroupParameterName))
+        //                                {
+        //                                    currentpara.PercentileStats.GroupPercentiles[GroupParameterName]
+        //                                        = new Dictionary<string, Dictionary<string, string>>();
+        //                                }
+
+        //                                // Ensure second-level key exists
+        //                                if (!currentpara.PercentileStats.GroupPercentiles[GroupParameterName].ContainsKey(newGroupLabel))
+        //                                {
+        //                                    currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]
+        //                                        = new Dictionary<string, string>();
+        //                                }
                                         
-                                        currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["25"] = parts[parts.Count - 3];
-                                        currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["50"] = parts[parts.Count - 2];
-                                        currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["75"] = parts[parts.Count - 1];
+        //                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["25"] = parts[parts.Count - 3];
+        //                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["50"] = parts[parts.Count - 2];
+        //                                currentpara.PercentileStats.GroupPercentiles[GroupParameterName][newGroupLabel]["75"] = parts[parts.Count - 1];
 
 
                                         
-                                    }
-                                }
+        //                            }
+        //                        }
 
 
 
-                            }
+        //                    }
 
 
-                            // process innerLine here
-                        }
-                    }
-                }
-            }
+        //                }
+        //            }
+        //        }
+        //    }
 
 
-            //var mytable = tables.FirstOrDefault(t => t.TableName == "YourTableName");
-
-            //var groupParams = table.GetGroupParameters();
-
-
-            //var scaleParamNames = table.GetNonGroupParameters()
-            //    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
-            //    .ToList();
-
-            //foreach (var scale in scaleParamNames)
-            //{
-            //    var result = new SPSSUnifiedRunner.PercentileResult
-            //    {
-            //        VariableName = scale.Name
-            //    };
-            //}
-
-
-        }
+        //}
 
         public static void ParseUnifiedOutput_Crosstabs(
      string outputText,
@@ -1624,7 +1626,7 @@ OMSEND.
 
 
 
-       
+
 
 
         //public static List<ParameterAnalysisResult> ParseUnifiedOutput(
@@ -1701,7 +1703,158 @@ OMSEND.
         //    //var nominalVars = parameters.Where(p => p.Type == "Nominal").Select(p => p.Name).ToList();
         //    //var scaleVars = parameters.Where(p => p.Type == "Scale").Select(p => p.Name).ToList();
         //    string outputText = RunUnifiedSyntaxAndGetResult(statTables, out _);
-            
+
         //}
+
+
+
+
+        public static void ParsePercentiles(List<StatTable> tables, List<string> spssOutputLines)
+        {
+            for (int i = 0; i < spssOutputLines.Count; i++)
+            {
+                string line = spssOutputLines[i];
+
+                foreach (var table in tables)
+                {
+                    if (!string.Equals(line, table.TableName, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    var scaleParams = table.GetNonGroupParameters()
+                        .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+
+                    HashSet<string> scaleParamNames = scaleParams
+                        .Select(p => p.Name)
+                        .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                    // We entered the block for this table
+                    for (int j = i + 1; j < spssOutputLines.Count; j++)
+                    {
+                        var parts = SplitParts(spssOutputLines[j]);
+                        if (parts.Count < 2) continue;
+
+                        if (parts.Count == 6 && parts[0] == "Tukey's" && parts[1] == "Hinges")
+                        {
+                            HandleUngroupedPercentiles(parts, spssOutputLines, j, table, scaleParamNames);
+                        }
+                        else if (parts.Count > 6 && parts[0] == "Tukey's" && parts[1] == "Hinges")
+                        {
+                            HandleGroupedPercentiles(parts, spssOutputLines, j, table, scaleParamNames);
+                        }
+                    }
+                }
+            }
+
+
+
+        }
+
+        private static void HandleUngroupedPercentiles(List<string> parts, List<string> lines, int j, StatTable table, HashSet<string> scaleParamNames)
+        {
+            string paramName = parts[2];
+            var param = table.GetParameterByName(paramName);
+            if (param == null) return;
+
+            param.PercentileStats.VariableName = paramName;
+            param.PercentileStats.TotalPercentiles["25"] = parts[3];
+            param.PercentileStats.TotalPercentiles["50"] = parts[4];
+            param.PercentileStats.TotalPercentiles["75"] = parts[5];
+
+            // Look for following parameters
+            for (int k = j + 1; k < lines.Count; k++)
+            {
+                var nextParts = SplitParts(lines[k]);
+                if (nextParts.Count != 4) break;
+
+                if (!scaleParamNames.Contains(nextParts[0])) break; // stop if new block
+
+                string nextName = nextParts[0];
+                var nextParam = table.GetParameterByName(nextName);
+                if (nextParam == null) continue;
+
+                nextParam.PercentileStats.TotalPercentiles["25"] = nextParts[1];
+                nextParam.PercentileStats.TotalPercentiles["50"] = nextParts[2];
+                nextParam.PercentileStats.TotalPercentiles["75"] = nextParts[3];
+            }
+        }
+
+        private static void HandleGroupedPercentiles(List<string> parts, List<string> lines, int j, StatTable table, HashSet<string> scaleParamNames)
+        {
+            string groupParamName = FindGroupParameterName(lines, j, table);
+            if (groupParamName == null) return;
+
+            string paramName = parts[2];
+            var param = table.GetParameterByName(paramName);
+            if (param == null) return;
+
+            string groupLabel = string.Join(" ", parts.Skip(3).Take(parts.Count - 6));
+            EnsureGroupEntry(param, groupParamName, groupLabel);
+
+            param.PercentileStats.GroupPercentiles[groupParamName][groupLabel]["25"] = parts[parts.Count - 3];
+            param.PercentileStats.GroupPercentiles[groupParamName][groupLabel]["50"] = parts[parts.Count - 2];
+            param.PercentileStats.GroupPercentiles[groupParamName][groupLabel]["75"] = parts[parts.Count - 1];
+
+            // Parse following lines
+            for (int k = j + 1; k < lines.Count; k++)
+            {
+                var nextParts = SplitParts(lines[k]);
+                if (nextParts.Count < 4) break;
+
+                if (scaleParamNames.Contains(nextParts[0]))
+                {
+                    // ✅ Case 2: new parameter starts
+                    paramName = nextParts[0];
+                    param = table.GetParameterByName(paramName);
+                    if (param == null) continue;
+
+                    string newGroupLabel = string.Join(" ", nextParts.Skip(1).Take(nextParts.Count - 4));
+                    EnsureGroupEntry(param, groupParamName, newGroupLabel);
+
+                    param.PercentileStats.GroupPercentiles[groupParamName][newGroupLabel]["25"] = nextParts[nextParts.Count - 3];
+                    param.PercentileStats.GroupPercentiles[groupParamName][newGroupLabel]["50"] = nextParts[nextParts.Count - 2];
+                    param.PercentileStats.GroupPercentiles[groupParamName][newGroupLabel]["75"] = nextParts[nextParts.Count - 1];
+                }
+                else
+                {
+                    // ✅ Case 1: continuation label for same parameter
+                    string newGroupLabel = string.Join(" ", nextParts.Take(nextParts.Count - 3));
+                    EnsureGroupEntry(param, groupParamName, newGroupLabel);
+
+                    param.PercentileStats.GroupPercentiles[groupParamName][newGroupLabel]["25"] = nextParts[nextParts.Count - 3];
+                    param.PercentileStats.GroupPercentiles[groupParamName][newGroupLabel]["50"] = nextParts[nextParts.Count - 2];
+                    param.PercentileStats.GroupPercentiles[groupParamName][newGroupLabel]["75"] = nextParts[nextParts.Count - 1];
+                }
+            }
+        }
+
+
+        private static string FindGroupParameterName(List<string> lines, int startIndex, StatTable table)
+        {
+            for (int idx = startIndex; idx >= 0; idx--)
+            {
+                var parts = SplitParts(lines[idx]);
+                if (parts.Count == 2 && parts.Contains("Percentiles"))
+                {
+                    string candidate = parts.First(p => p != "Percentiles");
+                    var param = table.GetParameterByName(candidate);
+                    if (param?.IsGroup == true) return candidate;
+                }
+            }
+            return null;
+        }
+
+        private static void EnsureGroupEntry(StatParameter param, string groupParamName, string groupLabel)
+        {
+            if (!param.PercentileStats.GroupPercentiles.ContainsKey(groupParamName))
+                param.PercentileStats.GroupPercentiles[groupParamName] = new Dictionary<string, Dictionary<string, string>>();
+
+            if (!param.PercentileStats.GroupPercentiles[groupParamName].ContainsKey(groupLabel))
+                param.PercentileStats.GroupPercentiles[groupParamName][groupLabel] = new Dictionary<string, string>();
+        }
+
+        private static List<string> SplitParts(string line) =>
+            line.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).ToList();
+
     }
 }
