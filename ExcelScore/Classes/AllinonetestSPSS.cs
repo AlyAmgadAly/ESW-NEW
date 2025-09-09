@@ -443,7 +443,7 @@ OMSEND.
             try
             {
                 spssApp.Quit();
-                //System.Runtime.InteropServices.Marshal.ReleaseComObject(spssApp);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(spssApp);
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             }
