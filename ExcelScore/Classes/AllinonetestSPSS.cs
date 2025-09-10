@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelScore.StatClasses;
+using Microsoft.SolverFoundation.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -68,7 +69,9 @@ namespace ExcelScore.Classes
         public static string BuildUnifiedSyntax(List<StatTable> tables, SPSSFilePaths paths)
         {
             var syntaxBuilder = new StringBuilder();
-
+            //syntaxBuilder.AppendLine("SET LOCALE = 'ar_EG'.");
+            
+            //syntaxBuilder.AppendLine("SET UNICODE=ON.");
             // --- Global Header ---
             syntaxBuilder.AppendLine($@"
 GET FILE='{paths.SavFilePath.Replace(@"\", @"\\")}'.
@@ -404,8 +407,8 @@ OMSEND.
 
         public static string ExecuteSpssSyntaxAndGetTextResult(SPSSFilePaths paths, string syntax)
         {
+            //File.WriteAllText(paths.SyntaxPath, syntax);
             File.WriteAllText(paths.SyntaxPath, syntax);
-
             Type spssType = Type.GetTypeFromProgID("SPSS.Application");
             dynamic spssApp = Activator.CreateInstance(spssType);
             dynamic syntaxDoc = spssApp.OpenSyntaxDoc(paths.SyntaxPath);

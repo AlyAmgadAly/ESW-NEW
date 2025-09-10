@@ -57,6 +57,7 @@ using DocumentFormat.OpenXml.Presentation;
 using ExcelScore.StatClasses;
 using ClosedXML.Excel;
 using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace ExcelScore.Forms
 {
@@ -5432,6 +5433,32 @@ namespace ExcelScore.Forms
             }
         }
 
+        public static void ForceKillSPSS()
+        {
+            try
+            {
+                // Find all SPSS processes by name (without .exe)
+                var processes = Process.GetProcessesByName("spsswin");
+
+                foreach (var process in processes)
+                {
+                    try
+                    {
+                        process.Kill();
+                        process.WaitForExit(); // wait until it's really closed
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error killing SPSS process: " + ex.Message);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ForceKillSPSS failed: " + ex.Message);
+            }
+        }
+
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
@@ -5441,11 +5468,11 @@ namespace ExcelScore.Forms
 
             SPSSUnifiedRunner.ParseUnifiedOutput_Descriptives(outputText, StatTables);
 
-            //var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            //SPSSUnifiedRunner.ParsePercentiles(StatTables, lines);
-            
+            var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            SPSSUnifiedRunner.ParsePercentiles(StatTables, lines);
 
-
+            //PrintPercentiles(StatTables);
+            ForceKillSPSS();
 
             //List<string> groupLabels = new List<string>() { "Patient" , "Control" , "3.00" , "4.00" };
             //List<string> vars = new  List<string>() { "Age" };
