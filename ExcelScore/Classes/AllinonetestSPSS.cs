@@ -410,7 +410,6 @@ OMSEND.
             //File.WriteAllText(paths.SyntaxPath, syntax);
             File.WriteAllText(paths.SyntaxPath, syntax);
             Type spssType = Type.GetTypeFromProgID("SPSS.Application");
-            //Type spssType = Type.GetTypeFromProgID("IBM SPSS Statistics 23.0.Application");
             dynamic spssApp = Activator.CreateInstance(spssType);
             dynamic syntaxDoc = spssApp.OpenSyntaxDoc(paths.SyntaxPath);
             syntaxDoc.Run();
