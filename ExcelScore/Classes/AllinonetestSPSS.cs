@@ -12,6 +12,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
+//Spss runs in spsswin.exe , also we set it admin and SP 3 , nothing else is needed inside the pc 
+
 namespace ExcelScore.Classes
 {
     public class SPSSUnifiedRunner
@@ -468,6 +470,10 @@ OMSEND.
             {
 
             }
+            finally
+            {
+                ForceKillSPSS();
+            }
 
 
 
@@ -479,7 +485,7 @@ OMSEND.
             try
             {
                 // Find all SPSS processes by name (without .exe)
-                var processes = Process.GetProcessesByName("spsswin");
+                var processes = Process.GetProcessesByName("spsswin.exe");
 
                 foreach (var process in processes)
                 {
@@ -1581,18 +1587,7 @@ OMSEND.
                 // If there are no group parameters, still call parser once with empty labels
                 if (!groupParams.Any())
                 {
-                    var descResults = ParseDescriptiveOutput_Smart(outputText, scaleParamNames, new List<string>());
-
-                    foreach (var desc in descResults)
-                    {
-                        var param = table.GetParameterByName(desc.VariableName);
-                        if (param == null) continue;
-
-                        // assign into the legacy single-slot
-                        param.DescriptiveStats = desc;
-                    }
-
-                    continue;
+                    return;
                 }
 
                 // For each group parameter separately, parse and assign

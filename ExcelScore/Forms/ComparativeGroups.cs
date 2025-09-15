@@ -5445,7 +5445,7 @@ namespace ExcelScore.Forms
                     try
                     {
                         process.Kill();
-                        //process.WaitForExit(); // wait until it's really closed
+                        process.WaitForExit(); // wait until it's really closed
                     }
                     catch (Exception ex)
                     {
@@ -5472,7 +5472,7 @@ namespace ExcelScore.Forms
             SPSSUnifiedRunner.ParsePercentiles(StatTables, lines);
 
             //PrintPercentiles(StatTables);
-            ForceKillSPSS();
+            //ForceKillSPSS();
 
             //List<string> groupLabels = new List<string>() { "Patient" , "Control" , "3.00" , "4.00" };
             //List<string> vars = new  List<string>() { "Age" };

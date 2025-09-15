@@ -277,6 +277,7 @@
     <Compile Include="Custom Controls\ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Custom UI\FormUI.cs" />
     <Compile Include="ExcelFunctions.cs" />
     <Compile Include="FormsDesigns\Comparative\Default.cs">
       <SubType>Form</SubType>
