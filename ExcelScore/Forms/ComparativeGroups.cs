@@ -5438,14 +5438,14 @@ namespace ExcelScore.Forms
             try
             {
                 // Find all SPSS processes by name (without .exe)
-                var processes = Process.GetProcessesByName("spsswin");
+                var processes = Process.GetProcessesByName("spsswin.exe");
 
                 foreach (var process in processes)
                 {
                     try
                     {
                         process.Kill();
-                        process.WaitForExit(); // wait until it's really closed
+                        //process.WaitForExit(); // wait until it's really closed
                     }
                     catch (Exception ex)
                     {

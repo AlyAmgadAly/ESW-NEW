@@ -3,8 +3,10 @@ using ExcelScore.StatClasses;
 using Microsoft.SolverFoundation.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -69,17 +71,23 @@ namespace ExcelScore.Classes
         public static string BuildUnifiedSyntax(List<StatTable> tables, SPSSFilePaths paths)
         {
             var syntaxBuilder = new StringBuilder();
-            //syntaxBuilder.AppendLine("SET LOCALE = 'ar_EG'.");
-            
-            //syntaxBuilder.AppendLine("SET UNICODE=ON.");
+
             // --- Global Header ---
+            //syntaxBuilder.AppendLine($@"
+            //GET FILE='{paths.SavFilePath.Replace(@"\", @"\\")}'.
+            //DATASET NAME DataSet1 WINDOW=ASIS.
+
+            //OMS
+            //  /SELECT TABLES
+            //  /DESTINATION FORMAT=TEXT OUTFILE='{paths.ResultPath.Replace(@"\", @"\\")}.'");
+
             syntaxBuilder.AppendLine($@"
-GET FILE='{paths.SavFilePath.Replace(@"\", @"\\")}'.
+GET FILE='{EscapeForSpss(paths.SavFilePath)}'.
 DATASET NAME DataSet1 WINDOW=ASIS.
 
 OMS
   /SELECT TABLES
-  /DESTINATION FORMAT=TEXT OUTFILE='{paths.ResultPath.Replace(@"\", @"\\")}.'");
+  /DESTINATION FORMAT=TEXT OUTFILE='{EscapeForSpss(paths.ResultPath)}'.");
 
             foreach (var table in tables)
             {
@@ -408,7 +416,13 @@ OMSEND.
         public static string ExecuteSpssSyntaxAndGetTextResult(SPSSFilePaths paths, string syntax)
         {
             //File.WriteAllText(paths.SyntaxPath, syntax);
-            File.WriteAllText(paths.SyntaxPath, syntax);
+            //File.WriteAllText(paths.SyntaxPath, syntax);
+
+            using (var writer = new StreamWriter(paths.SyntaxPath, false, Encoding.GetEncoding(1256)))
+            {
+                writer.Write(syntax);
+            }
+
             Type spssType = Type.GetTypeFromProgID("SPSS.Application");
             dynamic spssApp = Activator.CreateInstance(spssType);
             dynamic syntaxDoc = spssApp.OpenSyntaxDoc(paths.SyntaxPath);
@@ -460,6 +474,31 @@ OMSEND.
             return outputText;
         }
 
+        public static void ForceKillSPSS()
+        {
+            try
+            {
+                // Find all SPSS processes by name (without .exe)
+                var processes = Process.GetProcessesByName("spsswin");
+
+                foreach (var process in processes)
+                {
+                    try
+                    {
+                        process.Kill();
+                        process.WaitForExit(); // wait until it's really closed
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error killing SPSS process: " + ex.Message);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ForceKillSPSS failed: " + ex.Message);
+            }
+        }
         //public static string RunUnifiedSyntaxAndGetResult(
         //    string groupVar,
         //    List<string> nominalVars,
@@ -1858,6 +1897,20 @@ OMSEND.
 
         private static List<string> SplitParts(string line) =>
             line.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+
+
+       
+
+        private static string EscapeForSpss(string path)
+        {
+            if (path.StartsWith(@"\\"))
+            {
+                // Preserve UNC \\ at start, escape rest
+                return @"\\" + path.Substring(2).Replace(@"\", @"\\");
+            }
+            return path.Replace(@"\", @"\\");
+        }
 
     }
 }
