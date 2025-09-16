@@ -139,7 +139,7 @@
             this.btn_AddDomain.ForeColor = System.Drawing.Color.Black;
             this.btn_AddDomain.Image = ((System.Drawing.Image)(resources.GetObject("btn_AddDomain.Image")));
             this.btn_AddDomain.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_AddDomain.Location = new System.Drawing.Point(994, 591);
+            this.btn_AddDomain.Location = new System.Drawing.Point(828, 541);
             this.btn_AddDomain.Name = "btn_AddDomain";
             this.btn_AddDomain.Size = new System.Drawing.Size(100, 44);
             this.btn_AddDomain.TabIndex = 4;
@@ -327,7 +327,7 @@
             this.list_Level.FormattingEnabled = true;
             this.list_Level.Location = new System.Drawing.Point(389, 432);
             this.list_Level.Name = "list_Level";
-            this.list_Level.Size = new System.Drawing.Size(269, 199);
+            this.list_Level.Size = new System.Drawing.Size(194, 199);
             this.list_Level.TabIndex = 14;
             // 
             // txt_LevelRangeFrom
@@ -408,7 +408,7 @@
             this.btn_Done.ForeColor = System.Drawing.Color.Black;
             this.btn_Done.Image = ((System.Drawing.Image)(resources.GetObject("btn_Done.Image")));
             this.btn_Done.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_Done.Location = new System.Drawing.Point(1116, 591);
+            this.btn_Done.Location = new System.Drawing.Point(722, 541);
             this.btn_Done.Name = "btn_Done";
             this.btn_Done.Size = new System.Drawing.Size(100, 44);
             this.btn_Done.TabIndex = 4;
@@ -425,7 +425,7 @@
             this.btn_View.ForeColor = System.Drawing.Color.Black;
             this.btn_View.Image = ((System.Drawing.Image)(resources.GetObject("btn_View.Image")));
             this.btn_View.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_View.Location = new System.Drawing.Point(874, 591);
+            this.btn_View.Location = new System.Drawing.Point(828, 591);
             this.btn_View.Name = "btn_View";
             this.btn_View.Size = new System.Drawing.Size(100, 44);
             this.btn_View.TabIndex = 4;
@@ -541,7 +541,7 @@
             this.btn_QuestionsView.ForeColor = System.Drawing.Color.Black;
             this.btn_QuestionsView.Image = ((System.Drawing.Image)(resources.GetObject("btn_QuestionsView.Image")));
             this.btn_QuestionsView.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btn_QuestionsView.Location = new System.Drawing.Point(754, 591);
+            this.btn_QuestionsView.Location = new System.Drawing.Point(722, 591);
             this.btn_QuestionsView.Name = "btn_QuestionsView";
             this.btn_QuestionsView.Size = new System.Drawing.Size(100, 44);
             this.btn_QuestionsView.TabIndex = 4;
@@ -598,9 +598,9 @@
             // button1
             // 
             this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
-            this.button1.Location = new System.Drawing.Point(1116, 525);
+            this.button1.Location = new System.Drawing.Point(607, 541);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 51);
+            this.button1.Size = new System.Drawing.Size(100, 44);
             this.button1.TabIndex = 26;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);

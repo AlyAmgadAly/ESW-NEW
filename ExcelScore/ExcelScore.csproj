@@ -242,6 +242,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App Forms\Main Menu Forms\LoadingSplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="App Forms\Main Menu Forms\LoadingSplashScreen.Designer.cs">
+      <DependentUpon>LoadingSplashScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="Classes\AllinonetestSPSS.cs" />
     <Compile Include="Classes\AnovaTestResult.cs" />
     <Compile Include="Classes\ColorClass.cs" />
@@ -463,10 +469,14 @@
     </Compile>
     <Compile Include="StatClasses\ComparativeStatTable.cs" />
     <Compile Include="StatClasses\DescriptiveStatTable.cs" />
+    <Compile Include="StatClasses\GeneralStatFunctions.cs" />
     <Compile Include="StatClasses\RelationStatTable.cs" />
     <Compile Include="StatClasses\SpssReaderStat.cs" />
     <Compile Include="StatClasses\StatParameter.cs" />
     <Compile Include="StatClasses\StatTable.cs" />
+    <EmbeddedResource Include="App Forms\Main Menu Forms\LoadingSplashScreen.resx">
+      <DependentUpon>LoadingSplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormsDesigns\Comparative\Default.resx">
       <DependentUpon>Default.cs</DependentUpon>
     </EmbeddedResource>
