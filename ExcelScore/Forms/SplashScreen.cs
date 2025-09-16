@@ -16,7 +16,7 @@ namespace ExcelScore.Forms
         public SplashScreen()
         {
             InitializeComponent();
-            Custom_UI.FormUI.ApplyRoundedCorners(this, 25);
+           
         }
         List<string> MyPCs = new List<string>
         {

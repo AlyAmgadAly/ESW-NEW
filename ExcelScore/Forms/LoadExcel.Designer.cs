@@ -39,7 +39,6 @@
             this.panelmove = new System.Windows.Forms.Panel();
             this.pic_exit = new System.Windows.Forms.PictureBox();
             this.pic_ConvertSpssToExcel = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.datagrid_excelsheet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ImportExcel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_AddDomain)).BeginInit();
@@ -152,23 +151,12 @@
             this.pic_ConvertSpssToExcel.TabStop = false;
             this.pic_ConvertSpssToExcel.Click += new System.EventHandler(this.pic_ConvertSpssToExcel_Click);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(199, 66);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 19;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_3);
-            // 
             // LoadExcel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(203)))), ((int)(((byte)(182)))));
             this.ClientSize = new System.Drawing.Size(974, 708);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.pic_ConvertSpssToExcel);
             this.Controls.Add(this.pic_exit);
             this.Controls.Add(this.panelmove);
@@ -202,7 +190,6 @@
         private System.Windows.Forms.Panel panelmove;
         private System.Windows.Forms.PictureBox pic_exit;
         private System.Windows.Forms.PictureBox pic_ConvertSpssToExcel;
-        private System.Windows.Forms.Button button1;
     }
 }
 
