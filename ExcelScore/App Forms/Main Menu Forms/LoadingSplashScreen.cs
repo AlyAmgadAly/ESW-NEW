@@ -167,7 +167,11 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
                 CheckPCID();
                 if(AcceptedPC)
                 {
-                    
+                    pic_verify.Image =  Resources.check;
+                    lbl_verify.Text = "Verified";
+                    lbl_verify.ForeColor = Color.Green;
+
+                    pnl_progress.BackColor = Color.Green;
                 }
                 else
                 {
