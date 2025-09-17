@@ -63,6 +63,23 @@ namespace ExcelScore
         {
             return workbook;
         }
+
+
+        public static void ImportExcelFile()
+        {
+            OpenFileDialog op = new OpenFileDialog();
+            op.Filter = "Excel Sheet(*.xlsx)|*.xlsx|All Files(*.*)|*.*";
+            if (op.ShowDialog() == DialogResult.OK)
+            {
+                ExcelFunctions.filepath = op.FileName;
+                workbook = new Aspose.Cells.Workbook(filepath);
+
+                // Accessing the first worksheet in the Excel file
+                worksheet = workbook.Worksheets[0];
+                Sheet2 = workbook.Worksheets[1];
+            }
+
+        }
         public System.Data.DataTable import()
         {
 

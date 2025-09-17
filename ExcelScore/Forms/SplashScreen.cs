@@ -39,7 +39,6 @@ namespace ExcelScore.Forms
             "S1LJJDWQ602716",
             "            W9AT0ETT",
             "S0MRJDSP802594"
-            //ayhaga test
         };    
         
 
