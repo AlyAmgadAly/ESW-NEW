@@ -640,6 +640,7 @@
     <Content Include="Resources\check.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\tick_nocover.png" />
     <None Include="Resources\Pathology_Comparative.png" />
     <None Include="Resources\Pathology.png" />
     <None Include="Resources\Paper_Comparative.png" />

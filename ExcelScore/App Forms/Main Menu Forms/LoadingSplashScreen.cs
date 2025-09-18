@@ -91,7 +91,7 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
         //Text (#EEEEEE) → high contrast, readable, not tiring like pure white (#FFFFFF).
         private void LoadingSplashScreen_Load(object sender, EventArgs e)
         {
-
+            Resources.
         }
         SpssReaderStat spssReaderStat = new SpssReaderStat();
         
@@ -102,6 +102,7 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
             if (SpssReaderStat.spssFilePath != null)
             {
                 lbl_SpssPath.Text = ShortenPath(SpssReaderStat.spssFilePath);
+                pic_SpssPathVerify.Image = Resources.check;
             }
             else
             {
@@ -121,6 +122,7 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
             if (ExcelFunctions.filepath != null)
             {
                 lbl_ExcelPath.Text = ShortenPath(ExcelFunctions.filepath);
+                pic_ExcelPathVerify.Image = Resources.check;
             }
             else
             {
