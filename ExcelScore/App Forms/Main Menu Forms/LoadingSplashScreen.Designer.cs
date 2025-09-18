@@ -257,7 +257,7 @@
             this.lbl_verify.AutoSize = true;
             this.lbl_verify.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_verify.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
-            this.lbl_verify.Location = new System.Drawing.Point(370, 493);
+            this.lbl_verify.Location = new System.Drawing.Point(370, 492);
             this.lbl_verify.Name = "lbl_verify";
             this.lbl_verify.Size = new System.Drawing.Size(103, 30);
             this.lbl_verify.TabIndex = 19;

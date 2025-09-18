@@ -167,7 +167,7 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
             if(ExcelFunctions.filepath != null)
             {
                 Clipboard.SetText(ExcelFunctions.filepath);
-                pic_SpssPathCopy.Image = Resources.CopySuccess;
+                pic_ExcelPathCopy.Image = Resources.CopySuccess;
             }
         }
 
