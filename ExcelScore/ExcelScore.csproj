@@ -640,7 +640,11 @@
     <Content Include="Resources\check.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\tick_nocover.png" />
+    <None Include="Resources\CopySuccess.png" />
+    <None Include="Resources\copy-success-svgrepo-com.png" />
+    <None Include="Resources\check1.png" />
+    <None Include="Resources\Continue.png" />
+    <None Include="Resources\tick_nocover.png" />
     <None Include="Resources\Pathology_Comparative.png" />
     <None Include="Resources\Pathology.png" />
     <None Include="Resources\Paper_Comparative.png" />

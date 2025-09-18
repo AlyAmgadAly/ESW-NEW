@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Linq;
 using System.Management;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media.Media3D;
@@ -91,7 +92,7 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
         //Text (#EEEEEE) → high contrast, readable, not tiring like pure white (#FFFFFF).
         private void LoadingSplashScreen_Load(object sender, EventArgs e)
         {
-            Resources.
+            
         }
         SpssReaderStat spssReaderStat = new SpssReaderStat();
         
@@ -101,13 +102,9 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
 
             if (SpssReaderStat.spssFilePath != null)
             {
-                lbl_SpssPath.Text = ShortenPath(SpssReaderStat.spssFilePath);
-                pic_SpssPathVerify.Image = Resources.check;
+                pic_SpssPathVerify.Image = Resources.check1;
             }
-            else
-            {
-                lbl_SpssPath.Text = "NA";
-            }
+            
         }
 
         private void btn_SpssToExcel_Click(object sender, EventArgs e)
@@ -121,33 +118,13 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
 
             if (ExcelFunctions.filepath != null)
             {
-                lbl_ExcelPath.Text = ShortenPath(ExcelFunctions.filepath);
-                pic_ExcelPathVerify.Image = Resources.check;
+                pic_ExcelPathVerify.Image = Resources.check1;
             }
             else
             {
-                lbl_ExcelPath.Text = "NA";
             }
         }
-        public static string ShortenPath(string fullPath, int maxLength = 50)
-        {
-            if (string.IsNullOrEmpty(fullPath)) return fullPath;
-
-            if (fullPath.Length <= maxLength)
-                return fullPath;
-
-            string root = System.IO.Path.GetPathRoot(fullPath) ?? "";
-            string fileName = System.IO.Path.GetFileName(fullPath);
-
-            // Remaining middle part
-            string middle = fullPath.Substring(root.Length, fullPath.Length - root.Length - fileName.Length);
-
-            // If still too long, replace with "..."
-            if ((root + "...\\" + fileName).Length > maxLength)
-                return root + "...\\" + fileName;
-
-            return root + "...\\" + fileName;
-        }
+        
 
         private void btn_Settings_Click(object sender, EventArgs e)
         {
@@ -159,28 +136,74 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
             Application.Exit();
         }
         public bool timerdone = false;
-        private void timer_progress_Tick(object sender, EventArgs e)
+        
+
+        private void pic_verify_Click(object sender, EventArgs e)
         {
-            pnl_progress.Width += 40;
-            if (pnl_progress.Width >= 799)
+            CheckPCID();
+            if (AcceptedPC)
             {
-                timer_progress.Stop();
-                timerdone = true;
-                CheckPCID();
-                if(AcceptedPC)
-                {
-                    pic_verify.Image =  Resources.check;
-                    lbl_verify.Text = "Verified";
-                    lbl_verify.ForeColor = Color.Green;
-
-                    pnl_progress.BackColor = Color.Green;
-                }
-                else
-                {
-                    Application.Exit();
-                }
+                LoadExcel test = new LoadExcel();
+                test.ShowDialog();
             }
+            else
+            {
+                Application.Exit();
+            }
+        }
 
+        private void pic_SpssPathCopy_Click(object sender, EventArgs e)
+        {
+            if(SpssReaderStat.spssFilePath !=null)
+            {
+                Clipboard.SetText(SpssReaderStat.spssFilePath);
+                pic_SpssPathCopy.Image = Resources.CopySuccess;
+
+            }
+        }
+
+        private void pic_ExcelPathCopy_Click(object sender, EventArgs e)
+        {
+            if(ExcelFunctions.filepath != null)
+            {
+                Clipboard.SetText(ExcelFunctions.filepath);
+                pic_SpssPathCopy.Image = Resources.CopySuccess;
+            }
+        }
+
+        private void OpenInExplorer(string path)
+        {
+            if (System.IO.File.Exists(path))
+            {
+                // Open Explorer with the file selected
+                System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{path}\"");
+            }
+            else if (System.IO.Directory.Exists(path))
+            {
+                // If it's a folder path, just open it
+                System.Diagnostics.Process.Start("explorer.exe", path);
+            }
+            else
+            {
+                MessageBox.Show("Path not found: " + path, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void pic_SpssPathOpen_Click(object sender, EventArgs e)
+        {
+            if (SpssReaderStat.spssFilePath != null)
+            {
+                OpenInExplorer(SpssReaderStat.spssFilePath);
+            }
+            
+        }
+
+        private void pic_ExcelPathOpen_Click(object sender, EventArgs e)
+        {
+            if(ExcelFunctions.filepath != null)
+            {
+                OpenInExplorer(ExcelFunctions.filepath);
+            }
         }
     }
 }
