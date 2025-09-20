@@ -74,7 +74,7 @@
             // 
             this.lbl_MainMenu.AutoSize = true;
             this.lbl_MainMenu.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_MainMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
+            this.lbl_MainMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.lbl_MainMenu.Location = new System.Drawing.Point(14, 7);
             this.lbl_MainMenu.Name = "lbl_MainMenu";
             this.lbl_MainMenu.Size = new System.Drawing.Size(126, 30);
@@ -88,7 +88,7 @@
             this.pnl_Top_bar.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnl_Top_bar.Location = new System.Drawing.Point(0, 0);
             this.pnl_Top_bar.Name = "pnl_Top_bar";
-            this.pnl_Top_bar.Size = new System.Drawing.Size(479, 46);
+            this.pnl_Top_bar.Size = new System.Drawing.Size(778, 46);
             this.pnl_Top_bar.TabIndex = 8;
             // 
             // panel6
@@ -103,7 +103,7 @@
             // 
             this.btn_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
             this.btn_Exit.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Exit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
+            this.btn_Exit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.btn_Exit.Image = ((System.Drawing.Image)(resources.GetObject("btn_Exit.Image")));
             this.btn_Exit.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_Exit.Location = new System.Drawing.Point(-19, -18);
@@ -142,7 +142,7 @@
             // 
             this.btn_SPSSImport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
             this.btn_SPSSImport.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_SPSSImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
+            this.btn_SPSSImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.btn_SPSSImport.Image = ((System.Drawing.Image)(resources.GetObject("btn_SPSSImport.Image")));
             this.btn_SPSSImport.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_SPSSImport.Location = new System.Drawing.Point(-19, -18);
@@ -167,7 +167,7 @@
             // 
             this.btn_ExcelImport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
             this.btn_ExcelImport.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_ExcelImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
+            this.btn_ExcelImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.btn_ExcelImport.Image = ((System.Drawing.Image)(resources.GetObject("btn_ExcelImport.Image")));
             this.btn_ExcelImport.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_ExcelImport.Location = new System.Drawing.Point(-19, -18);
@@ -192,7 +192,7 @@
             // 
             this.btn_SpssToExcel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
             this.btn_SpssToExcel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_SpssToExcel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
+            this.btn_SpssToExcel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.btn_SpssToExcel.Image = ((System.Drawing.Image)(resources.GetObject("btn_SpssToExcel.Image")));
             this.btn_SpssToExcel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_SpssToExcel.Location = new System.Drawing.Point(-19, -18);
@@ -217,7 +217,7 @@
             // 
             this.btn_Settings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
             this.btn_Settings.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Settings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
+            this.btn_Settings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.btn_Settings.Image = ((System.Drawing.Image)(resources.GetObject("btn_Settings.Image")));
             this.btn_Settings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_Settings.Location = new System.Drawing.Point(-19, -18);
@@ -234,7 +234,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.label2.Location = new System.Drawing.Point(56, 51);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(74, 30);
@@ -245,7 +245,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.label3.Location = new System.Drawing.Point(56, 105);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(75, 30);
@@ -257,7 +257,7 @@
             this.lbl_verify.AutoSize = true;
             this.lbl_verify.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_verify.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(250)))), ((int)(((byte)(225)))));
-            this.lbl_verify.Location = new System.Drawing.Point(370, 492);
+            this.lbl_verify.Location = new System.Drawing.Point(663, 492);
             this.lbl_verify.Name = "lbl_verify";
             this.lbl_verify.Size = new System.Drawing.Size(103, 30);
             this.lbl_verify.TabIndex = 19;
@@ -349,7 +349,7 @@
             // pic_verify
             // 
             this.pic_verify.Image = ((System.Drawing.Image)(resources.GetObject("pic_verify.Image")));
-            this.pic_verify.Location = new System.Drawing.Point(323, 493);
+            this.pic_verify.Location = new System.Drawing.Point(616, 493);
             this.pic_verify.Name = "pic_verify";
             this.pic_verify.Size = new System.Drawing.Size(41, 30);
             this.pic_verify.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -362,7 +362,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(40)))), ((int)(((byte)(49)))));
-            this.ClientSize = new System.Drawing.Size(479, 535);
+            this.ClientSize = new System.Drawing.Size(778, 535);
             this.Controls.Add(this.groupbox_Paths);
             this.Controls.Add(this.flowpnl_Sidebar);
             this.Controls.Add(this.pnl_Top_bar);

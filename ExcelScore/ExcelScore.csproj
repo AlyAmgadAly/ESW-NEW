@@ -249,6 +249,25 @@
     <Compile Include="App Forms\Main Menu Forms\LoadingSplashScreen.Designer.cs">
       <DependentUpon>LoadingSplashScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="App Forms\Main Menu Forms\Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="App Forms\Main Menu Forms\Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="App Forms\Primary Forms\Child Forms\Comparative_Child.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="App Forms\Primary Forms\Child Forms\Comparative_Child.Designer.cs">
+      <DependentUpon>Comparative_Child.cs</DependentUpon>
+    </Compile>
+    <Compile Include="App Forms\Primary Forms\SelectionMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="App Forms\Primary Forms\SelectionMainForm.Designer.cs">
+      <DependentUpon>SelectionMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="App UI\Custom_UI_Functions.cs" />
     <Compile Include="Classes\AllinonetestSPSS.cs" />
     <Compile Include="Classes\AnovaTestResult.cs" />
     <Compile Include="Classes\ColorClass.cs" />
@@ -284,7 +303,6 @@
     <Compile Include="Custom Controls\ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Custom UI\FormUI.cs" />
     <Compile Include="ExcelFunctions.cs" />
     <Compile Include="FormsDesigns\Comparative\Default.cs">
       <SubType>Form</SubType>
@@ -477,6 +495,15 @@
     <Compile Include="StatClasses\StatTable.cs" />
     <EmbeddedResource Include="App Forms\Main Menu Forms\LoadingSplashScreen.resx">
       <DependentUpon>LoadingSplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App Forms\Main Menu Forms\Settings.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App Forms\Primary Forms\Child Forms\Comparative_Child.resx">
+      <DependentUpon>Comparative_Child.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App Forms\Primary Forms\SelectionMainForm.resx">
+      <DependentUpon>SelectionMainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormsDesigns\Comparative\Default.resx">
       <DependentUpon>Default.cs</DependentUpon>

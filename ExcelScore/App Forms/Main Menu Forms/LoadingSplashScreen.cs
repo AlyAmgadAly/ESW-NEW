@@ -1,5 +1,8 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Math;
+using ExcelScore.App_Forms.Primary_Forms;
+using ExcelScore.App_UI;
+using ExcelScore.Forms;
 using ExcelScore.Properties;
 using ExcelScore.StatClasses;
 using Google.OrTools.LinearSolver;
@@ -24,6 +27,7 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
         public LoadingSplashScreen()
         {
             InitializeComponent();
+            Custom_UI_Functions.Make_Panel_Draggable(pnl_Top_bar, this);
         }
         List<string> MyPCs = new List<string>
         {
@@ -131,22 +135,21 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
            
         }
 
-        private void btn_Exit_Click_1(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
+        
         public bool timerdone = false;
         
-
+        
         private void pic_verify_Click(object sender, EventArgs e)
         {
+            
             CheckPCID();
-            if (AcceptedPC)
+            if (AcceptedPC && (SpssReaderStat.spssFilePath != null || ExcelFunctions.filepath != null))
             {
-                LoadExcel test = new LoadExcel();
+                SelectionMainForm test = new SelectionMainForm();
                 test.ShowDialog();
+
             }
-            else
+            else if(!AcceptedPC)
             {
                 Application.Exit();
             }
