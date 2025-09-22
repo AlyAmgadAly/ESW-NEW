@@ -31,25 +31,15 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectionMainForm));
             this.pnl_Top_bar = new System.Windows.Forms.Panel();
             this.lbl_SelectionMenu = new System.Windows.Forms.Label();
-            this.flowpnl_Sidebar = new System.Windows.Forms.FlowLayoutPanel();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.btn_Comparative = new System.Windows.Forms.Button();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.btn_Descriptive = new System.Windows.Forms.Button();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.btn_Periods = new System.Windows.Forms.Button();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.btn_Questionnare = new System.Windows.Forms.Button();
+            this.btn_Analytical = new System.Windows.Forms.Button();
             this.btn_Normality = new System.Windows.Forms.Button();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.btn_Exit = new System.Windows.Forms.Button();
-            this.pnl_test = new System.Windows.Forms.Panel();
+            this.btn_Regression = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.btn_Correlation = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
             this.pnl_Top_bar.SuspendLayout();
-            this.flowpnl_Sidebar.SuspendLayout();
-            this.panel4.SuspendLayout();
-            this.panel5.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnl_Top_bar
@@ -59,7 +49,7 @@
             this.pnl_Top_bar.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnl_Top_bar.Location = new System.Drawing.Point(0, 0);
             this.pnl_Top_bar.Name = "pnl_Top_bar";
-            this.pnl_Top_bar.Size = new System.Drawing.Size(1000, 46);
+            this.pnl_Top_bar.Size = new System.Drawing.Size(785, 46);
             this.pnl_Top_bar.TabIndex = 9;
             // 
             // lbl_SelectionMenu
@@ -73,170 +63,153 @@
             this.lbl_SelectionMenu.TabIndex = 5;
             this.lbl_SelectionMenu.Text = "Selection Menu";
             // 
-            // flowpnl_Sidebar
+            // btn_Questionnare
             // 
-            this.flowpnl_Sidebar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(40)))), ((int)(((byte)(49)))));
-            this.flowpnl_Sidebar.Controls.Add(this.panel4);
-            this.flowpnl_Sidebar.Controls.Add(this.panel5);
-            this.flowpnl_Sidebar.Controls.Add(this.panel2);
-            this.flowpnl_Sidebar.Controls.Add(this.panel3);
-            this.flowpnl_Sidebar.Controls.Add(this.panel6);
-            this.flowpnl_Sidebar.Dock = System.Windows.Forms.DockStyle.Left;
-            this.flowpnl_Sidebar.Location = new System.Drawing.Point(0, 46);
-            this.flowpnl_Sidebar.Name = "flowpnl_Sidebar";
-            this.flowpnl_Sidebar.Padding = new System.Windows.Forms.Padding(0, 30, 0, 0);
-            this.flowpnl_Sidebar.Size = new System.Drawing.Size(180, 654);
-            this.flowpnl_Sidebar.TabIndex = 13;
+            this.btn_Questionnare.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
+            this.btn_Questionnare.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Questionnare.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Questionnare.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.btn_Questionnare.Image = ((System.Drawing.Image)(resources.GetObject("btn_Questionnare.Image")));
+            this.btn_Questionnare.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_Questionnare.Location = new System.Drawing.Point(32, 92);
+            this.btn_Questionnare.Name = "btn_Questionnare";
+            this.btn_Questionnare.Size = new System.Drawing.Size(155, 75);
+            this.btn_Questionnare.TabIndex = 19;
+            this.btn_Questionnare.Text = "Questionnare";
+            this.btn_Questionnare.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_Questionnare.UseVisualStyleBackColor = false;
             // 
-            // panel4
+            // btn_Analytical
             // 
-            this.panel4.Controls.Add(this.btn_Comparative);
-            this.panel4.Location = new System.Drawing.Point(3, 33);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(200, 42);
-            this.panel4.TabIndex = 10;
-            // 
-            // btn_Comparative
-            // 
-            this.btn_Comparative.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
-            this.btn_Comparative.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Comparative.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.btn_Comparative.Image = ((System.Drawing.Image)(resources.GetObject("btn_Comparative.Image")));
-            this.btn_Comparative.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_Comparative.Location = new System.Drawing.Point(-19, -18);
-            this.btn_Comparative.Name = "btn_Comparative";
-            this.btn_Comparative.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
-            this.btn_Comparative.Size = new System.Drawing.Size(235, 79);
-            this.btn_Comparative.TabIndex = 6;
-            this.btn_Comparative.Text = "             Comparative";
-            this.btn_Comparative.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_Comparative.UseVisualStyleBackColor = false;
-            this.btn_Comparative.Click += new System.EventHandler(this.btn_Comparative_Click);
-            // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.btn_Descriptive);
-            this.panel5.Location = new System.Drawing.Point(3, 81);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(200, 42);
-            this.panel5.TabIndex = 8;
-            // 
-            // btn_Descriptive
-            // 
-            this.btn_Descriptive.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
-            this.btn_Descriptive.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Descriptive.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.btn_Descriptive.Image = ((System.Drawing.Image)(resources.GetObject("btn_Descriptive.Image")));
-            this.btn_Descriptive.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_Descriptive.Location = new System.Drawing.Point(-19, -18);
-            this.btn_Descriptive.Name = "btn_Descriptive";
-            this.btn_Descriptive.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
-            this.btn_Descriptive.Size = new System.Drawing.Size(235, 79);
-            this.btn_Descriptive.TabIndex = 6;
-            this.btn_Descriptive.Text = "             Descriptive";
-            this.btn_Descriptive.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_Descriptive.UseVisualStyleBackColor = false;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.btn_Periods);
-            this.panel2.Location = new System.Drawing.Point(3, 129);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(200, 42);
-            this.panel2.TabIndex = 9;
-            // 
-            // btn_Periods
-            // 
-            this.btn_Periods.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
-            this.btn_Periods.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Periods.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.btn_Periods.Image = ((System.Drawing.Image)(resources.GetObject("btn_Periods.Image")));
-            this.btn_Periods.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_Periods.Location = new System.Drawing.Point(-19, -18);
-            this.btn_Periods.Name = "btn_Periods";
-            this.btn_Periods.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
-            this.btn_Periods.Size = new System.Drawing.Size(235, 79);
-            this.btn_Periods.TabIndex = 6;
-            this.btn_Periods.Text = "             Periods";
-            this.btn_Periods.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_Periods.UseVisualStyleBackColor = false;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.btn_Normality);
-            this.panel3.Location = new System.Drawing.Point(3, 177);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(200, 42);
-            this.panel3.TabIndex = 10;
+            this.btn_Analytical.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
+            this.btn_Analytical.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Analytical.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Analytical.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.btn_Analytical.Image = ((System.Drawing.Image)(resources.GetObject("btn_Analytical.Image")));
+            this.btn_Analytical.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_Analytical.Location = new System.Drawing.Point(210, 92);
+            this.btn_Analytical.Name = "btn_Analytical";
+            this.btn_Analytical.Size = new System.Drawing.Size(155, 75);
+            this.btn_Analytical.TabIndex = 20;
+            this.btn_Analytical.Text = "Analytical";
+            this.btn_Analytical.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_Analytical.UseVisualStyleBackColor = false;
+            this.btn_Analytical.Click += new System.EventHandler(this.btn_Analytical_Click);
             // 
             // btn_Normality
             // 
-            this.btn_Normality.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
-            this.btn_Normality.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Normality.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
+            this.btn_Normality.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Normality.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_Normality.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.btn_Normality.Image = ((System.Drawing.Image)(resources.GetObject("btn_Normality.Image")));
-            this.btn_Normality.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_Normality.Location = new System.Drawing.Point(-19, -18);
+            this.btn_Normality.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_Normality.Location = new System.Drawing.Point(578, 92);
             this.btn_Normality.Name = "btn_Normality";
-            this.btn_Normality.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
-            this.btn_Normality.Size = new System.Drawing.Size(235, 79);
-            this.btn_Normality.TabIndex = 6;
-            this.btn_Normality.Text = "             Normality";
-            this.btn_Normality.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_Normality.Size = new System.Drawing.Size(155, 75);
+            this.btn_Normality.TabIndex = 23;
+            this.btn_Normality.Text = "Normality";
+            this.btn_Normality.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.btn_Normality.UseVisualStyleBackColor = false;
             // 
-            // panel6
+            // btn_Regression
             // 
-            this.panel6.Controls.Add(this.btn_Exit);
-            this.panel6.Location = new System.Drawing.Point(3, 225);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(200, 42);
-            this.panel6.TabIndex = 11;
+            this.btn_Regression.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
+            this.btn_Regression.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Regression.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Regression.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.btn_Regression.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_Regression.Location = new System.Drawing.Point(392, 92);
+            this.btn_Regression.Name = "btn_Regression";
+            this.btn_Regression.Size = new System.Drawing.Size(155, 75);
+            this.btn_Regression.TabIndex = 24;
+            this.btn_Regression.Text = "Regression";
+            this.btn_Regression.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_Regression.UseVisualStyleBackColor = false;
             // 
-            // btn_Exit
+            // button2
             // 
-            this.btn_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
-            this.btn_Exit.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Exit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.btn_Exit.Image = ((System.Drawing.Image)(resources.GetObject("btn_Exit.Image")));
-            this.btn_Exit.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_Exit.Location = new System.Drawing.Point(-19, -18);
-            this.btn_Exit.Name = "btn_Exit";
-            this.btn_Exit.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
-            this.btn_Exit.Size = new System.Drawing.Size(235, 79);
-            this.btn_Exit.TabIndex = 6;
-            this.btn_Exit.Text = "             Exit";
-            this.btn_Exit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_Exit.UseVisualStyleBackColor = false;
+            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.button2.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.button2.Location = new System.Drawing.Point(392, 205);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(155, 75);
+            this.button2.TabIndex = 28;
+            this.button2.Text = "NA";
+            this.button2.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.button2.UseVisualStyleBackColor = false;
             // 
-            // pnl_test
+            // button3
             // 
-            this.pnl_test.BackColor = System.Drawing.Color.Chocolate;
-            this.pnl_test.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnl_test.Location = new System.Drawing.Point(180, 46);
-            this.pnl_test.Name = "pnl_test";
-            this.pnl_test.Size = new System.Drawing.Size(820, 654);
-            this.pnl_test.TabIndex = 14;
+            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
+            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button3.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.button3.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.button3.Location = new System.Drawing.Point(578, 205);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(155, 75);
+            this.button3.TabIndex = 27;
+            this.button3.Text = "NA";
+            this.button3.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.button3.UseVisualStyleBackColor = false;
+            // 
+            // btn_Correlation
+            // 
+            this.btn_Correlation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
+            this.btn_Correlation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Correlation.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Correlation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.btn_Correlation.Image = ((System.Drawing.Image)(resources.GetObject("btn_Correlation.Image")));
+            this.btn_Correlation.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.btn_Correlation.Location = new System.Drawing.Point(210, 205);
+            this.btn_Correlation.Name = "btn_Correlation";
+            this.btn_Correlation.Size = new System.Drawing.Size(155, 75);
+            this.btn_Correlation.TabIndex = 26;
+            this.btn_Correlation.Text = "Correlation";
+            this.btn_Correlation.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_Correlation.UseVisualStyleBackColor = false;
+            // 
+            // button7
+            // 
+            this.button7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
+            this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button7.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.button7.Image = ((System.Drawing.Image)(resources.GetObject("button7.Image")));
+            this.button7.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.button7.Location = new System.Drawing.Point(32, 205);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(155, 75);
+            this.button7.TabIndex = 25;
+            this.button7.Text = "Questionnare new";
+            this.button7.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.button7.UseVisualStyleBackColor = false;
             // 
             // SelectionMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1000, 700);
-            this.Controls.Add(this.pnl_test);
-            this.Controls.Add(this.flowpnl_Sidebar);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(40)))), ((int)(((byte)(49)))));
+            this.ClientSize = new System.Drawing.Size(785, 347);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.btn_Correlation);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.btn_Regression);
+            this.Controls.Add(this.btn_Normality);
+            this.Controls.Add(this.btn_Analytical);
+            this.Controls.Add(this.btn_Questionnare);
             this.Controls.Add(this.pnl_Top_bar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "SelectionMainForm";
-            this.Text = "SelectionMainForm";
+            this.Text = " ";
+            this.Load += new System.EventHandler(this.SelectionMainForm_Load);
             this.pnl_Top_bar.ResumeLayout(false);
             this.pnl_Top_bar.PerformLayout();
-            this.flowpnl_Sidebar.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
-            this.panel6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -245,17 +218,13 @@
 
         private System.Windows.Forms.Panel pnl_Top_bar;
         private System.Windows.Forms.Label lbl_SelectionMenu;
-        private System.Windows.Forms.FlowLayoutPanel flowpnl_Sidebar;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Button btn_Comparative;
-        private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Button btn_Descriptive;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button btn_Periods;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Button btn_Questionnare;
+        private System.Windows.Forms.Button btn_Analytical;
         private System.Windows.Forms.Button btn_Normality;
-        private System.Windows.Forms.Panel panel6;
-        private System.Windows.Forms.Button btn_Exit;
-        private System.Windows.Forms.Panel pnl_test;
+        private System.Windows.Forms.Button btn_Regression;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btn_Correlation;
+        private System.Windows.Forms.Button button7;
     }
 }

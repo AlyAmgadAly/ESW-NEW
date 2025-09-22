@@ -22,17 +22,19 @@ namespace ExcelScore.App_Forms.Primary_Forms
 
         private void btn_Comparative_Click(object sender, EventArgs e)
         {
-            Child_Forms.Comparative_Child childForm = new Comparative_Child();
-            pnl_test.Controls.Clear();
-            childForm.TopLevel = false;
-            childForm.FormBorderStyle = FormBorderStyle.None;
-            childForm.Dock = DockStyle.Fill;   // ensures it fills panel
-            pnl_test.Controls.Add(childForm);
+            
+        }
 
-            // Force resize right away
-            childForm.WindowState = FormWindowState.Normal;
-            childForm.AutoScaleMode = AutoScaleMode.None;
-            childForm.Show();
+        private void SelectionMainForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_Analytical_Click(object sender, EventArgs e)
+        {
+            Analytical_Child analytical_Child = new Analytical_Child();
+            analytical_Child.Show();
+            this.Hide();
         }
     }
 }

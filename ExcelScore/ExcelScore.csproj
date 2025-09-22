@@ -255,11 +255,11 @@
     <Compile Include="App Forms\Main Menu Forms\Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
-    <Compile Include="App Forms\Primary Forms\Child Forms\Comparative_Child.cs">
+    <Compile Include="App Forms\Primary Forms\Child Forms\Analytical_Child.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="App Forms\Primary Forms\Child Forms\Comparative_Child.Designer.cs">
-      <DependentUpon>Comparative_Child.cs</DependentUpon>
+    <Compile Include="App Forms\Primary Forms\Child Forms\Analytical_Child.Designer.cs">
+      <DependentUpon>Analytical_Child.cs</DependentUpon>
     </Compile>
     <Compile Include="App Forms\Primary Forms\SelectionMainForm.cs">
       <SubType>Form</SubType>
@@ -499,8 +499,8 @@
     <EmbeddedResource Include="App Forms\Main Menu Forms\Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="App Forms\Primary Forms\Child Forms\Comparative_Child.resx">
-      <DependentUpon>Comparative_Child.cs</DependentUpon>
+    <EmbeddedResource Include="App Forms\Primary Forms\Child Forms\Analytical_Child.resx">
+      <DependentUpon>Analytical_Child.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="App Forms\Primary Forms\SelectionMainForm.resx">
       <DependentUpon>SelectionMainForm.cs</DependentUpon>
