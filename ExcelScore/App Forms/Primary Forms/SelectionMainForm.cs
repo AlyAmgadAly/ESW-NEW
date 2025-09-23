@@ -1,5 +1,6 @@
 ﻿using ExcelScore.App_Forms.Main_Menu_Forms;
 using ExcelScore.App_Forms.Primary_Forms.Child_Forms;
+using ExcelScore.App_UI;
 using ExcelScore.Forms;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace ExcelScore.App_Forms.Primary_Forms
         public SelectionMainForm()
         {
             InitializeComponent();
+            Custom_UI_Functions.Make_Panel_Draggable(pnl_Top_bar, this);
         }
 
         private void btn_Comparative_Click(object sender, EventArgs e)

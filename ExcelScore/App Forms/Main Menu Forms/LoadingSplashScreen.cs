@@ -146,8 +146,8 @@ namespace ExcelScore.App_Forms.Main_Menu_Forms
             if (AcceptedPC && (SpssReaderStat.spssFilePath != null || ExcelFunctions.filepath != null))
             {
                 SelectionMainForm test = new SelectionMainForm();
-                test.ShowDialog();
-
+                test.Show();
+                this.Hide();
             }
             else if(!AcceptedPC)
             {
