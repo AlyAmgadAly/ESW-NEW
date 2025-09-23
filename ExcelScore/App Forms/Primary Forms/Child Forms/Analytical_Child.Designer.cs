@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Analytical_Child));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Analytical_Child));
             this.pnl_Top_bar = new System.Windows.Forms.Panel();
             this.btn_Select = new System.Windows.Forms.Button();
+            this.pictureBox15 = new System.Windows.Forms.PictureBox();
+            this.pictureBox14 = new System.Windows.Forms.PictureBox();
+            this.pic_previous = new System.Windows.Forms.PictureBox();
             this.btn_ChooseFormat = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.data_allPara = new System.Windows.Forms.DataGridView();
@@ -42,66 +45,63 @@
             this.ColNormality = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ViewCode_Col = new System.Windows.Forms.DataGridViewButtonColumn();
             this.groupbx_Nominal = new System.Windows.Forms.GroupBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pic_ClearNominalList = new System.Windows.Forms.PictureBox();
             this.list_Nominal = new System.Windows.Forms.ListBox();
+            this.pic_RemoveNominalList = new System.Windows.Forms.PictureBox();
             this.groupbx_NormalScale = new System.Windows.Forms.GroupBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.list_NormalScale = new System.Windows.Forms.ListBox();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.groupbx_AbnormalScale = new System.Windows.Forms.GroupBox();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.list_AbnormalScale = new System.Windows.Forms.ListBox();
+            this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.groupbx_Groups = new System.Windows.Forms.GroupBox();
+            this.pictureBox8 = new System.Windows.Forms.PictureBox();
+            this.pictureBox9 = new System.Windows.Forms.PictureBox();
             this.list_Groups = new System.Windows.Forms.ListBox();
+            this.pictureBox10 = new System.Windows.Forms.PictureBox();
             this.groupbx_AddingTable = new System.Windows.Forms.GroupBox();
+            this.pictureBox11 = new System.Windows.Forms.PictureBox();
             this.txt_TableName = new System.Windows.Forms.TextBox();
             this.list_ViewTableParameters = new System.Windows.Forms.ListBox();
             this.cmb_TableNames = new System.Windows.Forms.ComboBox();
             this.groupbx_Actions = new System.Windows.Forms.GroupBox();
-            this.txt_ParaName = new System.Windows.Forms.TextBox();
-            this.btn_NameLabel = new System.Windows.Forms.Button();
             this.btn_Done = new System.Windows.Forms.Button();
             this.btn_Update = new System.Windows.Forms.Button();
             this.btn_Load = new System.Windows.Forms.Button();
             this.btn_SortTable = new System.Windows.Forms.Button();
+            this.txt_ParaName = new System.Windows.Forms.TextBox();
+            this.btn_NameLabel = new System.Windows.Forms.Button();
             this.pictureBox12 = new System.Windows.Forms.PictureBox();
-            this.pictureBox11 = new System.Windows.Forms.PictureBox();
-            this.pictureBox8 = new System.Windows.Forms.PictureBox();
-            this.pictureBox9 = new System.Windows.Forms.PictureBox();
-            this.pictureBox10 = new System.Windows.Forms.PictureBox();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
-            this.pictureBox6 = new System.Windows.Forms.PictureBox();
-            this.pictureBox7 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pic_ClearNominalList = new System.Windows.Forms.PictureBox();
-            this.pic_RemoveNominalList = new System.Windows.Forms.PictureBox();
-            this.pictureBox15 = new System.Windows.Forms.PictureBox();
-            this.pictureBox14 = new System.Windows.Forms.PictureBox();
-            this.pic_previous = new System.Windows.Forms.PictureBox();
             this.pnl_Top_bar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
-            this.groupbx_Nominal.SuspendLayout();
-            this.groupbx_NormalScale.SuspendLayout();
-            this.groupbx_AbnormalScale.SuspendLayout();
-            this.groupbx_Groups.SuspendLayout();
-            this.groupbx_AddingTable.SuspendLayout();
-            this.groupbx_Actions.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearNominalList)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveNominalList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_previous)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
+            this.groupbx_Nominal.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearNominalList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveNominalList)).BeginInit();
+            this.groupbx_NormalScale.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+            this.groupbx_AbnormalScale.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
+            this.groupbx_Groups.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
+            this.groupbx_AddingTable.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).BeginInit();
+            this.groupbx_Actions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).BeginInit();
             this.SuspendLayout();
             // 
             // pnl_Top_bar
@@ -133,6 +133,37 @@
             this.btn_Select.Text = "Select";
             this.btn_Select.UseVisualStyleBackColor = false;
             this.btn_Select.Click += new System.EventHandler(this.btn_Select_Click);
+            // 
+            // pictureBox15
+            // 
+            this.pictureBox15.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox15.Image")));
+            this.pictureBox15.Location = new System.Drawing.Point(924, 6);
+            this.pictureBox15.Name = "pictureBox15";
+            this.pictureBox15.Size = new System.Drawing.Size(45, 35);
+            this.pictureBox15.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox15.TabIndex = 75;
+            this.pictureBox15.TabStop = false;
+            // 
+            // pictureBox14
+            // 
+            this.pictureBox14.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox14.Image")));
+            this.pictureBox14.Location = new System.Drawing.Point(979, 6);
+            this.pictureBox14.Name = "pictureBox14";
+            this.pictureBox14.Size = new System.Drawing.Size(45, 35);
+            this.pictureBox14.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox14.TabIndex = 74;
+            this.pictureBox14.TabStop = false;
+            // 
+            // pic_previous
+            // 
+            this.pic_previous.Image = ((System.Drawing.Image)(resources.GetObject("pic_previous.Image")));
+            this.pic_previous.Location = new System.Drawing.Point(12, 7);
+            this.pic_previous.Name = "pic_previous";
+            this.pic_previous.Size = new System.Drawing.Size(51, 31);
+            this.pic_previous.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_previous.TabIndex = 74;
+            this.pic_previous.TabStop = false;
+            this.pic_previous.Click += new System.EventHandler(this.pic_previous_Click);
             // 
             // btn_ChooseFormat
             // 
@@ -210,7 +241,7 @@
             this.data_allPara.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.data_allPara.RowHeadersVisible = false;
             this.data_allPara.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.data_allPara.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.data_allPara.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.data_allPara.Size = new System.Drawing.Size(498, 643);
             this.data_allPara.TabIndex = 65;
@@ -262,6 +293,26 @@
             this.groupbx_Nominal.TabStop = false;
             this.groupbx_Nominal.Text = "Nominal";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(116, 17);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(37, 30);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 73;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pic_ClearNominalList
+            // 
+            this.pic_ClearNominalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_ClearNominalList.Image")));
+            this.pic_ClearNominalList.Location = new System.Drawing.Point(202, 17);
+            this.pic_ClearNominalList.Name = "pic_ClearNominalList";
+            this.pic_ClearNominalList.Size = new System.Drawing.Size(45, 31);
+            this.pic_ClearNominalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_ClearNominalList.TabIndex = 72;
+            this.pic_ClearNominalList.TabStop = false;
+            // 
             // list_Nominal
             // 
             this.list_Nominal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
@@ -275,6 +326,16 @@
             this.list_Nominal.Size = new System.Drawing.Size(241, 106);
             this.list_Nominal.TabIndex = 67;
             this.list_Nominal.SelectedIndexChanged += new System.EventHandler(this.list_Nominal_SelectedIndexChanged);
+            // 
+            // pic_RemoveNominalList
+            // 
+            this.pic_RemoveNominalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveNominalList.Image")));
+            this.pic_RemoveNominalList.Location = new System.Drawing.Point(159, 17);
+            this.pic_RemoveNominalList.Name = "pic_RemoveNominalList";
+            this.pic_RemoveNominalList.Size = new System.Drawing.Size(37, 30);
+            this.pic_RemoveNominalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_RemoveNominalList.TabIndex = 71;
+            this.pic_RemoveNominalList.TabStop = false;
             // 
             // groupbx_NormalScale
             // 
@@ -291,6 +352,26 @@
             this.groupbx_NormalScale.TabStop = false;
             this.groupbx_NormalScale.Text = "Normal";
             // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(116, 17);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(37, 30);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 73;
+            this.pictureBox2.TabStop = false;
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+            this.pictureBox3.Location = new System.Drawing.Point(202, 17);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(45, 31);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox3.TabIndex = 72;
+            this.pictureBox3.TabStop = false;
+            // 
             // list_NormalScale
             // 
             this.list_NormalScale.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
@@ -303,6 +384,16 @@
             this.list_NormalScale.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_NormalScale.Size = new System.Drawing.Size(241, 106);
             this.list_NormalScale.TabIndex = 67;
+            // 
+            // pictureBox4
+            // 
+            this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
+            this.pictureBox4.Location = new System.Drawing.Point(159, 17);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(37, 30);
+            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox4.TabIndex = 71;
+            this.pictureBox4.TabStop = false;
             // 
             // groupbx_AbnormalScale
             // 
@@ -319,6 +410,26 @@
             this.groupbx_AbnormalScale.TabStop = false;
             this.groupbx_AbnormalScale.Text = "Abnormal";
             // 
+            // pictureBox5
+            // 
+            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
+            this.pictureBox5.Location = new System.Drawing.Point(116, 19);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(37, 30);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox5.TabIndex = 73;
+            this.pictureBox5.TabStop = false;
+            // 
+            // pictureBox6
+            // 
+            this.pictureBox6.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox6.Image")));
+            this.pictureBox6.Location = new System.Drawing.Point(202, 18);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(45, 31);
+            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox6.TabIndex = 72;
+            this.pictureBox6.TabStop = false;
+            // 
             // list_AbnormalScale
             // 
             this.list_AbnormalScale.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
@@ -331,6 +442,16 @@
             this.list_AbnormalScale.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.list_AbnormalScale.Size = new System.Drawing.Size(241, 106);
             this.list_AbnormalScale.TabIndex = 67;
+            // 
+            // pictureBox7
+            // 
+            this.pictureBox7.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox7.Image")));
+            this.pictureBox7.Location = new System.Drawing.Point(159, 18);
+            this.pictureBox7.Name = "pictureBox7";
+            this.pictureBox7.Size = new System.Drawing.Size(37, 30);
+            this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox7.TabIndex = 71;
+            this.pictureBox7.TabStop = false;
             // 
             // groupbx_Groups
             // 
@@ -347,6 +468,26 @@
             this.groupbx_Groups.TabStop = false;
             this.groupbx_Groups.Text = "Groups";
             // 
+            // pictureBox8
+            // 
+            this.pictureBox8.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox8.Image")));
+            this.pictureBox8.Location = new System.Drawing.Point(116, 19);
+            this.pictureBox8.Name = "pictureBox8";
+            this.pictureBox8.Size = new System.Drawing.Size(37, 30);
+            this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox8.TabIndex = 73;
+            this.pictureBox8.TabStop = false;
+            // 
+            // pictureBox9
+            // 
+            this.pictureBox9.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox9.Image")));
+            this.pictureBox9.Location = new System.Drawing.Point(202, 18);
+            this.pictureBox9.Name = "pictureBox9";
+            this.pictureBox9.Size = new System.Drawing.Size(45, 31);
+            this.pictureBox9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox9.TabIndex = 72;
+            this.pictureBox9.TabStop = false;
+            // 
             // list_Groups
             // 
             this.list_Groups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
@@ -360,6 +501,16 @@
             this.list_Groups.Size = new System.Drawing.Size(241, 72);
             this.list_Groups.TabIndex = 67;
             // 
+            // pictureBox10
+            // 
+            this.pictureBox10.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox10.Image")));
+            this.pictureBox10.Location = new System.Drawing.Point(159, 18);
+            this.pictureBox10.Name = "pictureBox10";
+            this.pictureBox10.Size = new System.Drawing.Size(37, 30);
+            this.pictureBox10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox10.TabIndex = 71;
+            this.pictureBox10.TabStop = false;
+            // 
             // groupbx_AddingTable
             // 
             this.groupbx_AddingTable.Controls.Add(this.pictureBox11);
@@ -372,6 +523,16 @@
             this.groupbx_AddingTable.TabIndex = 76;
             this.groupbx_AddingTable.TabStop = false;
             this.groupbx_AddingTable.Text = "Table Name";
+            // 
+            // pictureBox11
+            // 
+            this.pictureBox11.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox11.Image")));
+            this.pictureBox11.Location = new System.Drawing.Point(196, 31);
+            this.pictureBox11.Name = "pictureBox11";
+            this.pictureBox11.Size = new System.Drawing.Size(37, 30);
+            this.pictureBox11.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox11.TabIndex = 74;
+            this.pictureBox11.TabStop = false;
             // 
             // txt_TableName
             // 
@@ -419,32 +580,6 @@
             this.groupbx_Actions.TabIndex = 80;
             this.groupbx_Actions.TabStop = false;
             this.groupbx_Actions.Text = "Actions";
-            // 
-            // txt_ParaName
-            // 
-            this.txt_ParaName.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txt_ParaName.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_ParaName.Location = new System.Drawing.Point(52, 63);
-            this.txt_ParaName.Margin = new System.Windows.Forms.Padding(2);
-            this.txt_ParaName.Name = "txt_ParaName";
-            this.txt_ParaName.Size = new System.Drawing.Size(96, 28);
-            this.txt_ParaName.TabIndex = 81;
-            this.txt_ParaName.TextChanged += new System.EventHandler(this.txt_ParaName_TextChanged);
-            // 
-            // btn_NameLabel
-            // 
-            this.btn_NameLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
-            this.btn_NameLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_NameLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_NameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.btn_NameLabel.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.btn_NameLabel.Location = new System.Drawing.Point(156, 63);
-            this.btn_NameLabel.Name = "btn_NameLabel";
-            this.btn_NameLabel.Size = new System.Drawing.Size(46, 28);
-            this.btn_NameLabel.TabIndex = 78;
-            this.btn_NameLabel.Text = "N";
-            this.btn_NameLabel.UseVisualStyleBackColor = false;
-            this.btn_NameLabel.Click += new System.EventHandler(this.btn_NameLabel_Click);
             // 
             // btn_Done
             // 
@@ -510,6 +645,32 @@
             this.btn_SortTable.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.btn_SortTable.UseVisualStyleBackColor = false;
             // 
+            // txt_ParaName
+            // 
+            this.txt_ParaName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txt_ParaName.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_ParaName.Location = new System.Drawing.Point(52, 63);
+            this.txt_ParaName.Margin = new System.Windows.Forms.Padding(2);
+            this.txt_ParaName.Name = "txt_ParaName";
+            this.txt_ParaName.Size = new System.Drawing.Size(96, 28);
+            this.txt_ParaName.TabIndex = 81;
+            this.txt_ParaName.TextChanged += new System.EventHandler(this.txt_ParaName_TextChanged);
+            // 
+            // btn_NameLabel
+            // 
+            this.btn_NameLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
+            this.btn_NameLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_NameLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_NameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.btn_NameLabel.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_NameLabel.Location = new System.Drawing.Point(156, 63);
+            this.btn_NameLabel.Name = "btn_NameLabel";
+            this.btn_NameLabel.Size = new System.Drawing.Size(46, 28);
+            this.btn_NameLabel.TabIndex = 78;
+            this.btn_NameLabel.Text = "N";
+            this.btn_NameLabel.UseVisualStyleBackColor = false;
+            this.btn_NameLabel.Click += new System.EventHandler(this.btn_NameLabel_Click);
+            // 
             // pictureBox12
             // 
             this.pictureBox12.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox12.Image")));
@@ -519,167 +680,6 @@
             this.pictureBox12.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox12.TabIndex = 74;
             this.pictureBox12.TabStop = false;
-            // 
-            // pictureBox11
-            // 
-            this.pictureBox11.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox11.Image")));
-            this.pictureBox11.Location = new System.Drawing.Point(196, 31);
-            this.pictureBox11.Name = "pictureBox11";
-            this.pictureBox11.Size = new System.Drawing.Size(37, 30);
-            this.pictureBox11.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox11.TabIndex = 74;
-            this.pictureBox11.TabStop = false;
-            // 
-            // pictureBox8
-            // 
-            this.pictureBox8.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox8.Image")));
-            this.pictureBox8.Location = new System.Drawing.Point(116, 19);
-            this.pictureBox8.Name = "pictureBox8";
-            this.pictureBox8.Size = new System.Drawing.Size(37, 30);
-            this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox8.TabIndex = 73;
-            this.pictureBox8.TabStop = false;
-            // 
-            // pictureBox9
-            // 
-            this.pictureBox9.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox9.Image")));
-            this.pictureBox9.Location = new System.Drawing.Point(202, 18);
-            this.pictureBox9.Name = "pictureBox9";
-            this.pictureBox9.Size = new System.Drawing.Size(45, 31);
-            this.pictureBox9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox9.TabIndex = 72;
-            this.pictureBox9.TabStop = false;
-            // 
-            // pictureBox10
-            // 
-            this.pictureBox10.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox10.Image")));
-            this.pictureBox10.Location = new System.Drawing.Point(159, 18);
-            this.pictureBox10.Name = "pictureBox10";
-            this.pictureBox10.Size = new System.Drawing.Size(37, 30);
-            this.pictureBox10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox10.TabIndex = 71;
-            this.pictureBox10.TabStop = false;
-            // 
-            // pictureBox5
-            // 
-            this.pictureBox5.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox5.Image")));
-            this.pictureBox5.Location = new System.Drawing.Point(116, 19);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(37, 30);
-            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox5.TabIndex = 73;
-            this.pictureBox5.TabStop = false;
-            // 
-            // pictureBox6
-            // 
-            this.pictureBox6.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox6.Image")));
-            this.pictureBox6.Location = new System.Drawing.Point(202, 18);
-            this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(45, 31);
-            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox6.TabIndex = 72;
-            this.pictureBox6.TabStop = false;
-            // 
-            // pictureBox7
-            // 
-            this.pictureBox7.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox7.Image")));
-            this.pictureBox7.Location = new System.Drawing.Point(159, 18);
-            this.pictureBox7.Name = "pictureBox7";
-            this.pictureBox7.Size = new System.Drawing.Size(37, 30);
-            this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox7.TabIndex = 71;
-            this.pictureBox7.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(116, 17);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(37, 30);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 73;
-            this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(202, 17);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(45, 31);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox3.TabIndex = 72;
-            this.pictureBox3.TabStop = false;
-            // 
-            // pictureBox4
-            // 
-            this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(159, 17);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(37, 30);
-            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox4.TabIndex = 71;
-            this.pictureBox4.TabStop = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(116, 17);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(37, 30);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 73;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pic_ClearNominalList
-            // 
-            this.pic_ClearNominalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_ClearNominalList.Image")));
-            this.pic_ClearNominalList.Location = new System.Drawing.Point(202, 17);
-            this.pic_ClearNominalList.Name = "pic_ClearNominalList";
-            this.pic_ClearNominalList.Size = new System.Drawing.Size(45, 31);
-            this.pic_ClearNominalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_ClearNominalList.TabIndex = 72;
-            this.pic_ClearNominalList.TabStop = false;
-            // 
-            // pic_RemoveNominalList
-            // 
-            this.pic_RemoveNominalList.Image = ((System.Drawing.Image)(resources.GetObject("pic_RemoveNominalList.Image")));
-            this.pic_RemoveNominalList.Location = new System.Drawing.Point(159, 17);
-            this.pic_RemoveNominalList.Name = "pic_RemoveNominalList";
-            this.pic_RemoveNominalList.Size = new System.Drawing.Size(37, 30);
-            this.pic_RemoveNominalList.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_RemoveNominalList.TabIndex = 71;
-            this.pic_RemoveNominalList.TabStop = false;
-            // 
-            // pictureBox15
-            // 
-            this.pictureBox15.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox15.Image")));
-            this.pictureBox15.Location = new System.Drawing.Point(924, 6);
-            this.pictureBox15.Name = "pictureBox15";
-            this.pictureBox15.Size = new System.Drawing.Size(45, 35);
-            this.pictureBox15.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox15.TabIndex = 75;
-            this.pictureBox15.TabStop = false;
-            // 
-            // pictureBox14
-            // 
-            this.pictureBox14.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox14.Image")));
-            this.pictureBox14.Location = new System.Drawing.Point(979, 6);
-            this.pictureBox14.Name = "pictureBox14";
-            this.pictureBox14.Size = new System.Drawing.Size(45, 35);
-            this.pictureBox14.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox14.TabIndex = 74;
-            this.pictureBox14.TabStop = false;
-            // 
-            // pic_previous
-            // 
-            this.pic_previous.Image = ((System.Drawing.Image)(resources.GetObject("pic_previous.Image")));
-            this.pic_previous.Location = new System.Drawing.Point(12, 7);
-            this.pic_previous.Name = "pic_previous";
-            this.pic_previous.Size = new System.Drawing.Size(51, 31);
-            this.pic_previous.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pic_previous.TabIndex = 74;
-            this.pic_previous.TabStop = false;
-            this.pic_previous.Click += new System.EventHandler(this.pic_previous_Click);
             // 
             // Analytical_Child
             // 
@@ -706,31 +706,31 @@
             this.Load += new System.EventHandler(this.Analytical_Child_Load);
             this.pnl_Top_bar.ResumeLayout(false);
             this.pnl_Top_bar.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).EndInit();
-            this.groupbx_Nominal.ResumeLayout(false);
-            this.groupbx_NormalScale.ResumeLayout(false);
-            this.groupbx_AbnormalScale.ResumeLayout(false);
-            this.groupbx_Groups.ResumeLayout(false);
-            this.groupbx_AddingTable.ResumeLayout(false);
-            this.groupbx_AddingTable.PerformLayout();
-            this.groupbx_Actions.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearNominalList)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveNominalList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_previous)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).EndInit();
+            this.groupbx_Nominal.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearNominalList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_RemoveNominalList)).EndInit();
+            this.groupbx_NormalScale.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            this.groupbx_AbnormalScale.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
+            this.groupbx_Groups.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).EndInit();
+            this.groupbx_AddingTable.ResumeLayout(false);
+            this.groupbx_AddingTable.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).EndInit();
+            this.groupbx_Actions.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -1,5 +1,6 @@
 ﻿using ExcelScore.App_UI;
 using ExcelScore.Classes;
+using ExcelScore.FormsDesigns;
 using ExcelScore.Properties;
 using ExcelScore.StatClasses;
 using System;
@@ -30,7 +31,7 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 
         private void btn_ChooseFormat_Click(object sender, EventArgs e)
         {
-
+            FormManager.ShowStandaloneForm<ChooseAnalyticFormat_Child>();
         }
 
         private void list_Nominal_SelectedIndexChanged(object sender, EventArgs e)
