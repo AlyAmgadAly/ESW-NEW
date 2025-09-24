@@ -292,7 +292,7 @@ namespace ExcelScore.Forms
             //chooseFrm.Dgv = Dgv;
             //chooseFrm.Show();
         }
-
+        
         private void pic_AllParaToNominal_Click(object sender, EventArgs e)
         {
 

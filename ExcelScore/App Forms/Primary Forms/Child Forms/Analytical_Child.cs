@@ -23,6 +23,8 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             Custom_UI_Functions.Make_Panel_Draggable(pnl_Top_bar, this);
         }
         public List<StatParameter> SpssParameters;
+        List<StatTable> StatTables = new List<StatTable>();
+
         private void Analytical_Child_Load(object sender, EventArgs e)
         {
             SpssParameters = FormDataTransfer.Get<List<StatParameter>>("SPSS_Parameters");
@@ -147,6 +149,71 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             }
         }
 
+        //Adding To Lists from datagrid
+        public List<string> OrderedParameters = new List<string>();
+        public void AddTo_Lists_From_DataGrid(ListBox AddedListbox)
+        {
+            for (int i = data_allPara.SelectedRows.Count - 1; i >= 0; i--)
+            {
+                DataGridViewRow row = data_allPara.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    AddedListbox.Items.Add(item);
+                    OrderedParameters.Add(item);
+                }
+
+            }
+        }
+
+        //Removing Single Items From DataGrid
+        public void Remove_Single_List(ListBox RemovedListbox)
+        {
+            if (RemovedListbox.SelectedIndex != -1)
+            {
+
+                var selectedItems = new List<object>();
+                foreach (var selectedItem in RemovedListbox.SelectedItems)
+                {
+                    selectedItems.Add(selectedItem);
+                }
+
+
+                foreach (var selectedItem in selectedItems)
+                {
+                    RemovedListbox.Items.Remove(selectedItem);
+                }
+
+
+                foreach (var item in selectedItems)
+                {
+                    OrderedParameters.Remove(item.ToString());
+                }
+
+            }
+            else
+                MessageBox.Show("Please Select Item!");
+        }
+        public void Clear_List(ListBox ListCleared)
+        {
+            var selectedItems = new List<object>();
+            foreach (var selectedItem in ListCleared.Items)
+            {
+                selectedItems.Add(selectedItem);
+            }
+
+
+            foreach (var selectedItem in selectedItems)
+            {
+                ListCleared.Items.Remove(selectedItem);
+            }
+
+            foreach (var item in selectedItems)
+            {
+                OrderedParameters.Remove(item.ToString());
+            }
+        }
         private void btn_NameLabel_Click(object sender, EventArgs e)
         {
             
@@ -163,6 +230,321 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
         {
             SelectFrm_Child selectFrm_Child = new SelectFrm_Child();
             selectFrm_Child.Show();
+        }
+
+        private void pic_AllParaToNominal_Click(object sender, EventArgs e)
+        {
+            AddTo_Lists_From_DataGrid(list_Nominal);
+        }
+
+        private void pic_AllParaToNormal_Click(object sender, EventArgs e)
+        {
+            AddTo_Lists_From_DataGrid(list_NormalScale);
+        }
+
+        private void pic_AllParaToAbnormal_Click(object sender, EventArgs e)
+        {
+            AddTo_Lists_From_DataGrid(list_AbnormalScale);
+        }
+
+        private void pic_AllParaToGroups_Click(object sender, EventArgs e)
+        {
+            //We didn't use add to lists because it adds to ordered parameters
+            for (int i = data_allPara.SelectedRows.Count - 1; i >= 0; i--)
+            {
+                DataGridViewRow row = data_allPara.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    list_Groups.Items.Add(item);
+                }
+
+            }
+        }
+
+        private void pic_RemoveNominalList_Click(object sender, EventArgs e)
+        {
+            Remove_Single_List(list_Nominal);
+        }
+
+        private void pic_RemoveNormalList_Click(object sender, EventArgs e)
+        {
+            Remove_Single_List(list_NormalScale);
+        }
+
+        private void pic_RemoveAbnormalList_Click(object sender, EventArgs e)
+        {
+            Remove_Single_List(list_AbnormalScale);
+        }
+
+        private void pic_RemoveGroupsList_Click(object sender, EventArgs e)
+        {
+            Remove_Single_List(list_Groups);
+        }
+
+        private void pic_ClearNominalList_Click(object sender, EventArgs e)
+        {
+            Clear_List(list_Nominal);
+        }
+
+        private void pic_ClearNormalList_Click(object sender, EventArgs e)
+        {
+            Clear_List(list_NormalScale);
+        }
+
+        private void pic_ClearAbnormalList_Click(object sender, EventArgs e)
+        {
+            Clear_List(list_AbnormalScale);
+        }
+
+        private void pic_ClearGroupsList_Click(object sender, EventArgs e)
+        {
+            Clear_List(list_Groups);
+        }
+        public void AddTableClassNew(string tableName, string tableType)
+        {
+            StatClasses.StatTable table;
+
+            // --- Dynamically create the appropriate table type ---
+            switch (tableType.ToLower())
+            {
+                case "comparative":
+                    table = new ComparativeStatTable();
+                    break;
+                case "descriptive":
+                    table = new DescriptiveStatTable();
+                    break;
+                case "relation":
+                    table = new RelationStatTable();
+                    break;
+                default:
+                    MessageBox.Show($"Unknown table type: {tableType}");
+                    return;
+            }
+
+            table.TableName = tableName;
+            table.TableDesignType = FormDataTransfer.Get<string>("TableDesignType");
+
+            // --- Add Group Parameters ---
+            foreach (var item in list_Groups.Items)
+            {
+                table.Parameters.Add(new StatParameter
+                {
+                    Name = item.ToString(),
+                    IsGroup = true,
+                    Type = "Nominal",
+                    RawValues = new List<string>()
+                });
+            }
+            
+
+            // --- Add Main Parameters ---
+            foreach (var paramName in OrderedParameters)
+            {
+                if (table.Parameters.Any(p => p.Name == paramName))
+                    continue;
+
+                StatParameter parameter = null;
+
+                if (list_Nominal.Items.Contains(paramName))
+                {
+                    parameter = new StatParameter
+                    {
+                        Name = paramName,
+                        Type = "Nominal",
+                        RawValues = new List<string>()
+                    };
+
+                }
+                else if (list_NormalScale.Items.Contains(paramName))
+                {
+                    parameter = new StatParameter
+                    {
+                        Name = paramName,
+                        Type = "Scale",
+                        Normality = "Normal",
+                        RawValues = new List<string>()
+                    };
+                }
+                else if (list_AbnormalScale.Items.Contains(paramName))
+                {
+                    parameter = new StatParameter
+                    {
+                        Name = paramName,
+                        Type = "Scale",
+                        Normality = "Abnormal",
+                        RawValues = new List<string>()
+                    };
+                }
+
+                if (parameter != null)
+                    table.Parameters.Add(parameter);
+            }
+
+            // --- Add the new table to your master list ---
+            StatTables.Add(table);
+        }
+        public string AddTableUINew()
+        {
+            string tableName = null;
+
+            if (!string.IsNullOrWhiteSpace(txt_TableName.Text) &&
+                list_Groups.Items.Count > 0 &&
+                (list_Nominal.Items.Count > 0 || list_NormalScale.Items.Count > 0 || list_AbnormalScale.Items.Count > 0))
+            {
+                // Check if the table name already exists
+                bool tableExists = cmb_TableNames.Items
+                    .Cast<object>()
+                    .Any(existing => string.Equals(existing.ToString(), txt_TableName.Text, StringComparison.OrdinalIgnoreCase));
+
+                if (!tableExists)
+                {
+                    // Get table type from transfer storage
+                    var tableType = FormDataTransfer.Get<string>("TableType");
+
+                    if (string.IsNullOrEmpty(tableType))
+                    {
+                        MessageBox.Show("Table type was not set. Cannot add table.");
+                        return null;
+                    }
+
+
+                    // Create and add table
+                    AddTableClassNew(txt_TableName.Text, tableType);
+                    cmb_TableNames.Items.Add(txt_TableName.Text);
+                    tableName = txt_TableName.Text;
+                }
+                else
+                {
+                    MessageBox.Show("Table name already exists!");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please fill in table name and add items to lists!");
+            }
+
+            return tableName;
+        }
+        public void StatBasic(string tableName)
+        {
+            // Step 1: Find the table (any type)
+            var table = StatTables.FirstOrDefault(t => t.TableName == tableName);
+            if (table == null)
+            {
+                return;
+            }
+
+            // Step 2: Load SPSS parameters from memory
+            var spssParams = SpssParameters;
+            if (spssParams == null || spssParams.Count == 0)
+            {
+                return;
+            }
+
+            // Step 3: Match parameters and assign raw values, labels, etc.
+            foreach (var param in table.Parameters)
+            {
+                var match = spssParams.FirstOrDefault(p => p.Name == param.Name);
+                if (match != null)
+                {
+                    param.RawValues = new List<string>(match.RawValues);
+                    param.ValueLabels = new Dictionary<int, string>(match.ValueLabels);
+                    param.Type = match.Type;
+                    //param.Normality = match.Normality;
+                }
+            }
+
+            // Step 4: Group the data inside the table
+            table.AssignGroupedValuesToAll();
+
+            MessageBox.Show($"Table '{tableName}' filled successfully.");
+        }
+        private void pic_AddStatTable_Click(object sender, EventArgs e)
+        {
+            var designType = FormDataTransfer.Get<string>("TableDesignType");
+            if (string.IsNullOrEmpty(designType))
+            {
+                MessageBox.Show("Please Choose Design Type!");
+                return;
+            }
+            string tableName = AddTableUINew();
+
+            if (!string.IsNullOrEmpty(tableName))
+            {
+                StatBasic(tableName); // Only call if table creation succeeded
+            }
+        }
+
+        private void btn_Done_Click(object sender, EventArgs e)
+        {
+            foreach (var stattable in StatTables)
+            {
+                MessageBox.Show(stattable.TableName);
+                MessageBox.Show(stattable.TableType);
+                MessageBox.Show(stattable.TableDesignType);
+                foreach (var parameter in stattable.Parameters)
+                {
+                    MessageBox.Show(parameter.Name);
+                    MessageBox.Show(parameter.Type);
+                    foreach (var valuelabel in parameter.ValueLabels)
+                    {
+                        MessageBox.Show(valuelabel.Key.ToString());
+                        MessageBox.Show(valuelabel.Value);
+                    }
+                }
+            }
+        }
+
+        private void pic_removeTableSelected_Click(object sender, EventArgs e)
+        {
+            string selectedTableName = cmb_TableNames.SelectedItem?.ToString();
+
+            if (!string.IsNullOrEmpty(selectedTableName))
+            {
+                // Remove the selected table name from the ComboBox
+                cmb_TableNames.Items.RemoveAt(cmb_TableNames.SelectedIndex);
+
+                // Find and remove the corresponding ComparativeTable instance from the ComparativeTables list
+                var tableToRemove = StatTables.FirstOrDefault(table => table.TableName == selectedTableName);
+                if (tableToRemove != null)
+                {
+                    StatTables.Remove(tableToRemove);
+                }
+            }
+
+            cmb_TableNames.Text = "";
+            list_ViewTableParameters.Items.Clear();
+        }
+
+        private void cmb_TableNames_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selectedTableName = cmb_TableNames.SelectedItem.ToString();
+
+            // Find the ComparativeTable instance corresponding to the selected table name
+            var selectedTable = StatTables.FirstOrDefault(table => table.TableName == selectedTableName);
+
+            // Clear existing items in list_ViewTableParameters
+            list_ViewTableParameters.Items.Clear();
+
+            // Add parameters of the selected table to list_ViewTableParameters
+            if (selectedTable != null)
+            {
+                foreach (var parameter in selectedTable.Parameters)
+                {
+                    if (parameter.IsGroup)
+                    {
+                        list_ViewTableParameters.Items.Add("Groups : " + parameter.Name);
+                    }
+                    else if (!parameter.IsGroup)
+                    {
+                        list_ViewTableParameters.Items.Add(parameter.Name);
+                    }
+
+                }
+            }
+
         }
     }
 }

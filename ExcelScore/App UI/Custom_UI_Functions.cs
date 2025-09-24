@@ -138,5 +138,31 @@ namespace ExcelScore.App_UI
 
         //Tree View
 
+        public static void AddNodesToDictionary(TreeNodeCollection nodes, Dictionary<string, bool> dict)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (!dict.ContainsKey(node.Name))
+                {
+                    dict[node.Name] = node.Checked;
+                }
+                else
+                {
+                    // If exists, update with the current checked value
+                    dict[node.Name] = node.Checked;
+                }
+
+                if (node.Nodes.Count > 0)
+                {
+                    AddNodesToDictionary(node.Nodes, dict);
+                }
+            }
+        }
+        public static Dictionary<string, bool> BuildNodeCheckedDictionary(System.Windows.Forms.TreeView treeView)
+        {
+            Dictionary<string, bool> result = new Dictionary<string, bool>();
+            AddNodesToDictionary(treeView.Nodes, result);
+            return result;
+        }
     }
 }

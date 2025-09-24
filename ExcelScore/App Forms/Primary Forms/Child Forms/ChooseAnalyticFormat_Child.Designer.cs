@@ -31,17 +31,21 @@
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Default");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Comparative", new System.Windows.Forms.TreeNode[] {
             treeNode1});
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChooseAnalyticFormat_Child));
             this.pnl_Top_bar = new System.Windows.Forms.Panel();
+            this.lbl_FormatSelected = new System.Windows.Forms.Label();
             this.lbl_ChooseFormat = new System.Windows.Forms.Label();
             this.tree_ChooseFormatType = new System.Windows.Forms.TreeView();
             this.pnl_LoadFormatForms = new System.Windows.Forms.Panel();
-            this.lbl_FormatSelected = new System.Windows.Forms.Label();
+            this.pic_Exit = new System.Windows.Forms.PictureBox();
             this.pnl_Top_bar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_Exit)).BeginInit();
             this.SuspendLayout();
             // 
             // pnl_Top_bar
             // 
             this.pnl_Top_bar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
+            this.pnl_Top_bar.Controls.Add(this.pic_Exit);
             this.pnl_Top_bar.Controls.Add(this.lbl_FormatSelected);
             this.pnl_Top_bar.Controls.Add(this.lbl_ChooseFormat);
             this.pnl_Top_bar.Dock = System.Windows.Forms.DockStyle.Top;
@@ -49,6 +53,17 @@
             this.pnl_Top_bar.Name = "pnl_Top_bar";
             this.pnl_Top_bar.Size = new System.Drawing.Size(800, 46);
             this.pnl_Top_bar.TabIndex = 9;
+            // 
+            // lbl_FormatSelected
+            // 
+            this.lbl_FormatSelected.AutoSize = true;
+            this.lbl_FormatSelected.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_FormatSelected.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.lbl_FormatSelected.Location = new System.Drawing.Point(107, 7);
+            this.lbl_FormatSelected.Name = "lbl_FormatSelected";
+            this.lbl_FormatSelected.Size = new System.Drawing.Size(45, 30);
+            this.lbl_FormatSelected.TabIndex = 6;
+            this.lbl_FormatSelected.Text = "NA";
             // 
             // lbl_ChooseFormat
             // 
@@ -89,16 +104,16 @@
             this.pnl_LoadFormatForms.TabIndex = 11;
             this.pnl_LoadFormatForms.Paint += new System.Windows.Forms.PaintEventHandler(this.pnl_LoadFormatForms_Paint);
             // 
-            // lbl_FormatSelected
+            // pic_Exit
             // 
-            this.lbl_FormatSelected.AutoSize = true;
-            this.lbl_FormatSelected.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_FormatSelected.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.lbl_FormatSelected.Location = new System.Drawing.Point(107, 7);
-            this.lbl_FormatSelected.Name = "lbl_FormatSelected";
-            this.lbl_FormatSelected.Size = new System.Drawing.Size(45, 30);
-            this.lbl_FormatSelected.TabIndex = 6;
-            this.lbl_FormatSelected.Text = "NA";
+            this.pic_Exit.Image = ((System.Drawing.Image)(resources.GetObject("pic_Exit.Image")));
+            this.pic_Exit.Location = new System.Drawing.Point(743, 5);
+            this.pic_Exit.Name = "pic_Exit";
+            this.pic_Exit.Size = new System.Drawing.Size(45, 35);
+            this.pic_Exit.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_Exit.TabIndex = 75;
+            this.pic_Exit.TabStop = false;
+            this.pic_Exit.Click += new System.EventHandler(this.pic_Exit_Click);
             // 
             // ChooseAnalyticFormat_Child
             // 
@@ -115,6 +130,7 @@
             this.Text = "ChooseAnalyticFormat_Child";
             this.pnl_Top_bar.ResumeLayout(false);
             this.pnl_Top_bar.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_Exit)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -126,5 +142,6 @@
         private System.Windows.Forms.TreeView tree_ChooseFormatType;
         private System.Windows.Forms.Panel pnl_LoadFormatForms;
         private System.Windows.Forms.Label lbl_FormatSelected;
+        private System.Windows.Forms.PictureBox pic_Exit;
     }
 }

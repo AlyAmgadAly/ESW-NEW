@@ -43,5 +43,10 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                 FormManager.ShowForm<testdesign>(pnl_LoadFormatForms);
             }
         }
+
+        private void pic_Exit_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
     }
 }
