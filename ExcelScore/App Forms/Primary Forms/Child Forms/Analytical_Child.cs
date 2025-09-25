@@ -1,5 +1,6 @@
 ﻿using ExcelScore.App_UI;
 using ExcelScore.Classes;
+using ExcelScore.Forms;
 using ExcelScore.FormsDesigns;
 using ExcelScore.Properties;
 using ExcelScore.StatClasses;
@@ -544,6 +545,22 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 
                 }
             }
+
+        }
+
+        private void btn_SortTable_Click(object sender, EventArgs e)
+        {
+            if (cmb_TableNames.SelectedIndex != -1)
+            {
+                string selectedTableName = cmb_TableNames.SelectedItem.ToString();
+                var selectedTable = StatTables.FirstOrDefault(table => table.TableName == selectedTableName);
+                FormDataTransfer.Set("SortStatTable", selectedTable);
+
+                SortFrm_Child sortFrm_Child = new SortFrm_Child();
+                sortFrm_Child.Show();
+            }
+
+            
 
         }
     }
