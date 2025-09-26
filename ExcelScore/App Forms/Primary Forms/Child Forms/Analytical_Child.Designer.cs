@@ -33,6 +33,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnl_Top_bar = new System.Windows.Forms.Panel();
+            this.pic_ClearAllLists = new System.Windows.Forms.PictureBox();
             this.btn_Select = new System.Windows.Forms.Button();
             this.pictureBox15 = new System.Windows.Forms.PictureBox();
             this.pictureBox14 = new System.Windows.Forms.PictureBox();
@@ -78,6 +79,7 @@
             this.btn_NameLabel = new System.Windows.Forms.Button();
             this.pic_removeTableSelected = new System.Windows.Forms.PictureBox();
             this.pnl_Top_bar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAllLists)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_previous)).BeginInit();
@@ -107,6 +109,7 @@
             // pnl_Top_bar
             // 
             this.pnl_Top_bar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
+            this.pnl_Top_bar.Controls.Add(this.pic_ClearAllLists);
             this.pnl_Top_bar.Controls.Add(this.btn_Select);
             this.pnl_Top_bar.Controls.Add(this.pictureBox15);
             this.pnl_Top_bar.Controls.Add(this.pictureBox14);
@@ -118,6 +121,17 @@
             this.pnl_Top_bar.Name = "pnl_Top_bar";
             this.pnl_Top_bar.Size = new System.Drawing.Size(1031, 46);
             this.pnl_Top_bar.TabIndex = 10;
+            // 
+            // pic_ClearAllLists
+            // 
+            this.pic_ClearAllLists.Image = ((System.Drawing.Image)(resources.GetObject("pic_ClearAllLists.Image")));
+            this.pic_ClearAllLists.Location = new System.Drawing.Point(504, 6);
+            this.pic_ClearAllLists.Name = "pic_ClearAllLists";
+            this.pic_ClearAllLists.Size = new System.Drawing.Size(45, 32);
+            this.pic_ClearAllLists.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_ClearAllLists.TabIndex = 74;
+            this.pic_ClearAllLists.TabStop = false;
+            this.pic_ClearAllLists.Click += new System.EventHandler(this.pic_ClearAllLists_Click);
             // 
             // btn_Select
             // 
@@ -245,6 +259,7 @@
             this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.data_allPara.Size = new System.Drawing.Size(498, 643);
             this.data_allPara.TabIndex = 65;
+            this.data_allPara.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.data_allPara_CellContentClick);
             // 
             // Col_Name
             // 
@@ -630,6 +645,7 @@
             this.btn_Update.Text = "Update";
             this.btn_Update.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.btn_Update.UseVisualStyleBackColor = false;
+            this.btn_Update.Click += new System.EventHandler(this.btn_Update_Click);
             // 
             // btn_Load
             // 
@@ -646,6 +662,7 @@
             this.btn_Load.Text = "Load";
             this.btn_Load.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.btn_Load.UseVisualStyleBackColor = false;
+            this.btn_Load.Click += new System.EventHandler(this.btn_Load_Click);
             // 
             // btn_SortTable
             // 
@@ -726,6 +743,7 @@
             this.Load += new System.EventHandler(this.Analytical_Child_Load);
             this.pnl_Top_bar.ResumeLayout(false);
             this.pnl_Top_bar.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAllLists)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pic_previous)).EndInit();
@@ -803,5 +821,6 @@
         private System.Windows.Forms.DataGridViewButtonColumn ViewCode_Col;
         private System.Windows.Forms.TextBox txt_ParaName;
         private System.Windows.Forms.Button btn_NameLabel;
+        private System.Windows.Forms.PictureBox pic_ClearAllLists;
     }
 }

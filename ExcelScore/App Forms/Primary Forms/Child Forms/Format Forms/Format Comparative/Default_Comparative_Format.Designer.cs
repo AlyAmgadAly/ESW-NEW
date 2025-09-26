@@ -28,53 +28,44 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode55 = new System.Windows.Forms.TreeNode("Total Column");
-            System.Windows.Forms.TreeNode treeNode56 = new System.Windows.Forms.TreeNode("Row");
-            System.Windows.Forms.TreeNode treeNode57 = new System.Windows.Forms.TreeNode("Column");
-            System.Windows.Forms.TreeNode treeNode58 = new System.Windows.Forms.TreeNode("Total");
-            System.Windows.Forms.TreeNode treeNode59 = new System.Windows.Forms.TreeNode("Percentages", new System.Windows.Forms.TreeNode[] {
-            treeNode56,
-            treeNode57,
-            treeNode58});
-            System.Windows.Forms.TreeNode treeNode60 = new System.Windows.Forms.TreeNode("0.19");
-            System.Windows.Forms.TreeNode treeNode61 = new System.Windows.Forms.TreeNode("Left", new System.Windows.Forms.TreeNode[] {
-            treeNode60});
-            System.Windows.Forms.TreeNode treeNode62 = new System.Windows.Forms.TreeNode("0.19");
-            System.Windows.Forms.TreeNode treeNode63 = new System.Windows.Forms.TreeNode("Right", new System.Windows.Forms.TreeNode[] {
-            treeNode62});
-            System.Windows.Forms.TreeNode treeNode64 = new System.Windows.Forms.TreeNode("Cell Margin", new System.Windows.Forms.TreeNode[] {
-            treeNode61,
-            treeNode63});
-            System.Windows.Forms.TreeNode treeNode65 = new System.Windows.Forms.TreeNode("First Column");
-            System.Windows.Forms.TreeNode treeNode66 = new System.Windows.Forms.TreeNode("Last Column");
-            System.Windows.Forms.TreeNode treeNode67 = new System.Windows.Forms.TreeNode("Pcontrol", new System.Windows.Forms.TreeNode[] {
-            treeNode65,
-            treeNode66});
-            System.Windows.Forms.TreeNode treeNode68 = new System.Windows.Forms.TreeNode("Paper");
-            System.Windows.Forms.TreeNode treeNode69 = new System.Windows.Forms.TreeNode("Group Title");
-            System.Windows.Forms.TreeNode treeNode70 = new System.Windows.Forms.TreeNode("N");
-            System.Windows.Forms.TreeNode treeNode71 = new System.Windows.Forms.TreeNode("Min. - Max.");
-            System.Windows.Forms.TreeNode treeNode72 = new System.Windows.Forms.TreeNode("Mean ± SD.");
-            System.Windows.Forms.TreeNode treeNode73 = new System.Windows.Forms.TreeNode("Median (IQR)");
-            System.Windows.Forms.TreeNode treeNode74 = new System.Windows.Forms.TreeNode("1st Option", new System.Windows.Forms.TreeNode[] {
-            treeNode70,
-            treeNode71,
-            treeNode72,
-            treeNode73});
-            System.Windows.Forms.TreeNode treeNode75 = new System.Windows.Forms.TreeNode("N");
-            System.Windows.Forms.TreeNode treeNode76 = new System.Windows.Forms.TreeNode("Mean ± SD.");
-            System.Windows.Forms.TreeNode treeNode77 = new System.Windows.Forms.TreeNode("Median (Min. - Max.)");
-            System.Windows.Forms.TreeNode treeNode78 = new System.Windows.Forms.TreeNode("2nd Option", new System.Windows.Forms.TreeNode[] {
-            treeNode75,
-            treeNode76,
-            treeNode77});
-            System.Windows.Forms.TreeNode treeNode79 = new System.Windows.Forms.TreeNode("Normality Based");
-            System.Windows.Forms.TreeNode treeNode80 = new System.Windows.Forms.TreeNode("Empty");
-            System.Windows.Forms.TreeNode treeNode81 = new System.Windows.Forms.TreeNode("Parameter Options", new System.Windows.Forms.TreeNode[] {
-            treeNode74,
-            treeNode78,
-            treeNode79,
-            treeNode80});
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Total Column");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Row");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Column");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Total");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Percentages", new System.Windows.Forms.TreeNode[] {
+            treeNode2,
+            treeNode3,
+            treeNode4});
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("First Column");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Last Column");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Pcontrol", new System.Windows.Forms.TreeNode[] {
+            treeNode6,
+            treeNode7});
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Paper");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Group Title");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("N");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Min. - Max.");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Mean ± SD.");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Median (IQR)");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("1st Option", new System.Windows.Forms.TreeNode[] {
+            treeNode11,
+            treeNode12,
+            treeNode13,
+            treeNode14});
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("N");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Mean ± SD.");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Median (Min. - Max.)");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("2nd Option", new System.Windows.Forms.TreeNode[] {
+            treeNode16,
+            treeNode17,
+            treeNode18});
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Normality Based");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Empty");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Parameter Options", new System.Windows.Forms.TreeNode[] {
+            treeNode15,
+            treeNode19,
+            treeNode20,
+            treeNode21});
             this.Extra_TV = new System.Windows.Forms.TreeView();
             this.Primary_TV = new System.Windows.Forms.TreeView();
             this.btn_Done = new System.Windows.Forms.Button();
@@ -91,44 +82,33 @@
             this.Extra_TV.LabelEdit = true;
             this.Extra_TV.Location = new System.Drawing.Point(278, 0);
             this.Extra_TV.Name = "Extra_TV";
-            treeNode55.Name = "TotalColumn";
-            treeNode55.Text = "Total Column";
-            treeNode56.Name = "RowPercentage";
-            treeNode56.Text = "Row";
-            treeNode57.Checked = true;
-            treeNode57.Name = "ColumnPercentage";
-            treeNode57.Text = "Column";
-            treeNode58.Name = "TotalPercentage";
-            treeNode58.Text = "Total";
-            treeNode59.Name = "Percentages";
-            treeNode59.Text = "Percentages";
-            treeNode60.Name = "LeftCellMarginValue";
-            treeNode60.Text = "0.19";
-            treeNode61.Name = "Left";
-            treeNode61.Text = "Left";
-            treeNode62.Name = "RightCellMarginValue";
-            treeNode62.Text = "0.19";
-            treeNode63.Name = "Right";
-            treeNode63.Text = "Right";
-            treeNode64.Name = "CellMargin";
-            treeNode64.Text = "Cell Margin";
-            treeNode65.Name = "PcontrolFirst";
-            treeNode65.Text = "First Column";
-            treeNode66.Name = "PcontrolLast";
-            treeNode66.Text = "Last Column";
-            treeNode67.Name = "Pcontrol";
-            treeNode67.Text = "Pcontrol";
-            treeNode68.Name = "PaperFormat";
-            treeNode68.Text = "Paper";
-            treeNode69.Name = "GT";
-            treeNode69.Text = "Group Title";
+            treeNode1.Name = "TotalColumn";
+            treeNode1.Text = "Total Column";
+            treeNode2.Name = "RowPercentage";
+            treeNode2.Text = "Row";
+            treeNode3.Checked = true;
+            treeNode3.Name = "ColumnPercentage";
+            treeNode3.Text = "Column";
+            treeNode4.Name = "TotalPercentage";
+            treeNode4.Text = "Total";
+            treeNode5.Name = "Percentages";
+            treeNode5.Text = "Percentages";
+            treeNode6.Name = "PcontrolFirst";
+            treeNode6.Text = "First Column";
+            treeNode7.Name = "PcontrolLast";
+            treeNode7.Text = "Last Column";
+            treeNode8.Name = "Pcontrol";
+            treeNode8.Text = "Pcontrol";
+            treeNode9.Name = "PaperFormat";
+            treeNode9.Text = "Paper";
+            treeNode10.Name = "GT";
+            treeNode10.Text = "Group Title";
             this.Extra_TV.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode55,
-            treeNode59,
-            treeNode64,
-            treeNode67,
-            treeNode68,
-            treeNode69});
+            treeNode1,
+            treeNode5,
+            treeNode8,
+            treeNode9,
+            treeNode10});
             this.Extra_TV.ShowLines = false;
             this.Extra_TV.Size = new System.Drawing.Size(283, 543);
             this.Extra_TV.TabIndex = 23;
@@ -143,35 +123,35 @@
             this.Primary_TV.FullRowSelect = true;
             this.Primary_TV.Location = new System.Drawing.Point(0, 0);
             this.Primary_TV.Name = "Primary_TV";
-            treeNode70.Name = "NumberOfCasesFirst";
-            treeNode70.Text = "N";
-            treeNode71.Checked = true;
-            treeNode71.Name = "MinMaxFirst";
-            treeNode71.Text = "Min. - Max.";
-            treeNode72.Checked = true;
-            treeNode72.Name = "MeanSDFirst";
-            treeNode72.Text = "Mean ± SD.";
-            treeNode73.Checked = true;
-            treeNode73.Name = "MedianIQRFirst";
-            treeNode73.Text = "Median (IQR)";
-            treeNode74.Name = "1stOption";
-            treeNode74.Text = "1st Option";
-            treeNode75.Name = "NumberOfCasesSecond";
-            treeNode75.Text = "N";
-            treeNode76.Name = "MeanSDSecond";
-            treeNode76.Text = "Mean ± SD.";
-            treeNode77.Name = "MedianMinMaxSecond";
-            treeNode77.Text = "Median (Min. - Max.)";
-            treeNode78.Name = "2ndOption";
-            treeNode78.Text = "2nd Option";
-            treeNode79.Name = "Normal_Abnormal";
-            treeNode79.Text = "Normality Based";
-            treeNode80.Name = "Empty";
-            treeNode80.Text = "Empty";
-            treeNode81.Name = "Parameter_Options";
-            treeNode81.Text = "Parameter Options";
+            treeNode11.Name = "NumberOfCasesFirst";
+            treeNode11.Text = "N";
+            treeNode12.Checked = true;
+            treeNode12.Name = "MinMaxFirst";
+            treeNode12.Text = "Min. - Max.";
+            treeNode13.Checked = true;
+            treeNode13.Name = "MeanSDFirst";
+            treeNode13.Text = "Mean ± SD.";
+            treeNode14.Checked = true;
+            treeNode14.Name = "MedianIQRFirst";
+            treeNode14.Text = "Median (IQR)";
+            treeNode15.Name = "1stOption";
+            treeNode15.Text = "1st Option";
+            treeNode16.Name = "NumberOfCasesSecond";
+            treeNode16.Text = "N";
+            treeNode17.Name = "MeanSDSecond";
+            treeNode17.Text = "Mean ± SD.";
+            treeNode18.Name = "MedianMinMaxSecond";
+            treeNode18.Text = "Median (Min. - Max.)";
+            treeNode19.Name = "2ndOption";
+            treeNode19.Text = "2nd Option";
+            treeNode20.Name = "Normal_Abnormal";
+            treeNode20.Text = "Normality Based";
+            treeNode21.Name = "Empty";
+            treeNode21.Text = "Empty";
+            treeNode22.Name = "Parameter_Options";
+            treeNode22.Text = "Parameter Options";
             this.Primary_TV.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode81});
+            treeNode22});
             this.Primary_TV.ShowLines = false;
             this.Primary_TV.Size = new System.Drawing.Size(283, 543);
             this.Primary_TV.TabIndex = 22;

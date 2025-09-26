@@ -164,5 +164,22 @@ namespace ExcelScore.App_UI
             AddNodesToDictionary(treeView.Nodes, result);
             return result;
         }
+
+        public static void ClearListBox(ListBox listBox) 
+        {
+            var selectedItemsNominal = new List<object>();
+            foreach (var selectedItemNominal in listBox.Items)
+            {
+                selectedItemsNominal.Add(selectedItemNominal);
+            }
+
+
+            foreach (var selectedItemNominal in selectedItemsNominal)
+            {
+                listBox.Items.Remove(selectedItemNominal);
+            }
+
+
+        }
     }
 }

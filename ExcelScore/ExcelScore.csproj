@@ -273,6 +273,12 @@
     <Compile Include="App Forms\Primary Forms\Child Forms\Format Forms\Format Comparative\Default_Comparative_Format.Designer.cs">
       <DependentUpon>Default_Comparative_Format.cs</DependentUpon>
     </Compile>
+    <Compile Include="App Forms\Primary Forms\Child Forms\ParameterInfoFrm_Child.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="App Forms\Primary Forms\Child Forms\ParameterInfoFrm_Child.Designer.cs">
+      <DependentUpon>ParameterInfoFrm_Child.cs</DependentUpon>
+    </Compile>
     <Compile Include="App Forms\Primary Forms\Child Forms\SelectFrm_Child.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -531,6 +537,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="App Forms\Primary Forms\Child Forms\Format Forms\Format Comparative\Default_Comparative_Format.resx">
       <DependentUpon>Default_Comparative_Format.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App Forms\Primary Forms\Child Forms\ParameterInfoFrm_Child.resx">
+      <DependentUpon>ParameterInfoFrm_Child.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="App Forms\Primary Forms\Child Forms\SelectFrm_Child.resx">
       <DependentUpon>SelectFrm_Child.cs</DependentUpon>
