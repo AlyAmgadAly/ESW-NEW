@@ -33,24 +33,23 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             data_allPara.Rows.Clear();
             list_Codes.Items.Clear();
 
-            lbl_ParameterName.Text = $"{viewedParameter.Name}"; // Update label
+
+
+            int realparacount = StatParameter.GetParameterRealCount(viewedParameter);
+            lbl_ParameterName.Text = $"{viewedParameter.Name} (n = {realparacount})"; // Update label
             lbl_Measure.Text = $"Measure: {viewedParameter.Type}";
 
 
             
             List<int> SerialList= Enumerable.Range(1, viewedParameter.RawValues.Count).ToList();
+            
             for (int i = 1; i <= SerialList.Count; i++)
             {
-                data_allPara.Rows.Add(i);
-                //data_allPara.Rows[i-1].Cells[1].Value = viewedParameter.RawValues[i-1];
+                data_allPara.Rows.Add(i, viewedParameter.RawValues[i-1]);
+                
             }
 
 
-            //foreach (var value in viewedParameter.RawValues)
-            //{
-            //    data_allPara.Rows.Add(value);
-
-            //}
 
             
 

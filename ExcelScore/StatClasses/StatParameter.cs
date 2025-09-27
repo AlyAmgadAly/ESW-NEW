@@ -129,7 +129,24 @@ namespace ExcelScore.StatClasses
             }
         }
 
+        public static int GetParameterRealCount(StatParameter statParameter)
+        {
+            int realCount = 0;
+            foreach (var value in statParameter.RawValues)
+            {
+                if(value == ".")
+                {
+                    continue;
+                }
+                else
+                {
+                    realCount++;
+                }
+            }
 
+
+            return realCount;
+        }
 
         // --- Statistics Results (parsed or calculated) ---
         public SPSSUnifiedRunner.DescriptiveResult DescriptiveStats { get; set; }
