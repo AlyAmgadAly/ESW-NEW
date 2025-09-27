@@ -307,6 +307,7 @@
             this.groupbx_Nominal.TabIndex = 66;
             this.groupbx_Nominal.TabStop = false;
             this.groupbx_Nominal.Text = "Nominal";
+            this.groupbx_Nominal.Enter += new System.EventHandler(this.groupbx_Nominal_Enter);
             // 
             // pic_AllParaToNominal
             // 

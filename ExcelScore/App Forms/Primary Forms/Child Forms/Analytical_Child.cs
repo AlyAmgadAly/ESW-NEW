@@ -539,7 +539,7 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                     {
                         list_ViewTableParameters.Items.Add("Groups : " + parameter.Name);
                     }
-                    else if (!parameter.IsGroup)
+                    else
                     {
                         list_ViewTableParameters.Items.Add(parameter.Name);
                     }
@@ -649,16 +649,19 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                     else if (parameter.Type == "Nominal")
                     {
                         list_Nominal.Items.Add(parameter.Name);
+                        OrderedParameters.Add(parameter.Name);
                     }
                     else if (parameter.Type == "Scale")
                     {
                         if (parameter.Normality == "Normal")
                         {
                             list_NormalScale.Items.Add(parameter.Name);
+                            OrderedParameters.Add(parameter.Name);
                         }
                         else if (parameter.Normality == "Abnormal")
                         {
                             list_AbnormalScale.Items.Add(parameter.Name);
+                            OrderedParameters.Add(parameter.Name);
                         }
                     }
                 }
@@ -667,6 +670,11 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                 MessageBox.Show("Lists Updated", "Update Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+        public StatParameter GetSpssParamByName(string parameterName)
+        {
+            return SpssParameters.FirstOrDefault(p => p.Name == parameterName);
+        }
+
 
         private void btn_Update_Click(object sender, EventArgs e)
         {
@@ -687,7 +695,7 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 
             PopDataGrid_AllSpssParam();
         }
-
+        private ParameterInfoFrm_Child parameterfrm_obj;
         private void data_allPara_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -702,16 +710,23 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                     string paraName = clickedRow.Cells[0].Value.ToString();
 
                     // If the form is not open, create it
-                    if (parameterInfoForm == null || parameterInfoForm.IsDisposed)
+                    if (parameterfrm_obj == null || parameterfrm_obj.IsDisposed)
                     {
-                        parameterInfoForm = new ParameterInfo();
-                        parameterInfoForm.Show();
+                        parameterfrm_obj = new ParameterInfoFrm_Child();
+                        parameterfrm_obj.Show();
                     }
 
+                    StatParameter viewedParameter = GetSpssParamByName(paraName);
+
                     // Update the existing form with the new data
-                    parameterInfoForm.UpdateParameter(paraName);
+                    parameterfrm_obj.UpdateParameter(viewedParameter);
                 }
             }
+        }
+
+        private void groupbx_Nominal_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }
