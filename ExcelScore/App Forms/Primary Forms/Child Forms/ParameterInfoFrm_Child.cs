@@ -1,4 +1,5 @@
 ﻿using ExcelScore.App_UI;
+using ExcelScore.Classes;
 using ExcelScore.StatClasses;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 
         public void UpdateParameter(StatParameter viewedParameter)
         {
+
+            //Centering Serial and values
             data_allPara.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             data_allPara.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             data_allPara.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -34,30 +37,38 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             list_Codes.Items.Clear();
 
 
-
+            //setting labels
             int realparacount = StatParameter.GetParameterRealCount(viewedParameter);
             lbl_ParameterName.Text = $"{viewedParameter.Name} (n = {realparacount})"; // Update label
-            lbl_Measure.Text = $"Measure: {viewedParameter.Type}";
+            lbl_Measure.Text = $"Measure : {viewedParameter.Type}";
 
 
-            
+            //making a list of serial based on parameter count
             List<int> SerialList= Enumerable.Range(1, viewedParameter.RawValues.Count).ToList();
             
             for (int i = 1; i <= SerialList.Count; i++)
             {
                 data_allPara.Rows.Add(i, viewedParameter.RawValues[i-1]);
-                
+            }
+
+            foreach (DataGridViewRow row in data_allPara.Rows)
+            {
+                if (row.Cells[1].Value?.ToString() == ".")
+                {
+                    row.DefaultCellStyle.BackColor = Color.Red;
+                }
             }
 
 
-
-            
 
             foreach (var ValueLabel in viewedParameter.ValueLabels)
             {
                 string value_Label = $"                         {ValueLabel.Key} = {ValueLabel.Value}";
                 list_Codes.Items.Add(value_Label);
             }
+
+            //passed to be used in edit codes
+            FormDataTransfer.Set("EditedCodeParameter", viewedParameter);
 
             if (this.WindowState == FormWindowState.Minimized)
             {
@@ -72,6 +83,7 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 
             this.BringToFront(); // Bring the form to front if minimized
             this.Activate();
+
         }
 
         private void ParameterInfoFrm_Child_Load(object sender, EventArgs e)
@@ -80,6 +92,12 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+        }
+
+        private void pic_EditCodes_Click(object sender, EventArgs e)
+        {
+            Child_Forms.EditCodesNominalFrm_Child editCodesNominalFrm_Child = new EditCodesNominalFrm_Child();
+            editCodesNominalFrm_Child.Show();
         }
     }
 }

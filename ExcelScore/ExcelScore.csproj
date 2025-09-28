@@ -267,6 +267,12 @@
     <Compile Include="App Forms\Primary Forms\Child Forms\ChooseAnalyticFormat_Child.Designer.cs">
       <DependentUpon>ChooseAnalyticFormat_Child.cs</DependentUpon>
     </Compile>
+    <Compile Include="App Forms\Primary Forms\Child Forms\EditCodesNominalFrm_Child.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="App Forms\Primary Forms\Child Forms\EditCodesNominalFrm_Child.Designer.cs">
+      <DependentUpon>EditCodesNominalFrm_Child.cs</DependentUpon>
+    </Compile>
     <Compile Include="App Forms\Primary Forms\Child Forms\Format Forms\Format Comparative\Default_Comparative_Format.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -534,6 +540,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="App Forms\Primary Forms\Child Forms\ChooseAnalyticFormat_Child.resx">
       <DependentUpon>ChooseAnalyticFormat_Child.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App Forms\Primary Forms\Child Forms\EditCodesNominalFrm_Child.resx">
+      <DependentUpon>EditCodesNominalFrm_Child.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="App Forms\Primary Forms\Child Forms\Format Forms\Format Comparative\Default_Comparative_Format.resx">
       <DependentUpon>Default_Comparative_Format.cs</DependentUpon>

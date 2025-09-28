@@ -28,23 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ParameterInfoFrm_Child));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnl_Top_bar = new System.Windows.Forms.Panel();
+            this.pic_EditCodes = new System.Windows.Forms.PictureBox();
             this.lbl_Measure = new System.Windows.Forms.Label();
             this.lbl_ParameterName = new System.Windows.Forms.Label();
             this.data_allPara = new System.Windows.Forms.DataGridView();
-            this.list_Codes = new System.Windows.Forms.ListBox();
             this.Serial = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColValues = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.list_Codes = new System.Windows.Forms.ListBox();
             this.pnl_Top_bar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_EditCodes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).BeginInit();
             this.SuspendLayout();
             // 
             // pnl_Top_bar
             // 
             this.pnl_Top_bar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(40)))), ((int)(((byte)(49)))));
+            this.pnl_Top_bar.Controls.Add(this.pic_EditCodes);
             this.pnl_Top_bar.Controls.Add(this.lbl_Measure);
             this.pnl_Top_bar.Controls.Add(this.lbl_ParameterName);
             this.pnl_Top_bar.Dock = System.Windows.Forms.DockStyle.Top;
@@ -53,12 +57,23 @@
             this.pnl_Top_bar.Size = new System.Drawing.Size(604, 39);
             this.pnl_Top_bar.TabIndex = 17;
             // 
+            // pic_EditCodes
+            // 
+            this.pic_EditCodes.Image = ((System.Drawing.Image)(resources.GetObject("pic_EditCodes.Image")));
+            this.pic_EditCodes.Location = new System.Drawing.Point(558, 6);
+            this.pic_EditCodes.Name = "pic_EditCodes";
+            this.pic_EditCodes.Size = new System.Drawing.Size(42, 30);
+            this.pic_EditCodes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_EditCodes.TabIndex = 76;
+            this.pic_EditCodes.TabStop = false;
+            this.pic_EditCodes.Click += new System.EventHandler(this.pic_EditCodes_Click);
+            // 
             // lbl_Measure
             // 
             this.lbl_Measure.AutoSize = true;
             this.lbl_Measure.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Measure.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.lbl_Measure.Location = new System.Drawing.Point(361, 6);
+            this.lbl_Measure.Location = new System.Drawing.Point(356, 6);
             this.lbl_Measure.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_Measure.Name = "lbl_Measure";
             this.lbl_Measure.Size = new System.Drawing.Size(162, 30);
@@ -86,27 +101,27 @@
             this.data_allPara.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
             this.data_allPara.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.data_allPara.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.data_allPara.ColumnHeadersHeight = 54;
             this.data_allPara.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.data_allPara.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Serial,
             this.ColValues});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.data_allPara.DefaultCellStyle = dataGridViewCellStyle8;
             this.data_allPara.Dock = System.Windows.Forms.DockStyle.Left;
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
@@ -114,32 +129,19 @@
             this.data_allPara.Name = "data_allPara";
             this.data_allPara.ReadOnly = true;
             this.data_allPara.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 8F);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.data_allPara.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Tahoma", 8F);
+            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.data_allPara.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.data_allPara.RowHeadersVisible = false;
             this.data_allPara.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.data_allPara.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.data_allPara.Size = new System.Drawing.Size(305, 572);
             this.data_allPara.TabIndex = 64;
-            // 
-            // list_Codes
-            // 
-            this.list_Codes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
-            this.list_Codes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.list_Codes.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.list_Codes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.list_Codes.FormattingEnabled = true;
-            this.list_Codes.ItemHeight = 21;
-            this.list_Codes.Location = new System.Drawing.Point(305, 39);
-            this.list_Codes.Name = "list_Codes";
-            this.list_Codes.Size = new System.Drawing.Size(299, 572);
-            this.list_Codes.TabIndex = 65;
             // 
             // Serial
             // 
@@ -154,6 +156,19 @@
             this.ColValues.Name = "ColValues";
             this.ColValues.ReadOnly = true;
             this.ColValues.Width = 150;
+            // 
+            // list_Codes
+            // 
+            this.list_Codes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
+            this.list_Codes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.list_Codes.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.list_Codes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.list_Codes.FormattingEnabled = true;
+            this.list_Codes.ItemHeight = 21;
+            this.list_Codes.Location = new System.Drawing.Point(305, 39);
+            this.list_Codes.Name = "list_Codes";
+            this.list_Codes.Size = new System.Drawing.Size(299, 572);
+            this.list_Codes.TabIndex = 65;
             // 
             // ParameterInfoFrm_Child
             // 
@@ -170,6 +185,7 @@
             this.Load += new System.EventHandler(this.ParameterInfoFrm_Child_Load);
             this.pnl_Top_bar.ResumeLayout(false);
             this.pnl_Top_bar.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_EditCodes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.data_allPara)).EndInit();
             this.ResumeLayout(false);
 
@@ -184,5 +200,6 @@
         private System.Windows.Forms.ListBox list_Codes;
         private System.Windows.Forms.DataGridViewTextBoxColumn Serial;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColValues;
+        private System.Windows.Forms.PictureBox pic_EditCodes;
     }
 }
