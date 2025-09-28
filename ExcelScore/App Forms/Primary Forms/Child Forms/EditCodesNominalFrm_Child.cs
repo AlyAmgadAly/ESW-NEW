@@ -20,7 +20,7 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             InitializeComponent();
             Custom_UI_Functions.Make_Panel_Draggable(pnl_Top_bar, this);
         }
-
+        StatParameter EditedCodeparameter;
         private void groupbx_ValueLabels_Enter(object sender, EventArgs e)
         {
 
@@ -43,8 +43,14 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             btn_Change.BackColor = Color.Gray;
             btn_Remove.BackColor = Color.Gray;
 
-            StatParameter EditedCodeparameter = FormDataTransfer.Get<StatParameter>("EditedCodeParameter");
+            EditedCodeparameter = FormDataTransfer.Get<StatParameter>("EditedCodeParameter");
             LoadParameterCodes(EditedCodeparameter);
+        }
+
+        public bool ValidateTextBoxes()
+        {
+            bool textboxesFilled = !string.IsNullOrWhiteSpace(txt_value.Text) && !string.IsNullOrWhiteSpace(txt_Label.Text);
+            return textboxesFilled;
         }
 
         private void listbox_valueLabels_SelectedIndexChanged(object sender, EventArgs e)
@@ -61,6 +67,23 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 
             txt_value.Text = valuePart;
             txt_Label.Text = labelPart;
+
+
+        }
+        
+
+        private void txt_value_TextChanged(object sender, EventArgs e)
+        {
+            bool textfilled = ValidateTextBoxes();
+            if (EditedCodeparameter.ValueLabels.ContainsKey(int.Parse(txt_value.Text)) && EditedCodeparameter.ValueLabels.ContainsValue(txt_Label.Text))
+            {
+                btn_Remove.Enabled = true; 
+            }
+        }
+
+        private void txt_Label_TextChanged(object sender, EventArgs e)
+        {
+            bool textfilled = ValidateTextBoxes();
         }
     }
 }
