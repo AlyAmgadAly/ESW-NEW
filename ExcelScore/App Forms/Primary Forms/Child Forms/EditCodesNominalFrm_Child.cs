@@ -68,22 +68,60 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             txt_value.Text = valuePart;
             txt_Label.Text = labelPart;
 
+            btn_Remove.Enabled = true;
+
 
         }
         
-
+        public bool CheckAddEnable()
+        {
+            bool EnableAddbtn = false;
+            if (int.TryParse(txt_value.Text, out int number))
+            {
+                if (EditedCodeparameter.ValueLabels.ContainsKey(number))
+                {
+                    // Key exists
+                }
+                else
+                {
+                    // Key doesn't exist
+                    EnableAddbtn = true;
+                }
+            }
+            else
+            {
+                // User entered text that's not a number
+                MessageBox.Show("Please enter a valid number.");
+            }
+            return EnableAddbtn;
+        }
         private void txt_value_TextChanged(object sender, EventArgs e)
         {
             bool textfilled = ValidateTextBoxes();
-            if (EditedCodeparameter.ValueLabels.ContainsKey(int.Parse(txt_value.Text)) && EditedCodeparameter.ValueLabels.ContainsValue(txt_Label.Text))
+
+            if (textfilled)
             {
-                btn_Remove.Enabled = true; 
+                if(CheckAddEnable())
+                {
+                    btn_Add.Enabled = true;
+                }
+                else
+                {
+                    btn_Add.Enabled = false;
+                }    
             }
         }
 
         private void txt_Label_TextChanged(object sender, EventArgs e)
         {
             bool textfilled = ValidateTextBoxes();
+            if (textfilled)
+            {
+                if (CheckAddEnable())
+                {
+                    btn_Add.Enabled = true;
+                }
+            }
         }
     }
 }
