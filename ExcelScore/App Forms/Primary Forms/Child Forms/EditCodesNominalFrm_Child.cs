@@ -69,6 +69,7 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             txt_Label.Text = labelPart;
 
             btn_Remove.Enabled = true;
+            btn_Remove.BackColor = Color.FromArgb(0, 173, 181);
 
 
         }
@@ -86,6 +87,7 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                 {
                     // Key doesn't exist
                     EnableAddbtn = true;
+
                 }
             }
             else
@@ -104,10 +106,12 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                 if(CheckAddEnable())
                 {
                     btn_Add.Enabled = true;
+                    btn_Add.BackColor = Color.FromArgb(0, 173, 181);
                 }
                 else
                 {
                     btn_Add.Enabled = false;
+                    btn_Add.BackColor = Color.Gray;
                 }    
             }
         }
@@ -120,7 +124,29 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                 if (CheckAddEnable())
                 {
                     btn_Add.Enabled = true;
+                    btn_Add.BackColor = Color.FromArgb(0, 173, 181);
                 }
+                else
+                {
+                    btn_Add.Enabled = false;
+                    btn_Add.BackColor = Color.Gray;
+                }
+            }
+        }
+
+        private void txt_value_Enter(object sender, EventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                tb.SelectAll();
+            }
+        }
+
+        private void txt_Label_Enter(object sender, EventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                tb.SelectAll();
             }
         }
     }

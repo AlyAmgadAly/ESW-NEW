@@ -181,5 +181,13 @@ namespace ExcelScore.App_UI
 
 
         }
+
+        private void TextBox_Enter(object sender, EventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                tb.SelectAll();
+            }
+        }
     }
 }

@@ -129,6 +129,7 @@
             this.txt_Label.Size = new System.Drawing.Size(681, 25);
             this.txt_Label.TabIndex = 25;
             this.txt_Label.TextChanged += new System.EventHandler(this.txt_Label_TextChanged);
+            this.txt_Label.Enter += new System.EventHandler(this.txt_Label_Enter);
             // 
             // txt_value
             // 
@@ -140,6 +141,7 @@
             this.txt_value.Size = new System.Drawing.Size(169, 25);
             this.txt_value.TabIndex = 24;
             this.txt_value.TextChanged += new System.EventHandler(this.txt_value_TextChanged);
+            this.txt_value.Enter += new System.EventHandler(this.txt_value_Enter);
             // 
             // lbl_value
             // 
