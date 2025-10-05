@@ -2,6 +2,7 @@
 using ExcelScore.Classes;
 using SpssLib.DataReader;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -241,13 +242,62 @@ namespace ExcelScore.StatClasses
             }
         }
 
-        
+        private static string EscapeForSpss(string path)
+        {
+            if (path.StartsWith(@"\\"))
+            {
+                // Preserve UNC \\ at start, escape rest
+                return @"\\" + path.Substring(2).Replace(@"\", @"\\");
+            }
+            return path.Replace(@"\", @"\\");
+        }
 
-        
-        
+        public static string SpssFilepathSyntax(string savFilePath)
+        {
+            var sb = new StringBuilder();
 
 
-        
+            sb.AppendLine($@"
+GET FILE='{EscapeForSpss(savFilePath)}'.
+DATASET NAME DataSet1 WINDOW=ASIS.");
+
+
+            return sb.ToString();
+        }
+        public static string ChangeValueLabels(StatParameter parameter)
+        {
+            var sb = new StringBuilder();
+
+
+            sb.Append($"VALUE LABELS {parameter.Name}");
+            foreach (var kvp in parameter.ValueLabels)
+            {
+                sb.Append($" {kvp.Key} \"{kvp.Value.Replace("\"", "'")}\"");
+            }
+            sb.AppendLine(".");
+
+            return sb.ToString();
+        }
+
+        public static string ExecuteSyntax()
+        {
+            return "EXECUTE.";
+        }
+        public static void RunSpssSyntax(string SyntaxPath , string syntax)
+        {
+            using (var writer = new StreamWriter(SyntaxPath, false, Encoding.GetEncoding(1256)))
+            {
+                writer.Write(syntax);
+            }
+
+            Type spssType = Type.GetTypeFromProgID("SPSS.Application");
+            dynamic spssApp = Activator.CreateInstance(spssType);
+            dynamic syntaxDoc = spssApp.OpenSyntaxDoc(SyntaxPath);
+            syntaxDoc.Run();
+        }
+
+
+
 
     }
 }

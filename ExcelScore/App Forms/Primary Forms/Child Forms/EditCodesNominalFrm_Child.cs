@@ -97,6 +97,32 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             }
             return EnableAddbtn;
         }
+        public bool CheckChangeEnable()
+        {
+            bool EnableChangebtn = false;
+            if (int.TryParse(txt_value.Text, out int number))
+            {
+                if (EditedCodeparameter.ValueLabels.ContainsKey(number))
+                {
+                    // Key exists
+                    if (!(EditedCodeparameter.ValueLabels[number] == txt_Label.Text))
+                    {
+                        EnableChangebtn = true;
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                // User entered text that's not a number
+                MessageBox.Show("Please enter a valid number.");
+            }
+            return EnableChangebtn;
+
+        }
         private void txt_value_TextChanged(object sender, EventArgs e)
         {
             bool textfilled = ValidateTextBoxes();
@@ -112,7 +138,20 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                 {
                     btn_Add.Enabled = false;
                     btn_Add.BackColor = Color.Gray;
-                }    
+                }
+
+                if (CheckChangeEnable())
+                {
+                    btn_Change.Enabled = true;
+                    btn_Change.BackColor = Color.FromArgb(0, 173, 181);
+                }
+                else
+                {
+                    btn_Change.Enabled = false;
+                    btn_Change.BackColor = Color.Gray;
+                }
+
+
             }
         }
 
@@ -131,6 +170,17 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                     btn_Add.Enabled = false;
                     btn_Add.BackColor = Color.Gray;
                 }
+
+                if (CheckChangeEnable())
+                {
+                    btn_Change.Enabled = true;
+                    btn_Change.BackColor = Color.FromArgb(0, 173, 181);
+                }
+                else
+                {
+                    btn_Change.Enabled = false;
+                    btn_Change.BackColor = Color.Gray;
+                }
             }
         }
 
@@ -148,6 +198,33 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             {
                 tb.SelectAll();
             }
+        }
+
+        private void btn_Remove_Click(object sender, EventArgs e)
+        {
+            if (listbox_valueLabels.SelectedItems.Count > 0)
+            {
+                string CurrentItem = listbox_valueLabels.SelectedItem as string;
+                if (CurrentItem != null)
+                {
+                    string[] Kvp = CurrentItem.Split('=');
+                    string valuePart = Kvp[0].Trim(); // "1"
+                    string labelPart = Kvp[1].Trim(); // "GA"
+                }
+
+            }
+        }
+
+        private void btn_Add_Click(object sender, EventArgs e)
+        {
+            // We add to SPSS
+            string filepath = SpssReaderStat.SpssFilepathSyntax(SpssReaderStat.spssFilePath);
+            string ValueLabels = SpssReaderStat.ChangeValueLabels(EditedCodeparameter);
+            //string Execute = SpssReaderStat.ExecuteSyntax();
+            string FinalSyntax = filepath  + ValueLabels ;
+
+            //MessageBox.Show(FinalSyntax);
+            SpssReaderStat.RunSpssSyntax(SpssReaderStat.spssFilePath, FinalSyntax);
         }
     }
 }

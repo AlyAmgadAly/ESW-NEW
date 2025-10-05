@@ -77,6 +77,7 @@
             this.btn_Remove.TabIndex = 29;
             this.btn_Remove.Text = "Remove";
             this.btn_Remove.UseVisualStyleBackColor = false;
+            this.btn_Remove.Click += new System.EventHandler(this.btn_Remove_Click);
             // 
             // btn_Change
             // 
@@ -105,6 +106,7 @@
             this.btn_Add.TabIndex = 27;
             this.btn_Add.Text = "Add";
             this.btn_Add.UseVisualStyleBackColor = false;
+            this.btn_Add.Click += new System.EventHandler(this.btn_Add_Click);
             // 
             // listbox_valueLabels
             // 
