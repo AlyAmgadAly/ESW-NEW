@@ -1,4 +1,5 @@
-﻿using ExcelScore.StatClasses;
+﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using ExcelScore.StatClasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -188,6 +189,57 @@ namespace ExcelScore.App_UI
             {
                 tb.SelectAll();
             }
+        }
+
+        public void AddTo_Lists_From_DataGrid_Custom(ListBox AddedListbox , DataGridView Dgv)
+        {
+            for (int i = Dgv.SelectedRows.Count - 1; i >= 0; i--)
+            {
+                DataGridViewRow row = Dgv.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    AddedListbox.Items.Add(item);
+                }
+
+            }
+        }
+        public static void AddTo_RichTextBox_From_DataGrid_Custom(RichTextBox Txtbox, DataGridView Dgv)
+        {
+            for (int i = Dgv.SelectedRows.Count - 1; i >= 0; i--)
+            {
+                DataGridViewRow row = Dgv.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    Txtbox.Text += item;
+                }
+
+            }
+        }
+
+        public static void AddTo_TextBox_From_DataGrid_Custom(TextBox Txtbox, DataGridView Dgv)
+        {
+            for (int i = Dgv.SelectedRows.Count - 1; i >= 0; i--)
+            {
+                DataGridViewRow row = Dgv.SelectedRows[i];
+                var cellValue = row.Cells[0].Value;
+                if (cellValue != null)
+                {
+                    string item = cellValue.ToString();
+                    Txtbox.Text += item;
+                }
+
+            }
+        }
+
+        public static void RichBoxHandleFocus(RichTextBox rich)
+        {
+            rich.Focus();
+            rich.SelectionStart = rich.TextLength;
+            rich.ScrollToCaret();
         }
     }
 }

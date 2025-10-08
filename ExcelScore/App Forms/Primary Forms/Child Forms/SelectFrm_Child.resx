@@ -124,15 +124,15 @@
   <data name="pic_AllParaToIF.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        rgAAAK4B+ff3XQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABmSURBVEhL7ZQx
+        rAAAAKwBhgk01AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABmSURBVEhL7ZQx
         CoBADATzCeX8/yOsLUVttPA5OrG4QkQQsoWQgSlCYBdSxJJf0+OM7TUJ8PADN5SUNLiil+zYYThZ8onX
         kgF9EemEFXlBBPcTFQwjwx+RhjsLerjs2Y0ofddJBGYnpO9P9cRzCFwAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="pic_AllParatoFilter.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        rQAAAK0BVE7WMAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABmSURBVEhL7ZQx
+        qwAAAKsB1E2SqwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABmSURBVEhL7ZQx
         CoBADATzCeX8/yOsLUVttPA5OrG4QkQQsoWQgSlCYBdSxJJf0+OM7TUJ8PADN5SUNLiil+zYYThZ8onX
         kgF9EemEFXlBBPcTFQwjwx+RhjsLerjs2Y0ofddJBGYnpO9P9cRzCFwAAAAASUVORK5CYII=
 </value>

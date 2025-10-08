@@ -228,10 +228,16 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             this.Hide();
         }
 
+        private SelectFrm_Child selectFrm_Child;
         private void btn_Select_Click(object sender, EventArgs e)
         {
-            SelectFrm_Child selectFrm_Child = new SelectFrm_Child();
+            if (selectFrm_Child == null || selectFrm_Child.IsDisposed)
+            {
+                selectFrm_Child = new SelectFrm_Child();
+            }
+
             selectFrm_Child.Show();
+            
         }
 
         private void pic_AllParaToNominal_Click(object sender, EventArgs e)
@@ -476,7 +482,15 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             if (!string.IsNullOrEmpty(tableName))
             {
                 StatBasic(tableName); // Only call if table creation succeeded
+
+                //Assign Select Statement
+                var table = StatTables.FirstOrDefault(t => t.TableName == tableName);
+                string SelectComm = FormDataTransfer.Get<string>("IfSelectCommand");
+
+                table.SelectStatement = SelectComm;
+
             }
+            
         }
 
         private void btn_Done_Click(object sender, EventArgs e)
@@ -484,18 +498,19 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             foreach (var stattable in StatTables)
             {
                 MessageBox.Show(stattable.TableName);
-                MessageBox.Show(stattable.TableType);
-                MessageBox.Show(stattable.TableDesignType);
-                foreach (var parameter in stattable.Parameters)
-                {
-                    MessageBox.Show(parameter.Name);
-                    MessageBox.Show(parameter.Type);
-                    foreach (var valuelabel in parameter.ValueLabels)
-                    {
-                        MessageBox.Show(valuelabel.Key.ToString());
-                        MessageBox.Show(valuelabel.Value);
-                    }
-                }
+                MessageBox.Show(stattable.SelectStatement);
+                //MessageBox.Show(stattable.TableType);
+                //MessageBox.Show(stattable.TableDesignType);
+                //foreach (var parameter in stattable.Parameters)
+                //{
+                //    MessageBox.Show(parameter.Name);
+                //    MessageBox.Show(parameter.Type);
+                //    foreach (var valuelabel in parameter.ValueLabels)
+                //    {
+                //        MessageBox.Show(valuelabel.Key.ToString());
+                //        MessageBox.Show(valuelabel.Value);
+                //    }
+                //}
             }
         }
 

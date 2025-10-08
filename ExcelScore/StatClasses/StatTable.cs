@@ -24,6 +24,8 @@ namespace ExcelScore.StatClasses
 
         public string PostHoc { get; set; } = "Tukey";
 
+        public string SelectStatement { get; set; } = "";
+
         // --- Utility Methods ---
 
         // Return all grouping parameters

@@ -52,8 +52,8 @@
             this.btn_NotEqual = new System.Windows.Forms.Button();
             this.btn_Equal = new System.Windows.Forms.Button();
             this.groupbx_UseFiltervar = new System.Windows.Forms.GroupBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.pic_AllParatoFilter = new System.Windows.Forms.PictureBox();
+            this.txt_filtervar = new System.Windows.Forms.TextBox();
             this.radiobtn_Filtervar = new System.Windows.Forms.RadioButton();
             this.groupbx_Actions = new System.Windows.Forms.GroupBox();
             this.btn_Done = new System.Windows.Forms.Button();
@@ -64,13 +64,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.pic_AllParaToIF)).BeginInit();
             this.groupbx_Operators.SuspendLayout();
             this.groupbx_UseFiltervar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_AllParatoFilter)).BeginInit();
             this.groupbx_Actions.SuspendLayout();
             this.SuspendLayout();
             // 
             // txt_SelectStatement
             // 
             this.txt_SelectStatement.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
+            this.txt_SelectStatement.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_SelectStatement.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.txt_SelectStatement.Location = new System.Drawing.Point(53, 34);
             this.txt_SelectStatement.Name = "txt_SelectStatement";
             this.txt_SelectStatement.Size = new System.Drawing.Size(426, 96);
@@ -131,6 +133,7 @@
             this.data_allPara.EnableHeadersVisualStyles = false;
             this.data_allPara.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(251)))), ((int)(((byte)(245)))), ((int)(((byte)(237)))));
             this.data_allPara.Location = new System.Drawing.Point(0, 32);
+            this.data_allPara.MultiSelect = false;
             this.data_allPara.Name = "data_allPara";
             this.data_allPara.ReadOnly = true;
             this.data_allPara.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
@@ -190,6 +193,7 @@
             this.radiobtn_IF.TabIndex = 97;
             this.radiobtn_IF.TabStop = true;
             this.radiobtn_IF.UseVisualStyleBackColor = true;
+            this.radiobtn_IF.CheckedChanged += new System.EventHandler(this.radiobtn_IF_CheckedChanged);
             // 
             // pic_AllParaToIF
             // 
@@ -200,6 +204,7 @@
             this.pic_AllParaToIF.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pic_AllParaToIF.TabIndex = 15;
             this.pic_AllParaToIF.TabStop = false;
+            this.pic_AllParaToIF.Click += new System.EventHandler(this.pic_AllParaToIF_Click);
             // 
             // groupbx_Operators
             // 
@@ -234,6 +239,7 @@
             this.btn_plus.TabIndex = 93;
             this.btn_plus.Text = "+";
             this.btn_plus.UseVisualStyleBackColor = false;
+            this.btn_plus.Click += new System.EventHandler(this.btn_plus_Click);
             // 
             // btn_greaterthanEqual
             // 
@@ -248,6 +254,7 @@
             this.btn_greaterthanEqual.TabIndex = 92;
             this.btn_greaterthanEqual.Text = ">=";
             this.btn_greaterthanEqual.UseVisualStyleBackColor = false;
+            this.btn_greaterthanEqual.Click += new System.EventHandler(this.btn_greaterthanEqual_Click);
             // 
             // btn_lessthanEqual
             // 
@@ -262,6 +269,7 @@
             this.btn_lessthanEqual.TabIndex = 91;
             this.btn_lessthanEqual.Text = "<=";
             this.btn_lessthanEqual.UseVisualStyleBackColor = false;
+            this.btn_lessthanEqual.Click += new System.EventHandler(this.btn_lessthanEqual_Click);
             // 
             // btn_greaterthan
             // 
@@ -276,6 +284,7 @@
             this.btn_greaterthan.TabIndex = 90;
             this.btn_greaterthan.Text = ">";
             this.btn_greaterthan.UseVisualStyleBackColor = false;
+            this.btn_greaterthan.Click += new System.EventHandler(this.btn_greaterthan_Click);
             // 
             // btn_lessthan
             // 
@@ -290,6 +299,7 @@
             this.btn_lessthan.TabIndex = 89;
             this.btn_lessthan.Text = "<";
             this.btn_lessthan.UseVisualStyleBackColor = false;
+            this.btn_lessthan.Click += new System.EventHandler(this.btn_lessthan_Click);
             // 
             // btn_Or
             // 
@@ -304,6 +314,7 @@
             this.btn_Or.TabIndex = 88;
             this.btn_Or.Text = "Or";
             this.btn_Or.UseVisualStyleBackColor = false;
+            this.btn_Or.Click += new System.EventHandler(this.btn_Or_Click);
             // 
             // btn_And
             // 
@@ -318,6 +329,7 @@
             this.btn_And.TabIndex = 87;
             this.btn_And.Text = "And";
             this.btn_And.UseVisualStyleBackColor = false;
+            this.btn_And.Click += new System.EventHandler(this.btn_And_Click);
             // 
             // btn_NotEqual
             // 
@@ -332,6 +344,7 @@
             this.btn_NotEqual.TabIndex = 86;
             this.btn_NotEqual.Text = "~=";
             this.btn_NotEqual.UseVisualStyleBackColor = false;
+            this.btn_NotEqual.Click += new System.EventHandler(this.btn_NotEqual_Click);
             // 
             // btn_Equal
             // 
@@ -346,11 +359,12 @@
             this.btn_Equal.TabIndex = 85;
             this.btn_Equal.Text = "=";
             this.btn_Equal.UseVisualStyleBackColor = false;
+            this.btn_Equal.Click += new System.EventHandler(this.btn_Equal_Click);
             // 
             // groupbx_UseFiltervar
             // 
-            this.groupbx_UseFiltervar.Controls.Add(this.pictureBox1);
-            this.groupbx_UseFiltervar.Controls.Add(this.textBox1);
+            this.groupbx_UseFiltervar.Controls.Add(this.pic_AllParatoFilter);
+            this.groupbx_UseFiltervar.Controls.Add(this.txt_filtervar);
             this.groupbx_UseFiltervar.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupbx_UseFiltervar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.groupbx_UseFiltervar.Location = new System.Drawing.Point(271, 292);
@@ -360,25 +374,26 @@
             this.groupbx_UseFiltervar.TabStop = false;
             this.groupbx_UseFiltervar.Text = "   Use filter Variable";
             // 
-            // pictureBox1
+            // pic_AllParatoFilter
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(6, 43);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(37, 28);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 16;
-            this.pictureBox1.TabStop = false;
+            this.pic_AllParatoFilter.Image = ((System.Drawing.Image)(resources.GetObject("pic_AllParatoFilter.Image")));
+            this.pic_AllParatoFilter.Location = new System.Drawing.Point(6, 43);
+            this.pic_AllParatoFilter.Name = "pic_AllParatoFilter";
+            this.pic_AllParatoFilter.Size = new System.Drawing.Size(37, 28);
+            this.pic_AllParatoFilter.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pic_AllParatoFilter.TabIndex = 16;
+            this.pic_AllParatoFilter.TabStop = false;
+            this.pic_AllParatoFilter.Click += new System.EventHandler(this.pic_AllParatoFilter_Click);
             // 
-            // textBox1
+            // txt_filtervar
             // 
-            this.textBox1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(53, 43);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(208, 28);
-            this.textBox1.TabIndex = 95;
+            this.txt_filtervar.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txt_filtervar.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_filtervar.Location = new System.Drawing.Point(53, 43);
+            this.txt_filtervar.Margin = new System.Windows.Forms.Padding(2);
+            this.txt_filtervar.Name = "txt_filtervar";
+            this.txt_filtervar.Size = new System.Drawing.Size(208, 28);
+            this.txt_filtervar.TabIndex = 95;
             // 
             // radiobtn_Filtervar
             // 
@@ -389,6 +404,7 @@
             this.radiobtn_Filtervar.TabIndex = 96;
             this.radiobtn_Filtervar.TabStop = true;
             this.radiobtn_Filtervar.UseVisualStyleBackColor = true;
+            this.radiobtn_Filtervar.CheckedChanged += new System.EventHandler(this.radiobtn_Filtervar_CheckedChanged);
             // 
             // groupbx_Actions
             // 
@@ -416,6 +432,7 @@
             this.btn_Done.TabIndex = 95;
             this.btn_Done.Text = "Done";
             this.btn_Done.UseVisualStyleBackColor = false;
+            this.btn_Done.Click += new System.EventHandler(this.btn_Done_Click);
             // 
             // btn_Reset
             // 
@@ -430,6 +447,7 @@
             this.btn_Reset.TabIndex = 94;
             this.btn_Reset.Text = "Reset";
             this.btn_Reset.UseVisualStyleBackColor = false;
+            this.btn_Reset.Click += new System.EventHandler(this.btn_Reset_Click);
             // 
             // SelectFrm_Child
             // 
@@ -458,7 +476,7 @@
             this.groupbx_Operators.ResumeLayout(false);
             this.groupbx_UseFiltervar.ResumeLayout(false);
             this.groupbx_UseFiltervar.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_AllParatoFilter)).EndInit();
             this.groupbx_Actions.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -484,8 +502,8 @@
         private System.Windows.Forms.Button btn_NotEqual;
         private System.Windows.Forms.Button btn_Equal;
         private System.Windows.Forms.GroupBox groupbx_UseFiltervar;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TextBox txt_filtervar;
+        private System.Windows.Forms.PictureBox pic_AllParatoFilter;
         private System.Windows.Forms.RadioButton radiobtn_Filtervar;
         private System.Windows.Forms.RadioButton radiobtn_IF;
         private System.Windows.Forms.DataGridViewTextBoxColumn Col_Name;
