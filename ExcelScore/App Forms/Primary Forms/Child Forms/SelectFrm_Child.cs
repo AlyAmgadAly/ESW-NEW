@@ -142,6 +142,10 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                 FormDataTransfer.Set("SelectIfOrVar", IfComm);
                 this.Hide();
             }
+            else
+            {
+                this.Hide();
+            }
             
         }
 

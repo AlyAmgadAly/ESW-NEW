@@ -1402,8 +1402,8 @@ OMSEND.
                             continue;
 
                         // Assign once only
-                        if (param.ChiSquareBlock == null)
-                            param.ChiSquareBlock = block;
+                        //if (param.ChiSquareBlock == null)
+                            //param.ChiSquareBlock = block;
                     }
                 }
             }

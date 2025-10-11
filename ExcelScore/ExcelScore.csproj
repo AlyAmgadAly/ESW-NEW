@@ -527,6 +527,7 @@
     <Compile Include="StatClasses\GeneralStatFunctions.cs" />
     <Compile Include="StatClasses\RelationStatTable.cs" />
     <Compile Include="StatClasses\SpssReaderStat.cs" />
+    <Compile Include="StatClasses\SpssSyntaxStat.cs" />
     <Compile Include="StatClasses\StatParameter.cs" />
     <Compile Include="StatClasses\StatTable.cs" />
     <EmbeddedResource Include="App Forms\Main Menu Forms\LoadingSplashScreen.resx">

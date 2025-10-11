@@ -160,7 +160,7 @@ namespace ExcelScore.StatClasses
 
         public SPSSUnifiedRunner.PercentileResult PercentileStats { get; set; }
     = new SPSSUnifiedRunner.PercentileResult();
-        public SPSSUnifiedRunner.CrosstabBlock ChiSquareBlock { get; set; }
+        public SpssSyntaxStat.CrosstabBlockS ChiSquareBlock { get; set; }
         public List<string> Test_PValues { get; set; } = new(); // t, U, F, H results
         public List<string> PostHocResults { get; set; } = new();
 

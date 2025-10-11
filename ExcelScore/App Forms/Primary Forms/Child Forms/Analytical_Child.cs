@@ -495,23 +495,12 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 
         private void btn_Done_Click(object sender, EventArgs e)
         {
-            foreach (var stattable in StatTables)
-            {
-                MessageBox.Show(stattable.TableName);
-                MessageBox.Show(stattable.SelectStatement);
-                //MessageBox.Show(stattable.TableType);
-                //MessageBox.Show(stattable.TableDesignType);
-                //foreach (var parameter in stattable.Parameters)
-                //{
-                //    MessageBox.Show(parameter.Name);
-                //    MessageBox.Show(parameter.Type);
-                //    foreach (var valuelabel in parameter.ValueLabels)
-                //    {
-                //        MessageBox.Show(valuelabel.Key.ToString());
-                //        MessageBox.Show(valuelabel.Value);
-                //    }
-                //}
-            }
+            string outputText = SpssSyntaxStat.RunUnifiedSyntaxAndGetResult(StatTables, out _);
+            SpssSyntaxStat.ParseUnifiedOutput_Crosstabs(outputText, StatTables);
+
+            MessageBox.Show(".");
+
+
         }
 
         private void pic_removeTableSelected_Click(object sender, EventArgs e)
