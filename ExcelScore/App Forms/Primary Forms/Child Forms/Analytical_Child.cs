@@ -498,10 +498,12 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             string outputText = SpssSyntaxStat.RunUnifiedSyntaxAndGetResult(StatTables, out _);
             SpssSyntaxStat.ParseUnifiedOutput_Crosstabs(outputText, StatTables);
 
-
+            
             var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             SpssSyntaxStat.ParsePercentiles(StatTables, lines);
 
+
+            SpssSyntaxStat.ParseUnifiedOutput_Descriptives(outputText, StatTables);
             MessageBox.Show(".");
 
 
