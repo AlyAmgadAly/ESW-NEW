@@ -1567,98 +1567,98 @@ OMSEND.
     //    }
 
 
-        public static void ParseUnifiedOutput_Descriptives(
-    string outputText,
-    List<StatTable> tables)
-        {
-            foreach (var table in tables)
-            {
-                // collect scale parameter names for this table
-                var scaleParamNames = table.GetNonGroupParameters()
-                    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
-                    .Select(p => p.Name)
-                    .ToList();
+    //    public static void ParseUnifiedOutput_Descriptives(
+    //string outputText,
+    //List<StatTable> tables)
+    //    {
+    //        foreach (var table in tables)
+    //        {
+    //            // collect scale parameter names for this table
+    //            var scaleParamNames = table.GetNonGroupParameters()
+    //                .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+    //                .Select(p => p.Name)
+    //                .ToList();
 
-                if (!scaleParamNames.Any())
-                    continue;
+    //            if (!scaleParamNames.Any())
+    //                continue;
 
-                var groupParams = table.GetGroupParameters();
+    //            var groupParams = table.GetGroupParameters();
 
-                // If there are no group parameters, still call parser once with empty labels
-                if (!groupParams.Any())
-                {
-                    return;
-                }
+    //            // If there are no group parameters, still call parser once with empty labels
+    //            if (!groupParams.Any())
+    //            {
+    //                return;
+    //            }
 
-                // For each group parameter separately, parse and assign
-                foreach (var g in groupParams)
-                {
-                    // Build ordered distinct raw values (preserve first appearance order),
-                    // excluding missing tokens like "." and empty strings
-                    var seen = new HashSet<string>();
-                    var orderedRawDistinct = new List<string>();
-                    foreach (var raw in g.RawValues ?? Enumerable.Empty<string>())
-                    {
-                        if (string.IsNullOrWhiteSpace(raw)) continue;
-                        if (raw == ".") continue; // treat dot as missing, skip
-                        if (seen.Add(raw))
-                            orderedRawDistinct.Add(raw);
-                    }
-                    var groupLabels = new List<string>();
-                    foreach (var raw in orderedRawDistinct)
-                    {
-                        string chosen = null;
+    //            // For each group parameter separately, parse and assign
+    //            foreach (var g in groupParams)
+    //            {
+    //                // Build ordered distinct raw values (preserve first appearance order),
+    //                // excluding missing tokens like "." and empty strings
+    //                var seen = new HashSet<string>();
+    //                var orderedRawDistinct = new List<string>();
+    //                foreach (var raw in g.RawValues ?? Enumerable.Empty<string>())
+    //                {
+    //                    if (string.IsNullOrWhiteSpace(raw)) continue;
+    //                    if (raw == ".") continue; // treat dot as missing, skip
+    //                    if (seen.Add(raw))
+    //                        orderedRawDistinct.Add(raw);
+    //                }
+    //                var groupLabels = new List<string>();
+    //                foreach (var raw in orderedRawDistinct)
+    //                {
+    //                    string chosen = null;
 
-                        if (double.TryParse(raw, out double d))
-                        {
-                            int code = (int)d;
-                            if (g.ValueLabels != null && g.ValueLabels.TryGetValue(code, out var mappedLabel))
-                            {
-                                // Check if mapped label is "real" (different from code)
-                                if (!string.Equals(mappedLabel, code.ToString(), StringComparison.OrdinalIgnoreCase))
-                                {
-                                    chosen = mappedLabel; // use real label (like "Patient")
-                                }
-                            }
+    //                    if (double.TryParse(raw, out double d))
+    //                    {
+    //                        int code = (int)d;
+    //                        if (g.ValueLabels != null && g.ValueLabels.TryGetValue(code, out var mappedLabel))
+    //                        {
+    //                            // Check if mapped label is "real" (different from code)
+    //                            if (!string.Equals(mappedLabel, code.ToString(), StringComparison.OrdinalIgnoreCase))
+    //                            {
+    //                                chosen = mappedLabel; // use real label (like "Patient")
+    //                            }
+    //                        }
 
-                            // If not labeled or label is just the number → normalize to 2 decimals
-                            if (chosen == null)
-                                chosen = d.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-                        }
-                        else
-                        {
-                            // Non-numeric raw → keep as-is
-                            chosen = raw;
-                        }
+    //                        // If not labeled or label is just the number → normalize to 2 decimals
+    //                        if (chosen == null)
+    //                            chosen = d.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+    //                    }
+    //                    else
+    //                    {
+    //                        // Non-numeric raw → keep as-is
+    //                        chosen = raw;
+    //                    }
 
-                        if (!groupLabels.Contains(chosen))
-                            groupLabels.Add(chosen);
-                    }
+    //                    if (!groupLabels.Contains(chosen))
+    //                        groupLabels.Add(chosen);
+    //                }
 
 
-                    // call the existing parser with this group's labels only
-                    var descResultsForThisGroup = ParseDescriptiveOutput_Smart(outputText, scaleParamNames, groupLabels);
+    //                // call the existing parser with this group's labels only
+    //                var descResultsForThisGroup = ParseDescriptiveOutput_Smart(outputText, scaleParamNames, groupLabels);
 
-                    // assign each result back into its StatParameter under the group name
-                    foreach (var desc in descResultsForThisGroup)
-                    {
-                        var param = table.GetParameterByName(desc.VariableName);
-                        if (param == null) continue;
+    //                // assign each result back into its StatParameter under the group name
+    //                foreach (var desc in descResultsForThisGroup)
+    //                {
+    //                    var param = table.GetParameterByName(desc.VariableName);
+    //                    if (param == null) continue;
 
-                        // ensure the per-group container exists on StatParameter
-                        if (param.DescriptiveStatsByGroup == null)
-                            param.DescriptiveStatsByGroup = new Dictionary<string, SPSSUnifiedRunner.DescriptiveResult>();
+    //                    // ensure the per-group container exists on StatParameter
+    //                    if (param.DescriptiveStatsByGroup == null)
+    //                        param.DescriptiveStatsByGroup = new Dictionary<string, SPSSUnifiedRunner.DescriptiveResult>();
 
-                        // store per group variable (keyed by group parameter name)
-                        param.DescriptiveStatsByGroup[g.Name] = desc;
+    //                    // store per group variable (keyed by group parameter name)
+    //                    param.DescriptiveStatsByGroup[g.Name] = desc;
 
-                        // For backward compatibility, if the single DescriptiveStats is empty, set it
-                        if (param.DescriptiveStats == null)
-                            param.DescriptiveStats = desc;
-                    }
-                }
-            }
-        }
+    //                    // For backward compatibility, if the single DescriptiveStats is empty, set it
+    //                    if (param.DescriptiveStats == null)
+    //                        param.DescriptiveStats = desc;
+    //                }
+    //            }
+    //        }
+    //    }
 
 
 

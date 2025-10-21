@@ -149,17 +149,17 @@ namespace ExcelScore.StatClasses
         }
 
         // --- Statistics Results (parsed or calculated) ---
-        public SPSSUnifiedRunner.DescriptiveResult DescriptiveStats { get; set; }
+        public SpssSyntaxStat.DescriptiveResult DescriptiveStats { get; set; }
 
-        public Dictionary<string, SPSSUnifiedRunner.DescriptiveResult> DescriptiveStatsByGroup { get; set; }
-    = new Dictionary<string, SPSSUnifiedRunner.DescriptiveResult>();
+        public Dictionary<string, SpssSyntaxStat.DescriptiveResult> DescriptiveStatsByGroup { get; set; }
+    = new Dictionary<string, SpssSyntaxStat.DescriptiveResult>();
 
 
         //    public Dictionary<string, SPSSUnifiedRunner.PercentileResult> PercentileStats { get; set; }
         //= new Dictionary<string, SPSSUnifiedRunner.PercentileResult>();
 
-        public SPSSUnifiedRunner.PercentileResult PercentileStats { get; set; }
-    = new SPSSUnifiedRunner.PercentileResult();
+        public SpssSyntaxStat.PercentileResult PercentileStats { get; set; }
+    = new SpssSyntaxStat.PercentileResult();
         public SpssSyntaxStat.CrosstabBlockS ChiSquareBlock { get; set; }
         public List<string> Test_PValues { get; set; } = new(); // t, U, F, H results
         public List<string> PostHocResults { get; set; } = new();

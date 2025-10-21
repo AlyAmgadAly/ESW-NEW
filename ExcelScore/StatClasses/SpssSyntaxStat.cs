@@ -650,6 +650,12 @@ EXECUTE.");
             }
         }
 
+        public class PercentileResult
+        {
+            public string VariableName { get; set; }
+            public Dictionary<string, Dictionary<string, Dictionary<string, string>>> GroupPercentiles { get; set; } = new();
+            public Dictionary<string, string> TotalPercentiles { get; set; } = new();
+        }
         public static void ParsePercentiles(List<StatTable> tables, List<string> spssOutputLines)
         {
             for (int i = 0; i < spssOutputLines.Count; i++)
@@ -845,29 +851,34 @@ EXECUTE.");
                             groupLabels.Add(chosen);
                         }
                     }
-
-                    var descResultsForThisGroup = ParseDescriptiveOutput_Smart(outputText, scaleParamNames, groupLabels);
-
-                    // assign each result back into its StatParameter under the group name
-                    foreach (var desc in descResultsForThisGroup)
-                    {
-                        var param = table.GetParameterByName(desc.VariableName);
-                        if (param == null) continue;
-
-                        // ensure the per-group container exists on StatParameter
-                        if (param.DescriptiveStatsByGroup == null)
-                            param.DescriptiveStatsByGroup = new Dictionary<string, SPSSUnifiedRunner.DescriptiveResult>();
-
-                        // store per group variable (keyed by group parameter name)
-                        param.DescriptiveStatsByGroup[g.Name] = desc;
-
-                        // For backward compatibility, if the single DescriptiveStats is empty, set it
-                        if (param.DescriptiveStats == null)
-                            param.DescriptiveStats = desc;
-                    }
+                    var descResultsForThisGroup = ParseDescriptiveOutput_Smart_New(outputText, scaleParamNames, groupLabels);
                 }
+
                 
             }
+
+           
+
+
+            //var descResultsForThisGroup = ParseDescriptiveOutput_Smart(outputText, scaleParamNames, groupLabels);
+
+            //// assign each result back into its StatParameter under the group name
+            //foreach (var desc in descResultsForThisGroup)
+            //{
+            //    var param = table.GetParameterByName(desc.VariableName);
+            //    if (param == null) continue;
+
+            //    // ensure the per-group container exists on StatParameter
+            //    if (param.DescriptiveStatsByGroup == null)
+            //        param.DescriptiveStatsByGroup = new Dictionary<string, SpssSyntaxStat.DescriptiveResult>();
+
+            //    // store per group variable (keyed by group parameter name)
+            //    param.DescriptiveStatsByGroup[g.Name] = desc;
+
+            //    // For backward compatibility, if the single DescriptiveStats is empty, set it
+            //    if (param.DescriptiveStats == null)
+            //        param.DescriptiveStats = desc;
+            //}
         }
         public class DescriptiveResult
         {
@@ -1149,6 +1160,82 @@ EXECUTE.");
 
             }
 
+            return results;
+        }
+
+
+        public static List<DescriptiveResult> ParseDescriptiveOutput_Smart_New(
+    string rawText,
+    List<string> variableNames,
+    List<string> groupLabels )
+        {
+            if (variableNames == null || variableNames.Count == 0)
+                return new List<DescriptiveResult>();
+
+            if (variableNames.Count == 1)
+            {
+                // Use single-parameter parsing
+                return ParseDescriptiveOutput_SingleParam(rawText, variableNames[0], groupLabels);
+            }
+            else
+            {
+                // Use multiple-parameter parsing
+                return ParseDescriptiveOutput_Multiple_New(rawText, variableNames, groupLabels , statKeyToSpssLabel);
+            }
+        }
+        public static Dictionary<string, string> statKeyToSpssLabel = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+                    { "COUNT", "N" },
+                    { "MIN", "Minimum" },
+                    { "MAX", "Maximum" },
+                    { "MEAN", "Mean" },
+                    { "SEMEAN", "Std. Error of Mean" },
+                    { "STDDEV", "Std. Deviation" },
+                    { "MEDIAN", "Median" },
+                    { "GMEDIAN", "Grouped Median" }
+        };
+        public static List<DescriptiveResult> ParseDescriptiveOutput_Multiple_New(string rawText, List<string> variableNames, List<string> groupLabels , Dictionary<string, string> statKeyToSpssLabel)
+        {
+
+
+            var results = variableNames.Select(var => new DescriptiveResult { VariableName = var }).ToList();
+            var spssOutputLines = rawText.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            //var spssOutputLines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            groupLabels.Add("Total");
+
+            var activeSpssLabels = DefaultDescriptiveStats
+               .Where(kvp => kvp.Value && statKeyToSpssLabel.ContainsKey(kvp.Key))
+               .Select(kvp => statKeyToSpssLabel[kvp.Key])
+               .ToList();
+
+
+
+            //for (int i = 0; i < spssOutputLines.Count; i++)
+            //{
+            //    string line = spssOutputLines[i];
+
+            //    foreach (var table in tables)
+            //    {
+            //        if (!string.Equals(line, table.TableName, StringComparison.OrdinalIgnoreCase))
+            //            continue;
+
+            //        var scaleParams = table.GetNonGroupParameters()
+            //            .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+            //            .ToList();
+
+            //        HashSet<string> scaleParamNames = scaleParams
+            //            .Select(p => p.Name)
+            //            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            //        // We entered the block for this table
+            //        for (int j = i + 1; j < spssOutputLines.Count; j++)
+            //        {
+            //            var parts = SplitParts(spssOutputLines[j]);
+            //            if (parts.Count < 2) continue;
+            //        }
+            //    }
+            //}
             return results;
         }
     }

@@ -5467,7 +5467,7 @@ namespace ExcelScore.Forms
 
             SPSSUnifiedRunner.ParseUnifiedOutput_Crosstabs(outputText, StatTables);
 
-            SPSSUnifiedRunner.ParseUnifiedOutput_Descriptives(outputText, StatTables);
+            //SPSSUnifiedRunner.ParseUnifiedOutput_Descriptives(outputText, StatTables);
 
             var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             SPSSUnifiedRunner.ParsePercentiles(StatTables, lines);
