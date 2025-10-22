@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
+using ExcelScore.Base_Class_Extensions;
 using ExcelScore.Classes;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace ExcelScore.StatClasses
 {
@@ -851,10 +853,28 @@ EXECUTE.");
                             groupLabels.Add(chosen);
                         }
                     }
-                    var descResultsForThisGroup = ParseDescriptiveOutput_Smart_New(outputText, scaleParamNames, groupLabels);
+                    var descResultsForThisGroup = ParseDescriptiveOutput_Smart_New(outputText, scaleParamNames, groupLabels , table , g);
+
+                    // assign each result back into its StatParameter under the group name
+                    foreach (var desc in descResultsForThisGroup)
+                    {
+                        var param = table.GetParameterByName(desc.VariableName);
+                        if (param == null) continue;
+
+                        // ensure the per-group container exists on StatParameter
+                        if (param.DescriptiveStatsByGroup == null)
+                            param.DescriptiveStatsByGroup = new Dictionary<string, SpssSyntaxStat.DescriptiveResult>();
+
+                        // store per group variable (keyed by group parameter name)
+                        param.DescriptiveStatsByGroup[g.Name] = desc;
+
+                        // For backward compatibility, if the single DescriptiveStats is empty, set it
+                        if (param.DescriptiveStats == null)
+                            param.DescriptiveStats = desc;
+                    }
                 }
 
-                
+
             }
 
            
@@ -1167,7 +1187,7 @@ EXECUTE.");
         public static List<DescriptiveResult> ParseDescriptiveOutput_Smart_New(
     string rawText,
     List<string> variableNames,
-    List<string> groupLabels )
+    List<string> groupLabels, StatTable stattable ,  StatParameter groupParameter)
         {
             if (variableNames == null || variableNames.Count == 0)
                 return new List<DescriptiveResult>();
@@ -1180,7 +1200,7 @@ EXECUTE.");
             else
             {
                 // Use multiple-parameter parsing
-                return ParseDescriptiveOutput_Multiple_New(rawText, variableNames, groupLabels , statKeyToSpssLabel);
+                return ParseDescriptiveOutput_Multiple_New(rawText, variableNames, groupLabels , statKeyToSpssLabel , stattable , groupParameter);
             }
         }
         public static Dictionary<string, string> statKeyToSpssLabel = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -1194,13 +1214,13 @@ EXECUTE.");
                     { "MEDIAN", "Median" },
                     { "GMEDIAN", "Grouped Median" }
         };
-        public static List<DescriptiveResult> ParseDescriptiveOutput_Multiple_New(string rawText, List<string> variableNames, List<string> groupLabels , Dictionary<string, string> statKeyToSpssLabel)
+        public static List<DescriptiveResult> ParseDescriptiveOutput_Multiple_New(string rawText, List<string> variableNames, List<string> groupLabels , Dictionary<string, string> statKeyToSpssLabel,StatTable statTable , StatParameter groupParameter)
         {
 
 
             var results = variableNames.Select(var => new DescriptiveResult { VariableName = var }).ToList();
             var spssOutputLines = rawText.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            //var spssOutputLines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            
 
             groupLabels.Add("Total");
 
@@ -1211,31 +1231,123 @@ EXECUTE.");
 
 
 
-            //for (int i = 0; i < spssOutputLines.Count; i++)
-            //{
-            //    string line = spssOutputLines[i];
+            for (int i = 0; i < spssOutputLines.Count; i++)
+            {
+                string line = spssOutputLines[i];
 
-            //    foreach (var table in tables)
-            //    {
-            //        if (!string.Equals(line, table.TableName, StringComparison.OrdinalIgnoreCase))
-            //            continue;
 
-            //        var scaleParams = table.GetNonGroupParameters()
-            //            .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
-            //            .ToList();
+                if (!string.Equals(line, statTable.TableName, StringComparison.OrdinalIgnoreCase))
+                    continue;
 
-            //        HashSet<string> scaleParamNames = scaleParams
-            //            .Select(p => p.Name)
-            //            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+                var scaleParams = statTable.GetNonGroupParameters()
+                    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
 
-            //        // We entered the block for this table
-            //        for (int j = i + 1; j < spssOutputLines.Count; j++)
-            //        {
-            //            var parts = SplitParts(spssOutputLines[j]);
-            //            if (parts.Count < 2) continue;
-            //        }
-            //    }
-            //}
+                HashSet<string> scaleParamNames = scaleParams
+                    .Select(p => p.Name)
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                // We entered the block for this table
+                for (int j = i + 1; j < spssOutputLines.Count; j++)
+                {
+                    var parts = SplitParts(spssOutputLines[j]);
+                    //if (parts.Count < 2) continue;
+                    int flag = 0;
+                    if (parts.Count == (1 + scaleParamNames.Count))
+                    {
+                        if (parts[0] == groupParameter.Name &&
+    parts.Skip(1).All(p => scaleParamNames.ContainsExact(p)))
+                        {
+                            // same result
+                            bool TotalFlag = false;
+                            string CurrentGroupLabel = "";
+                            for (int k = j + 1; k < spssOutputLines.Count; k++)
+                            {
+                                
+                                parts = SplitParts(spssOutputLines[k]);
+                                if (parts.Count < 2)
+                                {
+                                    flag = 1;
+                                    break;
+                                }
+
+                                string statLabel = null;
+                                for (int p = 0; p < parts.Count; p++)
+                                {
+                                    var candidate = string.Join(" ", parts.Take(p + 1));
+                                    if (activeSpssLabels.Contains(candidate))
+                                    {
+                                        statLabel = candidate;
+                                        break;
+                                    }
+                                }
+                                if (statKeyToSpssLabel.Values.ContainsExact(parts[0]))
+                                {
+                                    string statLabel = parts[0];
+                                    for (int v = 0; v < variableNames.Count; v++)
+                                    {
+                                        string variable = variableNames[v];
+                                        string value = parts.Count > v + 1 ? parts[v + 1] : null;
+                                        var result = results.First(r => r.VariableName == variable);
+
+                                        if (TotalFlag)
+                                        {
+                                            if (!result.Stats_Total.ContainsKey(statLabel))
+                                                result.Stats_Total[statLabel] = value;
+                                        }
+                                        else
+                                        {
+                                            if (!result.Stats_Groups.ContainsKey(CurrentGroupLabel))
+                                                result.Stats_Groups[CurrentGroupLabel] = new Dictionary<string, string>();
+
+                                            if (!result.Stats_Groups[CurrentGroupLabel].ContainsKey(statLabel))
+                                                result.Stats_Groups[CurrentGroupLabel][statLabel] = value;
+                                        }
+                                    }
+                                        
+                                }
+                                else if ((statKeyToSpssLabel.Values.ContainsExact(parts[1])) && groupLabels.ContainsExact(parts[0]))
+                                {
+                                    //We started with grouplabel
+                                    string statLabel = parts[1];
+
+                                    for (int v = 0; v < variableNames.Count; v++)
+                                    {
+                                        string variable = variableNames[v];
+                                        string value = parts.Count > v + 2 ? parts[v + 2] : null;
+                                        var result = results.First(r => r.VariableName == variable);
+
+                                        if (parts[0] == "Total")
+                                        {
+                                            TotalFlag = true;
+                                            if (!result.Stats_Total.ContainsKey(statLabel))
+                                                result.Stats_Total[statLabel] = value;
+                                        }
+                                        else 
+                                        {
+                                            CurrentGroupLabel = parts[0];
+                                            if (!result.Stats_Groups.ContainsKey(parts[0]))
+                                                result.Stats_Groups[parts[0]] = new Dictionary<string, string>();
+
+                                            if (!result.Stats_Groups[parts[0]].ContainsKey(statLabel))
+                                                result.Stats_Groups[parts[0]][statLabel] = value;
+                                        }
+                                    }
+                                }
+                                
+                                
+                            }
+                            break;
+                            
+                        }
+                    }
+                    
+                    
+
+
+                }
+                
+            }
             return results;
         }
     }
