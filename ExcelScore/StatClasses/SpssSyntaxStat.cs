@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Spreadsheet;
 using ExcelScore.Base_Class_Extensions;
 using ExcelScore.Classes;
 using System;
@@ -1271,45 +1272,25 @@ EXECUTE.");
                                     break;
                                 }
 
-                                string statLabel = null;
-                                for (int p = 0; p < parts.Count; p++)
-                                {
-                                    var candidate = string.Join(" ", parts.Take(p + 1));
-                                    if (activeSpssLabels.Contains(candidate))
-                                    {
-                                        statLabel = candidate;
-                                        break;
-                                    }
-                                }
-                                if (statKeyToSpssLabel.Values.ContainsExact(parts[0]))
-                                {
-                                    string statLabel = parts[0];
-                                    for (int v = 0; v < variableNames.Count; v++)
-                                    {
-                                        string variable = variableNames[v];
-                                        string value = parts.Count > v + 1 ? parts[v + 1] : null;
-                                        var result = results.First(r => r.VariableName == variable);
-
-                                        if (TotalFlag)
-                                        {
-                                            if (!result.Stats_Total.ContainsKey(statLabel))
-                                                result.Stats_Total[statLabel] = value;
-                                        }
-                                        else
-                                        {
-                                            if (!result.Stats_Groups.ContainsKey(CurrentGroupLabel))
-                                                result.Stats_Groups[CurrentGroupLabel] = new Dictionary<string, string>();
-
-                                            if (!result.Stats_Groups[CurrentGroupLabel].ContainsKey(statLabel))
-                                                result.Stats_Groups[CurrentGroupLabel][statLabel] = value;
-                                        }
-                                    }
-                                        
-                                }
-                                else if ((statKeyToSpssLabel.Values.ContainsExact(parts[1])) && groupLabels.ContainsExact(parts[0]))
+                               
+                                
+                                if (groupLabels.ContainsExact(parts[0]))
                                 {
                                     //We started with grouplabel
-                                    string statLabel = parts[1];
+                                    string statLabel = null;
+                                    for (int p = 1; p < parts.Count; p++)
+                                    {
+                                        var candidate = string.Join(" ", parts.Skip(1).Take(p));
+                                        if (activeSpssLabels.Contains(candidate))
+                                        {
+                                            statLabel = candidate;
+                                            break;
+                                        }
+                                    }
+                                    if (statLabel == null && parts.Count > 1)
+                                    {
+                                        statLabel = parts[1];
+                                    }
 
                                     for (int v = 0; v < variableNames.Count; v++)
                                     {
@@ -1334,8 +1315,48 @@ EXECUTE.");
                                         }
                                     }
                                 }
-                                
-                                
+                                else
+                                {
+                                    string statLabel = null;
+                                    for (int p = 0; p < parts.Count; p++)
+                                    {
+                                        var candidate = string.Join(" ", parts.Take(p + 1));
+                                        if (activeSpssLabels.Contains(candidate))
+                                        {
+                                            statLabel = candidate;
+                                            break;
+                                        }
+                                    }
+
+                                    if (statLabel == null && parts.Count > 1)
+                                    {
+                                        statLabel = parts[0];
+                                    }
+
+                                    for (int v = 0; v < variableNames.Count; v++)
+                                    {
+                                        string variable = variableNames[v];
+                                        string value = parts.Count > v + 1 ? parts[v + 1] : null;
+                                        var result = results.First(r => r.VariableName == variable);
+
+                                        if (TotalFlag)
+                                        {
+                                            if (!result.Stats_Total.ContainsKey(statLabel))
+                                                result.Stats_Total[statLabel] = value;
+                                        }
+                                        else
+                                        {
+                                            if (!result.Stats_Groups.ContainsKey(CurrentGroupLabel))
+                                                result.Stats_Groups[CurrentGroupLabel] = new Dictionary<string, string>();
+
+                                            if (!result.Stats_Groups[CurrentGroupLabel].ContainsKey(statLabel))
+                                                result.Stats_Groups[CurrentGroupLabel][statLabel] = value;
+                                        }
+                                    }
+
+                                }
+
+
                             }
                             break;
                             
