@@ -1278,24 +1278,27 @@ EXECUTE.");
                                 {
                                     //We started with grouplabel
                                     string statLabel = null;
+                                    int valuectr = 0;
                                     for (int p = 1; p < parts.Count; p++)
                                     {
                                         var candidate = string.Join(" ", parts.Skip(1).Take(p));
                                         if (activeSpssLabels.Contains(candidate))
                                         {
                                             statLabel = candidate;
+                                            valuectr = p+1;
                                             break;
                                         }
                                     }
                                     if (statLabel == null && parts.Count > 1)
                                     {
                                         statLabel = parts[1];
+                                        valuectr = 2;
                                     }
 
                                     for (int v = 0; v < variableNames.Count; v++)
                                     {
                                         string variable = variableNames[v];
-                                        string value = parts.Count > v + 2 ? parts[v + 2] : null;
+                                        string value = parts.Count > v + 2 ? parts[v + valuectr] : null;
                                         var result = results.First(r => r.VariableName == variable);
 
                                         if (parts[0] == "Total")
@@ -1318,12 +1321,14 @@ EXECUTE.");
                                 else
                                 {
                                     string statLabel = null;
+                                    int valuectr = 0;
                                     for (int p = 0; p < parts.Count; p++)
                                     {
                                         var candidate = string.Join(" ", parts.Take(p + 1));
                                         if (activeSpssLabels.Contains(candidate))
                                         {
                                             statLabel = candidate;
+                                            valuectr = p + 1;
                                             break;
                                         }
                                     }
@@ -1331,12 +1336,13 @@ EXECUTE.");
                                     if (statLabel == null && parts.Count > 1)
                                     {
                                         statLabel = parts[0];
+                                        valuectr = 1;
                                     }
 
                                     for (int v = 0; v < variableNames.Count; v++)
                                     {
                                         string variable = variableNames[v];
-                                        string value = parts.Count > v + 1 ? parts[v + 1] : null;
+                                        string value = parts.Count > v + 1 ? parts[v + valuectr] : null;
                                         var result = results.First(r => r.VariableName == variable);
 
                                         if (TotalFlag)
