@@ -1201,7 +1201,7 @@ EXECUTE.");
             else
             {
                 // Use multiple-parameter parsing
-                return ParseDescriptiveOutput_Multiple_New(rawText, variableNames, groupLabels , statKeyToSpssLabel , stattable , groupParameter);
+                return ParseDescriptiveOutput_Multiple_New_Chat(rawText, variableNames, groupLabels , statKeyToSpssLabel , stattable , groupParameter);
             }
         }
         public static Dictionary<string, string> statKeyToSpssLabel = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -1215,6 +1215,8 @@ EXECUTE.");
                     { "MEDIAN", "Median" },
                     { "GMEDIAN", "Grouped Median" }
         };
+
+        //public (bool,int) GroupLabelStart()
         public static List<DescriptiveResult> ParseDescriptiveOutput_Multiple_New(string rawText, List<string> variableNames, List<string> groupLabels , Dictionary<string, string> statKeyToSpssLabel,StatTable statTable , StatParameter groupParameter)
         {
 
@@ -1251,9 +1253,8 @@ EXECUTE.");
                 // We entered the block for this table
                 for (int j = i + 1; j < spssOutputLines.Count; j++)
                 {
+                    Dictionary<string, bool> Parameter_GroupLabels = new Dictionary<string, bool>(); 
                     var parts = SplitParts(spssOutputLines[j]);
-                    //if (parts.Count < 2) continue;
-                    int flag = 0;
                     if (parts.Count == (1 + scaleParamNames.Count))
                     {
                         if (parts[0] == groupParameter.Name &&
@@ -1268,11 +1269,8 @@ EXECUTE.");
                                 parts = SplitParts(spssOutputLines[k]);
                                 if (parts.Count < 2)
                                 {
-                                    flag = 1;
                                     break;
                                 }
-
-                               
                                 
                                 if (groupLabels.ContainsExact(parts[0]))
                                 {
@@ -1342,6 +1340,11 @@ EXECUTE.");
                                     for (int v = 0; v < variableNames.Count; v++)
                                     {
                                         string variable = variableNames[v];
+
+                                        if (Parameter_GroupLabels[variable] == false)
+                                        {
+                                            continue;
+                                        }
                                         string value = parts.Count > v + 1 ? parts[v + valuectr] : null;
                                         var result = results.First(r => r.VariableName == variable);
 
@@ -1377,5 +1380,186 @@ EXECUTE.");
             }
             return results;
         }
+
+        public static bool VerifyParameter_GroupLabel(string paraName , StatTable stattable , StatParameter groupParameter , string CurrentGroupLabel)
+        {
+            bool Parameter_GroupLabel = false;
+            int groupCount = stattable.GetGroupParameters().Count;
+
+            if(groupCount == 1)
+            {
+                var currentparameter = stattable.GetParameterByName(paraName);
+                //var key = myDict.FirstOrDefault(x => x.Value == targetValue).Key;
+                
+                MessageBox.Show("..");
+
+            }
+
+            return Parameter_GroupLabel;
+        }
+
+        public static List<DescriptiveResult> ParseDescriptiveOutput_Multiple_New_Chat(
+    string rawText,
+    List<string> variableNames,
+    List<string> groupLabels,
+    Dictionary<string, string> statKeyToSpssLabel,
+    StatTable statTable,
+    StatParameter groupParameter)
+        {
+            var results = variableNames.Select(var => new DescriptiveResult { VariableName = var }).ToList();
+            var spssOutputLines = rawText.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            groupLabels.Add("Total");
+
+            var activeSpssLabels = DefaultDescriptiveStats
+                .Where(kvp => kvp.Value && statKeyToSpssLabel.ContainsKey(kvp.Key))
+                .Select(kvp => statKeyToSpssLabel[kvp.Key])
+                .ToList();
+
+            for (int i = 0; i < spssOutputLines.Count; i++)
+            {
+                string line = spssOutputLines[i];
+                if (!string.Equals(line, statTable.TableName, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var scaleParams = statTable.GetNonGroupParameters()
+                    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                HashSet<string> scaleParamNames = scaleParams
+                    .Select(p => p.Name)
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                // We entered the block for this table
+                for (int j = i + 1; j < spssOutputLines.Count; j++)
+                {
+                    // compute max words in any stat label (once per table/block)
+                    int maxStatWords = activeSpssLabels
+                        .Select(s => s.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).Length)
+                        .DefaultIfEmpty(1)
+                        .Max();
+
+                    var parts = SplitParts(spssOutputLines[j]);
+
+                    if (parts.Count == (1 + scaleParamNames.Count))
+                    {
+                        if (parts[0] == groupParameter.Name &&
+                            parts.Skip(1).All(p => scaleParamNames.ContainsExact(p)))
+                        {
+                            bool TotalFlag = false;
+
+                            for (int k = j + 1; k < spssOutputLines.Count; k++)
+                            {
+                                parts = SplitParts(spssOutputLines[k]);
+                                if (parts.Count < 2)
+                                    break;
+
+
+                                string statLabel = null;
+                                string groupLabel_Space = "";
+                                string groupLabel_NoSpace = "";
+
+                                bool groupLabel_Space_bool = false;
+                                bool groupLabel_NoSpace_bool = false;
+
+                                int valuectr = 0;
+                                bool found = false;
+                                int start = -1;
+
+                                // Step 1: detect where stat label starts in this line
+                                for (int s = 0; s < parts.Count && !found; s++)
+                                {
+                                    int maxLen = Math.Min(maxStatWords, parts.Count - s);
+                                    for (int len = maxLen; len >= 1; len--)
+                                    {
+                                        var candidate = string.Join(" ", parts.Skip(s).Take(len));
+                                        if (activeSpssLabels.Contains(candidate))
+                                        {
+                                            statLabel = candidate;
+                                            valuectr = s + len;
+                                            start = s;       // remember where stat label begins
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                // Step 2: everything before `start` is part of group label (or partial)
+                                string groupLabel = start > 0
+                                    ? string.Join(" ", parts.Take(start)).Trim()
+                                    : "";
+
+                                // Step 3: if this partial group label not recognized, combine with next line(s)
+                                if (!string.IsNullOrEmpty(groupLabel) && !groupLabels.ContainsExact(groupLabel))
+                                {
+                                    int linePtr = k + 1;
+                                    while (linePtr < spssOutputLines.Count)
+                                    {
+                                        var nextParts = SplitParts(spssOutputLines[linePtr]);
+                                        if (nextParts.Count == 0) break;
+
+                                        // again, find stat start in this next line
+                                        int nextStart = -1;
+                                        for (int s = 0; s < nextParts.Count; s++)
+                                        {
+                                            int maxLen = Math.Min(maxStatWords, nextParts.Count - s);
+                                            for (int len = maxLen; len >= 1; len--)
+                                            {
+                                                var candidate = string.Join(" ", nextParts.Skip(s).Take(len));
+                                                if (activeSpssLabels.Contains(candidate))
+                                                {
+                                                    nextStart = s;
+                                                    break;
+                                                }
+                                            }
+                                            if (nextStart != -1) break;
+                                        }
+
+                                        // add any text before stat label (or entire line if none)
+                                        var addition = nextStart > 0
+                                            ? string.Join(" ", nextParts.Take(nextStart))
+                                            : string.Join(" ", nextParts);
+                                        groupLabel_Space = (groupLabel + " " + addition).Trim();
+                                        groupLabel_NoSpace = (groupLabel + "" + addition).Trim();
+
+
+                                        if (groupLabels.ContainsExact(groupLabel_Space))
+                                        {
+                                            groupLabel_Space_bool = true;
+                                            break;
+                                        }
+                                            
+
+                                        if (groupLabels.ContainsExact(groupLabel_NoSpace))
+                                        {
+                                            groupLabel_NoSpace_bool = true;
+                                            break;
+                                        }
+                                            
+                                        linePtr++;
+                                    }
+                                }
+
+                                if(groupLabel_NoSpace_bool)
+                                {
+                                    MessageBox.Show("No Space :" + groupLabel_NoSpace);
+                                }
+                                else if(groupLabel_Space_bool)
+                                {
+                                    MessageBox.Show("Space :" + groupLabel_Space);
+                                }
+
+                            }
+
+                            break; // finished this table
+                        }
+                    }
+                }
+            }
+
+            return results;
+        }
+
+
     }
 }
