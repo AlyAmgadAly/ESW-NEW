@@ -1456,15 +1456,11 @@ EXECUTE.");
 
 
                                 string statLabel = null;
-                                string groupLabel_Space = "";
-                                string groupLabel_NoSpace = "";
-
-                                bool groupLabel_Space_bool = false;
-                                bool groupLabel_NoSpace_bool = false;
 
                                 int valuectr = 0;
                                 bool found = false;
                                 int start = -1;
+
 
                                 // Step 1: detect where stat label starts in this line
                                 for (int s = 0; s < parts.Count && !found; s++)
@@ -1492,13 +1488,15 @@ EXECUTE.");
                                 // Step 3: if this partial group label not recognized, combine with next line(s)
                                 if (!string.IsNullOrEmpty(groupLabel) && !groupLabels.ContainsExact(groupLabel))
                                 {
+                                    var groupLabelCandidates = new List<string> { groupLabel };
+
                                     int linePtr = k + 1;
                                     while (linePtr < spssOutputLines.Count)
                                     {
                                         var nextParts = SplitParts(spssOutputLines[linePtr]);
                                         if (nextParts.Count == 0) break;
 
-                                        // again, find stat start in this next line
+                                        // Find where stat label begins on the next line
                                         int nextStart = -1;
                                         for (int s = 0; s < nextParts.Count; s++)
                                         {
@@ -1515,40 +1513,42 @@ EXECUTE.");
                                             if (nextStart != -1) break;
                                         }
 
-                                        // add any text before stat label (or entire line if none)
-                                        var addition = nextStart > 0
+                                        // get the addition before the stat label (or full line)
+                                        string addition = nextStart > 0
                                             ? string.Join(" ", nextParts.Take(nextStart))
                                             : string.Join(" ", nextParts);
-                                        groupLabel_Space = (groupLabel + " " + addition).Trim();
-                                        groupLabel_NoSpace = (groupLabel + "" + addition).Trim();
 
-
-                                        if (groupLabels.ContainsExact(groupLabel_Space))
+                                        if (string.IsNullOrWhiteSpace(addition))
                                         {
-                                            groupLabel_Space_bool = true;
+                                            linePtr++;
+                                            continue;
+                                        }
+
+                                        // create new candidates based on previous ones
+                                        var newCandidates = new List<string>();
+                                        foreach (var prev in groupLabelCandidates)
+                                        {
+                                            newCandidates.Add($"{prev} {addition}".Trim());  // with space
+                                            newCandidates.Add($"{prev}{addition}".Trim());   // without space
+                                        }
+
+                                        groupLabelCandidates = newCandidates;
+
+                                        // check if any candidate now matches exactly
+                                        string matched = groupLabelCandidates.FirstOrDefault(g => groupLabels.ContainsExact(g));
+                                        if (matched != null)
+                                        {
+                                            MessageBox.Show($"Matched: {matched}");
                                             break;
                                         }
-                                            
 
-                                        if (groupLabels.ContainsExact(groupLabel_NoSpace))
-                                        {
-                                            groupLabel_NoSpace_bool = true;
-                                            break;
-                                        }
-                                            
                                         linePtr++;
                                     }
+
+
                                 }
 
-                                if(groupLabel_NoSpace_bool)
-                                {
-                                    MessageBox.Show("No Space :" + groupLabel_NoSpace);
-                                }
-                                else if(groupLabel_Space_bool)
-                                {
-                                    MessageBox.Show("Space :" + groupLabel_Space);
-                                }
-
+                                
                             }
 
                             break; // finished this table
