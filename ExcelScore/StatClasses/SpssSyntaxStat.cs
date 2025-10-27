@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static CenterSpace.NMath.Core.KMeansClustering;
 using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace ExcelScore.StatClasses
@@ -1448,108 +1449,92 @@ EXECUTE.");
                         {
                             bool TotalFlag = false;
 
-                            for (int k = j + 1; k < spssOutputLines.Count; k++)
+                            int k = j + 1;
+
+                            int start_GroupLabel = k;
+                            while(k < spssOutputLines.Count)
                             {
-                                parts = SplitParts(spssOutputLines[k]);
+
+                                parts = SplitParts(spssOutputLines[start_GroupLabel]);
                                 if (parts.Count < 2)
                                     break;
 
 
-                                string statLabel = null;
+                                string groupLabel_Space = "";
+                                string groupLabel_NoSpace = "";
 
-                                int valuectr = 0;
-                                bool found = false;
-                                int start = -1;
-
-
-                                // Step 1: detect where stat label starts in this line
-                                for (int s = 0; s < parts.Count && !found; s++)
+                                for (int tempGroupLabel = start_GroupLabel; tempGroupLabel < start_GroupLabel + activeSpssLabels.Count; tempGroupLabel++)
                                 {
-                                    int maxLen = Math.Min(maxStatWords, parts.Count - s);
-                                    for (int len = maxLen; len >= 1; len--)
+                                    string statLabel = null;
+                                    int valuectr = 0;
+                                    bool found = false;
+                                    int start_statlabel = -1;
+
+                                    parts = SplitParts(spssOutputLines[tempGroupLabel]);
+
+                                    for (int s = 0; s < parts.Count && !found; s++)
                                     {
-                                        var candidate = string.Join(" ", parts.Skip(s).Take(len));
-                                        if (activeSpssLabels.Contains(candidate))
+                                        int maxLen = Math.Min(maxStatWords, parts.Count - s);
+                                        for (int len = maxLen; len >= 1; len--)
                                         {
-                                            statLabel = candidate;
-                                            valuectr = s + len;
-                                            start = s;       // remember where stat label begins
-                                            found = true;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                // Step 2: everything before `start` is part of group label (or partial)
-                                string groupLabel = start > 0
-                                    ? string.Join(" ", parts.Take(start)).Trim()
-                                    : "";
-
-                                // Step 3: if this partial group label not recognized, combine with next line(s)
-                                if (!string.IsNullOrEmpty(groupLabel) && !groupLabels.ContainsExact(groupLabel))
-                                {
-                                    var groupLabelCandidates = new List<string> { groupLabel };
-
-                                    int linePtr = k + 1;
-                                    while (linePtr < spssOutputLines.Count)
-                                    {
-                                        var nextParts = SplitParts(spssOutputLines[linePtr]);
-                                        if (nextParts.Count == 0) break;
-
-                                        // Find where stat label begins on the next line
-                                        int nextStart = -1;
-                                        for (int s = 0; s < nextParts.Count; s++)
-                                        {
-                                            int maxLen = Math.Min(maxStatWords, nextParts.Count - s);
-                                            for (int len = maxLen; len >= 1; len--)
+                                            var candidate = string.Join(" ", parts.Skip(s).Take(len));
+                                            if (activeSpssLabels.Contains(candidate))
                                             {
-                                                var candidate = string.Join(" ", nextParts.Skip(s).Take(len));
-                                                if (activeSpssLabels.Contains(candidate))
-                                                {
-                                                    nextStart = s;
-                                                    break;
-                                                }
+                                                statLabel = candidate;
+                                                valuectr = s + len;
+                                                start_statlabel = s;
+                                                found = true;
+                                                break;
                                             }
-                                            if (nextStart != -1) break;
                                         }
-
-                                        // get the addition before the stat label (or full line)
-                                        string addition = nextStart > 0
-                                            ? string.Join(" ", nextParts.Take(nextStart))
-                                            : string.Join(" ", nextParts);
-
-                                        if (string.IsNullOrWhiteSpace(addition))
-                                        {
-                                            linePtr++;
-                                            continue;
-                                        }
-
-                                        // create new candidates based on previous ones
-                                        var newCandidates = new List<string>();
-                                        foreach (var prev in groupLabelCandidates)
-                                        {
-                                            newCandidates.Add($"{prev} {addition}".Trim());  // with space
-                                            newCandidates.Add($"{prev}{addition}".Trim());   // without space
-                                        }
-
-                                        groupLabelCandidates = newCandidates;
-
-                                        // check if any candidate now matches exactly
-                                        string matched = groupLabelCandidates.FirstOrDefault(g => groupLabels.ContainsExact(g));
-                                        if (matched != null)
-                                        {
-                                            MessageBox.Show($"Matched: {matched}");
-                                            break;
-                                        }
-
-                                        linePtr++;
                                     }
 
+                                    string addition = (start_statlabel > 0 ? string.Join(" ", parts.Take(start_statlabel)) : "").Trim();
+                                    if (string.IsNullOrEmpty(addition))
+                                        continue;
+
+                                    string candidateWithSpace = (groupLabel_Space + " " + addition).Trim();
+                                    string candidateNoSpace = (groupLabel_NoSpace + addition).Trim();
+
+                                    // Compare to known labels and pick whichever exists
+                                    if (groupLabels.ContainsExact(candidateWithSpace))
+                                    {
+                                        groupLabel_Space = candidateWithSpace;
+                                        groupLabel_NoSpace = candidateWithSpace;
+                                    }
+                                    else if (groupLabels.ContainsExact(candidateNoSpace))
+                                    {
+                                        groupLabel_Space = candidateNoSpace;
+                                        groupLabel_NoSpace = candidateNoSpace;
+                                    }
+                                    else
+                                    {
+                                        // If neither matches yet, keep both evolving
+                                        groupLabel_Space = candidateWithSpace;
+                                        groupLabel_NoSpace = candidateNoSpace;
+                                    }
 
                                 }
 
-                                
+                                string finalGroupLabel = groupLabels.ContainsExact(groupLabel_Space)
+        ? groupLabel_Space
+        : (groupLabels.ContainsExact(groupLabel_NoSpace)
+            ? groupLabel_NoSpace
+            : "");
+                                if (!string.IsNullOrEmpty(finalGroupLabel))
+                                {
+                                    MessageBox.Show(finalGroupLabel);
+                                    // you could break or continue based on your parsing logic
+                                }
+
+                                start_GroupLabel += activeSpssLabels.Count;
+
+
+
                             }
+
+
+
 
                             break; // finished this table
                         }
@@ -1563,3 +1548,87 @@ EXECUTE.");
 
     }
 }
+
+//for (int k = j + 1; k < spssOutputLines.Count; k++)
+//{
+//    parts = SplitParts(spssOutputLines[k]);
+//    if (parts.Count < 2)
+//        break;
+
+
+//    string statLabel = null;
+
+//    int valuectr = 0;
+//    bool found = false;
+//    int start = -1;
+
+
+//    for (int s = 0; s < parts.Count && !found; s++)
+//    {
+//        int maxLen = Math.Min(maxStatWords, parts.Count - s);
+//        for (int len = maxLen; len >= 1; len--)
+//        {
+//            var candidate = string.Join(" ", parts.Skip(s).Take(len));
+//            if (activeSpssLabels.Contains(candidate))
+//            {
+//                statLabel = candidate;
+//                valuectr = s + len;
+//                start = s;
+//                found = true;
+//                break;
+//            }
+//        }
+//    }
+
+//    string groupLabel = start > 0 ? string.Join(" ", parts.Take(start)).Trim() : "";
+//    string groupLabel_Space = start > 0 ? string.Join(" ", parts.Take(start)).Trim() : "";
+//    string groupLabel_NoSpace = start > 0 ? string.Join(" ", parts.Take(start)).Trim() : "";
+
+//    bool groupLabel_Space_flag = false;
+//    bool groupLabel_NoSpace_flag = false;
+
+//    if (!string.IsNullOrEmpty(groupLabel) && !groupLabels.ContainsExact(groupLabel))
+//    {
+//        int linePtr = k + 1; 
+//        while (linePtr < spssOutputLines.Count)
+//        {
+//            var nextParts = SplitParts(spssOutputLines[linePtr]); 
+//            if (nextParts.Count == 0) break;
+
+
+//            int nextStart = -1; 
+//            for (int s = 0; s < nextParts.Count; s++) 
+//            { 
+//                int maxLen = Math.Min(maxStatWords, nextParts.Count - s); 
+//                for (int len = maxLen; len >= 1; len--) 
+//                { 
+//                    var candidate = string.Join(" ", nextParts.Skip(s).Take(len)); 
+//                    if (activeSpssLabels.Contains(candidate)) 
+//                    { 
+//                        nextStart = s; 
+//                        break; 
+//                    } 
+//                } 
+//                if (nextStart != -1) 
+//                    break; 
+//            }
+
+//            var addition = nextStart > 0 ? string.Join(" ", nextParts.Take(nextStart)) : string.Join(" ", nextParts);
+//            groupLabel = (groupLabel + " " + addition).Trim();
+
+
+//            if (groupLabels.ContainsExact(groupLabel)) 
+//            {
+//                break; 
+//            } 
+
+//            linePtr++;
+
+//        }
+//    }
+
+//    if(groupLabels.Contains(groupLabel))
+//    {
+//        MessageBox.Show(groupLabel);
+//    }
+//}
