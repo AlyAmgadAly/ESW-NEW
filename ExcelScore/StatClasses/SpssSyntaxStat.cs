@@ -1462,6 +1462,7 @@ EXECUTE.");
 
                                 string groupLabel_Space = "";
                                 string groupLabel_NoSpace = "";
+                                string ProceedLabel = "";
 
                                 for (int tempGroupLabel = start_GroupLabel; tempGroupLabel < start_GroupLabel + activeSpssLabels.Count; tempGroupLabel++)
                                 {
@@ -1493,41 +1494,29 @@ EXECUTE.");
                                     if (string.IsNullOrEmpty(addition))
                                         continue;
 
-                                    string candidateWithSpace = (groupLabel_Space + " " + addition).Trim();
-                                    string candidateNoSpace = (groupLabel_NoSpace + addition).Trim();
+                                    string candidateWithSpace = (ProceedLabel + " " + addition).Trim();
+                                    string candidateNoSpace = (ProceedLabel + addition).Trim();
 
-                                    // Compare to known labels and pick whichever exists
-                                    if (groupLabels.ContainsExact(candidateWithSpace))
+                                    
+
+                                    foreach (var ExistGroupLabel in groupLabels)
                                     {
-                                        groupLabel_Space = candidateWithSpace;
-                                        groupLabel_NoSpace = candidateWithSpace;
-                                    }
-                                    else if (groupLabels.ContainsExact(candidateNoSpace))
-                                    {
-                                        groupLabel_Space = candidateNoSpace;
-                                        groupLabel_NoSpace = candidateNoSpace;
-                                    }
-                                    else
-                                    {
-                                        // If neither matches yet, keep both evolving
-                                        groupLabel_Space = candidateWithSpace;
-                                        groupLabel_NoSpace = candidateNoSpace;
+                                        if(ExistGroupLabel.Contains(candidateWithSpace))
+                                        {
+                                            ProceedLabel = candidateWithSpace;
+                                        }
+                                        else if(ExistGroupLabel.Contains(candidateNoSpace))
+                                        {
+                                            ProceedLabel = candidateNoSpace;
+                                        }
+
                                     }
 
                                 }
-
-                                string finalGroupLabel = groupLabels.ContainsExact(groupLabel_Space)
-        ? groupLabel_Space
-        : (groupLabels.ContainsExact(groupLabel_NoSpace)
-            ? groupLabel_NoSpace
-            : "");
-                                if (!string.IsNullOrEmpty(finalGroupLabel))
-                                {
-                                    MessageBox.Show(finalGroupLabel);
-                                    // you could break or continue based on your parsing logic
-                                }
-
                                 start_GroupLabel += activeSpssLabels.Count;
+
+
+
 
 
 
