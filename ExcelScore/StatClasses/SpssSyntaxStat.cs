@@ -1513,6 +1513,64 @@ EXECUTE.");
                                     }
 
                                 }
+                                
+
+                                for (int tempGroupLabel = start_GroupLabel; tempGroupLabel < start_GroupLabel + activeSpssLabels.Count; tempGroupLabel++)
+                                {
+
+                                    string statLabel = null;
+                                    int valuectr = 0;
+                                    bool found = false;
+                                    int start_statlabel = -1;
+
+                                    parts = SplitParts(spssOutputLines[tempGroupLabel]);
+
+                                    for (int s = 0; s < parts.Count && !found; s++)
+                                    {
+                                        int maxLen = Math.Min(maxStatWords, parts.Count - s);
+                                        for (int len = maxLen; len >= 1; len--)
+                                        {
+                                            var candidate = string.Join(" ", parts.Skip(s).Take(len));
+                                            if (activeSpssLabels.Contains(candidate))
+                                            {
+                                                statLabel = candidate;
+                                                valuectr = s + len;
+                                                start_statlabel = s;
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+
+                                    for (int v = 0; v < variableNames.Count; v++)
+                                    {
+                                        string variable = variableNames[v];
+
+                                        
+                                        string value = parts[start_statlabel + v +1];
+                                        var result = results.First(r => r.VariableName == variable);
+
+                                        if (ProceedLabel == "Total")
+                                        {
+                                            if (!result.Stats_Total.ContainsKey(statLabel))
+                                                result.Stats_Total[statLabel] = value;
+                                        }
+                                        else
+                                        {
+                                            if (!result.Stats_Groups.ContainsKey(ProceedLabel))
+                                                result.Stats_Groups[ProceedLabel] = new Dictionary<string, string>();
+
+                                            if (!result.Stats_Groups[ProceedLabel].ContainsKey(statLabel))
+                                                result.Stats_Groups[ProceedLabel][statLabel] = value;
+                                        }
+                                    }
+                                }
+
+
+
+
+
                                 start_GroupLabel += activeSpssLabels.Count;
 
 
@@ -1534,7 +1592,22 @@ EXECUTE.");
             return results;
         }
 
+        public bool Parameter_Group_Label(string parameterName , string groupLabel , StatTable statTable , StatParameter groupParameter)
+        {
+            bool hasvalues = false;
 
+            int groupParametercount = statTable.GetGroupParameters().Count;
+
+            if(groupParametercount == 1 )
+            {
+
+
+            }
+
+
+
+            return hasvalues;
+        }
     }
 }
 
