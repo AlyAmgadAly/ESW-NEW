@@ -1512,6 +1512,8 @@ EXECUTE.");
 
                                     }
 
+                                   
+
                                 }
                                 
 
@@ -1550,6 +1552,17 @@ EXECUTE.");
                                         
                                         string value = parts[start_statlabel + v +1];
                                         var result = results.First(r => r.VariableName == variable);
+
+                                        if (!(Parameter_Group_Label(variable, ProceedLabel, statTable, groupParameter)))
+                                        {
+                                            MessageBox.Show($"No : {variable}:{ProceedLabel}");
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show($"{variable}:{ProceedLabel}");
+                                        }
+                                            
 
                                         if (ProceedLabel == "Total")
                                         {
@@ -1592,16 +1605,55 @@ EXECUTE.");
             return results;
         }
 
-        public bool Parameter_Group_Label(string parameterName , string groupLabel , StatTable statTable , StatParameter groupParameter)
+        public static bool Parameter_Group_Label(string parameterName , string groupLabel , StatTable statTable , StatParameter groupParameter)
         {
             bool hasvalues = false;
 
             int groupParametercount = statTable.GetGroupParameters().Count;
+            StatParameter CurrentParameter = statTable.GetParameterByName(parameterName);
+            int GroupLabel_Key;
 
-            if(groupParametercount == 1 )
+            // 1️⃣ Try normal label match
+            var match = groupParameter.ValueLabels
+                .FirstOrDefault(kv => kv.Value.Equals(groupLabel, StringComparison.OrdinalIgnoreCase));
+
+            if (!match.Equals(default(KeyValuePair<int, string>)))
             {
+                GroupLabel_Key = match.Key;
+            }
+            else
+            {
+                // 2️⃣ Try to parse numeric label
+                if (double.TryParse(groupLabel, out double parsedValue))
+                {
+                    // Handle numeric keys as int (round if needed)
+                    int numericKey = (int)Math.Round(parsedValue);
 
+                    if (groupParameter.ValueLabels.ContainsKey(numericKey))
+                        GroupLabel_Key = numericKey;
+                    else
+                        GroupLabel_Key = -1; // not found
+                }
+                else
+                {
+                    GroupLabel_Key = -1; // not found
+                }
+            }
 
+            if (groupParametercount == 1)
+            {
+                if (CurrentParameter.GroupedParameterValues[GroupLabel_Key].Count > 0) 
+                {
+                    hasvalues = true;
+                }
+
+            }
+            else if (groupParametercount > 1)
+            {
+                if (CurrentParameter.GroupedParameterValuesRelation[groupParameter.Name][GroupLabel_Key].Count > 0)
+                {
+                    hasvalues = true;
+                }
             }
 
 
