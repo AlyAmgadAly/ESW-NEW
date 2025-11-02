@@ -1521,7 +1521,7 @@ EXECUTE.");
                                         for (int len = maxLen; len >= 1; len--)
                                         {
                                             var candidate = string.Join(" ", parts.Skip(s).Take(len));
-                                            if (activeSpssLabels.Contains(candidate))
+                                            if (activeSpssLabels.ContainsExact(candidate))
                                             {
                                                 statLabel = candidate;
                                                 valuectr = s + len;
@@ -1575,7 +1575,7 @@ EXECUTE.");
                                         for (int len = maxLen; len >= 1; len--)
                                         {
                                             var candidate = string.Join(" ", parts.Skip(s).Take(len));
-                                            if (activeSpssLabels.Contains(candidate))
+                                            if (activeSpssLabels.ContainsExact(candidate))
                                             {
                                                 statLabel = candidate;
                                                 valuectr = s + len;
@@ -1586,39 +1586,39 @@ EXECUTE.");
                                         }
                                     }
 
-
+                                    int valueParaCtr = 0;
                                     for (int v = 0; v < variableNames.Count; v++)
                                     {
                                         string variable = variableNames[v];
+                                        string value = "";
 
-                                        
-                                        //string value = parts[start_statlabel + v +1];
-                                        //var result = results.First(r => r.VariableName == variable);
+
+
 
                                         if (!(Parameter_Group_Label(variable, ProceedLabel, statTable, groupParameter)))
                                         {
-                                            MessageBox.Show($"No : {variable}:{ProceedLabel}");
                                             continue;
                                         }
                                         else
                                         {
-                                            MessageBox.Show($"{variable}:{ProceedLabel}");
+                                            value = parts[valuectr + valueParaCtr];
+                                            valueParaCtr++;
                                         }
-                                            
 
-                                        //if (ProceedLabel == "Total")
-                                        //{
-                                        //    if (!result.Stats_Total.ContainsKey(statLabel))
-                                        //        result.Stats_Total[statLabel] = value;
-                                        //}
-                                        //else
-                                        //{
-                                        //    if (!result.Stats_Groups.ContainsKey(ProceedLabel))
-                                        //        result.Stats_Groups[ProceedLabel] = new Dictionary<string, string>();
+                                        var result = results.First(r => r.VariableName == variable);
+                                        if (ProceedLabel == "Total")
+                                        {
+                                            if (!result.Stats_Total.ContainsKey(statLabel))
+                                                result.Stats_Total[statLabel] = value;
+                                        }
+                                        else
+                                        {
+                                            if (!result.Stats_Groups.ContainsKey(ProceedLabel))
+                                                result.Stats_Groups[ProceedLabel] = new Dictionary<string, string>();
 
-                                        //    if (!result.Stats_Groups[ProceedLabel].ContainsKey(statLabel))
-                                        //        result.Stats_Groups[ProceedLabel][statLabel] = value;
-                                        //}
+                                            if (!result.Stats_Groups[ProceedLabel].ContainsKey(statLabel))
+                                                result.Stats_Groups[ProceedLabel][statLabel] = value;
+                                        }
                                     }
                                 }
 
@@ -1682,6 +1682,10 @@ EXECUTE.");
                 }
             }
 
+            if(groupLabel == "Total")
+            {
+                return true;
+            }
             if (groupParametercount == 1)
             {
                 // Here we didn't handle Total (?????????????????)
