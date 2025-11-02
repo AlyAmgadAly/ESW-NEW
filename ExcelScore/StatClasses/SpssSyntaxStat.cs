@@ -1399,6 +1399,33 @@ EXECUTE.");
             return Parameter_GroupLabel;
         }
 
+        public static (bool , int , int) LabelFound_LabelStart_ValueStart (List<string> parts , int maxStatWords , List<string> activeSpssLabels)
+        {
+            string statLabel = null;
+            int valuectr = 0;
+            bool found = false;
+            int start_statlabel = -1;
+
+            for (int s = 0; s < parts.Count && !found; s++)
+            {
+                int maxLen = Math.Min(maxStatWords, parts.Count - s);
+                for (int len = maxLen; len >= 1; len--)
+                {
+                    var candidate = string.Join(" ", parts.Skip(s).Take(len));
+                    if (activeSpssLabels.Contains(candidate))
+                    {
+                        statLabel = candidate;
+                        valuectr = s + len;
+                        start_statlabel = s;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            return (found , start_statlabel,valuectr);
+        }
+
         public static List<DescriptiveResult> ParseDescriptiveOutput_Multiple_New_Chat(
     string rawText,
     List<string> variableNames,
@@ -1442,14 +1469,29 @@ EXECUTE.");
 
                     var parts = SplitParts(spssOutputLines[j]);
 
-                    if (parts.Count == (1 + scaleParamNames.Count))
+                    if (spssOutputLines[j] == "Report")
                     {
-                        if (parts[0] == groupParameter.Name &&
-                            parts.Skip(1).All(p => scaleParamNames.ContainsExact(p)))
+                        j++;
+                        parts = SplitParts(spssOutputLines[j]);
+                        if (groupParameter.Name.Contains(parts[0]) && parts.Count == (1 + scaleParamNames.Count))
                         {
+                            bool statlabelfound = false;
+                            while(!statlabelfound)
+                            {
+                                parts = SplitParts(spssOutputLines[j]);
+                                (statlabelfound, _, _) = LabelFound_LabelStart_ValueStart(parts, maxStatWords, activeSpssLabels);
+
+                                if(!statlabelfound)
+                                {
+                                    j++;
+                                }
+
+
+                            }
+
                             bool TotalFlag = false;
 
-                            int k = j + 1;
+                            int k = j;
 
                             int start_GroupLabel = k;
                             while(k < spssOutputLines.Count)
@@ -1550,8 +1592,8 @@ EXECUTE.");
                                         string variable = variableNames[v];
 
                                         
-                                        string value = parts[start_statlabel + v +1];
-                                        var result = results.First(r => r.VariableName == variable);
+                                        //string value = parts[start_statlabel + v +1];
+                                        //var result = results.First(r => r.VariableName == variable);
 
                                         if (!(Parameter_Group_Label(variable, ProceedLabel, statTable, groupParameter)))
                                         {
@@ -1564,19 +1606,19 @@ EXECUTE.");
                                         }
                                             
 
-                                        if (ProceedLabel == "Total")
-                                        {
-                                            if (!result.Stats_Total.ContainsKey(statLabel))
-                                                result.Stats_Total[statLabel] = value;
-                                        }
-                                        else
-                                        {
-                                            if (!result.Stats_Groups.ContainsKey(ProceedLabel))
-                                                result.Stats_Groups[ProceedLabel] = new Dictionary<string, string>();
+                                        //if (ProceedLabel == "Total")
+                                        //{
+                                        //    if (!result.Stats_Total.ContainsKey(statLabel))
+                                        //        result.Stats_Total[statLabel] = value;
+                                        //}
+                                        //else
+                                        //{
+                                        //    if (!result.Stats_Groups.ContainsKey(ProceedLabel))
+                                        //        result.Stats_Groups[ProceedLabel] = new Dictionary<string, string>();
 
-                                            if (!result.Stats_Groups[ProceedLabel].ContainsKey(statLabel))
-                                                result.Stats_Groups[ProceedLabel][statLabel] = value;
-                                        }
+                                        //    if (!result.Stats_Groups[ProceedLabel].ContainsKey(statLabel))
+                                        //        result.Stats_Groups[ProceedLabel][statLabel] = value;
+                                        //}
                                     }
                                 }
 
@@ -1642,6 +1684,7 @@ EXECUTE.");
 
             if (groupParametercount == 1)
             {
+                // Here we didn't handle Total (?????????????????)
                 if (CurrentParameter.GroupedParameterValues[GroupLabel_Key].Count > 0) 
                 {
                     hasvalues = true;
