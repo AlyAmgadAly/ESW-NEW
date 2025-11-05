@@ -919,7 +919,8 @@ EXECUTE.");
             if (variableNames.Count == 1)
             {
                 // Use single-parameter parsing
-                return ParseDescriptiveOutput_SingleParam(rawText, variableNames[0], groupLabels);
+                //return ParseDescriptiveOutput_SingleParam(rawText, variableNames[0], groupLabels);
+                return ParseDescriptiveOutput_Multiple(rawText, variableNames, groupLabels);
             }
             else
             {
@@ -931,7 +932,10 @@ EXECUTE.");
         public static List<DescriptiveResult> ParseDescriptiveOutput_SingleParam(
     string rawText,
     string variableName,
-    List<string> groupLabels)
+    List<string> groupLabels,
+    Dictionary<string, string> statKeyToSpssLabel,
+    StatTable statTable,
+    StatParameter groupParameter)
         {
             var results = new List<DescriptiveResult>
     {
@@ -1197,7 +1201,7 @@ EXECUTE.");
             if (variableNames.Count == 1)
             {
                 // Use single-parameter parsing
-                return ParseDescriptiveOutput_SingleParam(rawText, variableNames[0], groupLabels);
+                return ParseDescriptiveOutput_SingleParam(rawText, variableNames[0], groupLabels , statKeyToSpssLabel , stattable, groupParameter);
             }
             else
             {
