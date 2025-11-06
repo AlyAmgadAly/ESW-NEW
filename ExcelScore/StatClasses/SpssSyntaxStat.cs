@@ -943,71 +943,58 @@ EXECUTE.");
     };
             var result = results[0];
 
-            // Define the order of stats as they appear in SPSS output
-            var statOrder = new List<(string Key, string Label)>
-    {
-        ("COUNT", "N"),
-        ("MIN", "Minimum"),
-        ("MAX", "Maximum"),
-        ("MEAN", "Mean"),
-        ("SEMEAN", "Std. Error of Mean"),
-        ("STDDEV", "Std. Deviation"),
-        ("MEDIAN", "Median"),
-        ("GMEDIAN", "Grouped Median")
-    };
-
-            // Keep only the active ones
-            var activeLabels = statOrder
-                .Where(s => DefaultDescriptiveStats.ContainsKey(s.Key) && DefaultDescriptiveStats[s.Key])
-                .Select(s => s.Label)
-                .ToList();
 
             // Split lines
-            var lines = rawText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            
+            var spssOutputLines = rawText.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            // Find "Report"
-            int reportIdx = lines.FindIndex(l => l.Trim().Equals("Report", StringComparison.OrdinalIgnoreCase));
-            if (reportIdx == -1) return results;
+            groupLabels.Add("Total");
 
-            // Skip 3 header lines (Groups + 2 header wraps)
-            int dataStart = reportIdx + 4;
+            var activeSpssLabels = DefaultDescriptiveStats
+                .Where(kvp => kvp.Value && statKeyToSpssLabel.ContainsKey(kvp.Key))
+                .Select(kvp => statKeyToSpssLabel[kvp.Key])
+                .ToList();
 
-            for (int i = dataStart; i < lines.Count; i++)
+
+
+            for (int i = 0; i < spssOutputLines.Count; i++)
             {
-                var line = lines[i].Trim();
-                if (string.IsNullOrWhiteSpace(line)) continue;
+                string line = spssOutputLines[i];
+                if (!string.Equals(line, statTable.TableName, StringComparison.OrdinalIgnoreCase))
+                    continue;
 
-                var parts = Regex.Split(line, @"\s+").ToList();
-                if (parts.Count < 2) continue;
+                var scaleParams = statTable.GetNonGroupParameters()
+                    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
 
-                string group = parts[0];
-                bool isTotal = group.Equals("Total", StringComparison.OrdinalIgnoreCase);
+                HashSet<string> scaleParamNames = scaleParams
+                    .Select(p => p.Name)
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-                if (!groupLabels.Contains(group) && !isTotal) continue;
-
-                for (int j = 0; j < activeLabels.Count && j + 1 < parts.Count; j++)
+                //we entered table block
+                for (int j = i + 1; j < spssOutputLines.Count; j++)
                 {
-                    string label = activeLabels[j];
-                    string value = parts[j + 1];
+                    // compute max words in any stat label (once per table/block)
+                    int maxStatWords = activeSpssLabels
+                        .Select(s => s.Split((char[])null, StringSplitOptions.RemoveEmptyEntries).Length)
+                        .DefaultIfEmpty(1)
+                        .Max();
 
-                    if (isTotal)
-                    {
-                        result.Stats_Total[label] = value;
-                    }
-                    else
-                    {
-                        if (!result.Stats_Groups.ContainsKey(group))
-                            result.Stats_Groups[group] = new Dictionary<string, string>();
+                    var parts = SplitParts(spssOutputLines[j]);
 
-                        result.Stats_Groups[group][label] = value;
+                    if (spssOutputLines[j] == "Report" && spssOutputLines[j+1] == variableName)
+                    {
+                        //We will implement an algo that loops from the end of the line taking one part by part considering that the values are only one until the number of statlabels are done
+                        foreach (var item in activeSpssLabels)
+                        {
+                            
+                        }
                     }
                 }
 
-                if (isTotal)
-                    break; // ✅ Done reading after Total row
-            }
 
-            return results;
+            }
+                return results;
         }
 
         public static List<DescriptiveResult> ParseDescriptiveOutput_Multiple(string rawText, List<string> variableNames, List<string> groupLabels)
