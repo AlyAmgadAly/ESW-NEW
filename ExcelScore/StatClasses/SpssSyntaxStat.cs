@@ -999,13 +999,21 @@ EXECUTE.");
                                 double.TryParse(p, System.Globalization.NumberStyles.Any,
                                                 System.Globalization.CultureInfo.InvariantCulture, out _));
 
+                            int LabelCtr = 0;
+
                             if(allNumeric) 
                             {
-                                foreach (var kvp in groupParameter.ValueLabels)
-                                {
+                                var GroupKVP = groupParameter.ValueLabels.ElementAt(LabelCtr);  // 0 = first, 1 = second
+                                string groupLabel = GroupKVP.Value;
+                                bool hasvalues =  Parameter_Group_Label(variableName, groupLabel, statTable, groupParameter);
+                                LabelCtr++;
 
+                                if(hasvalues)
+                                {
+                                    //Insert Values in reverse from the end to start
                                 }
-                                Parameter_Group_Label(variableName,  , statTable, groupParameter);
+
+
                             }
                         }
 
