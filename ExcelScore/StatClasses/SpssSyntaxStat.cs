@@ -985,10 +985,48 @@ EXECUTE.");
                     if (spssOutputLines[j] == "Report" && spssOutputLines[j+1] == variableName)
                     {
                         //We will implement an algo that loops from the end of the line taking one part by part considering that the values are only one until the number of statlabels are done
-                        foreach (var item in activeSpssLabels)
+                        int valueCount = activeSpssLabels.Count;
+                        bool allNumeric = false;
+
+
+                        while (j < spssOutputLines.Count)
                         {
-                            
+                            j++;
+                            parts = SplitParts(spssOutputLines[j]);
+                            var lastParts = parts.Skip(Math.Max(0, parts.Count - valueCount));
+
+                            allNumeric = lastParts.All(p =>
+                                double.TryParse(p, System.Globalization.NumberStyles.Any,
+                                                System.Globalization.CultureInfo.InvariantCulture, out _));
+
+                            if(allNumeric) 
+                            {
+                                foreach (var kvp in groupParameter.ValueLabels)
+                                {
+
+                                }
+                                Parameter_Group_Label(variableName,  , statTable, groupParameter);
+                            }
                         }
+
+
+
+
+                        //if (ProceedLabel == "Total")
+                        //{
+                        //    if (!result.Stats_Total.ContainsKey(statLabel))
+                        //        result.Stats_Total[statLabel] = value;
+                        //}
+                        //else
+                        //{
+                        //    if (!result.Stats_Groups.ContainsKey(ProceedLabel))
+                        //        result.Stats_Groups[ProceedLabel] = new Dictionary<string, string>();
+
+                        //    if (!result.Stats_Groups[ProceedLabel].ContainsKey(statLabel))
+                        //        result.Stats_Groups[ProceedLabel][statLabel] = value;
+                        //}
+
+
                     }
                 }
 
