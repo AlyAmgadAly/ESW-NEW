@@ -499,8 +499,8 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             SpssSyntaxStat.ParseUnifiedOutput_Crosstabs(outputText, StatTables);
 
             
-            var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            SpssSyntaxStat.ParsePercentiles(StatTables, lines);
+            //var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            //SpssSyntaxStat.ParsePercentiles(StatTables, lines);
 
 
             SpssSyntaxStat.ParseUnifiedOutput_Descriptives(outputText, StatTables);

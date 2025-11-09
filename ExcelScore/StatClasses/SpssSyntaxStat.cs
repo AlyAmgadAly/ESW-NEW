@@ -874,6 +874,8 @@ EXECUTE.");
                         if (param.DescriptiveStats == null)
                             param.DescriptiveStats = desc;
                     }
+
+                    ParsePercentile_Output(outputText , scaleParamNames , groupLabels , table , g);
                 }
 
 
@@ -928,6 +930,69 @@ EXECUTE.");
                 return ParseDescriptiveOutput_Multiple(rawText, variableNames, groupLabels);
             }
         }
+        public static void ParsePercentile_Output(string rawText,
+    List<string> variableNames,
+    List<string> groupLabels,
+    StatTable statTable,
+    StatParameter groupParameter)
+        {
+            var results = variableNames.Select(var => new PercentileResult { VariableName = var }).ToList();
+            var spssOutputLines = rawText.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+
+            for (int i = 0; i < spssOutputLines.Count; i++)
+            {
+                string line = spssOutputLines[i];
+                if (!string.Equals(line, statTable.TableName, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var scaleParams = statTable.GetNonGroupParameters()
+                    .Where(p => string.Equals(p.Type, "Scale", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                HashSet<string> scaleParamNames = scaleParams
+                    .Select(p => p.Name)
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                //we entered table block
+                for (int j = i + 1; j < spssOutputLines.Count; j++)
+                {
+                    var parts = SplitParts(spssOutputLines[j]);
+
+                    if (spssOutputLines[j] == "Percentiles")
+                    {
+                        var temppart = SplitParts(spssOutputLines[j+2]);
+
+                        if (temppart[0] == "25" && temppart[1] =="50" && temppart[2] == "75")
+                        {
+                            while (!(parts[0] == "Tukey's" && parts[1] == "Hinges"))
+                            {
+                                j++;
+                                parts = SplitParts(spssOutputLines[j]);
+                            }
+
+                            var lastParts = parts.Skip(Math.Max(0, parts.Count - 3));
+
+                            bool allNumeric = lastParts.All(p =>
+    p == "." || // treat "." as valid
+    double.TryParse(p, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out _));
+
+                            bool hasDecimal = lastParts.Any(p =>
+    double.TryParse(p, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out _) &&
+    p.Contains("."));
+
+
+                            bool valid = allNumeric && hasDecimal;
+
+                        }
+                    }
+
+                }
+            }
+        }
+
 
         public static List<DescriptiveResult> ParseDescriptiveOutput_SingleParam(
     string rawText,
@@ -986,55 +1051,85 @@ EXECUTE.");
                     {
                         //We will implement an algo that loops from the end of the line taking one part by part considering that the values are only one until the number of statlabels are done
                         int valueCount = activeSpssLabels.Count;
-                        bool allNumeric = false;
+                        int LabelCtr = 0;
 
-
-                        while (j < spssOutputLines.Count)
+                        while (LabelCtr < groupParameter.ValueLabels.Count+1)
                         {
                             j++;
                             parts = SplitParts(spssOutputLines[j]);
                             var lastParts = parts.Skip(Math.Max(0, parts.Count - valueCount));
 
-                            allNumeric = lastParts.All(p =>
-                                double.TryParse(p, System.Globalization.NumberStyles.Any,
-                                                System.Globalization.CultureInfo.InvariantCulture, out _));
+                            bool allNumeric = lastParts.All(p =>
+    p == "." || // treat "." as valid
+    double.TryParse(p, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out _));
 
-                            int LabelCtr = 0;
+                            bool hasDecimal = lastParts.Any(p =>
+    double.TryParse(p, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out _) &&
+    p.Contains("."));
 
-                            if(allNumeric) 
+
+                            bool valid = allNumeric && hasDecimal;
+
+                            if (valid)
                             {
-                                var GroupKVP = groupParameter.ValueLabels.ElementAt(LabelCtr);  // 0 = first, 1 = second
-                                string groupLabel = GroupKVP.Value;
-                                bool hasvalues =  Parameter_Group_Label(variableName, groupLabel, statTable, groupParameter);
-                                LabelCtr++;
-
-                                if(hasvalues)
+                                if(LabelCtr == groupParameter.ValueLabels.Count)
                                 {
-                                    //Insert Values in reverse from the end to start
+                                    for (int statvaluectr = 0; statvaluectr < activeSpssLabels.Count; statvaluectr++)
+                                    {
+                                        if (!result.Stats_Total.ContainsKey(activeSpssLabels[statvaluectr]))
+                                            result.Stats_Total[activeSpssLabels[statvaluectr]] = lastParts.ElementAtOrDefault(statvaluectr);
+                                    }
+                                    LabelCtr++;
+
+                                }
+                                
+                                while (LabelCtr < groupParameter.ValueLabels.Count)
+                                {
+
+                                    var GroupKVP = groupParameter.ValueLabels.ElementAt(LabelCtr);  // 0 = first, 1 = second
+                                    int groupKey = GroupKVP.Key;
+                                    string groupLabel = GroupKVP.Value;
+                                    
+
+                                    if(!groupParameter.RawValues.Contains(groupKey.ToString()))
+                                    {
+                                        LabelCtr++;
+                                        continue;
+                                    }
+
+                                    bool hasvalues = Parameter_Group_Label(variableName, groupLabel, statTable, groupParameter);
+                                    if (hasvalues)
+                                    {
+                                        //insert values of grouplabel here
+
+                                        for (int statvaluectr = 0; statvaluectr < activeSpssLabels.Count; statvaluectr++)
+                                        {
+                                            if (!result.Stats_Groups.ContainsKey(groupLabel))
+                                                result.Stats_Groups[groupLabel] = new Dictionary<string, string>();
+
+                                            if (!result.Stats_Groups[groupLabel].ContainsKey(activeSpssLabels[statvaluectr]))
+                                                result.Stats_Groups[groupLabel][activeSpssLabels[statvaluectr]] = lastParts.ElementAtOrDefault(statvaluectr);
+                                        }
+                                        
+                                        LabelCtr++;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        LabelCtr++;
+                                    }
+
+
                                 }
 
+                                
 
                             }
+
                         }
-
-
-
-
-                        //if (ProceedLabel == "Total")
-                        //{
-                        //    if (!result.Stats_Total.ContainsKey(statLabel))
-                        //        result.Stats_Total[statLabel] = value;
-                        //}
-                        //else
-                        //{
-                        //    if (!result.Stats_Groups.ContainsKey(ProceedLabel))
-                        //        result.Stats_Groups[ProceedLabel] = new Dictionary<string, string>();
-
-                        //    if (!result.Stats_Groups[ProceedLabel].ContainsKey(statLabel))
-                        //        result.Stats_Groups[ProceedLabel][statLabel] = value;
-                        //}
-
-
+                        break;
                     }
                 }
 
@@ -1462,6 +1557,8 @@ EXECUTE.");
 
             return (found , start_statlabel,valuectr);
         }
+
+
 
         public static List<DescriptiveResult> ParseDescriptiveOutput_Multiple_New_Chat(
     string rawText,
