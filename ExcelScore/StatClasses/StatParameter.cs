@@ -39,7 +39,15 @@ namespace ExcelScore.StatClasses
             }
         }
 
+        public bool AllRawValuesIdentical()
+        {
+            if (RawValues == null || RawValues.Count == 0)
+                return true; // or true, depending on your intended logic
 
+            // Check if all values match the first non-null value
+            string first = RawValues[0];
+            return RawValues.All(v => v == first);
+        }
         // --- Grouping info ---
         public bool IsGroup { get; set; }
         public bool IsSubGroup { get; set; }
@@ -164,6 +172,67 @@ namespace ExcelScore.StatClasses
         public List<string> Test_PValues { get; set; } = new(); // t, U, F, H results
         public List<string> PostHocResults { get; set; } = new();
 
+
+        public static bool General_Parameter_Group_Label(string parameterName, string groupLabel, StatTable statTable, StatParameter groupParameter)
+        {
+            bool hasvalues = false;
+
+            int groupParametercount = statTable.GetGroupParameters().Count;
+            StatParameter CurrentParameter = statTable.GetParameterByName(parameterName);
+            int GroupLabel_Key;
+
+            // 1️⃣ Try normal label match
+            var match = groupParameter.ValueLabels
+                .FirstOrDefault(kv => kv.Value.Equals(groupLabel, StringComparison.OrdinalIgnoreCase));
+
+            if (!match.Equals(default(KeyValuePair<int, string>)))
+            {
+                GroupLabel_Key = match.Key;
+            }
+            else
+            {
+                // 2️⃣ Try to parse numeric label
+                if (double.TryParse(groupLabel, out double parsedValue))
+                {
+                    // Handle numeric keys as int (round if needed)
+                    int numericKey = (int)Math.Round(parsedValue);
+
+                    if (groupParameter.ValueLabels.ContainsKey(numericKey))
+                        GroupLabel_Key = numericKey;
+                    else
+                        GroupLabel_Key = -1; // not found
+                }
+                else
+                {
+                    GroupLabel_Key = -1; // not found
+                }
+            }
+
+            if (groupLabel == "Total")
+            {
+                return true;
+            }
+            if (groupParametercount == 1)
+            {
+
+                if (CurrentParameter.GroupedParameterValues[GroupLabel_Key].Count > 0)
+                {
+                    hasvalues = true;
+                }
+
+            }
+            else if (groupParametercount > 1)
+            {
+                if (CurrentParameter.GroupedParameterValuesRelation[groupParameter.Name][GroupLabel_Key].Count > 0)
+                {
+                    hasvalues = true;
+                }
+            }
+
+
+
+            return hasvalues;
+        }
 
         //public static StatParameter FromSpss(SpssParameter spss)
         //{

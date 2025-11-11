@@ -5495,7 +5495,7 @@ namespace ExcelScore.Forms
 
             ComparativeTableGroups_2_periods();
 
-            //ComparativeTableGroups_Layout();
+            ComparativeTableGroups_Layout();
 
             
 

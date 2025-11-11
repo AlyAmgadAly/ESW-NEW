@@ -954,11 +954,14 @@ EXECUTE.");
                     .Select(p => p.Name)
                     .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
+                int scaleParamCtr = 0;
+
                 //we entered table block
                 for (int j = i + 1; j < spssOutputLines.Count; j++)
                 {
                     var parts = SplitParts(spssOutputLines[j]);
 
+                    //Total Percentile
                     if (spssOutputLines[j] == "Percentiles")
                     {
                         var temppart = SplitParts(spssOutputLines[j+2]);
@@ -971,24 +974,72 @@ EXECUTE.");
                                 parts = SplitParts(spssOutputLines[j]);
                             }
 
-                            var lastParts = parts.Skip(Math.Max(0, parts.Count - 3));
 
-                            bool allNumeric = lastParts.All(p =>
-    p == "." || // treat "." as valid
-    double.TryParse(p, System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture, out _));
+                            while(scaleParamCtr < scaleParamNames.Count)
+                            {
+                                parts = SplitParts(spssOutputLines[j]);
+                                var lastParts = parts.Skip(Math.Max(0, parts.Count - 3));
 
-                            bool hasDecimal = lastParts.Any(p =>
-    double.TryParse(p, System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture, out _) &&
-    p.Contains("."));
+                                bool allNumeric = lastParts.All(p =>
+        p == "." || // treat "." as valid
+        double.TryParse(p, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out _));
+
+                                bool hasDecimal = lastParts.Any(p =>
+        double.TryParse(p, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out _) &&
+        p.Contains("."));
+
+                                string CurrentParaName = scaleParamNames.ElementAt(scaleParamCtr);
+                                bool valid = allNumeric && hasDecimal;
+
+                                if(valid)
+                                {
+                                    var param = statTable.GetParameterByName(CurrentParaName);
+                                    bool identical = param.AllRawValuesIdentical();
+                                    if (param == null) return;
+
+                                    if (identical)
+                                    {
+                                        scaleParamCtr++;
+                                        continue;
+                                    }
+                                        
+
+                                    param.PercentileStats.VariableName = CurrentParaName;
+                                    param.PercentileStats.TotalPercentiles["25"] = lastParts.ElementAt(0);
+                                    param.PercentileStats.TotalPercentiles["50"] = lastParts.ElementAt(1);
+                                    param.PercentileStats.TotalPercentiles["75"] = lastParts.ElementAt(2);
 
 
-                            bool valid = allNumeric && hasDecimal;
+                                    scaleParamCtr++;
+                                }
+
+                                j++;
+
+
+                            }
+                            
 
                         }
                     }
+                    //Total Percentile END
+                    //if(parts.Count == 2)
+                    //{
+                    //    if (parts[0].Contains(groupParameter.Name) && parts[1] == "Percentiles")
+                    //    {
+                    //        while (!(parts[0] == "Tukey's" && parts[1] == "Hinges"))
+                    //        {
+                    //            j++;
+                    //            parts = SplitParts(spssOutputLines[j]);
+                    //        }
 
+                    //        int GroupedScaleParamCtr = 0;
+
+
+
+                    //    }
+                    //}
                 }
             }
         }
@@ -1822,7 +1873,7 @@ EXECUTE.");
             }
             if (groupParametercount == 1)
             {
-                // Here we didn't handle Total (?????????????????)
+                
                 if (CurrentParameter.GroupedParameterValues[GroupLabel_Key].Count > 0) 
                 {
                     hasvalues = true;
