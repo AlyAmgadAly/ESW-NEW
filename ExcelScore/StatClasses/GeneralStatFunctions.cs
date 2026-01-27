@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ExcelScore.StatClasses
 {
@@ -142,15 +143,48 @@ namespace ExcelScore.StatClasses
 
             foreach (var variableName in variableNames)
             {
+
+                //Only for testing
+                var CurrentParameter = statTable.GetParameterByName(variableName);
+
                 var result = results.First(r => r.VariableName == variableName);
 
                 foreach (var groupLabel in groupLabels)
                 {
+                    MessageBox.Show(groupLabel);
                     bool hasGroupLabelValues = StatParameter.General_Parameter_Group_Label(variableName, groupLabel, statTable, groupParameter);
 
                     if (groupcount == 1)
                     {
                         //Grouped Normal
+
+
+                        // *********** The way we strore in the class
+                        //if (ProceedLabel == "Total")
+                        //{
+                        //    if (!result.Stats_Total.ContainsKey(statLabel))
+                        //        result.Stats_Total[statLabel] = value;
+                        //}
+                        //else
+                        //{
+                        //    if (!result.Stats_Groups.ContainsKey(ProceedLabel))
+                        //        result.Stats_Groups[ProceedLabel] = new Dictionary<string, string>();
+
+                        //    if (!result.Stats_Groups[ProceedLabel].ContainsKey(statLabel))
+                        //        result.Stats_Groups[ProceedLabel][statLabel] = value;
+                        //}
+                        //**************************
+
+
+                        //int CurrentGroupKey = groupParameter.GetGroupKeyfromLabel(groupLabel);
+                        //if (CurrentGroupKey != -1)
+                        //{
+                        //    foreach (var parametervalue in CurrentParameter.GroupedParameterValues[CurrentGroupKey])
+                        //    {
+                                
+                        //    }
+                        //}
+                        
 
                     }
                     else if(groupcount > 1)

@@ -214,24 +214,56 @@ namespace ExcelScore.StatClasses
             }
             if (groupParametercount == 1)
             {
-
-                if (CurrentParameter.GroupedParameterValues[GroupLabel_Key].Count > 0)
+                if (CurrentParameter.GroupedParameterValues
+                        .TryGetValue(GroupLabel_Key, out var values) &&
+                    values.Count > 0)
                 {
                     hasvalues = true;
                 }
-
             }
             else if (groupParametercount > 1)
             {
-                if (CurrentParameter.GroupedParameterValuesRelation[groupParameter.Name][GroupLabel_Key].Count > 0)
+                if (CurrentParameter.GroupedParameterValuesRelation
+                        .TryGetValue(groupParameter.Name, out var groupDict) &&
+                    groupDict.TryGetValue(GroupLabel_Key, out var values) &&
+                    values.Count > 0)
                 {
                     hasvalues = true;
                 }
             }
+
 
 
 
             return hasvalues;
+        }
+
+        public int GetGroupKeyfromLabel (string groupLabel)
+        {
+            // 1️⃣ Try normal label match
+            var match = ValueLabels
+                .FirstOrDefault(kv =>
+                    kv.Value.Equals(groupLabel, StringComparison.OrdinalIgnoreCase));
+
+            if (!match.Equals(default(KeyValuePair<int, string>)))
+            {
+                return match.Key;
+            }
+
+            // 2️⃣ Try numeric label (e.g. "1", "1.00")
+            if (double.TryParse(groupLabel, out double parsedValue))
+            {
+                // Accept only whole numbers
+                if (parsedValue % 1 == 0)
+                {
+                    int numericKey = (int)parsedValue;
+
+                    if (ValueLabels.ContainsKey(numericKey))
+                        return numericKey;
+                }
+            }
+
+            return -1; // not found
         }
 
         //public static StatParameter FromSpss(SpssParameter spss)
