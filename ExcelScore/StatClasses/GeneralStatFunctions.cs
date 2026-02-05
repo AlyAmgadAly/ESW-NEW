@@ -10,53 +10,63 @@ namespace ExcelScore.StatClasses
 {
     public class GeneralStatFunctions
     {
-        //public Dictionary<string, string> Formatted_Basic_Calculations(List<double> values)
-        //{
-        //    Dictionary<string, string> ValuesFormatted = new Dictionary<string, string>();
-        //    List<double> NewValues = values;
-
-        //    double minValue = NewValues.Min();
-        //    double maxValue = NewValues.Max();
-        //    double meanValue = NewValues.Average();
-        //    double stdDevValue = Math.Sqrt(NewValues.Select(x => Math.Pow(x - meanValue, 2)).Sum() / (NewValues.Count - 1));
-        //    double medianValue;
-        //    int middleIndex = NewValues.Count / 2;
-        //    if (NewValues.Count % 2 == 0)
-        //    {
-        //        // For even count of elements, take the average of the two middle values
-        //        double middleValue1 = NewValues.OrderBy(x => x).ElementAt(middleIndex - 1);
-        //        double middleValue2 = NewValues.OrderBy(x => x).ElementAt(middleIndex);
-        //        medianValue = (middleValue1 + middleValue2) / 2.0;
-        //    }
-        //    else
-        //    {
-        //        // For odd count of elements, directly take the middle value
-        //        medianValue = NewValues.OrderBy(x => x).ElementAt(middleIndex);
-        //    }
-
-        //    double perc25th = CalculateLowerMedian(NewValues);
-        //    double perc75th = CalculateUpperMedian(NewValues);
+        public static Dictionary<string, string> Formatted_Basic_Calculations(List<double> values)
+        {
+            Dictionary<string, string> ValuesFormatted = new Dictionary<string, string>();
+            List<double> NewValues = new List<double>(values);
 
 
-        //    string formattedMinMax = FormatMinMaxValue(minValue, maxValue);
-        //    string formattedMeanStd = FormatMeanStdValue(meanValue, stdDevValue);
-        //    string formattedMedian = FormatSingleValue(medianValue);
-        //    string formattedIQR = FormatMinMaxValue(perc25th, perc75th);
+            double minValue = NewValues.Min();
+            double maxValue = NewValues.Max();
+            double meanValue = NewValues.Average();
+            double stdDevValue = Math.Sqrt(NewValues.Select(x => Math.Pow(x - meanValue, 2)).Sum() / (NewValues.Count - 1));
+            double medianValue;
+            int middleIndex = NewValues.Count / 2;
+            if (NewValues.Count % 2 == 0)
+            {
+                // For even count of elements, take the average of the two middle values
+                double middleValue1 = NewValues.OrderBy(x => x).ElementAt(middleIndex - 1);
+                double middleValue2 = NewValues.OrderBy(x => x).ElementAt(middleIndex);
+                medianValue = (middleValue1 + middleValue2) / 2.0;
+            }
+            else
+            {
+                // For odd count of elements, directly take the middle value
+                medianValue = NewValues.OrderBy(x => x).ElementAt(middleIndex);
+            }
+
+            double perc25th = CalculateLowerMedian(NewValues);
+            double perc75th = CalculateUpperMedian(NewValues);
 
 
-        //    ValuesFormatted["Min-Max"] = formattedMinMax;
-        //    ValuesFormatted["Mean ± StdDev"] = formattedMeanStd;
-        //    ValuesFormatted["Median"] = formattedMedian;
-        //    ValuesFormatted["IQR"] = formattedIQR;
+            string formattedMinMax = FormatMinMaxValue(minValue, maxValue);
+            string formattedMeanStd = FormatMeanStdValue(meanValue, stdDevValue);
+            string formattedMedian = FormatSingleValue(medianValue);
+            string formattedIQR = FormatMinMaxValue(perc25th, perc75th);
+
+
+            ValuesFormatted["N"] = NewValues.Count.ToString();
+            ValuesFormatted["Min"] = minValue.ToString();
+            ValuesFormatted["Max"] = maxValue.ToString();
+            ValuesFormatted["Mean"] = meanValue.ToString();
+            ValuesFormatted["StdDev"] = stdDevValue.ToString();
+            ValuesFormatted["perc25th"] = perc25th.ToString();
+            ValuesFormatted["perc75th"] = perc75th.ToString();
+
+
+            ValuesFormatted["Min-Max"] = formattedMinMax;
+            ValuesFormatted["Mean ± StdDev"] = formattedMeanStd;
+            ValuesFormatted["Median"] = formattedMedian;
+            ValuesFormatted["IQR"] = formattedIQR;
 
 
 
 
 
-        //    return ValuesFormatted;
+            return ValuesFormatted;
 
 
-        //}
+        }
         public static void ParseUnifiedOutput_Descriptives(List<StatTable> tables)
         {
             foreach (var table in tables)
@@ -129,9 +139,10 @@ namespace ExcelScore.StatClasses
             }
 
         }
-
+        
         public static List<SpssSyntaxStat.DescriptiveResult> GetDescriptiveResults(List<string> variableNames, List<string> groupLabels, StatTable statTable , StatParameter groupParameter)
         {
+            GeneralStatFunctions generalStatFunctions = new GeneralStatFunctions();
 
             if (variableNames == null || variableNames.Count == 0)
                 return new List<SpssSyntaxStat.DescriptiveResult>();
@@ -143,7 +154,7 @@ namespace ExcelScore.StatClasses
 
             foreach (var variableName in variableNames)
             {
-
+                Dictionary<string, string> StatLabelValues_Total = new Dictionary<string, string>();
                 //Only for testing
                 var CurrentParameter = statTable.GetParameterByName(variableName);
 
@@ -151,60 +162,78 @@ namespace ExcelScore.StatClasses
 
                 foreach (var groupLabel in groupLabels)
                 {
-                    MessageBox.Show(groupLabel);
+                    
                     bool hasGroupLabelValues = StatParameter.General_Parameter_Group_Label(variableName, groupLabel, statTable, groupParameter);
 
-                    if (groupcount == 1)
+
+                    if (hasGroupLabelValues)
                     {
-                        //Grouped Normal
+                        int CurrentGroupKey = groupParameter.GetGroupKeyfromLabel(groupLabel);
+                        if (CurrentGroupKey != -1)
+                        {
+                            Dictionary<string, string> StatLabelValues = new Dictionary<string, string>();
+                            if (groupcount == 1)
+                            {
+                                StatLabelValues = GeneralStatFunctions.Formatted_Basic_Calculations(CurrentParameter.GroupedParameterValues[CurrentGroupKey]);
+                            }
+                            else if (groupcount > 1)
+                            {
+                                StatLabelValues = GeneralStatFunctions.Formatted_Basic_Calculations(CurrentParameter.GroupedParameterValuesRelation[groupParameter.Name][CurrentGroupKey]);
+                            }
+
+                            if (!result.Stats_Groups.ContainsKey(groupLabel))
+                                result.Stats_Groups[groupLabel] = new Dictionary<string, string>();
+
+                            foreach (var kvp in StatLabelValues)
+                            {
+                                string Statlabel = kvp.Key;
+                                string Statvalue = kvp.Value;
+
+                                if (!result.Stats_Groups[groupLabel].ContainsKey(Statlabel))
+                                    result.Stats_Groups[groupLabel][Statlabel] = Statvalue;
+                            }
 
 
-                        // *********** The way we strore in the class
-                        //if (ProceedLabel == "Total")
-                        //{
-                        //    if (!result.Stats_Total.ContainsKey(statLabel))
-                        //        result.Stats_Total[statLabel] = value;
-                        //}
-                        //else
-                        //{
-                        //    if (!result.Stats_Groups.ContainsKey(ProceedLabel))
-                        //        result.Stats_Groups[ProceedLabel] = new Dictionary<string, string>();
-
-                        //    if (!result.Stats_Groups[ProceedLabel].ContainsKey(statLabel))
-                        //        result.Stats_Groups[ProceedLabel][statLabel] = value;
-                        //}
-                        //**************************
-
-
-                        //int CurrentGroupKey = groupParameter.GetGroupKeyfromLabel(groupLabel);
-                        //if (CurrentGroupKey != -1)
-                        //{
-                        //    foreach (var parametervalue in CurrentParameter.GroupedParameterValues[CurrentGroupKey])
-                        //    {
-                                
-                        //    }
-                        //}
-                        
-
-                    }
-                    else if(groupcount > 1)
-                    {
-                        // Relation
+                        }
                     }
 
 
                 }
-                
+                MessageBox.Show(CurrentParameter.RawNonEmptyValues.Count.ToString());
+                StatLabelValues_Total = GeneralStatFunctions.Formatted_Basic_Calculations(CurrentParameter.RawNonEmptyValues);
+
+
+                foreach (var kvp in StatLabelValues_Total)
+                {
+                    string Statlabel = kvp.Key;
+                    string Statvalue = kvp.Value;
+
+                    if (!result.Stats_Total.ContainsKey(Statlabel))
+                        result.Stats_Total[Statlabel] = Statvalue;
+                }
+
+
+
             }
             //
 
-
-
-
-
-
             return results;
 
+            // *********** The way we strore in the class
+            //if (ProceedLabel == "Total")
+            //{
+            //    if (!result.Stats_Total.ContainsKey(statLabel))
+            //        result.Stats_Total[statLabel] = value;
+            //}
+            //else
+            //{
+            //    if (!result.Stats_Groups.ContainsKey(ProceedLabel))
+            //        result.Stats_Groups[ProceedLabel] = new Dictionary<string, string>();
+
+            //    if (!result.Stats_Groups[ProceedLabel].ContainsKey(statLabel))
+            //        result.Stats_Groups[ProceedLabel][statLabel] = value;
+            //}
+            //**************************
         }
 
         public Dictionary<string, string> Basic_Calculations(List<double> values)
@@ -251,7 +280,7 @@ namespace ExcelScore.StatClasses
         }
 
 
-        public double CalculateLowerMedian(List<double> values)
+        public static double CalculateLowerMedian(List<double> values)
         {
             values.Sort();
 
@@ -275,7 +304,7 @@ namespace ExcelScore.StatClasses
 
         }
 
-        public double CalculateUpperMedian(List<double> values)
+        public static double CalculateUpperMedian(List<double> values)
         {
             values.Sort();
 
@@ -306,7 +335,7 @@ namespace ExcelScore.StatClasses
             }
         }
 
-        public double CalculateMedian(List<double> values)
+        public static double CalculateMedian(List<double> values)
         {
             values.Sort();
 
@@ -332,7 +361,7 @@ namespace ExcelScore.StatClasses
             }
         }
 
-        string FormatMinMaxValue(double minValue, double maxValue)
+        static string FormatMinMaxValue(double minValue, double maxValue)
         {
 
             string minValueString = "";
@@ -377,7 +406,7 @@ namespace ExcelScore.StatClasses
             return minValueString + " – " + maxValueString;
         }
 
-        string FormatMeanStdValue(double meanValue, double stdDevValue)
+       static string FormatMeanStdValue(double meanValue, double stdDevValue)
         {
             string meanValueString = meanValue.ToString("0.00");
             string stdDevValueString = stdDevValue.ToString("0.00");
@@ -413,7 +442,7 @@ namespace ExcelScore.StatClasses
             return meanValueString + " ± " + stdDevValueString;
         }
 
-        string FormatSingleValue(double value)
+        static string FormatSingleValue(double value)
         {
             string valueString = value.ToString("0.00");
 

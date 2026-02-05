@@ -55,6 +55,7 @@ namespace ExcelScore.StatClasses
             foreach (var param in GetNonGroupParameters())
             {
                 param.AssignGroupedValues(groupParams);
+                param.BuildRawNonEmptyValues();
             }
         }
     }

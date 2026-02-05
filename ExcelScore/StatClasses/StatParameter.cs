@@ -16,10 +16,51 @@ namespace ExcelScore.StatClasses
         public string Type { get; set; } // "Nominal" or "Scale"
         public string Normality { get; set; } // "Nominal" or "Scale"
         public List<string> RawValues { get; set; } = new();
+
+        public List<double> RawNonEmptyValues { get; private set; }
         public Dictionary<int, string> ValueLabels { get; set; } = new(); // e.g., 1 = Male
 
         //manual
         public Dictionary<double, double> ValueFrequencies { get; set; } = new();
+
+        public void BuildRawNonEmptyValues()
+        {
+            // Remove SPSS missing values "."
+            var nonMissing = RawValues
+                .Where(v => !string.IsNullOrWhiteSpace(v) && v != ".")
+                .ToList();
+
+            // Nothing left → don't create
+            if (!nonMissing.Any())
+            {
+                RawNonEmptyValues = null;
+                return;
+            }
+
+            var numericValues = new List<double>();
+
+            foreach (var value in nonMissing)
+            {
+                if (double.TryParse(
+                        value,
+                        System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        out double parsed))
+                {
+                    numericValues.Add(parsed);
+                }
+                else
+                {
+                    // Found a non-numeric string → categorical variable
+                    RawNonEmptyValues = null;
+                    return;
+                }
+            }
+
+            // All non-missing values are numeric → safe to assign
+            RawNonEmptyValues = numericValues;
+        }
+
         public void CalculateValueFrequencies()
         {
             if (Type != "Nominal" || RawValues == null || RawValues.Count == 0)
