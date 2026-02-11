@@ -531,6 +531,8 @@
     <Compile Include="StatClasses\SpssSyntaxStat.cs" />
     <Compile Include="StatClasses\StatParameter.cs" />
     <Compile Include="StatClasses\StatTable.cs" />
+    <Compile Include="StatClasses\WordTableDesignContext.cs" />
+    <Compile Include="StatClasses\WordTableStatDesign.cs" />
     <EmbeddedResource Include="App Forms\Main Menu Forms\LoadingSplashScreen.resx">
       <DependentUpon>LoadingSplashScreen.cs</DependentUpon>
     </EmbeddedResource>

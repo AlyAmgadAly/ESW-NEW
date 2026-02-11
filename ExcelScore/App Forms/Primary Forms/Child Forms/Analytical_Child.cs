@@ -492,6 +492,8 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             }
             
         }
+        
+
 
         private void btn_Done_Click(object sender, EventArgs e)
         {
@@ -499,11 +501,21 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             SpssSyntaxStat.ParseUnifiedOutput_Crosstabs(outputText, StatTables);
 
             GeneralStatFunctions.ParseUnifiedOutput_Descriptives(StatTables);
-            //SpssSyntaxStat.ParseUnifiedOutput_Descriptives(outputText, StatTables);
+
+
+            foreach (var item in StatTables)
+            {
+                var context = new WordTableDesignContext(item);
+                WordTableStatDesign.Execute(context);
+            }
+            
+
             MessageBox.Show(".");
 
 
         }
+
+        
 
         private void pic_removeTableSelected_Click(object sender, EventArgs e)
         {

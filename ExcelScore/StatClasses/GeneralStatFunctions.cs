@@ -199,7 +199,7 @@ namespace ExcelScore.StatClasses
 
 
                 }
-                MessageBox.Show(CurrentParameter.RawNonEmptyValues.Count.ToString());
+                //MessageBox.Show(CurrentParameter.RawNonEmptyValues.Count.ToString());
                 StatLabelValues_Total = GeneralStatFunctions.Formatted_Basic_Calculations(CurrentParameter.RawNonEmptyValues);
 
 

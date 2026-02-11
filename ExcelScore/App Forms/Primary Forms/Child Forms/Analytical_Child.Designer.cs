@@ -740,7 +740,7 @@
             this.Controls.Add(this.pnl_Top_bar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Analytical_Child";
-            this.Text = "Comparative_Child";
+            this.Text = "                     ";
             this.Load += new System.EventHandler(this.Analytical_Child_Load);
             this.pnl_Top_bar.ResumeLayout(false);
             this.pnl_Top_bar.PerformLayout();
