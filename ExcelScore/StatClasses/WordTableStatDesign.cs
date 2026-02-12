@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Syncfusion.DocIO.DLS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,9 +34,16 @@ namespace ExcelScore.StatClasses
         // TableType = "comparative";
         public static void WordT_Comparative_Default(WordTableDesignContext context)
         {
-            var table = context.Table;
-            MessageBox.Show("testForm");
-            // your logic here
+            var StatTable = context.Table;
+            var wordobj = context.Wordobj;
+            
+            
+
+            IWSection section = wordobj.CreatePortraitSection();
+
+
+
+            wordobj.AddComparativeTitle(section,"test",1);
         }
 
 

@@ -67,6 +67,65 @@ namespace ExcelScore.StatClasses
 
 
         }
+
+        public static string BuildLowCountFilterSyntax(StatTable table, string groupVar, List<int> validGroups)
+        {
+            var groupCondition = string.Join("  |  ", validGroups.Select(v => $"{groupVar} = {v}"));
+            var filterLabel = $"{groupVar} = " + string.Join("  |  ", validGroups);
+
+            // Base condition from user's select (IF or filter variable)
+            string selectCond = null;
+            if (!string.IsNullOrWhiteSpace(table.SelectStatement))
+            {
+                if (table.SelectIF)
+                {
+                    // Example: Age = 1 & Sex = 2
+                    selectCond = table.SelectStatement;
+                }
+                else
+                {
+                    // Example: user chose filter var name MyFilterVar → use MyFilterVar = 1
+                    selectCond = $"{table.SelectStatement} = 1";
+                }
+            }
+
+            // Combine: (user select) AND (groupVar in validGroups) if select exists
+            string combinedCondition = string.IsNullOrWhiteSpace(selectCond)
+                ? groupCondition
+                : $"({selectCond}) & ({groupCondition})";
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"COMPUTE filter_$=({combinedCondition}).");
+            sb.AppendLine($"VARIABLE LABEL filter_$ '{filterLabel} (FILTER)'.");
+            sb.AppendLine("VALUE LABELS filter_$  0 'Not Selected' 1 'Selected'.");
+            sb.AppendLine("FORMAT filter_$ (f1.0).");
+            sb.AppendLine("FILTER BY filter_$.");
+            sb.AppendLine("EXECUTE.");
+
+            return sb.ToString();
+        }
+        public static string BuildSelectSyntax(StatTable table)
+        {
+            if (string.IsNullOrWhiteSpace(table.SelectStatement))
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            sb.AppendLine("USE ALL.");
+
+            if (table.SelectIF)
+            {
+                // User wrote an IF expression, e.g. Age = 1 & Sex = 2
+                sb.AppendLine($"SELECT IF ({table.SelectStatement}).");
+            }
+            else
+            {
+                // User chose an existing filter variable name, e.g. MyFilterVar
+                sb.AppendLine($"FILTER BY {table.SelectStatement}.");
+            }
+
+            sb.AppendLine("EXECUTE.");
+            return sb.ToString();
+        }
         public static void ParseUnifiedOutput_Descriptives(List<StatTable> tables)
         {
             foreach (var table in tables)
@@ -199,7 +258,7 @@ namespace ExcelScore.StatClasses
 
 
                 }
-                //MessageBox.Show(CurrentParameter.RawNonEmptyValues.Count.ToString());
+                
                 StatLabelValues_Total = GeneralStatFunctions.Formatted_Basic_Calculations(CurrentParameter.RawNonEmptyValues);
 
 

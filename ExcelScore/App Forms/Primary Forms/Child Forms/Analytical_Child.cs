@@ -18,6 +18,7 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 {
     public partial class Analytical_Child : Form
     {
+        WordClass wordObj = new WordClass();
         public Analytical_Child()
         {
             InitializeComponent();
@@ -486,14 +487,16 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                 //Assign Select Statement
                 var table = StatTables.FirstOrDefault(t => t.TableName == tableName);
                 string SelectComm = FormDataTransfer.Get<string>("IfSelectCommand");
+                bool SelectIF = FormDataTransfer.Get<bool>("SelectIfOrVar");
 
                 table.SelectStatement = SelectComm;
+                table.SelectIF = SelectIF;
 
             }
             
         }
         
-
+        
 
         private void btn_Done_Click(object sender, EventArgs e)
         {
@@ -502,15 +505,18 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 
             GeneralStatFunctions.ParseUnifiedOutput_Descriptives(StatTables);
 
+            var document = wordObj.InitWord();
 
             foreach (var item in StatTables)
             {
-                var context = new WordTableDesignContext(item);
+                var context = new WordTableDesignContext(item , wordObj);
                 WordTableStatDesign.Execute(context);
             }
-            
 
-            MessageBox.Show(".");
+            string filepath = wordObj.SaveWord();
+
+
+            
 
 
         }

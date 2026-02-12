@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using ExcelScore.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +12,13 @@ namespace ExcelScore.StatClasses
     {
         public StatTable Table { get; }
 
+        public WordClass Wordobj { get; }
 
 
-        public WordTableDesignContext(StatTable table)
+        public WordTableDesignContext(StatTable table ,WordClass wordobj)
         {
             Table = table ?? throw new ArgumentNullException(nameof(table));
+            Wordobj = wordobj ?? throw new ArgumentNullException(nameof(wordobj));
         }
     }
 }

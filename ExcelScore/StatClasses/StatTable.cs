@@ -26,6 +26,8 @@ namespace ExcelScore.StatClasses
 
         public string SelectStatement { get; set; } = "";
 
+        public bool SelectIF { get; set; } = false;
+
         // --- Utility Methods ---
 
         // Return all grouping parameters

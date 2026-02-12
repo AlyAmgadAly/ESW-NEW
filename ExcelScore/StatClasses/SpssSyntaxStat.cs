@@ -109,6 +109,9 @@ OMS
                 //syntaxBuilder.AppendLine($"* --- Table: {table.TableName} ---.");
                 syntaxBuilder.AppendLine($@"TITLE ""{table.TableName}"".");
 
+                var selectSyntax = GeneralStatFunctions.BuildSelectSyntax(table);
+                if (!string.IsNullOrWhiteSpace(selectSyntax))
+                    syntaxBuilder.AppendLine(selectSyntax);
 
                 // --- CROSSTABS ---
                 if (nominalVars.Any())
@@ -235,17 +238,19 @@ NPAR TESTS
 
                             if (lowCountGroups.Count > 0)
                             {
-                                var filterCondition = string.Join("  |  ", validGroups.Select(v => $"{groupVar} = {v}"));
-                                var filterLabel = $"{groupVar} = " + string.Join("  |  ", validGroups);
+                                syntaxBuilder.AppendLine(
+        GeneralStatFunctions.BuildLowCountFilterSyntax(table, groupVar, validGroups));
 
-                                syntaxBuilder.AppendLine($@"
-USE ALL.
-COMPUTE filter_$=({filterCondition}).
-VARIABLE LABEL filter_$ '{filterLabel} (FILTER)'.
-VALUE LABELS filter_$  0 'Not Selected' 1 'Selected'.
-FORMAT filter_$ (f1.0).
-FILTER BY filter_$.
-EXECUTE.");
+                                //var filterCondition = string.Join("  |  ", validGroups.Select(v => $"{groupVar} = {v}"));
+                                //var filterLabel = $"{groupVar} = " + string.Join("  |  ", validGroups);
+
+                                //syntaxBuilder.AppendLine($@"
+                                //COMPUTE filter_$=({filterCondition}).
+                                //VARIABLE LABEL filter_$ '{filterLabel} (FILTER)'.
+                                //VALUE LABELS filter_$  0 'Not Selected' 1 'Selected'.
+                                //FORMAT filter_$ (f1.0).
+                                //FILTER BY filter_$.
+                                //EXECUTE.");
                             }
 
                             if (normality == "NORMAL")
@@ -323,17 +328,20 @@ NPAR TESTS
 
                                 if (lowCountGroups.Count > 0)
                                 {
-                                    var filterCondition = string.Join("  |  ", validGroups.Select(v => $"{groupVar} = {v}"));
-                                    var filterLabel = $"{groupVar} = " + string.Join("  |  ", validGroups);
 
-                                    syntaxBuilder.AppendLine($@"
-USE ALL.
-COMPUTE filter_$=({filterCondition}).
-VARIABLE LABEL filter_$ '{filterLabel} (FILTER)'.
-VALUE LABELS filter_$  0 'Not Selected' 1 'Selected'.
-FORMAT filter_$ (f1.0).
-FILTER BY filter_$.
-EXECUTE.");
+                                    syntaxBuilder.AppendLine(
+       GeneralStatFunctions.BuildLowCountFilterSyntax(table, groupVar, validGroups));
+                                    //  var filterCondition = string.Join("  |  ", validGroups.Select(v => $"{groupVar} = {v}"));
+                                    //  var filterLabel = $"{groupVar} = " + string.Join("  |  ", validGroups);
+
+                                    //  syntaxBuilder.AppendLine($@"
+                                    //USE ALL.
+                                    //COMPUTE filter_$=({filterCondition}).
+                                    //VARIABLE LABEL filter_$ '{filterLabel} (FILTER)'.
+                                    //VALUE LABELS filter_$  0 'Not Selected' 1 'Selected'.
+                                    //FORMAT filter_$ (f1.0).
+                                    //FILTER BY filter_$.
+                                    //EXECUTE.");
                                 }
 
                                 if (normality == "NORMAL")
