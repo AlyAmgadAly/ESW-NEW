@@ -79,12 +79,13 @@ namespace ExcelScore.StatClasses
             {
                 if (table.SelectIF)
                 {
-                    // Example: Age = 1 & Sex = 2
+                    // User typed an IF expression, e.g. Age = 1 & Sex = 2
                     selectCond = table.SelectStatement;
                 }
                 else
                 {
-                    // Example: user chose filter var name MyFilterVar → use MyFilterVar = 1
+                    // User chose an existing filter variable name, e.g. MyFilterVar
+                    // We interpret that as "this var = 1" being selected
                     selectCond = $"{table.SelectStatement} = 1";
                 }
             }
@@ -95,6 +96,9 @@ namespace ExcelScore.StatClasses
                 : $"({selectCond}) & ({groupCondition})";
 
             var sb = new StringBuilder();
+
+            // Make sure we start from all cases for this combined filter
+            sb.AppendLine("USE ALL.");
             sb.AppendLine($"COMPUTE filter_$=({combinedCondition}).");
             sb.AppendLine($"VARIABLE LABEL filter_$ '{filterLabel} (FILTER)'.");
             sb.AppendLine("VALUE LABELS filter_$  0 'Not Selected' 1 'Selected'.");
@@ -110,16 +114,21 @@ namespace ExcelScore.StatClasses
                 return string.Empty;
 
             var sb = new StringBuilder();
+
             sb.AppendLine("USE ALL.");
 
             if (table.SelectIF)
             {
-                // User wrote an IF expression, e.g. Age = 1 & Sex = 2
-                sb.AppendLine($"SELECT IF ({table.SelectStatement}).");
+                // User typed an IF condition: Age = 1 & Sex = 2
+                sb.AppendLine($"COMPUTE filter_$=({table.SelectStatement}).");
+                sb.AppendLine($"VARIABLE LABEL filter_$ '{table.SelectStatement} (FILTER)'.");
+                sb.AppendLine("VALUE LABELS filter_$  0 'Not Selected' 1 'Selected'.");
+                sb.AppendLine("FORMAT filter_$ (f1.0).");
+                sb.AppendLine("FILTER BY filter_$.");
             }
             else
             {
-                // User chose an existing filter variable name, e.g. MyFilterVar
+                // User chose an existing filter variable name
                 sb.AppendLine($"FILTER BY {table.SelectStatement}.");
             }
 

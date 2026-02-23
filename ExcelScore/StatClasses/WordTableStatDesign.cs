@@ -41,7 +41,16 @@ namespace ExcelScore.StatClasses
 
             IWSection section = wordobj.CreatePortraitSection();
 
+            StatParameter groupParameter = StatTable.GetGroupParameters().FirstOrDefault();
 
+            string message = "";
+
+            foreach (var kvp in groupParameter.ValueLabels)
+            {
+                message += $"{kvp.Key} : {kvp.Value}\n";
+            }
+
+            MessageBox.Show(message);
 
             wordobj.AddComparativeTitle(section,"test",1);
         }
