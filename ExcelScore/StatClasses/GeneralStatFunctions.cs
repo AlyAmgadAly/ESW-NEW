@@ -239,6 +239,11 @@ namespace ExcelScore.StatClasses
                         int CurrentGroupKey = groupParameter.GetGroupKeyfromLabel(groupLabel);
                         if (CurrentGroupKey != -1)
                         {
+                            //setup filter here for select
+
+
+
+
                             Dictionary<string, string> StatLabelValues = new Dictionary<string, string>();
                             if (groupcount == 1)
                             {
