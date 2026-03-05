@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
+using ExcelScore.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -235,11 +236,20 @@ namespace ExcelScore.StatClasses
         /// </summary>
         private static bool EvaluateSelectExpression(StatTable table, int rowIndex, string expression)
         {
+            // Get ALL SPSS parameters from the form, not just this table's
+            var spssParams = FormDataTransfer.Get<List<StatParameter>>("SPSS_Parameters")
+                           ?? new List<StatParameter>();
+
             // Build a dictionary of variable name -> raw string value at this row
-            var rowValues = table.Parameters.ToDictionary(
-                p => p.Name,
-                p => rowIndex < p.RawValues.Count ? p.RawValues[rowIndex] : null,
-                StringComparer.OrdinalIgnoreCase);
+            var rowValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var p in spssParams)
+            {
+                string value = (rowIndex < p.RawValues.Count) ? p.RawValues[rowIndex] : null;
+                rowValues[p.Name] = value;
+            }
+
+            
 
             // Normalize logical operators a bit
             string expr = expression.Replace("&&", "&").Replace("||", "|");

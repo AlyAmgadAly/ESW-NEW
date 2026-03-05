@@ -43,16 +43,21 @@ namespace ExcelScore.StatClasses
 
             StatParameter groupParameter = StatTable.GetGroupParameters().FirstOrDefault();
 
-            string message = "";
+            int groupcount = groupParameter.ValueLabels.Count;
 
-            foreach (var kvp in groupParameter.ValueLabels)
-            {
-                message += $"{kvp.Key} : {kvp.Value}\n";
-            }
+            int ColCount = 3 + groupcount*2 ;
 
-            MessageBox.Show(message);
+
+
 
             wordobj.AddComparativeTitle(section,"test",1);
+        }
+
+        public static int Get_Comparative_Default_ColCount()
+        {
+
+
+            return 0;
         }
 
 
