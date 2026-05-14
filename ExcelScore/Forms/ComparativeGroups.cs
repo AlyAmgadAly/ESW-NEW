@@ -737,7 +737,7 @@ namespace ExcelScore.Forms
                 if (!tableExists)
                 {
                     cmb_TableNames.Items.Add(txt_TableName.Text);
-                    AddTableClassNew(txt_TableName.Text , FormDataTransfer.Get<string>("TableType"));
+                    AddTableClass(txt_TableName.Text);
                     MessageBox.Show("Added Table " + txt_TableName.Text);
                     TableName = txt_TableName.Text;
                 }
@@ -5463,14 +5463,14 @@ namespace ExcelScore.Forms
         private void btn_Done_Click(object sender, EventArgs e)
         {
             //ComparativeBasic();
-            string outputText = SPSSUnifiedRunner.RunUnifiedSyntaxAndGetResult(StatTables, out _);
+            //string outputText = SPSSUnifiedRunner.RunUnifiedSyntaxAndGetResult(StatTables, out _);
 
-            SPSSUnifiedRunner.ParseUnifiedOutput_Crosstabs(outputText, StatTables);
+            //SPSSUnifiedRunner.ParseUnifiedOutput_Crosstabs(outputText, StatTables);
 
             //SPSSUnifiedRunner.ParseUnifiedOutput_Descriptives(outputText, StatTables);
 
-            var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            SPSSUnifiedRunner.ParsePercentiles(StatTables, lines);
+            //var lines = outputText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            //SPSSUnifiedRunner.ParsePercentiles(StatTables, lines);
 
             //PrintPercentiles(StatTables);
             //ForceKillSPSS();
@@ -5483,7 +5483,7 @@ namespace ExcelScore.Forms
 
 
 
-            //pythonStat.InitPython();
+            pythonStat.InitPython();
 
             document = wordObj.InitWord();
 
@@ -10166,6 +10166,8 @@ namespace ExcelScore.Forms
 
         private void pic_AddNew_Click(object sender, EventArgs e)
         {
+
+            pic_AddNew.Enabled = false;
             // Restore saved design type (if needed)
             var designType = FormDataTransfer.Get<string>("TableDesignType");
             if (!string.IsNullOrEmpty(designType))

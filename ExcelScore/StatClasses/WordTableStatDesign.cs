@@ -1,4 +1,5 @@
-﻿using Syncfusion.DocIO.DLS;
+﻿using ExcelScore.Classes;
+using Syncfusion.DocIO.DLS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,31 +37,178 @@ namespace ExcelScore.StatClasses
         {
             var StatTable = context.Table;
             var wordobj = context.Wordobj;
+
+            Dictionary<string, bool> CheckedDataprimary = FormDataTransfer.Get<Dictionary<string, bool>>("nodeCheckedStatusPrimary");
+            Dictionary<string, bool> CheckedDataExtra = FormDataTransfer.Get<Dictionary<string, bool>>("nodeCheckedStatusExtra");
             
-            
+            bool Total_Column_Comparative = CheckedDataExtra["TotalColumn"];
+            bool HasNominal = StatTable.HasNominal();
+            bool HasScale = StatTable.HasScale();
 
             IWSection section = wordobj.CreatePortraitSection();
 
             StatParameter groupParameter = StatTable.GetGroupParameters().FirstOrDefault();
 
+            //Column count
             int groupcount = groupParameter.ValueLabels.Count;
 
-            int ColCount = 3 + groupcount*2 ;
+            int ColCount = Get_Comparative_Default_ColCount(groupcount , StatTable.HasNominal() , Total_Column_Comparative);
+
+            
 
 
+            //-----------------------------------------
+            //Row Count
+            List<string> CheckedPrimaryNeeded = new List<string>();
+            string[] keysToCheck = { "NumberOfCasesFirst", "MinMaxFirst", "MeanSDFirst", "MedianIQRFirst", "MedianMinMaxSecond" };
+            foreach (string key in keysToCheck)
+            {
+                if (CheckedDataprimary.TryGetValue(key, out bool isChecked) && isChecked)
+                {
+                    CheckedPrimaryNeeded.Add(key);
+                }
+            }
+
+            int Variablerows = Get_Comparative_Default_RowCount(StatTable, CheckedPrimaryNeeded);
+            (int PairwiseCount, int TotalPairwiseCount) = CountPairwiseRows_Comparative_Default(StatTable);
+            int RowCount = 2 + Variablerows + TotalPairwiseCount;
 
 
-            wordobj.AddComparativeTitle(section,"test",1);
+            //-----------------------------------------
+            //Table created
+            wordobj.AddComparativeTitle(section, "test", 1);
+            IWTable table = wordobj.Createtable(section, RowCount, ColCount);
+            wordobj.GeneralTableFormat(table);
+
+
+            //Merges if nominal only
+            if (HasNominal)
+            {
+                wordobj.ApplyGeneralComparativeMerges_NewComparativeGroups_Fn(table, ColCount, groupcount);
+            }
+
+
+            wordobj.ApplyGeneralComparativeBorders_NewComparativeGroups_Fn(table, RowCount, ColCount, groupcount, HasNominal);
+            wordobj.Add_GeneralHeaders_Comparative_Center_NewComparativeGroups_Fn(table, RowCount, ColCount, groupcount, HasNominal);
+
+            ParamaeterBorders_Comparative_Default(table, RowCount, ColCount, StatTable, groupcount, HasScale, HasNominal, CheckedPrimaryNeeded, PairwiseCount, CheckedDataExtra, Total_Column_Comparative);
+
+
         }
-
-        public static int Get_Comparative_Default_ColCount()
+        public static int Get_Comparative_Default_RowCount(StatTable stattable , List<string> CheckedPrimaryNeeded)
         {
+            int rowCount = 0;
+
+            bool hasNominal = false;
+            foreach (var parameter in stattable.Parameters)
+            {
+                if(parameter.IsGroup) { continue; }
+
+                if (parameter.Type == "Nominal")
+                { 
+
+                    rowCount += parameter.ValueLabels.Keys.Count + 1;
+                    hasNominal = true;
+                }
+                else if (parameter.Type == "Scale")
+                {
+                    rowCount += CheckedPrimaryNeeded.Count + 1;
+                }
+            }
+
+            if (!hasNominal)
+            {
+                rowCount--;
+            }
+
+            return rowCount;
 
 
-            return 0;
+        }
+
+        public static (int baseCount, int totalCount) CountPairwiseRows_Comparative_Default(StatTable stattable)
+        {
+            //we need to get real groups that have already data
+            StatParameter groupParameter = stattable.GetGroupParameters().FirstOrDefault();
+            int numberofgroups = groupParameter.ValueLabels.Count;
+            int baseCount = numberofgroups > 2 ? numberofgroups - 2 : 0;
+
+            int scaleParameterCount = stattable.Parameters
+                .Count(p => !p.IsGroup && p.Type == "Scale");
+
+            int totalCount = baseCount * scaleParameterCount;
+
+            return (baseCount, totalCount);
         }
 
 
+        public static int Get_Comparative_Default_ColCount(int numberofgroups, bool HasNominal, bool hastotal)
+        {
+            int totalcol = hastotal ? (HasNominal ? 2 : 1) : 0;
+
+            int colCount = HasNominal
+                ? 3 + (numberofgroups * 2) + totalcol
+                : 3 + numberofgroups + totalcol;
+
+            return colCount;
+        }
+
+
+        public static void ParamaeterBorders_Comparative_Default(
+   IWTable table, int WordTableRows, int WordTableColumns,
+   StatTable comparativeTable, int numberofgroups,
+   bool HasScale, bool HasNominal, List<string> CheckedScaleDataNeeded, int PairwiseCount, Dictionary<string, bool> CheckedExtraData , bool TotalCol_Comparative_default)
+        {
+            InsertGroupTitles_Comparative_Default(table , HasNominal , comparativeTable , TotalCol_Comparative_default);
+        }
+
+        public static void InsertGroupTitles_Comparative_Default(IWTable table, bool HasNominal, StatTable comparativeTable , bool Total_Column_Comparative)
+        {
+            int startcol = 1;
+            int totalcount = 0;
+
+            if (Total_Column_Comparative && HasNominal)
+            {
+                startcol = 3;
+            }
+            else if (Total_Column_Comparative && !HasNominal)
+            {
+                startcol = 2;
+            }
+
+            StatParameter groupparameter = comparativeTable.GetGroupParameters().FirstOrDefault();
+
+            //Dictionary<int, int> ValuewithCounts = groupparameter.GetValueCounts_AllIncludingUnknowns();
+            //foreach (var kvp in groupparameter.DIC_LablesIfNomainal)
+            //{
+            //    string GroupName = kvp.Value;
+            //    int CurrentGroupCount = ValuewithCounts[kvp.Key];
+            //    string GroupNameCount = GroupName + Convert.ToChar(11) + "(n = " + CurrentGroupCount + ")";
+
+
+            //    wordObj.AddPara_Center(table, 0, startcol, GroupNameCount);
+            //    if (HasNominal)
+            //    {
+            //        startcol = startcol + 2;
+            //    }
+            //    else
+            //    {
+            //        startcol++;
+            //    }
+
+            //    totalcount += CurrentGroupCount;
+
+            //}
+
+
+            //if (Total_Column_Comparative)
+            //{
+            //    string TotalCount = "Total" + Convert.ToChar(11) + "(n = " + totalcount + ")";
+            //    wordobj.AddPara_Center(table, 0, 1, TotalCount);
+            //}
+
+
+        }
 
 
     }

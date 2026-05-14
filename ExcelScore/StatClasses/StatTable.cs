@@ -60,5 +60,15 @@ namespace ExcelScore.StatClasses
                 param.BuildRawNonEmptyValues();
             }
         }
+
+        public bool HasNominal()
+        {
+            return Parameters.Any(p => !p.IsGroup && p.Type == "Nominal");
+        }
+
+        public bool HasScale()
+        {
+            return Parameters.Any(p => !p.IsGroup && p.Type == "Scale");
+        }
     }
 }

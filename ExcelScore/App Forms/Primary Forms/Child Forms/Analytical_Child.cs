@@ -514,9 +514,8 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             }
 
             string filepath = wordObj.SaveWord();
+            wordObj.removeHeader(filepath);
 
-
-            
 
 
         }

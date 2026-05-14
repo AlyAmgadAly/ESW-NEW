@@ -3383,6 +3383,8 @@ namespace ExcelScore.Classes
                     for (int j = 1; j < WordTableColumns - 2; j++)
                     {
                         //MessageBox.Show(hasscale.ToString());
+                        // Make this 3.65 "2 Groups"
+                        // Make it 3.35 if its more and font is 11.5
                         table.Rows[i].Cells[j].Width = SetColumnWidthInCentimeters(3.5f);
 
                     }
