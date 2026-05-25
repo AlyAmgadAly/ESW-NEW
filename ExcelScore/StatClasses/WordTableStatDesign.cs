@@ -178,6 +178,7 @@ namespace ExcelScore.StatClasses
 
             StatParameter groupparameter = comparativeTable.GetGroupParameters().FirstOrDefault();
 
+            
             //Dictionary<int, int> ValuewithCounts = groupparameter.GetValueCounts_AllIncludingUnknowns();
             //foreach (var kvp in groupparameter.DIC_LablesIfNomainal)
             //{
