@@ -91,10 +91,17 @@ namespace ExcelScore.StatClasses
             wordobj.ApplyGeneralComparativeBorders_NewComparativeGroups_Fn(table, RowCount, ColCount, groupcount, HasNominal);
             wordobj.Add_GeneralHeaders_Comparative_Center_NewComparativeGroups_Fn(table, RowCount, ColCount, groupcount, HasNominal);
 
+            Set_Comparative_Widths_Default(table, RowCount, ColCount, groupcount, StatTable, wordobj);
+
+            //test can you see this
+
             ParamaeterBorders_Comparative_Default(table, RowCount, ColCount, StatTable, groupcount, HasScale, HasNominal, CheckedPrimaryNeeded, PairwiseCount, CheckedDataExtra, Total_Column_Comparative);
 
 
+
         }
+
+
         public static int Get_Comparative_Default_RowCount(StatTable stattable , List<string> CheckedPrimaryNeeded)
         {
             int rowCount = 0;
@@ -153,7 +160,59 @@ namespace ExcelScore.StatClasses
             return colCount;
         }
 
+        public static void Set_Comparative_Widths_Default(
+    IWTable table,
+    int wordTableRows,
+    int wordTableColumns,
+    int numberOfGroups,
+    StatTable comparativeTable , WordClass wordobj)
+        {
+            bool hasNominal = comparativeTable.HasNominal();
+            
+            float firstColumnWidth;
+            float middleColumnWidth;
+            float testColumnWidth;
 
+            if (numberOfGroups == 2)
+            {
+                firstColumnWidth = 4f;
+                middleColumnWidth = hasNominal ? 1.75f : 3.5f;
+                testColumnWidth = 1.85f;
+            }
+            else if (numberOfGroups == 3)
+            {
+                firstColumnWidth = 3.25f;
+                middleColumnWidth = hasNominal ? 3.1f / 2f : 3.1f;
+                testColumnWidth = 1.6f;
+            }
+            else
+            {
+                firstColumnWidth = 3.25f;
+                middleColumnWidth = hasNominal ? 3.1f / 2f : 3.1f;
+                testColumnWidth = 1.6f;
+            }
+
+            for (int i = 0; i < wordTableRows; i++)
+            {
+                // First column
+                table.Rows[i].Cells[0].Width =
+                    wordobj.SetColumnWidthInCentimeters(firstColumnWidth);
+
+                // Test statistic columns
+                table.Rows[i].Cells[wordTableColumns - 1].Width =
+                    wordobj.SetColumnWidthInCentimeters(testColumnWidth);
+
+                table.Rows[i].Cells[wordTableColumns - 2].Width =
+                    wordobj.SetColumnWidthInCentimeters(testColumnWidth);
+
+                // Group and total columns
+                for (int j = 1; j < wordTableColumns - 2; j++)
+                {
+                    table.Rows[i].Cells[j].Width =
+                        wordobj.SetColumnWidthInCentimeters(middleColumnWidth);
+                }
+            }
+        }
         public static void ParamaeterBorders_Comparative_Default(
    IWTable table, int WordTableRows, int WordTableColumns,
    StatTable comparativeTable, int numberofgroups,
@@ -178,7 +237,28 @@ namespace ExcelScore.StatClasses
 
             StatParameter groupparameter = comparativeTable.GetGroupParameters().FirstOrDefault();
 
+
+            groupparameter.CalculateValueFrequencies();
+
+
+            //inserting group names
+            int GroupsNamesInsert = startcol;
+            foreach (var item in groupparameter.ValueLabels)
+            {
+                int code = item.Key;
+                string label = item.Value;
+
+                if (groupparameter.ValueFrequencies.TryGetValue((double)code, out double count))
+                {
+
+                    
+                }
+                
+            }
             
+            
+            //
+
             //Dictionary<int, int> ValuewithCounts = groupparameter.GetValueCounts_AllIncludingUnknowns();
             //foreach (var kvp in groupparameter.DIC_LablesIfNomainal)
             //{
