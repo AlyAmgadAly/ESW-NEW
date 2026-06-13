@@ -95,7 +95,7 @@ namespace ExcelScore.StatClasses
 
             //test can you see this
 
-            ParamaeterBorders_Comparative_Default(table, RowCount, ColCount, StatTable, groupcount, HasScale, HasNominal, CheckedPrimaryNeeded, PairwiseCount, CheckedDataExtra, Total_Column_Comparative);
+            ParamaeterBorders_Comparative_Default(table, RowCount, ColCount, StatTable, groupcount, HasScale, HasNominal, CheckedPrimaryNeeded, PairwiseCount, CheckedDataExtra, Total_Column_Comparative,wordobj);
 
 
 
@@ -216,12 +216,13 @@ namespace ExcelScore.StatClasses
         public static void ParamaeterBorders_Comparative_Default(
    IWTable table, int WordTableRows, int WordTableColumns,
    StatTable comparativeTable, int numberofgroups,
-   bool HasScale, bool HasNominal, List<string> CheckedScaleDataNeeded, int PairwiseCount, Dictionary<string, bool> CheckedExtraData , bool TotalCol_Comparative_default)
+   bool HasScale, bool HasNominal, List<string> CheckedScaleDataNeeded, int PairwiseCount, Dictionary<string, bool> CheckedExtraData , bool TotalCol_Comparative_default , WordClass wordobj)
         {
-            InsertGroupTitles_Comparative_Default(table , HasNominal , comparativeTable , TotalCol_Comparative_default);
+            InsertGroupTitles_Comparative_Default(table , HasNominal , comparativeTable , TotalCol_Comparative_default , wordobj);
+
         }
 
-        public static void InsertGroupTitles_Comparative_Default(IWTable table, bool HasNominal, StatTable comparativeTable , bool Total_Column_Comparative)
+        public static void InsertGroupTitles_Comparative_Default(IWTable table, bool HasNominal, StatTable comparativeTable , bool Total_Column_Comparative , WordClass wordobj)
         {
             int startcol = 1;
             int totalcount = 0;
@@ -243,6 +244,7 @@ namespace ExcelScore.StatClasses
 
             //inserting group names
             int GroupsNamesInsert = startcol;
+            
             foreach (var item in groupparameter.ValueLabels)
             {
                 int code = item.Key;
@@ -250,43 +252,31 @@ namespace ExcelScore.StatClasses
 
                 if (groupparameter.ValueFrequencies.TryGetValue((double)code, out double count))
                 {
+                    string GroupNameCount = label + Convert.ToChar(11) + "(n = " + count + ")";
+                    wordobj.AddPara_Center(table, 0, GroupsNamesInsert, GroupNameCount);
 
-                    
+                    if (HasNominal)
+                    {
+                        GroupsNamesInsert = GroupsNamesInsert + 2;
+                    }
+                    else
+                    {
+                        GroupsNamesInsert++;
+                    }
+                    totalcount += (int)count;
                 }
                 
             }
-            
-            
-            //
-
-            //Dictionary<int, int> ValuewithCounts = groupparameter.GetValueCounts_AllIncludingUnknowns();
-            //foreach (var kvp in groupparameter.DIC_LablesIfNomainal)
-            //{
-            //    string GroupName = kvp.Value;
-            //    int CurrentGroupCount = ValuewithCounts[kvp.Key];
-            //    string GroupNameCount = GroupName + Convert.ToChar(11) + "(n = " + CurrentGroupCount + ")";
+            if (Total_Column_Comparative)
+            {
+                string TotalCount = "Total" + Convert.ToChar(11) + "(n = " + totalcount + ")";
+                wordobj.AddPara_Center(table, 0, 1, TotalCount);
+            }
 
 
-            //    wordObj.AddPara_Center(table, 0, startcol, GroupNameCount);
-            //    if (HasNominal)
-            //    {
-            //        startcol = startcol + 2;
-            //    }
-            //    else
-            //    {
-            //        startcol++;
-            //    }
-
-            //    totalcount += CurrentGroupCount;
-
-            //}
 
 
-            //if (Total_Column_Comparative)
-            //{
-            //    string TotalCount = "Total" + Convert.ToChar(11) + "(n = " + totalcount + ")";
-            //    wordobj.AddPara_Center(table, 0, 1, TotalCount);
-            //}
+
 
 
         }
