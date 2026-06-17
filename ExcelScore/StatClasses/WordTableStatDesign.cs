@@ -272,14 +272,9 @@ namespace ExcelScore.StatClasses
                 string TotalCount = "Total" + Convert.ToChar(11) + "(n = " + totalcount + ")";
                 wordobj.AddPara_Center(table, 0, 1, TotalCount);
             }
-
-
-
-
-
-
-
         }
+
+
 
 
     }
