@@ -219,7 +219,64 @@ namespace ExcelScore.StatClasses
    bool HasScale, bool HasNominal, List<string> CheckedScaleDataNeeded, int PairwiseCount, Dictionary<string, bool> CheckedExtraData , bool TotalCol_Comparative_default , WordClass wordobj)
         {
             InsertGroupTitles_Comparative_Default(table , HasNominal , comparativeTable , TotalCol_Comparative_default , wordobj);
+            InsertParameterTitles_Comparative_Default(table, comparativeTable, HasNominal, CheckedScaleDataNeeded, PairwiseCount, wordobj);
 
+        }
+
+        private static readonly Dictionary<string, string> _scaleDataTitleMap = new Dictionary<string, string>
+        {
+            { "NumberOfCasesFirst", "N" },
+            { "MinMaxFirst", "Min. – Max." },
+            { "MeanSDFirst", "Mean ± SD." },
+            { "MedianIQRFirst", "Median (IQR)" },
+            { "MedianMinMaxSecond", "Median (Min. – Max.)" }
+        };
+
+        public static void InsertParameterTitles_Comparative_Default(
+            IWTable table,
+            StatTable comparativeTable,
+            bool HasNominal,
+            List<string> CheckedScaleDataNeeded,
+            int PairwiseCount,
+            WordClass wordobj)
+        {
+            int startingRow = HasNominal ? 1 : 0;
+
+            foreach (var parameter in comparativeTable.Parameters)
+            {
+                if (parameter.IsGroup) continue;
+
+                wordobj.AddPara_NoCenter(table, startingRow + 1, 0, parameter.Name);
+
+                if (parameter.Type == "Nominal")
+                {
+                    int labelInsertRow = startingRow + 2;
+
+                    foreach (var label in parameter.ValueLabels.Values)
+                    {
+                        wordobj.Addpara_NoCenterNoBOLD(table, labelInsertRow, 0, label);
+                        wordobj.LeftIntendBeforeText(table, labelInsertRow, 0, 14.17f);
+                        labelInsertRow++;
+                    }
+
+                    startingRow += parameter.ValueLabels.Count + 1;
+                }
+                else if (parameter.Type == "Scale")
+                {
+                    int scaleTitleRow = startingRow + 2;
+
+                    foreach (var item in _scaleDataTitleMap)
+                    {
+                        if (!CheckedScaleDataNeeded.Contains(item.Key)) continue;
+
+                        wordobj.Addpara_NoCenterNoBOLD(table, scaleTitleRow, 0, item.Value);
+                        wordobj.LeftIntendBeforeText(table, scaleTitleRow, 0, 14.17f);
+                        scaleTitleRow++;
+                    }
+
+                    startingRow += CheckedScaleDataNeeded.Count + 1 + PairwiseCount;
+                }
+            }
         }
 
         public static void InsertGroupTitles_Comparative_Default(IWTable table, bool HasNominal, StatTable comparativeTable , bool Total_Column_Comparative , WordClass wordobj)
@@ -250,21 +307,23 @@ namespace ExcelScore.StatClasses
                 int code = item.Key;
                 string label = item.Value;
 
-                if (groupparameter.ValueFrequencies.TryGetValue((double)code, out double count))
-                {
-                    string GroupNameCount = label + Convert.ToChar(11) + "(n = " + count + ")";
-                    wordobj.AddPara_Center(table, 0, GroupsNamesInsert, GroupNameCount);
+                double count = groupparameter.ValueFrequencies.TryGetValue((double)code, out double foundCount)
+                    ? foundCount
+                    : 0;
 
-                    if (HasNominal)
-                    {
-                        GroupsNamesInsert = GroupsNamesInsert + 2;
-                    }
-                    else
-                    {
-                        GroupsNamesInsert++;
-                    }
-                    totalcount += (int)count;
+                string GroupNameCount = label + Convert.ToChar(11) + "(n = " + count + ")";
+                wordobj.AddPara_Center(table, 0, GroupsNamesInsert, GroupNameCount);
+
+                if (HasNominal)
+                {
+                    GroupsNamesInsert = GroupsNamesInsert + 2;
                 }
+                else
+                {
+                    GroupsNamesInsert++;
+                }
+
+                totalcount += (int)count;
                 
             }
             if (Total_Column_Comparative)
@@ -273,6 +332,8 @@ namespace ExcelScore.StatClasses
                 wordobj.AddPara_Center(table, 0, 1, TotalCount);
             }
         }
+
+
 
 
 
