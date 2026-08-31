@@ -219,7 +219,7 @@ namespace ExcelScore.StatClasses
    bool HasScale, bool HasNominal, List<string> CheckedScaleDataNeeded, int PairwiseCount, Dictionary<string, bool> CheckedExtraData , bool TotalCol_Comparative_default , WordClass wordobj)
         {
             InsertGroupTitles_Comparative_Default(table , HasNominal , comparativeTable , TotalCol_Comparative_default , wordobj);
-            InsertParameterTitles_Comparative_Default(table, comparativeTable, HasNominal, CheckedScaleDataNeeded, PairwiseCount, wordobj);
+            InsertParameterTitles_Comparative_Default(table, WordTableRows, WordTableColumns, comparativeTable, HasNominal, CheckedScaleDataNeeded, PairwiseCount, wordobj);
 
         }
 
@@ -234,6 +234,8 @@ namespace ExcelScore.StatClasses
 
         public static void InsertParameterTitles_Comparative_Default(
             IWTable table,
+            int WordTableRows,
+            int WordTableColumns,
             StatTable comparativeTable,
             bool HasNominal,
             List<string> CheckedScaleDataNeeded,
@@ -245,6 +247,9 @@ namespace ExcelScore.StatClasses
             foreach (var parameter in comparativeTable.Parameters)
             {
                 if (parameter.IsGroup) continue;
+
+                int parameterRowCount = GetParameterRowCount_Comparative_Default(parameter, CheckedScaleDataNeeded, PairwiseCount);
+                if (parameterRowCount <= 0) continue;
 
                 wordobj.AddPara_NoCenter(table, startingRow + 1, 0, parameter.Name);
 
@@ -258,8 +263,6 @@ namespace ExcelScore.StatClasses
                         wordobj.LeftIntendBeforeText(table, labelInsertRow, 0, 14.17f);
                         labelInsertRow++;
                     }
-
-                    startingRow += parameter.ValueLabels.Count + 1;
                 }
                 else if (parameter.Type == "Scale")
                 {
@@ -273,9 +276,67 @@ namespace ExcelScore.StatClasses
                         wordobj.LeftIntendBeforeText(table, scaleTitleRow, 0, 14.17f);
                         scaleTitleRow++;
                     }
-
-                    startingRow += CheckedScaleDataNeeded.Count + 1 + PairwiseCount;
                 }
+
+                ApplyParameterBlockFormat_Comparative_Default(table, WordTableRows, WordTableColumns, parameter, startingRow, parameterRowCount, PairwiseCount);
+                startingRow += parameterRowCount;
+            }
+        }
+
+        public static int GetParameterRowCount_Comparative_Default(
+            StatParameter parameter,
+            List<string> CheckedScaleDataNeeded,
+            int PairwiseCount)
+        {
+            if (parameter.Type == "Nominal")
+            {
+                return parameter.ValueLabels.Count + 1;
+            }
+
+            if (parameter.Type == "Scale")
+            {
+                return CheckedScaleDataNeeded.Count + 1 + PairwiseCount;
+            }
+
+            return 0;
+        }
+
+        public static void ApplyParameterBlockFormat_Comparative_Default(
+            IWTable table,
+            int WordTableRows,
+            int WordTableColumns,
+            StatParameter parameter,
+            int startingRow,
+            int parameterRowCount,
+            int PairwiseCount)
+        {
+            int childStartRow = startingRow + 2;
+            int blockEndRow = startingRow + parameterRowCount;
+            int mergeEndRow = parameter.Type == "Scale"
+                ? blockEndRow - PairwiseCount
+                : blockEndRow;
+
+            if (childStartRow <= mergeEndRow)
+            {
+                table.ApplyVerticalMerge(WordTableColumns - 2, childStartRow, mergeEndRow);
+                table.ApplyVerticalMerge(WordTableColumns - 1, childStartRow, mergeEndRow);
+            }
+
+            for (int row = mergeEndRow; row <= blockEndRow && row < WordTableRows - 1; row++)
+            {
+                ApplyBottomBorder_Comparative_Default(table, WordTableColumns, row);
+            }
+        }
+
+        public static void ApplyBottomBorder_Comparative_Default(
+            IWTable table,
+            int WordTableColumns,
+            int row)
+        {
+            for (int col = 0; col < WordTableColumns; col++)
+            {
+                table.Rows[row].Cells[col].CellFormat.Borders.Bottom.BorderType = Syncfusion.DocIO.DLS.BorderStyle.Thick;
+                table.Rows[row].Cells[col].CellFormat.Borders.Bottom.LineWidth = 0.5f;
             }
         }
 
