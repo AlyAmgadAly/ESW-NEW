@@ -136,6 +136,54 @@ namespace ExcelScore.StatClasses
             sb.AppendLine("EXECUTE.");
             return sb.ToString();
         }
+
+        public static void ParseUnifiedOutput_Nominal(List<StatTable> tables)
+        {
+            foreach (var table in tables)
+            {
+                // collect scale parameter names for this table
+                var nominalParameters = table.GetNonGroupParameters()
+                    .Where(p => string.Equals(p.Type, "Nominal", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                if (!nominalParameters.Any())
+                    continue;
+
+                var groupParams = table.GetGroupParameters();
+
+                // If there are no group parameters, still call parser once with empty labels
+                if (!groupParams.Any())
+                {
+                    return;
+                }
+
+                foreach (var g in groupParams)
+                {
+                    var groupLabels = new List<string>();
+
+                    if (g.ValueLabels != null && g.ValueLabels.Count > 0)
+                    {
+                        foreach (var kvp in g.ValueLabels
+                                             .OrderBy(k => k.Key)) // sort by numeric key ascending
+                        {
+                            var key = kvp.Key;
+                            var label = kvp.Value;
+
+                            string chosen;
+
+                            // use label only if it's not identical to the numeric key
+                            if (!string.Equals(label, key.ToString(), StringComparison.OrdinalIgnoreCase))
+                                chosen = label;
+                            else
+                                chosen = ((double)key).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+
+                            groupLabels.Add(chosen);
+                        }
+                    }
+
+                }
+            }
+        }
         public static void ParseUnifiedOutput_Descriptives(List<StatTable> tables)
         {
             foreach (var table in tables)

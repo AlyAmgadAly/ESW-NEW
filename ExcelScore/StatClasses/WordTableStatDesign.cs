@@ -219,7 +219,7 @@ namespace ExcelScore.StatClasses
    bool HasScale, bool HasNominal, List<string> CheckedScaleDataNeeded, int PairwiseCount, Dictionary<string, bool> CheckedExtraData , bool TotalCol_Comparative_default , WordClass wordobj)
         {
             InsertGroupTitles_Comparative_Default(table , HasNominal , comparativeTable , TotalCol_Comparative_default , wordobj);
-            InsertParameterTitles_Comparative_Default(table, WordTableRows, WordTableColumns, comparativeTable, HasNominal, CheckedScaleDataNeeded, PairwiseCount, wordobj);
+            InsertParameterTitles_Comparative_Default(table, WordTableRows, WordTableColumns, comparativeTable, HasNominal, CheckedScaleDataNeeded, PairwiseCount, TotalCol_Comparative_default, wordobj);
 
         }
 
@@ -240,9 +240,11 @@ namespace ExcelScore.StatClasses
             bool HasNominal,
             List<string> CheckedScaleDataNeeded,
             int PairwiseCount,
+            bool TotalCol_Comparative_default,
             WordClass wordobj)
         {
             int startingRow = HasNominal ? 1 : 0;
+            StatParameter groupParameter = comparativeTable.GetGroupParameters().FirstOrDefault();
 
             foreach (var parameter in comparativeTable.Parameters)
             {
@@ -276,11 +278,259 @@ namespace ExcelScore.StatClasses
                         wordobj.LeftIntendBeforeText(table, scaleTitleRow, 0, 14.17f);
                         scaleTitleRow++;
                     }
+
+                    if (HasNominal)
+                    {
+                        ApplyScaleMiddleColumnsMerge_Comparative_Default(table, WordTableColumns, startingRow, CheckedScaleDataNeeded.Count, PairwiseCount);
+                    }
                 }
+
+                InsertParameterData_Comparative_Default(
+                    table,
+                    WordTableColumns,
+                    comparativeTable,
+                    groupParameter,
+                    parameter,
+                    HasNominal,
+                    CheckedScaleDataNeeded,
+                    PairwiseCount,
+                    TotalCol_Comparative_default,
+                    startingRow,
+                    wordobj);
 
                 ApplyParameterBlockFormat_Comparative_Default(table, WordTableRows, WordTableColumns, parameter, startingRow, parameterRowCount, PairwiseCount);
                 startingRow += parameterRowCount;
             }
+        }
+
+        public static void InsertParameterData_Comparative_Default(
+            IWTable table,
+            int WordTableColumns,
+            StatTable comparativeTable,
+            StatParameter groupParameter,
+            StatParameter parameter,
+            bool HasNominal,
+            List<string> CheckedScaleDataNeeded,
+            int PairwiseCount,
+            bool TotalCol_Comparative_default,
+            int startingRow,
+            WordClass wordobj)
+        {
+            if (groupParameter == null) return;
+
+            if (parameter.Type == "Nominal")
+            {
+                InsertNominalData_Comparative_Default(table, WordTableColumns, groupParameter, parameter, HasNominal, TotalCol_Comparative_default, startingRow, wordobj);
+            }
+            else if (parameter.Type == "Scale")
+            {
+                InsertScaleData_Comparative_Default(table, groupParameter, parameter, HasNominal, CheckedScaleDataNeeded, TotalCol_Comparative_default, startingRow, wordobj);
+                
+            }
+            InsertTestData_Comparative_Default(table, WordTableColumns, parameter, startingRow + 2, wordobj);
+        }
+
+        public static void InsertNominalData_Comparative_Default(
+            IWTable table,
+            int WordTableColumns,
+            StatParameter groupParameter,
+            StatParameter parameter,
+            bool HasNominal,
+            bool TotalCol_Comparative_default,
+            int startingRow,
+            WordClass wordobj)
+        {
+            int groupStartCol = GetGroupDataStartColumn_Comparative_Default(HasNominal, TotalCol_Comparative_default);
+            int row = startingRow + 2;
+
+            foreach (var parameterLabel in parameter.ValueLabels)
+            {
+                var crosstabRow = FindCrosstabRow_Comparative_Default(parameter.ChiSquareBlock, parameterLabel.Key, parameterLabel.Value);
+
+                if (TotalCol_Comparative_default)
+                {
+                    int totalIndex = parameter.ValueLabels.Keys.ToList().IndexOf(parameterLabel.Key);
+                    wordobj.Addpara_CenterNoBOLD(table, row, 1, GetListValue_Comparative_Default(parameter.ChiSquareBlock?.TotalRowCounts, totalIndex, "0"));
+                    wordobj.Addpara_CenterNoBOLD(table, row, 2, GetListValue_Comparative_Default(parameter.ChiSquareBlock?.TotalRowPercentages, totalIndex, "0"));
+                }
+
+                int col = groupStartCol;
+                for (int groupIndex = 0; groupIndex < groupParameter.ValueLabels.Count; groupIndex++)
+                {
+                    wordobj.Addpara_CenterNoBOLD(table, row, col, GetListValue_Comparative_Default(crosstabRow?.Counts, groupIndex, "0"));
+                    wordobj.Addpara_CenterNoBOLD(table, row, col + 1, GetListValue_Comparative_Default(crosstabRow?.Percentages, groupIndex, "0"));
+                    col += 2;
+                }
+                row++;
+            }
+        }
+
+        public static void InsertScaleData_Comparative_Default(
+            IWTable table,
+            StatParameter groupParameter,
+            StatParameter parameter,
+            bool HasNominal,
+            List<string> CheckedScaleDataNeeded,
+            bool TotalCol_Comparative_default,
+            int startingRow,
+            WordClass wordobj)
+        {
+            int groupStartCol = GetGroupDataStartColumn_Comparative_Default(HasNominal, TotalCol_Comparative_default);
+            int row = startingRow + 2;
+
+            foreach (var item in _scaleDataTitleMap)
+            {
+                if (!CheckedScaleDataNeeded.Contains(item.Key)) continue;
+
+                if (TotalCol_Comparative_default)
+                {
+                    wordobj.Addpara_CenterNoBOLD(table, row, 1, GetScaleStatValue_Comparative_Default(parameter, "Total", item.Key));
+                }
+
+                int col = groupStartCol;
+                foreach (var group in groupParameter.ValueLabels)
+                {
+                    string groupLabel = group.Value;
+
+                    // Check if the string can be parsed into a number
+                    if (double.TryParse(groupLabel, out double number))
+                    {
+                        // If it is a number, format it to 2 decimal places (e.g., "4" -> "4.00")
+                        groupLabel = number.ToString("F2");
+                    }
+                    wordobj.Addpara_CenterNoBOLD(table, row, col, GetScaleStatValue_Comparative_Default(parameter, groupLabel, item.Key));
+                    col += HasNominal ? 2 : 1;
+                }
+
+                row++;
+            }
+        }
+
+        public static void InsertTestData_Comparative_Default(
+            IWTable table,
+            int WordTableColumns,
+            StatParameter parameter,
+            int row,
+            WordClass wordobj)
+        {
+            if (parameter.Type == "Nominal")
+            {
+                var chi = parameter.ChiSquareBlock?.ChiResults?.FirstOrDefault(r => string.Equals(r.Name, "Pearson", StringComparison.OrdinalIgnoreCase))
+                    ?? parameter.ChiSquareBlock?.ChiResults?.FirstOrDefault();
+
+                if (chi != null)
+                {
+                    wordobj.Addpara_CenterNoBOLD(table, row, WordTableColumns - 2, "χ2=" + (chi.Value ?? ""));
+                    wordobj.Addpara_CenterNoBOLD(table, row, WordTableColumns - 1, !string.IsNullOrWhiteSpace(chi.MC_Sig2sided) ? chi.MC_Sig2sided : chi.AsympSig);
+                }
+            }
+            else if (parameter.Type == "Scale" && parameter.Test_PValues.Count >= 2)
+            {
+                wordobj.Addpara_CenterNoBOLD(table, row, WordTableColumns - 2, parameter.Test_PValues[0]);
+                wordobj.Addpara_CenterNoBOLD(table, row, WordTableColumns - 1, parameter.Test_PValues[1]);
+            }
+        }
+
+        public static int GetGroupDataStartColumn_Comparative_Default(bool HasNominal, bool TotalCol_Comparative_default)
+        {
+            if (TotalCol_Comparative_default && HasNominal)
+            {
+                return 3;
+            }
+
+            if (TotalCol_Comparative_default && !HasNominal)
+            {
+                return 2;
+            }
+
+            return 1;
+        }
+
+        public static SpssSyntaxStat.CrosstabRow FindCrosstabRow_Comparative_Default(
+            SpssSyntaxStat.CrosstabBlockS block,
+            int valueCode,
+            string valueLabel)
+        {
+            if (block?.CrosstabRows == null) return null;
+
+            return block.CrosstabRows.FirstOrDefault(row =>
+                string.Equals(row.GroupName, valueLabel, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(row.GroupName, valueCode.ToString(), StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(row.GroupName, ((double)valueCode).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static string GetListValue_Comparative_Default(List<string> values, int index, string fallback = "")
+        {
+            if (values == null || index < 0 || index >= values.Count)
+            {
+                return fallback;
+            }
+
+            return values[index];
+        }
+
+        public static string GetScaleStatValue_Comparative_Default(StatParameter parameter, string groupLabel, string checkedKey)
+        {
+            Dictionary<string, string> stats = null;
+
+            if (string.Equals(groupLabel, "Total", StringComparison.OrdinalIgnoreCase))
+            {
+                stats = parameter.DescriptiveStats?.Stats_Total;
+            }
+            else if (parameter.DescriptiveStats?.Stats_Groups != null)
+            {
+                parameter.DescriptiveStats.Stats_Groups.TryGetValue(groupLabel, out stats);
+            }
+
+            if (stats == null)
+            {
+                return "";
+            }
+
+            switch (checkedKey)
+            {
+                case "NumberOfCasesFirst":
+                    return GetStatValue_Comparative_Default(stats, "N");
+
+                case "MinMaxFirst":
+                    return GetStatValue_Comparative_Default(stats, "Min-Max", BuildPair_Comparative_Default(stats, "Min", "Max"));
+
+                case "MeanSDFirst":
+                    return GetStatValue_Comparative_Default(stats, "Mean ± StdDev", BuildPair_Comparative_Default(stats, "Mean", "StdDev", " ± "));
+
+                case "MedianIQRFirst":
+                    return GetStatValue_Comparative_Default(stats, "Median") + "(" + GetStatValue_Comparative_Default(stats, "IQR") + ")";
+
+                case "MedianMinMaxSecond":
+                    return GetStatValue_Comparative_Default(stats, "Median") + "(" + GetStatValue_Comparative_Default(stats, "Min-Max", BuildPair_Comparative_Default(stats, "Min", "Max")) + ")";
+
+                default:
+                    return "";
+            }
+        }
+
+        public static string GetStatValue_Comparative_Default(Dictionary<string, string> stats, string key, string fallback = "")
+        {
+            if (stats == null) return fallback;
+
+            return stats.TryGetValue(key, out string value) ? value : fallback;
+        }
+
+        public static string BuildPair_Comparative_Default(
+            Dictionary<string, string> stats,
+            string firstKey,
+            string secondKey,
+            string separator = " – ")
+        {
+            string first = GetStatValue_Comparative_Default(stats, firstKey);
+            string second = GetStatValue_Comparative_Default(stats, secondKey);
+
+            if (string.IsNullOrWhiteSpace(first) || string.IsNullOrWhiteSpace(second))
+            {
+                return "";
+            }
+
+            return first + separator + second;
         }
 
         public static int GetParameterRowCount_Comparative_Default(
@@ -299,6 +549,24 @@ namespace ExcelScore.StatClasses
             }
 
             return 0;
+        }
+
+        public static void ApplyScaleMiddleColumnsMerge_Comparative_Default(
+            IWTable table,
+            int WordTableColumns,
+            int startingRow,
+            int checkedScaleDataCount,
+            int PairwiseCount)
+        {
+            for (int rowOffset = 0; rowOffset <= checkedScaleDataCount + PairwiseCount; rowOffset++)
+            {
+                int row = startingRow + rowOffset + 1;
+
+                for (int col = 1; col < WordTableColumns - 2; col += 2)
+                {
+                    table.ApplyHorizontalMerge(row, col, col + 1);
+                }
+            }
         }
 
         public static void ApplyParameterBlockFormat_Comparative_Default(

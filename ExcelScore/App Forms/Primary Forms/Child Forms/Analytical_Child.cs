@@ -505,6 +505,8 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 
             GeneralStatFunctions.ParseUnifiedOutput_Descriptives(StatTables);
 
+
+
             var document = wordObj.InitWord();
 
             foreach (var item in StatTables)
