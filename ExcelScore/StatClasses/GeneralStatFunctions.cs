@@ -136,17 +136,36 @@ namespace ExcelScore.StatClasses
             sb.AppendLine("EXECUTE.");
             return sb.ToString();
         }
+    //    public static List<StatParameter> GetNominalResults(
+    //List<string> variableNames,
+    //List<string> groupLabels,
+    //StatTable statTable,
+    //StatParameter groupParameter)
+    //    {
+    //        GeneralStatFunctions generalStatFunctions = new GeneralStatFunctions();
 
+    //        if (variableNames == null || variableNames.Count == 0)
+    //            return new List<SpssSyntaxStat.DescriptiveResult>();
+
+    //        var results = variableNames
+    //            .Select(var => new SpssSyntaxStat.DescriptiveResult { VariableName = var })
+    //            .ToList();
+
+    //        int groupcount = statTable.GetGroupParameters().Count;
+
+
+    //    }
         public static void ParseUnifiedOutput_Nominal(List<StatTable> tables)
         {
             foreach (var table in tables)
             {
                 // collect scale parameter names for this table
-                var nominalParameters = table.GetNonGroupParameters()
+                var nominalParametersNames = table.GetNonGroupParameters()
                     .Where(p => string.Equals(p.Type, "Nominal", StringComparison.OrdinalIgnoreCase))
+                    .Select(p => p.Name)
                     .ToList();
 
-                if (!nominalParameters.Any())
+                if (!nominalParametersNames.Any())
                     continue;
 
                 var groupParams = table.GetGroupParameters();
@@ -180,7 +199,7 @@ namespace ExcelScore.StatClasses
                             groupLabels.Add(chosen);
                         }
                     }
-
+                    //var NominalResultsForThisGroup = GetNominalResults(nominalParametersNames, groupLabels, table, g);
                 }
             }
         }

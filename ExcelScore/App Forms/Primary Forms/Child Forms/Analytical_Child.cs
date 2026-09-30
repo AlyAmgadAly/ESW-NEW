@@ -754,6 +754,15 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
 
         }
 
-        
+        private CategorizeFrm_Child categorizeFrm_Child;
+        private void btn_CategorizeParameters_Click(object sender, EventArgs e)
+        {
+            if (categorizeFrm_Child == null || categorizeFrm_Child.IsDisposed)
+            {
+                categorizeFrm_Child = new CategorizeFrm_Child();
+            }
+
+            categorizeFrm_Child.Show();
+        }
     }
 }

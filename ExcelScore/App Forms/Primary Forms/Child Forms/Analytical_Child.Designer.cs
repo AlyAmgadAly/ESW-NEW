@@ -78,6 +78,7 @@
             this.txt_ParaName = new System.Windows.Forms.TextBox();
             this.btn_NameLabel = new System.Windows.Forms.Button();
             this.pic_removeTableSelected = new System.Windows.Forms.PictureBox();
+            this.btn_CategorizeParameters = new System.Windows.Forms.Button();
             this.pnl_Top_bar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pic_ClearAllLists)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).BeginInit();
@@ -109,6 +110,7 @@
             // pnl_Top_bar
             // 
             this.pnl_Top_bar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(62)))), ((int)(((byte)(70)))));
+            this.pnl_Top_bar.Controls.Add(this.btn_CategorizeParameters);
             this.pnl_Top_bar.Controls.Add(this.pic_ClearAllLists);
             this.pnl_Top_bar.Controls.Add(this.btn_Select);
             this.pnl_Top_bar.Controls.Add(this.pictureBox15);
@@ -719,6 +721,21 @@
             this.pic_removeTableSelected.TabStop = false;
             this.pic_removeTableSelected.Click += new System.EventHandler(this.pic_removeTableSelected_Click);
             // 
+            // btn_CategorizeParameters
+            // 
+            this.btn_CategorizeParameters.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(173)))), ((int)(((byte)(181)))));
+            this.btn_CategorizeParameters.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_CategorizeParameters.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_CategorizeParameters.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.btn_CategorizeParameters.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btn_CategorizeParameters.Location = new System.Drawing.Point(310, 0);
+            this.btn_CategorizeParameters.Name = "btn_CategorizeParameters";
+            this.btn_CategorizeParameters.Size = new System.Drawing.Size(130, 46);
+            this.btn_CategorizeParameters.TabIndex = 78;
+            this.btn_CategorizeParameters.Text = "Categorize";
+            this.btn_CategorizeParameters.UseVisualStyleBackColor = false;
+            this.btn_CategorizeParameters.Click += new System.EventHandler(this.btn_CategorizeParameters_Click);
+            // 
             // Analytical_Child
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -823,5 +840,6 @@
         private System.Windows.Forms.TextBox txt_ParaName;
         private System.Windows.Forms.Button btn_NameLabel;
         private System.Windows.Forms.PictureBox pic_ClearAllLists;
+        private System.Windows.Forms.Button btn_CategorizeParameters;
     }
 }

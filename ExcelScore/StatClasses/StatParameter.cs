@@ -96,7 +96,7 @@ namespace ExcelScore.StatClasses
 
         public Dictionary<double, List<double>> GroupedParameterValues { get; set; } = new Dictionary<double, List<double>>();
 
-        public Dictionary<string , Dictionary<double, List<double>>> GroupedParameterValuesRelation { get; set; } = new Dictionary<string, Dictionary<double, List<double>>>();
+        public Dictionary<string, Dictionary<double, List<double>>> GroupedParameterValuesRelation { get; set; } = new Dictionary<string, Dictionary<double, List<double>>>();
 
         public Dictionary<double, double> EachGroupCount { get; set; } = new();
         public void AssignGroupedValues(List<StatParameter> groupingParameters)
@@ -183,7 +183,7 @@ namespace ExcelScore.StatClasses
             int realCount = 0;
             foreach (var value in statParameter.RawValues)
             {
-                if(value == ".")
+                if (value == ".")
                 {
                     continue;
                 }
@@ -204,6 +204,10 @@ namespace ExcelScore.StatClasses
     = new Dictionary<string, SpssSyntaxStat.DescriptiveResult>();
 
 
+
+        public Dictionary<string, Dictionary<string, Dictionary<string, string>>> NominalDescritptive = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
+
+
         //    public Dictionary<string, SPSSUnifiedRunner.PercentileResult> PercentileStats { get; set; }
         //= new Dictionary<string, SPSSUnifiedRunner.PercentileResult>();
 
@@ -212,6 +216,7 @@ namespace ExcelScore.StatClasses
         public SpssSyntaxStat.CrosstabBlockS ChiSquareBlock { get; set; }
         public List<string> Test_PValues { get; set; } = new(); // t, U, F, H results
         public List<string> PostHocResults { get; set; } = new();
+
 
 
         public static bool General_Parameter_Group_Label(string parameterName, string groupLabel, StatTable statTable, StatParameter groupParameter)
