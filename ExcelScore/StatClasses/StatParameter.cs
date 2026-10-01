@@ -205,8 +205,9 @@ namespace ExcelScore.StatClasses
 
 
 
-        public Dictionary<string, Dictionary<string, Dictionary<string, string>>> NominalDescritptive = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
-
+        //public Dictionary<string, Dictionary<string, Dictionary<string, string>>> NominalDescritptive = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
+        public Dictionary<string, Dictionary<string , Dictionary <int , (string count, string percent)>>> NominalDescritptive = new Dictionary<string, Dictionary<string, Dictionary<int, (string count, string percent)>>>();
+        // Group parameter , Group Label , Parameter Label Key , (Count Percent)
 
         //    public Dictionary<string, SPSSUnifiedRunner.PercentileResult> PercentileStats { get; set; }
         //= new Dictionary<string, SPSSUnifiedRunner.PercentileResult>();

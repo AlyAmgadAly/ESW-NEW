@@ -38,6 +38,12 @@ namespace ExcelScore.AI.Services
                 "4. Do not provide explanations.\n" +
                 "5. Return ONLY valid JSON.\n" +
                 "6. Use exactly these JSON properties: categoryName and parameters.\n\n" +
+                "7. Treat parameter names as exact identifiers.\n" +
+"8. Parameters with related names may belong to the same category, " +
+"but each parameter remains a separate parameter.\n" +
+"9. Do not combine, rename, split, or modify parameter names.\n" +
+"10. Categorize based on the meaning of the parameter, " +
+"not merely its name pattern.\n\n" +
                 "Required JSON format:\n" +
                 "[\n" +
                 "  {\n" +
@@ -130,11 +136,46 @@ namespace ExcelScore.AI.Services
     List<ParameterCategory> categories,
     List<StatParameter> selectedParameters)
         {
+
+            if (selectedParameters == null || selectedParameters.Count == 0)
+            {
+                throw new Exception(
+                    "No parameters were provided for categorization validation.");
+            }
+            if (categories == null || categories.Count == 0)
+            {
+                throw new Exception(
+                    "AI categorization returned no categories.");
+            }
+
+            foreach (ParameterCategory category in categories)
+            {
+                if (category == null)
+                {
+                    throw new Exception(
+                        "AI categorization returned an invalid category.");
+                }
+
+                if (string.IsNullOrWhiteSpace(category.CategoryName))
+                {
+                    throw new Exception(
+                        "AI categorization returned a category with no name.");
+                }
+
+                if (category.Parameters == null)
+                {
+                    throw new Exception(
+                        "AI categorization returned a category with no parameters.");
+                }
+            }
+
             List<string> expectedParameters =
-                selectedParameters
-                    .Where(p => !string.IsNullOrWhiteSpace(p.Name))
-                    .Select(p => p.Name.Trim())
-                    .ToList();
+    selectedParameters
+        .Where(p =>
+            p != null &&
+            !string.IsNullOrWhiteSpace(p.Name))
+        .Select(p => p.Name.Trim())
+        .ToList();
 
             List<string> returnedParameters =
                 categories

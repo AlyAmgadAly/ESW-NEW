@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using ExcelScore.Classes;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,61 @@ namespace ExcelScore.StatClasses
             return ValuesFormatted;
 
 
+        }
+
+        public static void GetCount_Percent(List<StatTable> statTables)
+        {
+            foreach (var statTable in statTables)
+            {
+                if(!statTable.HasNominal())
+                    continue;   
+
+                var groupVars = statTable.GetGroupParameters();
+
+                foreach (var groupVar in groupVars)
+                {
+                    foreach (var ValueLable in groupVar.ValueLabels)
+                    {
+                        foreach (var statParameter in statTable.Parameters)
+                        {
+                            if(statParameter.Type == "Nominal")
+                            {
+                                bool hasGroupLabelValues = StatParameter.General_Parameter_Group_Label(statParameter.Name, ValueLable.Value, statTable, groupVar);
+                                if (hasGroupLabelValues)
+                                {
+                                    int CurrentGroupKey = groupVar.GetGroupKeyfromLabel(ValueLable.Value);
+                                    if (CurrentGroupKey != -1)
+                                    {
+                                        Dictionary<int, (string parameterLabelCount, string parameterLabelPercent)> Parameter_Count_Percent = new Dictionary<int, (string parameterLabelCount, string parameterLabelPercent)>();
+
+                                        Parameter_Count_Percent = SpssSyntaxStat.GetCount_Percent(statParameter.GroupedParameterValuesRelation[groupVar.Name][CurrentGroupKey]);
+                                        Parameter_Count_Percent = SpssSyntaxStat.GetCount_Percent(statParameter.GroupedParameterValues[CurrentGroupKey]);
+
+                                        if (!statParameter.NominalDescritptive.ContainsKey(groupVar.Name))
+                                        {
+                                            statParameter.NominalDescritptive[groupVar.Name] = new Dictionary<string, Dictionary<int, (string count, string percent)>>();
+                                        }
+                                        if (!statParameter.NominalDescritptive[groupVar.Name].ContainsKey(ValueLable.Value))
+                                        {
+                                            statParameter.NominalDescritptive[groupVar.Name][ValueLable.Value] = new Dictionary<int, (string count, string percent)>();
+                                        }
+                                        foreach (var kvp in Parameter_Count_Percent)
+                                        {
+                                            int ParameterLabelKey = kvp.Key;
+                                            string LabelCount = kvp.Value.parameterLabelCount;
+                                            string LabelPercent = kvp.Value.parameterLabelPercent;
+                                            if (!statParameter.NominalDescritptive[groupVar.Name][ValueLable.Value].ContainsKey(ParameterLabelKey))
+                                                statParameter.NominalDescritptive[groupVar.Name][ValueLable.Value][ParameterLabelKey] = (count:LabelCount, percent:LabelPercent);
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
         }
 
         public static string BuildLowCountFilterSyntax(StatTable table, string groupVar, List<int> validGroups)

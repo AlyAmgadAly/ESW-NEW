@@ -29,6 +29,7 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
         private readonly AIClient _aiClient;
         private readonly ParameterCategorizationService _categorizationService;
         private readonly ConversationService _conversationService;
+        private List<StatParameter> _selectedParameters;
         public CategorizeFrm_Child()
         {
             InitializeComponent();
@@ -40,6 +41,10 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
             _categorizationService =
     new ParameterCategorizationService(
         _conversationService);
+
+            _selectedParameters =
+    new List<StatParameter>();
+
         }
 
         private async void btnTestAI_Click(object sender, EventArgs e)
@@ -53,9 +58,9 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                 List<ParameterCategory> categories =
                     await _categorizationService.CategorizeAsync(
                         conversation,
-                        SpssParameters);
+                        _selectedParameters);
 
-                
+
                 string result = "";
 
                 foreach (ParameterCategory category in categories)
@@ -73,11 +78,11 @@ namespace ExcelScore.App_Forms.Primary_Forms.Child_Forms
                 MessageBox.Show(result, "C# Categories");
 
                 List<ParameterCategory> updatedCategories =
-    await _categorizationService.UpdateCategorizationAsync(
-        conversation,
-        SpssParameters,
-        "Move BMI to Demographic Characteristics. " +
-        "Return the complete updated categorization as JSON only.");
+                    await _categorizationService.UpdateCategorizationAsync(
+                        conversation,
+                        _selectedParameters,
+                        "Move BMI to Demographic Characteristics. " +
+                        "Return the complete updated categorization as JSON only.");
 
                 string updatedResult = "";
 
